@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/mcabreradev/filter/issues"
   },
-  "homepage": "https://github.com/mcabreradev/filter#readme"
+  "homepage": "https://github.com/mcabreradev/filter#readme",
+  "dependencies": {
+    "lodash": "^4.17.11"
+  }
 }

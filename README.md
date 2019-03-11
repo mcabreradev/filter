@@ -24,4 +24,4 @@ const arr = [
 ];
 
 filter(arr, 'mcabreradev');
-//=> { name: 'Migue', social: { github: 'mcabreradev' } }
+//=> [{ name: 'Migue', social: { github: 'mcabreradev' } }]

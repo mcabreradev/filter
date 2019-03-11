@@ -1,6 +1,8 @@
-export const filter = (array, expression, comparator, anyPropertyKey) => {
+const _ = require('lodash');
 
-  if (isArrayLike(array)) {
+module.exports = function filter(array, expression, comparator, anyPropertyKey) {
+
+  if (!_.isArrayLike(array)) {
     if (array == null) {
       return array;
     } else {
@@ -9,9 +11,9 @@ export const filter = (array, expression, comparator, anyPropertyKey) => {
   }
 
   anyPropertyKey = anyPropertyKey || '$';
-  let expressionType = getTypeForFilter(expression);
-  let predicateFn;
-  let matchAgainstAnyProp;
+  var expressionType = getTypeForFilter(expression);
+  var predicateFn;
+  var matchAgainstAnyProp;
 
   switch (expressionType) {
     case 'function':
@@ -34,14 +36,14 @@ export const filter = (array, expression, comparator, anyPropertyKey) => {
 };
 
 function createPredicateFn(expression, comparator, anyPropertyKey, matchAgainstAnyProp) {
-  let shouldMatchPrimitives = isObject(expression) && (anyPropertyKey in expression);
-  let predicateFn;
+  var shouldMatchPrimitives = _.isObject(expression) && (anyPropertyKey in expression);
+  var predicateFn;
 
   if (comparator === true) {
     comparator = equals;
-  } else if (isFunction(comparator)) {
+  } else if (!_.isFunction(comparator)) {
     comparator = function (actual, expected) {
-      if (isUndefined(actual)) {
+      if (_.isUndefined(actual)) {
         // No substring matching against `undefined`
         return false;
       }
@@ -49,19 +51,19 @@ function createPredicateFn(expression, comparator, anyPropertyKey, matchAgainstA
         // No substring matching against `null`; only match against `null`
         return actual === expected;
       }
-      if (isObject(expected) || (isObject(actual) && !hasCustomToString(actual))) {
+      if (_.isObject(expected) || (_.isObject(actual) && !hasCustomToString(actual))) {
         // Should not compare primitives against objects, unless they have custom `toString` method
         return false;
       }
 
-      actual = lowercase('' + actual);
-      expected = lowercase('' + expected);
+      actual = _.lowerCase('' + actual);
+      expected = _.lowerCase('' + expected);
       return actual.indexOf(expected) !== -1;
     };
   }
 
   predicateFn = function (item) {
-    if (shouldMatchPrimitives && !isObject(item)) {
+    if (shouldMatchPrimitives && !_.isObject(item)) {
       return deepCompare(item, expression[anyPropertyKey], comparator, anyPropertyKey, false);
     }
     return deepCompare(item, expression, comparator, anyPropertyKey, matchAgainstAnyProp);
@@ -71,12 +73,14 @@ function createPredicateFn(expression, comparator, anyPropertyKey, matchAgainstA
 }
 
 function deepCompare(actual, expected, comparator, anyPropertyKey, matchAgainstAnyProp, dontMatchWholeObject) {
-  let actualType = getTypeForFilter(actual);
-  let expectedType = getTypeForFilter(expected);
+  var actualType = getTypeForFilter(actual);
+  var expectedType = getTypeForFilter(expected);
 
   if ((expectedType === 'string') && (expected.charAt(0) === '!')) {
     return !deepCompare(actual, expected.substring(1), comparator, anyPropertyKey, matchAgainstAnyProp);
-  } else if (isArray(actual)) {
+  } else if (_.isArray(actual)) {
+    // In case `actual` is an array, consider it a match
+    // if ANY of it's items matches `expected`
     return actual.some(function (item) {
       return deepCompare(item, expected, comparator, anyPropertyKey, matchAgainstAnyProp);
     });
@@ -84,9 +88,11 @@ function deepCompare(actual, expected, comparator, anyPropertyKey, matchAgainstA
 
   switch (actualType) {
     case 'object':
-      let key;
+      var key;
       if (matchAgainstAnyProp) {
         for (key in actual) {
+          // Under certain, rare, circumstances, key may not be a string and `charAt` will be undefined
+          // See: https://github.com/angular/angular.js/issues/15644
           if (key.charAt && (key.charAt(0) !== '$') &&
             deepCompare(actual[key], expected, comparator, anyPropertyKey, true)) {
             return true;
@@ -95,13 +101,13 @@ function deepCompare(actual, expected, comparator, anyPropertyKey, matchAgainstA
         return dontMatchWholeObject ? false : deepCompare(actual, expected, comparator, anyPropertyKey, false);
       } else if (expectedType === 'object') {
         for (key in expected) {
-          let expectedVal = expected[key];
-          if (isFunction(expectedVal) || isUndefined(expectedVal)) {
+          var expectedVal = expected[key];
+          if (_.isFunction(expectedVal) || _.isUndefined(expectedVal)) {
             continue;
           }
 
-          let matchAnyProperty = key === anyPropertyKey;
-          let actualVal = matchAnyProperty ? actual : actual[key];
+          var matchAnyProperty = key === anyPropertyKey;
+          var actualVal = matchAnyProperty ? actual : actual[key];
           if (!deepCompare(actualVal, expectedVal, comparator, anyPropertyKey, matchAnyProperty, matchAnyProperty)) {
             return false;
           }
@@ -123,33 +129,5 @@ function getTypeForFilter(val) {
 }
 
 function hasCustomToString(obj) {
-  return isFunction(obj.toString) && obj.toString !== toString;
+  return _.isFunction(obj.toString) && obj.toString !== toString;
 }
-
-const isArrayLike = (x) => {
-  return [...x], true || false;
-};
-
-const isObject = (x) => {
-  return x != null && typeof x === 'object';
-}
-
-const isFunction = (x) => {
-  return typeof x === 'function';
-}
-
-const isUndefined = (x) => {
-  return typeof x === 'undefined';
-}
-
-const isFunction = (x) => {
-  return typeof x === 'function';
-}
-
-const isArray = Array.isArray || ((x) => x && typeof x.length === 'number');
-
-const lowercase = (x) => {
-  return x.toLowerCase();
-}
-
-module.exports = filter;
