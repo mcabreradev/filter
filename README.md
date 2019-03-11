@@ -8,7 +8,7 @@ Filter helper for complex searches
 ## Install
 
 ```
-$ npm install @mcabreradev/filter
+$ npm i @mcabreradev/filter
 ```
 
 ## Usage
