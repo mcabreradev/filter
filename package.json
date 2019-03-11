@@ -1,0 +1,28 @@
+{
+  "name": "@mcabreradev/filter",
+  "version": "1.0.0",
+  "description": "Filter helper for complex searches",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mcabreradev/filter.git"
+  },
+  "keywords": [
+    "filter",
+    "es6",
+    "node",
+    "javascript",
+    "array",
+    "object",
+    "search"
+  ],
+  "author": "Miguelangel Cabrera",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcabreradev/filter/issues"
+  },
+  "homepage": "https://github.com/mcabreradev/filter#readme"
+}
