@@ -151,3 +151,5 @@ const isArray = Array.isArray || ((x) => x && typeof x.length === 'number');
 const lowercase = (x) => {
   return x.toLowerCase();
 }
+
+module.exports = filter;
