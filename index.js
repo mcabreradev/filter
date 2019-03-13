@@ -36,12 +36,9 @@ module.exports = function filter(array, expression, comparator, anyPropertyKey) 
 };
 
 function createPredicateFn(expression, comparator, anyPropertyKey, matchAgainstAnyProp) {
-  var shouldMatchPrimitives = _.isObject(expression) && (anyPropertyKey in expression);
-  var predicateFn;
+  var shouldMatchPrimitives = _.isObject(expression) && (anyPropertyKey in expression), predicateFn;
 
-  if (comparator === true) {
-    comparator = equals;
-  } else if (!_.isFunction(comparator)) {
+  if (!_.isFunction(comparator)) {
     comparator = function (actual, expected) {
       if (_.isUndefined(actual)) {
         // No substring matching against `undefined`
