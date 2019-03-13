@@ -16,12 +16,15 @@ $ npm i @mcabreradev/filter
 ```js
 const filter = require("@mcabreradev/filter");
 
-const arr = [
-  1,
-  2,
-  3,
-  { name: 'Migue', social: { github: 'mcabreradev' } }
+const customers = [
+  {"name" : "Alfreds Futterkiste", "city" : "Berlin"},
+  {"name" : "Around the Horn", "city" : "London"},
+  {"name" : "B's Beverages", "city" : "London"},
+  {"name" : "Bolido Comidas preparadas", "city" : "Madrid"},
+  {"name" : "Bon app", "city" : "Marseille"},
+  {"name" : "Bottom-Dollar Marketse" ,"city" : "Tsawassen"},
+  {"name" : "Cactus Comidas para llevar", "city" : "Buenos Aires", continent: {name: "America"}}
 ];
 
-filter(arr, 'mcabreradev');
-//=> [{ name: 'Migue', social: { github: 'mcabreradev' } }]
+filter(customers, {'name' : 'O', 'city' : 'London'});
+//=> [ { name: 'Around the Horn', city: 'London' } ]
