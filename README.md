@@ -23,7 +23,7 @@ const customers = [
   {"name" : "Bolido Comidas preparadas", "city" : "Madrid"},
   {"name" : "Bon app", "city" : "Marseille"},
   {"name" : "Bottom-Dollar Marketse" ,"city" : "Tsawassen"},
-  {"name" : "Cactus Comidas para llevar", "city" : "Buenos Aires", continent: {name: "America"}}
+  {"name" : "Cactus Comidas para llevar", "city" : "Buenos Aires"}
 ];
 
 filter(customers, {'name' : 'O', 'city' : 'London'});
