@@ -36,7 +36,7 @@ describe('# Testing filter', function () {
     ]);
   });
 
-  it('should filter customers with a two single letters', function () {
+  it('should filter customers with two single letters', function () {
     var result = filter(customers, {'city' : 'B', 'city' : 'L'});
     expect(result).to.have.deep.members([
       { name: 'Alfreds Futterkiste', city: 'Berlin' },
