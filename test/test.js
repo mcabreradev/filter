@@ -2,9 +2,9 @@
 
 const expect = require('chai').expect;
 const filter = require('../index');
-const customers = require('../data.json');
+const customers = require('../src/data.json');
 
-describe('#filter', function () {
+describe('# Testing filter', function () {
 
   it('should filter single string', function () {
     var result = filter(customers, 'Berlin');
@@ -14,7 +14,7 @@ describe('#filter', function () {
   });
 
   it('should filter city', function () {
-    var result = filter(customers, {'city' : 'Marseille'});
+    var result = filter(customers, {'city' : 'Mars'});
     expect(result).to.have.deep.members([
       { name: 'Bon app', city: 'Marseille' }
     ]);
@@ -36,7 +36,7 @@ describe('#filter', function () {
     ]);
   });
 
-  it('should filter cities single character each one', function () {
+  it('should filter customers with a two single letters', function () {
     var result = filter(customers, {'city' : 'B', 'city' : 'L'});
     expect(result).to.have.deep.members([
       { name: 'Alfreds Futterkiste', city: 'Berlin' },
