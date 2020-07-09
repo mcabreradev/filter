@@ -1,3 +1,3 @@
-const filter = require('./src/filter');
+const filter = require('./dist/filter');
 
 module.exports = filter;

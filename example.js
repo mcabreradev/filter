@@ -1,4 +1,4 @@
-const filter = require("./filter")
+const filter = require("./dist/filter")
 const customers = require('./data.json')
 
 console.log(filter(customers, 'Berlin' ))
