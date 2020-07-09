@@ -4,8 +4,8 @@
   "description": "Filter helper for complex searchs",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec",
-    "jest": "jest"
+    "build": "babel lib -d dist",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -26,10 +26,18 @@
   },
   "homepage": "https://github.com/mcabreradev/filter#readme",
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^6.0.2"
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^26.1.0"
   },
   "engines": {
     "node": ">=12.16.3"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": [
+      "json",
+      "text"
+    ]
   }
 }
