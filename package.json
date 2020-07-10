@@ -1,12 +1,12 @@
 {
   "name": "@mcabreradev/filter",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Filter helper for complex searchs",
   "main": "index.js",
   "scripts": {
     "build": "babel src -d dist",
     "test": "jest",
-    "lint":""
+    "lint": ""
   },
   "repository": {
     "type": "git",
