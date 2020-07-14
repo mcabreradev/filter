@@ -1,5 +1,6 @@
 [![npm (scoped)](https://img.shields.io/npm/v/@mcabreradev/filter.svg)](https://www.npmjs.com/package/@mcabreradev/filter)
 [![npm bundle size (minified)](https://img.shields.io/bundlephobia/min/@mcabreradev/filter.svg)](https://www.npmjs.com/package/@mcabreradev/filter)
+[![Rate on Openbase](https://badges.openbase.io/js/rating/@mcabreradev/filter.svg)](https://openbase.io/js/@mcabreradev/filter?utm_source=embedded&utm_medium=badge&utm_campaign=rate-badge)
 
 Filter
 =========
