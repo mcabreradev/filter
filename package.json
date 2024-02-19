@@ -1,12 +1,15 @@
 {
   "name": "@mcabreradev/filter",
   "version": "2.0.2",
-  "description": "Filter helper for complex searchs",
-  "main": "index.js",
+  "description": "Filter helper for complex searchs, selects a subset of items from `array` and returns it as a new array.",
   "scripts": {
-    "build": "babel src -d dist",
+    "build": "tsc src/index.ts --declaration --outDir build",
     "test": "jest",
-    "lint": ""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "npx eslint .",
+    "prepare": "npm run build",
+    "prepublish": "npm run lint",
+    "version": "npm run format && git add -A src"
   },
   "repository": {
     "type": "git",
@@ -15,7 +18,10 @@
   "keywords": [
     "filter",
     "node",
-    "javascript",
+    "typescript",
+    "search",
+    "react",
+    "nextjs",
     "array",
     "object",
     "search"
@@ -27,13 +33,18 @@
   },
   "homepage": "https://github.com/mcabreradev/filter#readme",
   "devDependencies": {
-    "@babel/cli": "^7.10.4",
-    "@babel/core": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "jest": "^26.1.0"
+    "@babel/preset-typescript": "^7.23.3",
+    "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
   },
   "engines": {
-    "node": ">=12.16.3"
+    "node": ">=18"
   },
   "jest": {
     "collectCoverage": true,
@@ -41,5 +52,11 @@
       "json",
       "text"
     ]
-  }
+  },
+  "dependencies": {},
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build/**/*"
+  ]
 }
