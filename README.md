@@ -5,22 +5,18 @@
 Filter
 =========
 
-Filter the array to a subset of it based on provided criteria.
+Filters the array to a subset of it based on provided criteria. Selects a subset of items from `array` and returns it as a new array.
 
 ## Install
 
 ```
-$ npm i @mcabreradev/filter
-```
-
-```
-$ yarn add @mcabreradev/filter
+$ npm install @mcabreradev/filter
 ```
 
 ## Usage
 
-```js
-const filter = require("@mcabreradev/filter");
+```ts
+import filter from '@mcabreradev/filter';
 
 const customers = [
   { "name" : "Alfreds Futterkiste", "city" : "Berlin" },
@@ -33,29 +29,43 @@ const customers = [
 ];
 ```
 
-### Filter customers with a specific city
-```js
+### Filters customers with a specific city
+```ts
 filter(customers, 'Berlin' );
 
 // [ { name: 'Alfreds Futterkiste', city: 'Berlin' } ]
 ```
 
-### Filter customer with a specific city and name containing 'o' letter
-```js
+### Filters customers based on a predicate function
+```ts
+filter(customers, (customer) => customer.city === 'Berlin' );
+
+// [ { name: 'Alfreds Futterkiste', city: 'Berlin' } ]
+```
+
+### Filters customers based on object key value
+```ts
+filter(customers, { city: 'Berlin' } );
+
+// [ { name: 'Alfreds Futterkiste', city: 'Berlin' } ]
+```
+
+### Filters customer with a specific city and name containing 'o' letter
+```ts
 filter(customers, {'name' : 'O', 'city' : 'London'});
 
 // [ { name: 'Around the Horn', city: 'London' } ]
 ```
 
-### Filter customers with a half name of city
-```js
+### Filters customers based on a half name of city
+```ts
 filter(customers, {'city' : 'Mars'} );
 
 // [ { name: 'Bon app', city: 'Marseille' } ]
 ```
 
-### Filter customers with a single letter
-```js
+### Filters customers based on city with single character
+```ts
 filter(customers, {'city' : 's'} );
 
 // [
@@ -65,14 +75,14 @@ filter(customers, {'city' : 's'} );
 // ]
 ```
 
-### Filter customers with two single letters
-```js
-filter(customers, {'city' : 'B', 'city' : 'L'} );
+### Filters customers based on based on two cities
+```ts
+filter(customers, (customer) => customer.city === 'Berlin' || customer.city === 'London' );
 
 // [
-//   { name: 'Bon app', city: 'Marseille' },
-//   { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-//   { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' }
+//    { name: 'Alfreds Futterkiste', city: 'Berlin' },
+//    { name: 'Around the Horn', city: 'London' },
+//    { name: 'Bs Beverages', city: 'London' }
 // ]
 ```
 
