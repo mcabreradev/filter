@@ -1,6 +1,6 @@
 {
   "name": "@mcabreradev/filter",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "Filter helper for complex searchs, selects a subset of items from `array` and returns it as a new array.",
   "scripts": {
     "build": "tsc src/index.ts --declaration --outDir build",
@@ -9,7 +9,10 @@
     "lint": "npx eslint .",
     "prepare": "npm run build",
     "prepublish": "npm run lint",
-    "version": "npm run format && git add -A src"
+    "version": "npm run format && git add -A src",
+    "publish:major": "npm version major && npm publish",
+    "publish:minor": "npm version minor && npm publish",
+    "publish:patch": "npm version patch && npm publish"
   },
   "repository": {
     "type": "git",
