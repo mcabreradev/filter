@@ -38,7 +38,7 @@ filter(customers, 'Berlin' );
 
 ### Filters customers based on a predicate function
 ```ts
-filter(customers, (customer) => customer.city === 'Berlin' );
+filter(customers, ({city}) => city === 'Berlin' );
 
 // [ { name: 'Alfreds Futterkiste', city: 'Berlin' } ]
 ```
@@ -77,7 +77,7 @@ filter(customers, {'city' : 's'} );
 
 ### Filters customers based on based on two cities
 ```ts
-filter(customers, (customer) => customer.city === 'Berlin' || customer.city === 'London' );
+filter(customers, ({city}) => city === 'Berlin' || city === 'London' );
 
 // [
 //    { name: 'Alfreds Futterkiste', city: 'Berlin' },
