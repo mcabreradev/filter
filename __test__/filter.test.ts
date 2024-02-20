@@ -4,7 +4,7 @@ import data from './data.json'
 
 describe('filter', () => {
   it('filters an array based on a predicate function', () => {
-    const predicate = (item) => item.city === 'Berlin';
+    const predicate = ({city}) => city === 'Berlin';
 
     const output = filter(data, predicate);
     const input = [
@@ -50,7 +50,7 @@ describe('filter', () => {
   });
 
   it('filters an array based on two cities', () => {
-    const predicate = (item) => item.city === 'Berlin' || item.city === 'London';
+    const predicate = ({city}) => city === 'Berlin' || city === 'London';
 
     const output = filter(data, predicate);
     console.log(output);
@@ -65,7 +65,7 @@ describe('filter', () => {
   });
 
   it('filters an array based on two cities if exists', () => {
-    const predicate = (item) => item.city === 'Berlin' && item.city === 'Caracas';
+    const predicate = ({city}) => city === 'Berlin' && city === 'Caracas';
 
     const output = filter(data, predicate);
     const input = [];
