@@ -39,6 +39,24 @@ describe('filter', () => {
     expect(output).toEqual(input);
   });
 
+  it('filters an array based on object key value', () => {
+    const obj = { city: '%erlin' };
+
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
+  it('filters an array based on object key value', () => {
+    const obj = { city: '_erlin' };
+
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
   it('filters an array based on a predicate function', () => {
     const predicate = ({ city }) => city === 'Berlin';
 

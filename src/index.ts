@@ -51,15 +51,6 @@ const hasCustomToString = (obj: unknown): boolean => {
   );
 };
 
-function escapeRegExp(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
-
-function wildcardToRegex(str) {
-  const escapedStr = escapeRegExp(str);
-  return escapedStr.replace(/%/g, '.*').replace(/_/g, '.');
-}
-
 const filter = (array: unknown[], expression) => {
   if (!isArrayLike(array)) {
     throw new Error(`Expected array but received: ${array}`);
@@ -84,8 +75,18 @@ const createPredicateFn = (
   const shouldMatchPrimitives: boolean = isObject(expression) && anyPropertyKey in expression;
 
   if (isString(expression)) {
-    if (expression.includes('%') || expression.includes('_')) {
-      const regex = new RegExp('^' + wildcardToRegex(expression) + '$', 'i');
+    if (expression.includes('%')) {
+      const regex = new RegExp('^' + expression.replace(/%/g, '.*') + '$', 'i');
+      return function (item) {
+        for (const key in item as unknown as object) {
+          if (regex.test(item[key])) {
+            return true;
+          }
+        }
+        return false;
+      };
+    } else if (expression.includes('_')) {
+      const regex = new RegExp('^' + expression.replace(/_/g, '.') + '$', 'i');
       return function (item) {
         for (const key in item as unknown as object) {
           if (regex.test(item[key])) {
@@ -105,6 +106,33 @@ const createPredicateFn = (
       };
     }
   }
+
+  if (isObject(expression)) {
+    return function (item) {
+      for (const key in expression as unknown as object) {
+        const expr = expression[key];
+        if (isString(expr) && expr.includes('%')) {
+          const regex = new RegExp('^' + expr.replace(/%/g, '.*') + '$', 'i');
+          if (!regex.test(item[key])) {
+            return false;
+          }
+        } else if (isString(expr) && expr.includes('_')) {
+          const regex = new RegExp('^' + expr.replace(/_/g, '.') + '$', 'i');
+          if (!regex.test(item[key])) {
+            return false;
+          }
+        } else if (item[key] !== expr) {
+          return false;
+        }
+      }
+      return true;
+    };
+  }
+
+  if (isFunction(expression)) {
+    return expression;
+  }
+
   if (isFunction(comparator)) {
     comparator = (actual: unknown, expected: unknown): boolean => {
       if (isUndefined(actual)) return false;
