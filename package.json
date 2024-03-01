@@ -13,7 +13,10 @@
     "publish:major": "npm version major && npm publish",
     "publish:minor": "npm version minor && npm publish",
     "publish:patch": "npm version patch && npm publish",
-    "release": "git push origin --tags"
+    "release": "git push origin --tags",
+    "release:major": "npm run publish:major && npm run release",
+    "release:minor": "npm run publish:minor && npm run release",
+    "release:patch": "npm run publish:patch && npm run release"
   },
   "repository": {
     "type": "git",
