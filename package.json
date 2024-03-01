@@ -1,6 +1,6 @@
 {
   "name": "@mcabreradev/filter",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "Filter helper for complex searchs, selects a subset of items from `array` and returns it as a new array.",
   "scripts": {
     "build": "tsc src/index.ts --declaration --outDir build",
@@ -12,7 +12,8 @@
     "version": "npm run format && git add -A src",
     "publish:major": "npm version major && npm publish",
     "publish:minor": "npm version minor && npm publish",
-    "publish:patch": "npm version patch && npm publish"
+    "publish:patch": "npm version patch && npm publish",
+    "release": "git push origin --tags"
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,20 @@
     "nextjs",
     "array",
     "object",
-    "search"
+    "nodejs",
+    "javascript",
+    "front-end",
+    "es6",
+    "frontend",
+    "backend",
+    "arrow-functions",
+    "back-end",
+    "arrays",
+    "toolset",
+    "node-js",
+    "next-js",
+    "next",
+    "array-methods"
   ],
   "author": "Miguelangel Cabrera",
   "license": "MIT",

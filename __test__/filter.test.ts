@@ -1,15 +1,58 @@
 import { filter } from '../src/index';
 
-import data from './data.json'
+import data from './data.json';
 
-describe('filter', () => {
-  it('filters an array based on a predicate function', () => {
-    const predicate = ({city}) => city === 'Berlin';
+describe('filter array', () => {
+  it('filters an array based on single a word', () => {
+    const obj = 'Berlin';
 
-    const output = filter(data, predicate);
-    const input = [
-      { name: 'Alfreds Futterkiste', city: 'Berlin' }
-    ];
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
+  it('filters an array with wildcard % based on single name', () => {
+    const obj = '%erlin';
+
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
+  it('filters an array with wildcard % based on single name', () => {
+    const obj = '%erli%';
+
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
+  it('filters an array with wildcard _ based on single name', () => {
+    const obj = '_erlin';
+
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
+  it('filters an array with wildcard _ based on single name', () => {
+    const obj = '_e_li_';
+
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
+  it('filters an array with wildcard _ based on single name', () => {
+    const obj = 'B__lin';
+
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
 
     expect(output).toEqual(input);
   });
@@ -18,54 +61,80 @@ describe('filter', () => {
     const obj = { city: 'Berlin' };
 
     const output = filter(data, obj);
-    const input = [
-      { name: 'Alfreds Futterkiste', city: 'Berlin' }
-    ];
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
 
     expect(output).toEqual(input);
   });
 
-  it('filters an array based on city with single character', () => {
-    const obj = { city: 's' };
+  it('filters an array with wildcard % based on object key value', () => {
+    const obj = { city: '%erlin' };
 
     const output = filter(data, obj);
-    const input = [
-      { name: 'Bon app', city: 'Marseille' },
-      { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-      { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' }
-    ];
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
 
     expect(output).toEqual(input);
   });
 
-  it('filters an array based on city and name with single character', () => {
-    const obj = {'name' : 'O', 'city' : 'London'};
+  it('filters an array with wildcard % based on object key value', () => {
+    const obj = { city: '%erli%' };
 
     const output = filter(data, obj);
-    const input = [
-      { name: 'Around the Horn', city: 'London' }
-    ];
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
+  it('filters an array with wildcard based on object key value', () => {
+    const obj = { city: '_erlin' };
+
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
+  it('filters an array with wildcard based on object key value', () => {
+    const obj = { city: '_e_li_' };
+
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
+  it('filters an array with wildcard based on object key value', () => {
+    const obj = { city: 'B__lin' };
+
+    const output = filter(data, obj);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
+
+    expect(output).toEqual(input);
+  });
+
+  it('filters an array based on a predicate function', () => {
+    const predicate = ({ city }) => city === 'Berlin';
+
+    const output = filter(data, predicate);
+    const input = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
 
     expect(output).toEqual(input);
   });
 
   it('filters an array based on two cities', () => {
-    const predicate = ({city}) => city === 'Berlin' || city === 'London';
+    const predicate = ({ city }) => city === 'Berlin' || city === 'London';
 
     const output = filter(data, predicate);
-    console.log(output);
-
     const input = [
       { name: 'Alfreds Futterkiste', city: 'Berlin' },
       { name: 'Around the Horn', city: 'London' },
-      { name: 'Bs Beverages', city: 'London' }
+      { name: 'Bs Beverages', city: 'London' },
     ];
 
     expect(output).toEqual(input);
   });
 
   it('filters an array based on two cities if exists', () => {
-    const predicate = ({city}) => city === 'Berlin' && city === 'Caracas';
+    const predicate = ({ city }) => city === 'Berlin' && city === 'Caracas';
 
     const output = filter(data, predicate);
     const input = [];
@@ -73,14 +142,11 @@ describe('filter', () => {
     expect(output).toEqual(input);
   });
 
-  it('filters an array based on city and name with single character', () => {
-    const obj = { city: 'T', name: 'B'};
+  it('filters an array based on if predicate dont match', () => {
+    const obj = { name: 'Albert Einstain', city: 'Berlin' };
 
     const output = filter(data, obj);
-
-    const input = [
-      { name: "Bottom-Dollar Marketse", city: "Tsawassen",}
-    ];
+    const input = [];
 
     expect(output).toEqual(input);
   });

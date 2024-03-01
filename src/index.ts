@@ -1,9 +1,7 @@
 /**
- * Filter, Selects a subset of items from `array` and returns it as a new array.
- * @param array
- * @param expression
- * @param comparator
- * @param anyPropertyKey
+ * Filter, selects a subset of items from `array` and returns it as a new array.
+ * @param array The source array.
+ * @param expression The predicate to be used for selecting items from `array`.
  *
  */
 
@@ -18,6 +16,7 @@ const ANY_PROPERTY_KEY = '$';
 
 const isObject = (value: unknown): boolean => typeof value === OBJECT && value !== null;
 const isFunction = (value: unknown): boolean => typeof value === FUNCTION;
+const isString = (value: unknown): boolean => typeof value === STRING;
 const isUndefined = (value: unknown): boolean => typeof value === UNDEFINED;
 const lowercase = (string: string): string => string.toLowerCase();
 const equals = (a: unknown, b: unknown): boolean => a === b;
@@ -52,12 +51,7 @@ const hasCustomToString = (obj: unknown): boolean => {
   );
 };
 
-const filter = (
-  array: unknown[],
-  expression,
-  comparator?: unknown,
-  anyPropertyKey: string = ANY_PROPERTY_KEY,
-) => {
+const filter = (array: unknown[], expression) => {
   if (!isArrayLike(array)) {
     throw new Error(`Expected array but received: ${array}`);
   }
@@ -67,7 +61,7 @@ const filter = (
   const predicateFn =
     expressionType === FUNCTION
       ? expression
-      : createPredicateFn(expression, comparator, anyPropertyKey, matchAgainstAnyProp);
+      : createPredicateFn(expression, undefined, '', matchAgainstAnyProp);
 
   return array.filter(predicateFn);
 };
@@ -79,6 +73,65 @@ const createPredicateFn = (
   matchAgainstAnyProp: boolean,
 ): ((item: unknown) => boolean) => {
   const shouldMatchPrimitives: boolean = isObject(expression) && anyPropertyKey in expression;
+
+  if (isString(expression)) {
+    if (expression.includes('%')) {
+      const regex = new RegExp('^' + expression.replace(/%/g, '.*') + '$', 'i');
+      return function (item) {
+        for (const key in item as unknown as object) {
+          if (regex.test(item[key])) {
+            return true;
+          }
+        }
+        return false;
+      };
+    } else if (expression.includes('_')) {
+      const regex = new RegExp('^' + expression.replace(/_/g, '.') + '$', 'i');
+      return function (item) {
+        for (const key in item as unknown as object) {
+          if (regex.test(item[key])) {
+            return true;
+          }
+        }
+        return false;
+      };
+    } else {
+      return function (item) {
+        for (const key in item as unknown as object) {
+          if (item[key] === expression) {
+            return true;
+          }
+        }
+        return false;
+      };
+    }
+  }
+
+  if (isObject(expression)) {
+    return function (item) {
+      for (const key in expression as unknown as object) {
+        const expr = expression[key];
+        if (isString(expr) && expr.includes('%')) {
+          const regex = new RegExp('^' + expr.replace(/%/g, '.*') + '$', 'i');
+          if (!regex.test(item[key])) {
+            return false;
+          }
+        } else if (isString(expr) && expr.includes('_')) {
+          const regex = new RegExp('^' + expr.replace(/_/g, '.') + '$', 'i');
+          if (!regex.test(item[key])) {
+            return false;
+          }
+        } else if (item[key] !== expr) {
+          return false;
+        }
+      }
+      return true;
+    };
+  }
+
+  if (isFunction(expression)) {
+    return expression;
+  }
 
   if (isFunction(comparator)) {
     comparator = (actual: unknown, expected: unknown): boolean => {
@@ -92,7 +145,7 @@ const createPredicateFn = (
     };
   }
 
-  return (item: unknown): boolean => {
+  return (item: unknown) => {
     if (shouldMatchPrimitives && !isObject(item)) {
       return deepCompare(item, expression[anyPropertyKey], comparator, anyPropertyKey, false);
     }
@@ -104,8 +157,8 @@ function deepCompare(
   actual: unknown,
   expected: unknown,
   comparator: unknown,
-  anyPropertyKey: string,
-  matchAgainstAnyProp: boolean,
+  anyPropertyKey?: string,
+  matchAgainstAnyProp?: boolean,
   dontMatchWholeObject?: boolean,
 ): boolean {
   const actualType: string = getTypeForFilter(actual);
