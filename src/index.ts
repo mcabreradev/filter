@@ -1,71 +1,63 @@
 /**
- * Filter, selects a subset of items from `array` and returns it as a new array.
- * @param array The source array.
- * @param expression The predicate to be used for selecting items from `array`.
+ * Filters an array based on the provided expression.
  *
+ * @template T - The type of elements in the array.
+ * @param {T[]} array - The array to filter.
+ * @param {unknown} expression - The expression used for filtering.
+ * @returns {T[]} - The filtered array.
+ * @throws {Error} - If the input is not an array.
  */
 
-const BOOLEAN = 'boolean';
-const NULL = 'null';
-const NUMBER = 'number';
-const STRING = 'string';
-const OBJECT = 'object';
-const FUNCTION = 'function';
-const UNDEFINED = 'undefined';
+// Constants
+const TYPES = {
+  BOOLEAN: 'boolean',
+  NULL: 'null',
+  NUMBER: 'number',
+  STRING: 'string',
+  OBJECT: 'object',
+  FUNCTION: 'function',
+  UNDEFINED: 'undefined',
+};
+
 const ANY_PROPERTY_KEY = '$';
 
-const isObject = (value: unknown): boolean => typeof value === OBJECT && value !== null;
-const isFunction = (value: unknown): boolean => typeof value === FUNCTION;
-const isString = (value: unknown): boolean => typeof value === STRING;
-const isUndefined = (value: unknown): boolean => typeof value === UNDEFINED;
+// Type Checking Functions
+const isType =
+  (type: string) =>
+  (value: unknown): boolean =>
+    typeof value === type;
+const isObject = isType(TYPES.OBJECT);
+const isFunction = isType(TYPES.FUNCTION);
+const isString = isType(TYPES.STRING);
+const isUndefined = isType(TYPES.UNDEFINED);
+
+// Other Helper Functions
 const lowercase = (string: string): string => string.toLowerCase();
 const equals = (a: unknown, b: unknown): boolean => a === b;
-const isWindow = (obj: unknown): boolean =>
-  obj != null && (obj as Window) === (obj as Window).window;
+const getTypeForFilter = (value: unknown): string => (value === null ? TYPES.NULL : typeof value);
+const hasCustomToString = (obj: unknown): boolean =>
+  isFunction((obj as { toString: () => string }).toString) &&
+  (obj as { toString: () => string }).toString !== Object.prototype.toString;
 
-const isArrayLike = (obj: unknown): boolean => {
-  if (obj == null || isWindow(obj)) {
-    return false;
-  }
-
-  if ((obj as Node).nodeType === 1 && Array.isArray(obj) && obj.length) {
-    return true;
-  }
-
-  return (
-    Array.isArray(obj) ||
-    (!isFunction(obj) &&
-      (length === 0 ||
-        (typeof length === NUMBER && length > 0 && (length - 1).toString() in (obj as object))))
-  );
-};
-
-const getTypeForFilter = (value: unknown): string => {
-  return value === null ? NULL : typeof value;
-};
-
-const hasCustomToString = (obj: unknown): boolean => {
-  return (
-    isFunction((obj as { toString: () => string }).toString) &&
-    (obj as { toString: () => string }).toString !== Object.prototype.toString
-  );
-};
-
-const filter = (array: unknown[], expression) => {
-  if (!isArrayLike(array)) {
+// Main Filter Function
+const filter = <T>(array: T[], expression): T[] => {
+  if (!Array.isArray(array)) {
     throw new Error(`Expected array but received: ${array}`);
   }
 
   const expressionType: string = getTypeForFilter(expression);
-  const matchAgainstAnyProp: boolean = [BOOLEAN, NULL, NUMBER, STRING].includes(expressionType);
-  const predicateFn =
-    expressionType === FUNCTION
-      ? expression
-      : createPredicateFn(expression, undefined, '', matchAgainstAnyProp);
+  const matchAgainstAnyProp: boolean = [
+    TYPES.BOOLEAN,
+    TYPES.NULL,
+    TYPES.NUMBER,
+    TYPES.STRING,
+  ].includes(expressionType);
+  const predicateFn = createPredicateFn(expression, equals, ANY_PROPERTY_KEY, matchAgainstAnyProp);
 
   return array.filter(predicateFn);
 };
 
+// Predicate Function Creation
 const createPredicateFn = (
   expression,
   comparator: unknown = equals,
@@ -73,6 +65,7 @@ const createPredicateFn = (
   matchAgainstAnyProp: boolean,
 ): ((item: unknown) => boolean) => {
   const shouldMatchPrimitives: boolean = isObject(expression) && anyPropertyKey in expression;
+  let shouldNegate = false;
 
   if (isString(expression)) {
     if (expression.includes('%')) {
@@ -95,6 +88,9 @@ const createPredicateFn = (
         }
         return false;
       };
+    } else if (expression.charAt(0) === '!') {
+      expression = expression.slice(1);
+      shouldNegate = true;
     } else {
       return function (item) {
         for (const key in item as unknown as object) {
@@ -110,18 +106,25 @@ const createPredicateFn = (
   if (isObject(expression)) {
     return function (item) {
       for (const key in expression as unknown as object) {
-        const expr = expression[key];
+        let expr = expression[key];
+        let shouldNegate = false;
+
+        if (isString(expr) && expr.charAt(0) === '!') {
+          expr = expr.slice(1);
+          shouldNegate = true;
+        }
+
         if (isString(expr) && expr.includes('%')) {
           const regex = new RegExp('^' + expr.replace(/%/g, '.*') + '$', 'i');
-          if (!regex.test(item[key])) {
+          if (shouldNegate ? regex.test(item[key]) : !regex.test(item[key])) {
             return false;
           }
         } else if (isString(expr) && expr.includes('_')) {
           const regex = new RegExp('^' + expr.replace(/_/g, '.') + '$', 'i');
-          if (!regex.test(item[key])) {
+          if (shouldNegate ? regex.test(item[key]) : !regex.test(item[key])) {
             return false;
           }
-        } else if (item[key] !== expr) {
+        } else if (shouldNegate ? item[key] === expr : item[key] !== expr) {
           return false;
         }
       }
@@ -148,11 +151,14 @@ const createPredicateFn = (
   return (item: unknown) => {
     if (shouldMatchPrimitives && !isObject(item)) {
       return deepCompare(item, expression[anyPropertyKey], comparator, anyPropertyKey, false);
+    } else if (shouldNegate) {
+      return !deepCompare(item, expression, comparator, anyPropertyKey, matchAgainstAnyProp);
     }
     return deepCompare(item, expression, comparator, anyPropertyKey, matchAgainstAnyProp);
   };
 };
 
+// Deep Comparison
 function deepCompare(
   actual: unknown,
   expected: unknown,
@@ -164,7 +170,7 @@ function deepCompare(
   const actualType: string = getTypeForFilter(actual);
   const expectedType: string = getTypeForFilter(expected);
 
-  if (expectedType === STRING && (expected as string).charAt(0) === '!') {
+  if (expectedType === TYPES.STRING && (expected as string).charAt(0) === '!') {
     return !deepCompare(
       actual,
       (expected as string).substring(1),
@@ -180,7 +186,7 @@ function deepCompare(
     );
   }
 
-  if (actualType === OBJECT) {
+  if (actualType === TYPES.OBJECT) {
     return compareObjects(
       actual,
       expected,
@@ -192,13 +198,14 @@ function deepCompare(
     );
   }
 
-  if (actualType === FUNCTION) {
+  if (actualType === TYPES.FUNCTION) {
     return false;
   }
 
   return (comparator as (a: unknown, b: unknown) => boolean)(actual, expected);
 }
 
+// Object Comparison
 function compareObjects(
   actual: unknown,
   expected: unknown,
@@ -218,13 +225,14 @@ function compareObjects(
     );
   }
 
-  if (expectedType === OBJECT) {
+  if (expectedType === TYPES.OBJECT) {
     return compareAllProperties(actual, expected, comparator, anyPropertyKey);
   }
 
   return comparator(actual, expected);
 }
 
+// Property Comparison
 function compareAgainstAnyProperty(
   actual,
   expected,
@@ -272,14 +280,5 @@ function compareAllProperties(actual, expected, comparator, anyPropertyKey: stri
 
   return true;
 }
-
-export {
-  compareAgainstAnyProperty,
-  compareAllProperties,
-  compareObjects,
-  createPredicateFn,
-  deepCompare,
-  filter,
-};
 
 export default filter;
