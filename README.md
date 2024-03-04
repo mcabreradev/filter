@@ -10,13 +10,13 @@
     <img alt="" src="https://img.shields.io/npm/l/classnames.svg?style=for-the-badge&labelColor=579805">
   </a>
 
-  </p>
+</p>
 
 ## About The Project
 
 This project provides a comprehensive implementation of a `filter` function in TypeScript. The `filter` function is a versatile tool that can be used to select a subset of items from an array based on a provided predicate function or expression.
 
-The `filter` function in this project is designed to handle a wide variety of use cases. It can `filter` arrays of primitive values, objects, and even nested objects. The function also supports complex `filter`ing expressions, including wildcard characters and regular expressions.
+The `filter` function in this project is designed to handle a wide variety of use cases. It can `filter` arrays of primitive values, objects, and even nested objects. The function also supports complex `filtering` expressions, including wildcard characters and regular expressions.
 
 The project also includes a number of utility functions that are used internally by the `filter` function. These include functions for deep comparison of objects, checking the type of a value, and more. These utility functions are also exported by the module, so they can be used independently if needed.
 
@@ -41,9 +41,12 @@ import filter from '@mcabreradev/filter';
 ## Features
 
 The `filter` function in the provided TypeScript code is a versatile function that allows you to select a subset of items from an array based on a variety of conditions. Here are some of its key features:
+
 </br>
 
-1.  **Array Filtering**: The primary purpose of the `filter` function is to filter an array. It takes an array and a predicate function as arguments, and returns a new array that includes only the items for which the predicate function returns `true`.
+### **Array Filtering**:
+
+The primary purpose of the `filter` function is to filter an array. It takes an array and a predicate function as arguments, and returns a new array that includes only the items for which the predicate function returns `true`.
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -56,7 +59,9 @@ console.log(evenNumbers); // Output: [2, 4]
 
 </br>
 
-2.  **Case-Insensitive Search**: The `filter` function supports case-insensitive search. When you provide a string as the predicate, it will match any property of the objects in the array that contains the string, regardless of case.
+### **Case-Insensitive Search**:
+
+The `filter` function supports case-insensitive search. When you provide a string as the predicate, it will match any property of the objects in the array that contains the string, regardless of case.
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -69,7 +74,9 @@ console.log(result); // Output: ['Apple', 'Banana']
 
 </br>
 
-3.  **Wildcard Matching**: The `filter` function supports wildcard matching with the '%' and '_' characters. The '%' character matches any sequence of characters, and the '_' character matches any single character. These wildcards also work in a case-insensitive manner.
+### **Wildcard Matching**:
+
+The `filter` function supports wildcard matching with the '%' and '_' characters. The '%' character matches any sequence of characters, and the '_' character matches any single character. These wildcards also work in a case-insensitive manner.
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -82,7 +89,9 @@ console.log(result); // Output: ['Apple']
 
 </br>
 
-4.  **Multiple Conditions**: The `filter` function allows you to filter an array based on multiple conditions. You can specify these conditions as an object, where each key-value pair represents a condition that the items in the array must meet to be included in the result.
+### **Multiple Conditions**:
+
+The `filter` function allows you to filter an array based on multiple conditions. You can specify these conditions as an object, where each key-value pair represents a condition that the items in the array must meet to be included in the result.
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -99,7 +108,9 @@ console.log(result); // Output: [{ name: 'Alice', age: 20 }]
 
 </br>
 
-5.  **Custom Predicate Functions**: The `filter` function allows you to provide a custom predicate function to determine which items should be included in the result. This gives you maximum flexibility to define your own conditions for filtering the array.
+### **Custom Predicate Functions**:
+
+The `filter` function allows you to provide a custom predicate function to determine which items should be included in the result. This gives you maximum flexibility to define your own conditions for filtering the array.
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -112,7 +123,9 @@ console.log(result); // Output: [4, 5]
 
 </br>
 
-6.  **Deep Comparison**: The `filter` function supports deep comparison of objects. This means that it can compare the properties of nested objects, not just the top-level properties.
+### **Deep Comparison**:
+
+The `filter` function supports deep comparison of objects. This means that it can compare the properties of nested objects, not just the top-level properties.
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -129,7 +142,9 @@ console.log(result); // Output: [{ name: 'Alice', age: 20, address: { city: 'New
 
 </br>
 
-7.  **Negation**: The `filter` function supports negation. If the predicate is a string that starts with '!', the function will include an item in the result only if it does not match the rest of the string.
+### **Negation**:
+
+The `filter` function supports negation. If the predicate is a string that starts with '!', the function will include an item in the result only if it does not match the rest of the string.
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -142,20 +157,9 @@ console.log(result); // Output: ['Banana', 'Cherry']
 
 </br>
 
-8.  **Array-Like Objects**: The `filter` function can filter not only arrays, but also array-like objects. An array-like object is an object that has a `length` property and whose property keys can be accessed using numeric indices.
+### **Nested Objects**:
 
-```ts
-import filter from '@mcabreradev/filter';
-
-const arrayLike = { 0: 'Apple', 1: 'Banana', 2: 'Cherry', length: 3 };
-const result = filter(arrayLike, 'a');
-
-console.log(result); // Output: ['Apple', 'Banana']
-```
-
-</br>
-
-9.  **Nested Objects**: The `filter` function can filter arrays with a nested object that has 2 node levels:
+The `filter` function can filter arrays with a nested object that has 2 node levels:
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -175,6 +179,8 @@ console.log(result);
 // { name: 'Bob', age: 25, address: { city: 'Los Angeles', country: 'USA' } }
 //]
 ```
+
+<br/>
 
 And here's an example of `filter` function with a nested object that has 3 node levels:
 
@@ -216,20 +222,23 @@ const result = filter(users, { address: { coordinates: { lat: 40.7128 } } });
 console.log(result);
 
 // Output:
-// [
-//	 {
-//		name: 'Alice',
-// 		age: 20,
-// 		address: {
-// 			city: 'New York',
-// 			country: 'USA',
-// 			coordinates: { lat: 40.7128, long: 74.0060 }
-// 		}
-// 	}
-// ]
+// [{
+//   name: 'Alice',
+//   age: 20,
+//   address: {
+//       city: 'New York',
+//       country: 'USA',
+//       coordinates: {
+//           lat: 40.7128,
+//           long: 74.0060
+//       }
+//   }
+// }]
 ```
 
-## Examples of Usage
+</br>
+
+## Advanced Examples of Use
 
 The `filter` function can be used in a wide variety of scenarios. Here are some examples of how it can be used:
 
@@ -254,11 +263,9 @@ filter(customers, 'Berlin');
 // [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
 ```
 
-## Filters customers with a specific city with wildcard `%`
+### Filters customers with a specific city with wildcard `%`
 
-#### The `%` wildcard represents any number of characters, even zero characters.
-
-<br/>
+The `%` wildcard represents any number of characters, even zero characters.
 
 return all customers that contains the pattern `'erlin'`:
 
@@ -329,9 +336,9 @@ filter(customers, '%erli%');
 
 ---
 
-## Filters customers with a specific city with wildcard \_
+### Filters customers with a specific city with wildcard \_
 
-#### The `_` wildcard represents a single character. It can be any character or number, but each `_` represents one, and only one, character.
+The `_` wildcard represents a single character. It can be any character or number, but each `_` represents one, and only one, character.
 
 return all customers with a City starting with any character, followed by `"erlin"`:
 
@@ -404,7 +411,7 @@ filter(customers, 'B__lin');
 
 <br/>
 
-## Filters customers based on objects
+### Filters customers based on objects
 
 return all customers with a City named `"Berlin"`:
 
@@ -429,7 +436,7 @@ filter(customers, { city: 'Berlin' });
 
 <br/>
 
-## Filters customers based on object key value with wilcards `%`
+### Filters customers based on object key value with wilcards `%`
 
 return all customers with a City witch contains `"erlin"` at the end of the string:
 
@@ -546,7 +553,7 @@ filter(customers, { city: '_e_li_' });
 
 <br/>
 
-## Filters customers based on a predicate function
+### Filters customers based on a predicate function
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -569,7 +576,7 @@ filter(customers, ({ city }) => city === 'Berlin');
 
 <br/>
 
-## Filters customers based on based on two cities
+### Filters customers based on based on two cities
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -596,7 +603,7 @@ filter(customers, ({ city }) => city === 'Berlin' || city === 'London');
 
 <br/>
 
-## Filters customers based on based on two cities if exists
+### Filters customers based on based on two cities if exists
 
 ```ts
 import filter from '@mcabreradev/filter';

@@ -93,12 +93,7 @@ const createPredicateFn = (
       shouldNegate = true;
     } else {
       return function (item) {
-        for (const key in item as unknown as object) {
-          if (item[key] === expression) {
-            return true;
-          }
-        }
-        return false;
+        return Object.values(item).some((value) => value === expression);
       };
     }
   }
