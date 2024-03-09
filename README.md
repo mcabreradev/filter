@@ -140,7 +140,7 @@ console.log(result); // Output: ['Apple', 'Banana']
 
 ### Wildcard Matching:
 
-The `filter` function supports wildcard matching with the '%' and '_' characters. The '%' character matches any sequence of characters, and the '_' character matches any single character. These wildcards also work in a case-insensitive manner.
+The `filter` function supports wildcard matching with the `%` and `_` characters. The `%` character matches any sequence of characters, and the `_` character matches any single character. These wildcards also work in a case-insensitive manner.
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -208,7 +208,7 @@ console.log(result); // Output: [{ name: 'Alice', age: 20, address: { city: 'New
 
 ### Negation:
 
-The `filter` function supports negation. If the predicate is a string that starts with '!', the function will include an item in the result only if it does not match the rest of the string.
+The `filter` function supports negation. If the predicate is a string that starts with `!`, the function will include an item in the result only if it does not match the rest of the string.
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -306,7 +306,7 @@ console.log(result);
 
 The `filter` function can be used in a wide variety of scenarios. Here are some examples of how it can be used:
 
-Filters customers with a specific city
+### Filters customers with a specific city
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -354,7 +354,7 @@ filter(customers, '%erlin');
 
 <br/>
 
-return all customers that contains the pattern `'Ber'`:
+return all customers that contains the pattern `"Ber"`:
 
 ```ts
 import filter from '@mcabreradev/filter';
@@ -377,7 +377,7 @@ filter(customers, 'Ber%');
 
 <br/>
 
-return all customers that contains the pattern 'erli':
+return all customers that contains the pattern `"erli"`:
 
 ```ts
 import filter from '@mcabreradev/filter';
