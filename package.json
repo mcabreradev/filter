@@ -1,7 +1,7 @@
 {
   "name": "@mcabreradev/filter",
   "version": "3.1.3",
-  "description": "Filter helper for complex searchs, selects a subset of items from `array` and returns it as a new array.",
+  "description": "Filters an array based on the provided expression, a helper for complex array filtering",
   "scripts": {
     "build": "tsc src/index.ts --declaration --outDir build",
     "test": "jest",
