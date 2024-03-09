@@ -53,6 +53,7 @@
   },
   "homepage": "https://github.com/mcabreradev/filter#readme",
   "devDependencies": {
+    "@babel/preset-env": "^7.24.0",
     "@babel/preset-typescript": "^7.23.3",
     "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
