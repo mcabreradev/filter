@@ -14,7 +14,6 @@
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 ## Table of Contents
 
 - [Motivation](#motivation)
@@ -31,6 +30,7 @@
   - [Negation:](#negation)
   - [Nested Objects:](#nested-objects)
 - [Advanced Examples of Use](#advanced-examples-of-use)
+  - [Filters customers with a specific city](#filters-customers-with-a-specific-city)
   - [Filters customers with a specific city with wildcard `%`](#filters-customers-with-a-specific-city-with-wildcard-%25)
   - [Filters customers with a specific city with wildcard \_](#filters-customers-with-a-specific-city-with-wildcard-%5C_)
   - [Filters customers based on objects](#filters-customers-based-on-objects)
@@ -41,7 +41,6 @@
 - [Tests](#tests)
 - [Philosophy](#philosophy)
 - [About the Author](#about-the-author)
-- [Contributing](#contributing)
 - [Copyright](#copyright)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
