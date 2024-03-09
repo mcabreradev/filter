@@ -1,0 +1,37 @@
+name: Code Check
+on:
+  push:
+    branches:
+      - dev
+      - stage
+      - main
+      - prod
+  pull_request: {}
+
+concurrency:
+  group: ${{ github.job }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: ⬣ Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 20
+
+      - name: 📥 Download deps
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: 📦 Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🃏 Run test
+        run: npm run test
