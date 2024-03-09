@@ -1,6 +1,6 @@
 # Filter
 
-> Filters the array to a subset of it based on provided criteria. Selects a subset of items from `array` and returns it as a new `array`.
+> Filters the array to a subset of it based on provided criteria.
 
 <p>
   <a aria-label="NPM version" href="https://www.npmjs.com/package/classnames">
@@ -12,31 +12,95 @@
 
 </p>
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+## Table of Contents
+
+- [Motivation](#motivation)
+- [About The Project](#about-the-project)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+  - [Array Filtering:](#array-filtering)
+  - [Case-Insensitive Search:](#case-insensitive-search)
+  - [Wildcard Matching:](#wildcard-matching)
+  - [Multiple Conditions:](#multiple-conditions)
+  - [Custom Predicate Functions:](#custom-predicate-functions)
+  - [Deep Comparison:](#deep-comparison)
+  - [Negation:](#negation)
+  - [Nested Objects:](#nested-objects)
+- [Advanced Examples of Use](#advanced-examples-of-use)
+  - [Filters customers with a specific city with wildcard `%`](#filters-customers-with-a-specific-city-with-wildcard-%25)
+  - [Filters customers with a specific city with wildcard \_](#filters-customers-with-a-specific-city-with-wildcard-%5C_)
+  - [Filters customers based on objects](#filters-customers-based-on-objects)
+  - [Filters customers based on object key value with wilcards `%`](#filters-customers-based-on-object-key-value-with-wilcards-%25)
+  - [Filters customers based on a predicate function](#filters-customers-based-on-a-predicate-function)
+  - [Filters customers based on based on two cities](#filters-customers-based-on-based-on-two-cities)
+  - [Filters customers based on based on two cities if exists](#filters-customers-based-on-based-on-two-cities-if-exists)
+- [Tests](#tests)
+- [Philosophy](#philosophy)
+- [About the Author](#about-the-author)
+- [Contributing](#contributing)
+- [Copyright](#copyright)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Motivation
+
+The motivation behind this project is to provide a robust, versatile, and comprehensive filter function that can handle a wide array of use cases. Filtering is a fundamental operation in programming, especially in data manipulation and analysis. However, the built-in filter function in JavaScript and TypeScript can sometimes be limited in its capabilities, especially when dealing with complex data structures and filtering conditions.
+
+This project aims to overcome these limitations by providing a filter function that is not only more powerful, but also easier to use. It supports filtering arrays of primitive values, objects, and even nested objects. It also supports complex filtering expressions, including wildcard characters and regular expressions. This makes it a versatile tool that can be used in a wide variety of scenarios.
+
 ## About The Project
 
 This project provides a comprehensive implementation of a `filter` function in TypeScript. The `filter` function is a versatile tool that can be used to select a subset of items from an array based on a provided predicate function or expression.
 
 The `filter` function in this project is designed to handle a wide variety of use cases. It can `filter` arrays of primitive values, objects, and even nested objects. The function also supports complex `filtering` expressions, including wildcard characters and regular expressions.
 
-The project also includes a number of utility functions that are used internally by the `filter` function. These include functions for deep comparison of objects, checking the type of a value, and more. These utility functions are also exported by the module, so they can be used independently if needed.
-
-The code is written in TypeScript, providing static type checking and other benefits. It is thoroughly documented with comments explaining the purpose and functionality of each function and variable.
-
 Whether you need to `filter` an array in a complex way, or you're just interested in understanding how a robust `filter` function can be implemented, this project is a valuable resource.
 
-### Install
+## Installation
+
+You can install this package using various package managers. Here are the commands for each of them:
+
+npm
 
 ```shell
 npm install @mcabreradev/filter
 ```
 
-### Usage
+yarn
+
+```shell
+yarn add @mcabreradev/filter
+```
+
+pnpm
+
+```shell
+pnpm add @mcabreradev/filter
+```
+
+bun
+
+```shell
+bun install @mcabreradev/filter
+```
+
+## Usage
+
+After installation, you can import the filter function from the package like this:
 
 ```ts
 import filter from '@mcabreradev/filter';
 ```
 
-</br>
+If you're working in a Node.js environment, the installation process is the same as mentioned before. However, you can use the CommonJS syntax to import the filter function:
+
+```ts
+const filter = require('@mcabreradev/filter');
+```
 
 ## Features
 
@@ -44,7 +108,7 @@ The `filter` function in the provided TypeScript code is a versatile function th
 
 </br>
 
-### **Array Filtering**:
+### Array Filtering:
 
 The primary purpose of the `filter` function is to filter an array. It takes an array and a predicate function as arguments, and returns a new array that includes only the items for which the predicate function returns `true`.
 
@@ -59,7 +123,7 @@ console.log(evenNumbers); // Output: [2, 4]
 
 </br>
 
-### **Case-Insensitive Search**:
+### Case-Insensitive Search:
 
 The `filter` function supports case-insensitive search. When you provide a string as the predicate, it will match any property of the objects in the array that contains the string, regardless of case.
 
@@ -74,7 +138,7 @@ console.log(result); // Output: ['Apple', 'Banana']
 
 </br>
 
-### **Wildcard Matching**:
+### Wildcard Matching:
 
 The `filter` function supports wildcard matching with the '%' and '_' characters. The '%' character matches any sequence of characters, and the '_' character matches any single character. These wildcards also work in a case-insensitive manner.
 
@@ -89,7 +153,7 @@ console.log(result); // Output: ['Apple']
 
 </br>
 
-### **Multiple Conditions**:
+### Multiple Conditions:
 
 The `filter` function allows you to filter an array based on multiple conditions. You can specify these conditions as an object, where each key-value pair represents a condition that the items in the array must meet to be included in the result.
 
@@ -108,7 +172,7 @@ console.log(result); // Output: [{ name: 'Alice', age: 20 }]
 
 </br>
 
-### **Custom Predicate Functions**:
+### Custom Predicate Functions:
 
 The `filter` function allows you to provide a custom predicate function to determine which items should be included in the result. This gives you maximum flexibility to define your own conditions for filtering the array.
 
@@ -123,7 +187,7 @@ console.log(result); // Output: [4, 5]
 
 </br>
 
-### **Deep Comparison**:
+### Deep Comparison:
 
 The `filter` function supports deep comparison of objects. This means that it can compare the properties of nested objects, not just the top-level properties.
 
@@ -142,7 +206,7 @@ console.log(result); // Output: [{ name: 'Alice', age: 20, address: { city: 'New
 
 </br>
 
-### **Negation**:
+### Negation:
 
 The `filter` function supports negation. If the predicate is a string that starts with '!', the function will include an item in the result only if it does not match the rest of the string.
 
@@ -157,7 +221,7 @@ console.log(result); // Output: ['Banana', 'Cherry']
 
 </br>
 
-### **Nested Objects**:
+### Nested Objects:
 
 The `filter` function can filter arrays with a nested object that has 2 node levels:
 
