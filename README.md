@@ -3,7 +3,7 @@
 > Filters the array to a subset of it based on provided criteria.
 
 <p>
-  <a aria-label="NPM version" href="https://www.npmjs.com/package/classnames">
+  <a aria-label="NPM version" href="https://www.npmjs.com/package/@mcabreradev/filter">
     <img alt="" src="https://img.shields.io/npm/v/@mcabreradev/filter.svg?style=for-the-badge&labelColor=0869B8">
   </a>
   <a aria-label="License" href="#">
