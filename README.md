@@ -1,706 +1,561 @@
 # Filter
 
-> Filters the array to a subset of it based on provided criteria.
+> A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies.
 
 <p>
-  <a aria-label="NPM version" href="https://www.npmjs.com/package/classnames">
+  <a aria-label="NPM version" href="https://www.npmjs.com/package/@mcabreradev/filter">
     <img alt="" src="https://img.shields.io/npm/v/@mcabreradev/filter.svg?style=for-the-badge&labelColor=0869B8">
   </a>
-  <a aria-label="License" href="#">
-    <img alt="" src="https://img.shields.io/npm/l/classnames.svg?style=for-the-badge&labelColor=579805">
+  <a aria-label="License" href="https://github.com/mcabreradev/filter/blob/main/LICENSE.md">
+    <img alt="" src="https://img.shields.io/npm/l/@mcabreradev/filter.svg?style=for-the-badge&labelColor=579805">
   </a>
-
+  <a aria-label="Bundle Size" href="https://bundlephobia.com/package/@mcabreradev/filter">
+    <img alt="" src="https://img.shields.io/bundlephobia/minzip/@mcabreradev/filter?style=for-the-badge&labelColor=orange">
+  </a>
+  <a aria-label="TypeScript" href="#">
+    <img alt="" src="https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=for-the-badge&labelColor=blue">
+  </a>
 </p>
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-## Table of Contents
+## Why @mcabreradev/filter?
 
-- [Motivation](#motivation)
-- [About The Project](#about-the-project)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-  - [Array Filtering:](#array-filtering)
-  - [Case-Insensitive Search:](#case-insensitive-search)
-  - [Wildcard Matching:](#wildcard-matching)
-  - [Multiple Conditions:](#multiple-conditions)
-  - [Custom Predicate Functions:](#custom-predicate-functions)
-  - [Deep Comparison:](#deep-comparison)
-  - [Negation:](#negation)
-  - [Nested Objects:](#nested-objects)
-- [Advanced Examples of Use](#advanced-examples-of-use)
-  - [Filters customers with a specific city](#filters-customers-with-a-specific-city)
-  - [Filters customers with a specific city with wildcard `%`](#filters-customers-with-a-specific-city-with-wildcard-%25)
-  - [Filters customers with a specific city with wildcard \_](#filters-customers-with-a-specific-city-with-wildcard-%5C_)
-  - [Filters customers based on objects](#filters-customers-based-on-objects)
-  - [Filters customers based on object key value with wilcards `%`](#filters-customers-based-on-object-key-value-with-wilcards-%25)
-  - [Filters customers based on a predicate function](#filters-customers-based-on-a-predicate-function)
-  - [Filters customers based on based on two cities](#filters-customers-based-on-based-on-two-cities)
-  - [Filters customers based on based on two cities if exists](#filters-customers-based-on-based-on-two-cities-if-exists)
-- [Tests](#tests)
-- [Philosophy](#philosophy)
-- [About the Author](#about-the-author)
-- [Copyright](#copyright)
+Go beyond JavaScript's native `Array.filter()` with a library that understands your data:
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+- **🎯 SQL-like Wildcards** - Use `%` and `_` for flexible pattern matching
+- **🔍 Deep Object Filtering** - Search through nested objects up to configurable depths
+- **⚡ Zero Dependencies** - Lightweight and production-ready (only Zod for runtime validation)
+- **🔒 Type-Safe** - Built with strict TypeScript for maximum reliability
+- **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
+- **🚀 Performance Optimized** - Optional caching and regex compilation optimization
+- **📦 MongoDB-Style Operators** - 13 operators for advanced filtering (v4.0.0+)
+- **🧪 Battle-Tested** - 240+ tests ensuring reliability
 
-## Motivation
-
-The motivation behind this project is to provide a robust, versatile, and comprehensive filter function that can handle a wide array of use cases. Filtering is a fundamental operation in programming, especially in data manipulation and analysis. However, the built-in filter function in JavaScript and TypeScript can sometimes be limited in its capabilities, especially when dealing with complex data structures and filtering conditions.
-
-This project aims to overcome these limitations by providing a filter function that is not only more powerful, but also easier to use. It supports filtering arrays of primitive values, objects, and even nested objects. It also supports complex filtering expressions, including wildcard characters and regular expressions. This makes it a versatile tool that can be used in a wide variety of scenarios.
-
-## About The Project
-
-This project provides a comprehensive implementation of a `filter` function in TypeScript. The `filter` function is a versatile tool that can be used to select a subset of items from an array based on a provided predicate function or expression.
-
-The `filter` function in this project is designed to handle a wide variety of use cases. It can `filter` arrays of primitive values, objects, and even nested objects. The function also supports complex `filtering` expressions, including wildcard characters and regular expressions.
-
-Whether you need to `filter` an array in a complex way, or you're just interested in understanding how a robust `filter` function can be implemented, this project is a valuable resource.
+---
 
 ## Installation
 
-You can install this package using various package managers. Here are the commands for each of them:
-
-npm
-
-```shell
+```bash
+# Using npm
 npm install @mcabreradev/filter
-```
 
-yarn
-
-```shell
+# Using yarn
 yarn add @mcabreradev/filter
-```
 
-pnpm
-
-```shell
+# Using pnpm
 pnpm add @mcabreradev/filter
 ```
 
-bun
+**Requirements:** Node.js >= 20, TypeScript 5.0+ (optional)
 
-```shell
-bun install @mcabreradev/filter
-```
+---
 
-## Usage
+## Quick Start
 
-After installation, you can import the filter function from the package like this:
-
-```ts
-import filter from '@mcabreradev/filter';
-```
-
-If you're working in a Node.js environment, the installation process is the same as mentioned before. However, you can use the CommonJS syntax to import the filter function:
-
-```ts
-const filter = require('@mcabreradev/filter');
-```
-
-## Features
-
-The `filter` function in the provided TypeScript code is a versatile function that allows you to select a subset of items from an array based on a variety of conditions. Here are some of its key features:
-
-</br>
-
-### Array Filtering:
-
-The primary purpose of the `filter` function is to filter an array. It takes an array and a predicate function as arguments, and returns a new array that includes only the items for which the predicate function returns `true`.
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const numbers = [1, 2, 3, 4, 5];
-const evenNumbers = filter(numbers, (n) => n % 2 === 0);
-
-console.log(evenNumbers); // Output: [2, 4]
-```
-
-</br>
-
-### Case-Insensitive Search:
-
-The `filter` function supports case-insensitive search. When you provide a string as the predicate, it will match any property of the objects in the array that contains the string, regardless of case.
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const words = ['Apple', 'Banana', 'Cherry'];
-const result = filter(words, 'a');
-
-console.log(result); // Output: ['Apple', 'Banana']
-```
-
-</br>
-
-### Wildcard Matching:
-
-The `filter` function supports wildcard matching with the `%` and `_` characters. The `%` character matches any sequence of characters, and the `_` character matches any single character. These wildcards also work in a case-insensitive manner.
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const words = ['Apple', 'Banana', 'Cherry'];
-const result = filter(words, 'A%e');
-
-console.log(result); // Output: ['Apple']
-```
-
-</br>
-
-### Multiple Conditions:
-
-The `filter` function allows you to filter an array based on multiple conditions. You can specify these conditions as an object, where each key-value pair represents a condition that the items in the array must meet to be included in the result.
-
-```ts
-import filter from '@mcabreradev/filter';
+```typescript
+import { filter } from '@mcabreradev/filter';
 
 const users = [
-  { name: 'Alice', age: 20 },
-  { name: 'Bob', age: 25 },
-  { name: 'Charlie', age: 30 },
-];
-const result = filter(users, { name: 'A%', age: 20 });
-
-console.log(result); // Output: [{ name: 'Alice', age: 20 }]
-```
-
-</br>
-
-### Custom Predicate Functions:
-
-The `filter` function allows you to provide a custom predicate function to determine which items should be included in the result. This gives you maximum flexibility to define your own conditions for filtering the array.
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const numbers = [1, 2, 3, 4, 5];
-const result = filter(numbers, (n) => n > 3);
-
-console.log(result); // Output: [4, 5]
-```
-
-</br>
-
-### Deep Comparison:
-
-The `filter` function supports deep comparison of objects. This means that it can compare the properties of nested objects, not just the top-level properties.
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const users = [
-  { name: 'Alice', age: 20, address: { city: 'New York' } },
-  { name: 'Bob', age: 25, address: { city: 'Los Angeles' } },
-  { name: 'Charlie', age: 30, address: { city: 'Chicago' } },
-];
-const result = filter(users, { address: { city: 'New York' } });
-
-console.log(result); // Output: [{ name: 'Alice', age: 20, address: { city: 'New York' } }]
-```
-
-</br>
-
-### Negation:
-
-The `filter` function supports negation. If the predicate is a string that starts with `!`, the function will include an item in the result only if it does not match the rest of the string.
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const words = ['Apple', 'Banana', 'Cherry'];
-const result = filter(words, '!Apple');
-
-console.log(result); // Output: ['Banana', 'Cherry']
-```
-
-</br>
-
-### Nested Objects:
-
-The `filter` function can filter arrays with a nested object that has 2 node levels:
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const users = [
-  { name: 'Alice', age: 20, address: { city: 'New York', country: 'USA' } },
-  { name: 'Bob', age: 25, address: { city: 'Los Angeles', country: 'USA' } },
-  { name: 'Charlie', age: 30, address: { city: 'London', country: 'UK' } },
-];
-const result = filter(users, { address: { country: 'USA' } });
-
-console.log(result);
-
-// Output:
-//[
-// { name: 'Alice', age: 20, address: { city: 'New York', country: 'USA' } },
-// { name: 'Bob', age: 25, address: { city: 'Los Angeles', country: 'USA' } }
-//]
-```
-
-<br/>
-
-And here's an example of `filter` function with a nested object that has 3 node levels:
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const users = [
-  {
-    name: 'Alice',
-    age: 20,
-    address: {
-      city: 'New York',
-      country: 'USA',
-      coordinates: { lat: 40.7128, long: 74.006 },
-    },
-  },
-  {
-    name: 'Bob',
-    age: 25,
-    address: {
-      city: 'Los Angeles',
-      country: 'USA',
-      coordinates: { lat: 34.0522, long: 118.2437 },
-    },
-  },
-  {
-    name: 'Charlie',
-    age: 30,
-    address: {
-      city: 'London',
-      country: 'UK',
-      coordinates: { lat: 51.5074, long: 0.1278 },
-    },
-  },
+  { name: 'Alice', email: 'alice@example.com', age: 30, city: 'Berlin' },
+  { name: 'Bob', email: 'bob@example.com', age: 25, city: 'London' },
+  { name: 'Charlie', email: 'charlie@example.com', age: 35, city: 'Berlin' }
 ];
 
-const result = filter(users, { address: { coordinates: { lat: 40.7128 } } });
+// Simple string matching (case-insensitive by default)
+filter(users, 'Berlin');
+// → Returns Alice and Charlie
 
-console.log(result);
+// Wildcard patterns (SQL-like)
+filter(users, '%alice%');
+// → Returns Alice
 
-// Output:
-// [{
-//   name: 'Alice',
-//   age: 20,
-//   address: {
-//       city: 'New York',
-//       country: 'USA',
-//       coordinates: {
-//           lat: 40.7128,
-//           long: 74.0060
-//       }
-//   }
-// }]
-```
+// Object-based filtering
+filter(users, { city: 'Berlin', age: 30 });
+// → Returns Alice
 
-</br>
+// Negation support
+filter(users, '!London');
+// → Returns Alice and Charlie
 
-## Advanced Examples of Use
+// Predicate functions
+filter(users, (user) => user.age > 28);
+// → Returns Alice and Charlie
 
-The `filter` function can be used in a wide variety of scenarios. Here are some examples of how it can be used:
+// v4.0.0: MongoDB-style operators
+filter(users, { age: { $gte: 25, $lt: 35 } });
+// → Returns Bob and Alice
 
-### Filters customers with a specific city
+filter(users, { city: { $in: ['Berlin', 'Paris'] } });
+// → Returns Alice and Charlie
 
-```ts
-import filter from '@mcabreradev/filter';
-
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
-
-filter(customers, 'Berlin');
-
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
-```
-
-### Filters customers with a specific city with wildcard `%`
-
-The `%` wildcard represents any number of characters, even zero characters.
-
-return all customers that contains the pattern `'erlin'`:
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
-
-filter(customers, '%erlin');
-
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
-```
-
-<br/>
-
-return all customers that contains the pattern `"Ber"`:
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
-
-filter(customers, 'Ber%');
-
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
-```
-
-<br/>
-
-return all customers that contains the pattern `"erli"`:
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
-
-filter(customers, '%erli%');
-
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+filter(users, { name: { $startsWith: 'A' } });
+// → Returns Alice
 ```
 
 ---
 
-### Filters customers with a specific city with wildcard \_
+## Core Features
 
-The `_` wildcard represents a single character. It can be any character or number, but each `_` represents one, and only one, character.
+### Basic Filtering
 
-return all customers with a City starting with any character, followed by `"erlin"`:
+Filter by simple values across all object properties:
 
-<br/>
-
-```ts
-import filter from '@mcabreradev/filter';
-
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
+```typescript
+const products = [
+  { id: 1, name: 'Laptop', price: 1200 },
+  { id: 2, name: 'Mouse', price: 25 },
+  { id: 3, name: 'Monitor', price: 450 }
 ];
 
-filter(customers, '_erlin');
+// String search
+filter(products, 'Laptop');  // → [{ id: 1, ... }]
 
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+// Number search
+filter(products, 25);  // → [{ id: 2, ... }]
+
+// Boolean search
+filter(tasks, true);  // Finds all completed tasks
 ```
 
-<br/>
+### Wildcard Patterns
 
-return all customers with a City witch contains `"erli"`:
+SQL-like wildcards for flexible matching:
 
-```ts
-import filter from '@mcabreradev/filter';
+```typescript
+// % matches zero or more characters
+filter(users, '%alice%');     // Contains 'alice'
+filter(users, 'Al%');          // Starts with 'Al'
+filter(users, '%son');         // Ends with 'son'
 
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
+// _ matches exactly one character
+filter(codes, 'A_');           // 'A1', 'A2', but not 'AB1'
+filter(ids, 'user-10_');       // 'user-101', 'user-102'
 
-filter(customers, '_erli_');
-
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+// Negation with !
+filter(users, '!admin');       // Exclude admin
+filter(files, '!%.pdf');       // Exclude PDFs
 ```
 
-<br/>
+### Object-Based Filtering
 
-return all customers with a City starting with `"L"`, followed by any 2 characters, ending with `"lin"`:
+Match by specific properties (AND logic):
 
-```ts
-import filter from '@mcabreradev/filter';
+```typescript
+// Single property
+filter(products, { category: 'Electronics' });
 
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
+// Multiple properties (all must match)
+filter(products, {
+  category: 'Electronics',
+  price: 1200,
+  inStock: true
+});
 
-filter(customers, 'B__lin');
-
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+// Nested objects
+filter(users, {
+  address: { city: 'Berlin' },
+  settings: { theme: 'dark' }
+});
 ```
 
-<br/>
+### MongoDB-Style Operators (v4.0.0)
 
-### Filters customers based on objects
+Powerful operators for advanced filtering:
 
-return all customers with a City named `"Berlin"`:
+#### Comparison Operators
 
-```ts
-import filter from '@mcabreradev/filter';
+```typescript
+// Greater than / Less than
+filter(products, { price: { $gt: 100 } });
+filter(products, { price: { $lte: 500 } });
 
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
+// Range queries
+filter(products, {
+  price: { $gte: 100, $lte: 500 }
+});
 
-filter(customers, { city: 'Berlin' });
+// Date ranges
+filter(orders, {
+  date: {
+    $gte: new Date('2024-01-01'),
+    $lte: new Date('2024-12-31')
+  }
+});
 
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+// Not equal
+filter(users, { role: { $ne: 'guest' } });
 ```
 
-<br/>
+**Available:** `$gt`, `$gte`, `$lt`, `$lte`, `$eq`, `$ne`
 
-### Filters customers based on object key value with wilcards `%`
+#### Array Operators
 
-return all customers with a City witch contains `"erlin"` at the end of the string:
+```typescript
+// In / Not in array
+filter(products, {
+  category: { $in: ['Electronics', 'Books'] }
+});
 
-```ts
-import filter from '@mcabreradev/filter';
+filter(products, {
+  status: { $nin: ['archived', 'deleted'] }
+});
 
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
+// Array contains value
+filter(products, {
+  tags: { $contains: 'sale' }
+});
 
-filter(customers, { city: '%erlin' });
-
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+// Array size
+filter(products, {
+  images: { $size: 3 }
+});
 ```
 
-<br/>
+**Available:** `$in`, `$nin`, `$contains`, `$size`
 
-return all customers with a City witch contains `"erli"` at the begining of the string:
+#### String Operators
 
-```ts
-import filter from '@mcabreradev/filter';
+```typescript
+// Starts with / Ends with
+filter(users, {
+  email: { $endsWith: '@company.com' }
+});
 
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
+filter(files, {
+  name: { $startsWith: 'report-' }
+});
 
-filter(customers, { city: 'Berl%' });
-
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+// Contains substring
+filter(articles, {
+  title: { $contains: 'typescript' }
+});
 ```
 
-<br/>
+**Available:** `$startsWith`, `$endsWith`, `$contains`
 
-return all customers with a City witch contains `"erlin"` at the end of the string:
+#### Combining Operators
 
-```ts
-import filter from '@mcabreradev/filter';
-
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
-
-filter(customers, { city: '_erlin' });
-
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+```typescript
+// Multiple operators, multiple properties
+filter(products, {
+  price: { $gte: 100, $lte: 500 },
+  category: { $in: ['Electronics', 'Accessories'] },
+  name: { $startsWith: 'Pro' },
+  inStock: { $eq: true }
+});
 ```
 
-<br/>
+### Predicate Functions
 
-return all customers with a City witch contains `"erl"` in the string:
+For complex custom logic:
 
-```ts
-import filter from '@mcabreradev/filter';
+```typescript
+// Simple predicate
+filter(numbers, (n) => n > 5);
 
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
+// Complex conditions
+filter(products, (product) =>
+  product.price < 100 &&
+  product.inStock &&
+  product.rating >= 4.0
+);
 
-filter(customers, { city: '_erl__' });
-
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+// Type-safe with TypeScript
+filter<Product>(products, (p: Product): boolean =>
+  p.price > 100 && p.name.includes('Pro')
+);
 ```
 
-<br/>
+---
 
-return all customers with a City witch contains the characters `"e,li"` in the string:
+## Configuration
 
-```ts
-import filter from '@mcabreradev/filter';
+Customize filter behavior with options:
 
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
+```typescript
+import { filter } from '@mcabreradev/filter';
 
-filter(customers, { city: '_e_li_' });
+// Case-sensitive matching
+filter(users, 'ALICE', { caseSensitive: true });
 
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+// Increase max depth for nested objects
+filter(data, expression, { maxDepth: 5 });
+
+// Enable caching for repeated queries
+filter(largeDataset, expression, { enableCache: true });
+
+// Custom comparison logic
+filter(data, expression, {
+  customComparator: (actual, expected) => actual === expected
+});
 ```
 
-<br/>
+**Available Options:**
 
-### Filters customers based on a predicate function
+- `caseSensitive` (boolean, default: `false`) - Case-sensitive string matching
+- `maxDepth` (number, default: `3`, range: 1-10) - Max depth for nested objects
+- `enableCache` (boolean, default: `false`) - Enable result caching
+- `customComparator` (function, optional) - Custom comparison function
 
-```ts
-import filter from '@mcabreradev/filter';
+---
 
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
+## TypeScript Support
 
-filter(customers, ({ city }) => city === 'Berlin');
+Full TypeScript support with strict typing:
 
-// Output:
-// [{ name: 'Alfreds Futterkiste', city: 'Berlin' }]
+```typescript
+import { filter } from '@mcabreradev/filter';
+import type {
+  Expression,
+  FilterOptions,
+  ComparisonOperators
+} from '@mcabreradev/filter';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+}
+
+const products: Product[] = [...];
+
+// Type-safe filtering
+const result = filter<Product>(products, {
+  price: { $gte: 100 }
+});
+// result is Product[]
+
+// Type-safe expressions
+const priceFilter: ComparisonOperators = {
+  $gte: 100,
+  $lte: 500
+};
+
+filter<Product>(products, { price: priceFilter });
 ```
 
-<br/>
+---
 
-### Filters customers based on based on two cities
+## Real-World Example
 
-```ts
-import filter from '@mcabreradev/filter';
+```typescript
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+  brand: string;
+  rating: number;
+  inStock: boolean;
+  tags: string[];
+  createdAt: Date;
+}
 
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
+const products: Product[] = [...];
 
-filter(customers, ({ city }) => city === 'Berlin' || city === 'London');
+// E-commerce: Find affordable, highly-rated electronics in stock
+const affordableElectronics = filter(products, {
+  category: 'Electronics',
+  price: { $lte: 1000 },
+  rating: { $gte: 4.5 },
+  inStock: { $eq: true }
+});
 
-// Output:
-// [
-//  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-//  { name: 'Around the Horn', city: 'London' },
-//  { name: 'Bs Beverages', city: 'London' }
-// ]
+// Search: Products matching keyword with filters
+const searchResults = filter(products, {
+  name: { $contains: 'laptop' },
+  brand: { $in: ['Apple', 'Dell', 'HP'] },
+  price: { $gte: 500, $lte: 2000 }
+});
+
+// Analytics: Recent high-value orders
+const thirtyDaysAgo = new Date();
+thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+const recentHighValue = filter(orders, {
+  createdAt: { $gte: thirtyDaysAgo },
+  amount: { $gte: 1000 },
+  status: { $in: ['completed', 'shipped'] }
+});
 ```
 
-<br/>
+---
 
-### Filters customers based on based on two cities if exists
+## Performance
 
-```ts
-import filter from '@mcabreradev/filter';
+Filter is optimized for performance:
 
-const customers = [
-  { name: 'Alfreds Futterkiste', city: 'Berlin' },
-  { name: 'Around the Horn', city: 'London' },
-  { name: "B's Beverages", city: 'London' },
-  { name: 'Bolido Comidas preparadas', city: 'Madrid' },
-  { name: 'Bon app', city: 'Marseille' },
-  { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
-];
+- **Operators** use early exit strategies for fast evaluation
+- **Regex patterns** are compiled and cached
+- **Optional caching** for repeated queries on large datasets
+- **Type guards** for fast type checking
 
-filter(customers, ({ city }) => city === 'Berlin' && city === 'Caracas');
+```typescript
+// ✅ Fast: Operators with early exit
+filter(data, { age: { $gte: 18 } });
 
-// Output:
-// []
+// ✅ Fast with caching for repeated queries
+filter(largeData, expression, { enableCache: true });
+
+// ⚠️ Slower: Complex predicates (but more flexible)
+filter(data, (item) => complexCalculation(item));
 ```
 
-## Tests
+For performance optimization tips, see [Performance Guide in WIKI](./WIKI.md#performance-optimization).
+
+---
+
+## Documentation
+
+### 📖 Complete Documentation
+
+- **[WIKI.md](./WIKI.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
+- **[OPERATORS.md](./OPERATORS.md)** - Detailed guide for all 13 MongoDB-style operators with examples
+- **[MIGRATION.md](./MIGRATION.md)** - Migration guide from v3.x or native Array.filter()
+- **[Examples](./examples/)** - Real-world usage examples and code samples
+
+### 🎯 Quick Links
+
+- [Installation & Setup](./WIKI.md#installation--setup)
+- [All Operators Reference](./OPERATORS.md)
+- [TypeScript Integration](./WIKI.md#typescript-integration)
+- [Real-World Examples](./WIKI.md#real-world-examples)
+- [Performance Tips](./WIKI.md#performance-optimization)
+- [API Reference](./WIKI.md#api-reference)
+- [FAQ](./WIKI.md#frequently-asked-questions)
+- [Troubleshooting](./WIKI.md#troubleshooting)
+
+---
+
+## Migration from v3.x
+
+**Good news:** v4.0.0 is **100% backward compatible**! All v3.x code continues to work.
+
+```typescript
+// ✅ All v3.x syntax still works
+filter(data, 'string');
+filter(data, { prop: 'value' });
+filter(data, (item) => true);
+filter(data, '%pattern%');
+
+// ✅ New in v4.0.0
+filter(data, { age: { $gte: 18 } });
+filter(data, expression, { caseSensitive: true });
+```
+
+**What's New in v4.0.0:**
+- 13 MongoDB-style operators
+- Configuration API
+- Runtime validation with Zod
+- Performance optimizations
+- Enhanced TypeScript support
+
+See [MIGRATION.md](./MIGRATION.md) for detailed migration guide.
+
+---
+
+## API Overview
+
+```typescript
+// Main filter function
+filter<T>(array: T[], expression: Expression<T>, options?: FilterOptions): T[]
+
+// Validation functions
+validateExpression(expression: unknown): Expression<T>
+validateOptions(options: unknown): FilterOptions
+
+// Configuration
+mergeConfig(options?: FilterOptions): FilterConfig
+createFilterConfig(options?: FilterOptions): FilterConfig
+```
+
+For complete API reference, see [WIKI.md - API Reference](./WIKI.md#api-reference).
+
+---
+
+## Browser Support
+
+Works in all modern browsers and Node.js:
+
+- **Node.js:** >= 20
+- **Browsers:** Chrome, Firefox, Safari, Edge (latest versions)
+- **TypeScript:** >= 5.0
+- **Module Systems:** ESM, CommonJS
+
+---
+
+## Contributing
+
+We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+**Ways to Contribute:**
+- Report bugs or request features via [GitHub Issues](https://github.com/mcabreradev/filter/issues)
+- Submit pull requests with bug fixes or new features
+- Improve documentation
+- Share your use cases and examples
+
+---
+
+## Testing
 
 ```bash
-$ npm run test
+# Run tests
+npm test
+
+# Watch mode
+npm run test:watch
+
+# Coverage report
+npm run test:coverage
+
+# Type checking
+npm run typecheck
 ```
 
-## Philosophy
+The library has 240+ tests with comprehensive coverage of all features.
 
-The philosophy behind this project is to provide a robust, flexible, and efficient solution for filtering arrays in TypeScript. We believe in the power of simplicity and readability, and we strive to make our code as clear and understandable as possible. We also believe in the importance of performance, and we have designed our filter function to be highly efficient, even when dealing with large arrays and complex filtering conditions.
+---
 
-## About the Author
+## Changelog
 
-This project is maintained by [Miguelangel Cabrera](https://mcabrera.dev), a passionate software developer with a deep interest in TypeScript and functional programming. Miguelangel has years of experience in software development and a strong commitment to code quality, performance, and maintainability.
+### v4.0.0 (Latest)
+- ✨ Added 13 MongoDB-style operators
+- ⚙️ Configuration API with 4 options
+- ✅ Runtime validation with Zod
+- 🚀 Performance optimizations
+- 📘 Enhanced TypeScript support
+- 🧪 240+ tests
 
-## Copyright
+See [MIGRATION.md](./MIGRATION.md) for detailed changelog and migration guide.
 
-Copyright (c) 2024. All rights reserved. This project is licensed under the MIT license. This means you are free to use, modify, and distribute the code, as long as you include the original copyright notice and disclaimers. Please see the LICENSE file in the project root for the full license text.
+---
+
+## License
+
+MIT License - see [LICENSE.md](./LICENSE.md) for details.
+
+Copyright (c) 2025 Miguelangel Cabrera
+
+---
+
+## Credits
+
+**Author:** [Miguelangel Cabrera](https://github.com/mcabreradev)
+**Repository:** [github.com/mcabreradev/filter](https://github.com/mcabreradev/filter)
+
+Inspired by MongoDB query syntax, SQL wildcards, and functional programming patterns.
+
+---
+
+## Support
+
+- 📖 [Complete Documentation (WIKI)](./WIKI.md)
+- 💬 [GitHub Discussions](https://github.com/mcabreradev/filter/discussions)
+- 🐛 [Issue Tracker](https://github.com/mcabreradev/filter/issues)
+- ⭐ [Star on GitHub](https://github.com/mcabreradev/filter)
+
+---
+
+<p align="center">
+  <strong>Made with ❤️ for the JavaScript/TypeScript community</strong>
+</p>
