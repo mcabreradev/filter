@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - prod
+      - main
 
 permissions:
   contents: write
@@ -19,11 +20,10 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - uses: google-github-actions/release-please-action@v4
+      - uses: googleapis/release-please-action@v4
         id: release
         with:
           release-type: node
-          package-name: '@mcabreradev/filter'
 
   publish-npm:
     name: 📦 Publish to NPM
@@ -47,7 +47,7 @@ jobs:
           version: 8
 
       - name: 📦 Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: 🔍 Type check
         run: pnpm run typecheck
