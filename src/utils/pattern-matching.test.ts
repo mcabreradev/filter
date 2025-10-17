@@ -4,7 +4,7 @@ import {
   createWildcardRegex,
   getCachedRegex,
   hasNegation,
-  removeNegation
+  removeNegation,
 } from './pattern-matching';
 
 describe('pattern-matching', () => {
@@ -111,4 +111,3 @@ describe('pattern-matching', () => {
     });
   });
 });
-

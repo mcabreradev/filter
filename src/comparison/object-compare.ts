@@ -11,7 +11,7 @@ export function compareObjects(
   matchAgainstAnyProp: boolean,
   dontMatchWholeObject: boolean,
   expectedType: string,
-  currentDepth: number
+  currentDepth: number,
 ): boolean {
   if (matchAgainstAnyProp) {
     return compareAgainstAnyProperty(
@@ -21,7 +21,7 @@ export function compareObjects(
       config,
       anyPropertyKey,
       dontMatchWholeObject,
-      currentDepth
+      currentDepth,
     );
   }
 
@@ -32,10 +32,9 @@ export function compareObjects(
       comparator,
       config,
       anyPropertyKey,
-      currentDepth
+      currentDepth,
     );
   }
 
   return comparator(actual, expected);
 }
-

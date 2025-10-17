@@ -3,8 +3,7 @@ export {
   predicateFunctionSchema,
   objectExpressionSchema,
   expressionSchema,
-  filterOptionsSchema
+  filterOptionsSchema,
 } from './schemas';
 
 export { validateExpression, validateOptions } from './validator';
-

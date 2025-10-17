@@ -11,7 +11,7 @@ export function deepCompare(
   anyPropertyKey: string = ANY_PROPERTY_KEY,
   matchAgainstAnyProp: boolean = false,
   dontMatchWholeObject: boolean = false,
-  currentDepth: number = 0
+  currentDepth: number = 0,
 ): boolean {
   if (currentDepth > config.maxDepth) {
     return false;
@@ -29,7 +29,7 @@ export function deepCompare(
       anyPropertyKey,
       matchAgainstAnyProp,
       dontMatchWholeObject,
-      currentDepth + 1
+      currentDepth + 1,
     );
   }
 
@@ -43,8 +43,8 @@ export function deepCompare(
         anyPropertyKey,
         matchAgainstAnyProp,
         dontMatchWholeObject,
-        currentDepth + 1
-      )
+        currentDepth + 1,
+      ),
     );
   }
 
@@ -58,7 +58,7 @@ export function deepCompare(
       matchAgainstAnyProp,
       dontMatchWholeObject,
       expectedType,
-      currentDepth
+      currentDepth,
     );
   }
 
@@ -68,4 +68,3 @@ export function deepCompare(
 
   return comparator(actual, expected);
 }
-

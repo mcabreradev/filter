@@ -29,4 +29,3 @@ export type OperatorExpression =
 export type ExtendedObjectExpression<T> = Partial<{
   [K in keyof T]: T[K] | OperatorExpression | string;
 }>;
-

@@ -3,11 +3,7 @@ import { createPredicateFn } from '../predicate';
 import { validateExpression } from '../validation';
 import { mergeConfig } from '../config';
 
-export function filter<T>(
-  array: T[],
-  expression: Expression<T>,
-  options?: FilterOptions
-): T[] {
+export function filter<T>(array: T[], expression: Expression<T>, options?: FilterOptions): T[] {
   if (!Array.isArray(array)) {
     throw new Error(`Expected array but received: ${typeof array}`);
   }
@@ -18,4 +14,3 @@ export function filter<T>(
 
   return array.filter(predicate);
 }
-

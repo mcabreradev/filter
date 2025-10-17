@@ -1,6 +1,6 @@
 {
   "name": "@mcabreradev/filter",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "type": "module",
   "description": "Filters an array based on the provided expression, a helper for complex array filtering",
   "scripts": {

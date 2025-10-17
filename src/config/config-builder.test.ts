@@ -18,7 +18,7 @@ describe('config-builder', () => {
       const config = mergeConfig({ caseSensitive: true });
       expect(config).toEqual({
         ...DEFAULT_CONFIG,
-        caseSensitive: true
+        caseSensitive: true,
       });
     });
 
@@ -26,13 +26,13 @@ describe('config-builder', () => {
       const config = mergeConfig({
         caseSensitive: true,
         maxDepth: 5,
-        enableCache: true
+        enableCache: true,
       });
       expect(config).toEqual({
         caseSensitive: true,
         maxDepth: 5,
         enableCache: true,
-        customComparator: undefined
+        customComparator: undefined,
       });
     });
 
@@ -64,4 +64,3 @@ describe('config-builder', () => {
     });
   });
 });
-

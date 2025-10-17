@@ -16,4 +16,3 @@ export const validateOptions = (options: unknown): FilterOptions => {
   }
   return (result.data as FilterOptions) || {};
 };
-

@@ -7,7 +7,7 @@ import {
   isUndefined,
   getTypeForFilter,
   hasCustomToString,
-  lowercase
+  lowercase,
 } from '../utils';
 import { deepCompare } from '../comparison';
 import { createStringPredicate } from './string-predicate';
@@ -16,7 +16,7 @@ import { createFunctionPredicate } from './function-predicate';
 
 export function createPredicateFn<T>(
   expression: Expression<T>,
-  config: FilterConfig
+  config: FilterConfig,
 ): (item: T) => boolean {
   const expressionType: string = getTypeForFilter(expression);
 
@@ -36,10 +36,12 @@ export function createPredicateFn<T>(
     TYPE_NAMES.BOOLEAN,
     TYPE_NAMES.NULL,
     TYPE_NAMES.NUMBER,
-    TYPE_NAMES.STRING
+    TYPE_NAMES.STRING,
   ] as const;
-  
-  const matchAgainstAnyProp: boolean = primitiveTypes.includes(expressionType as (typeof primitiveTypes)[number]);
+
+  const matchAgainstAnyProp: boolean = primitiveTypes.includes(
+    expressionType as (typeof primitiveTypes)[number],
+  );
 
   const shouldMatchPrimitives: boolean =
     isObject(expression) && ANY_PROPERTY_KEY in (expression as Record<string, unknown>);
@@ -71,12 +73,18 @@ export function createPredicateFn<T>(
         comparator,
         config,
         ANY_PROPERTY_KEY,
-        false
+        false,
       );
     } else if (shouldNegate) {
-      return !deepCompare(item, expression, comparator, config, ANY_PROPERTY_KEY, matchAgainstAnyProp);
+      return !deepCompare(
+        item,
+        expression,
+        comparator,
+        config,
+        ANY_PROPERTY_KEY,
+        matchAgainstAnyProp,
+      );
     }
     return deepCompare(item, expression, comparator, config, ANY_PROPERTY_KEY, matchAgainstAnyProp);
   };
 }
-
