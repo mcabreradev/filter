@@ -78,5 +78,9 @@
   "types": "build/index.d.ts",
   "files": [
     "build/**/*"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
 }

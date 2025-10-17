@@ -1,39 +1,34 @@
-name: Release & Publish
+name: Publish to NPM
 
 on:
+  release:
+    types: [published]
   workflow_dispatch:
-  push:
-    branches:
-      - prod
+    inputs:
+      version:
+        description: 'Version type (patch, minor, major)'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 permissions:
   contents: write
-  pull-requests: write
   id-token: write
 
 jobs:
-  release-please:
-    name: 🎉 Release Please
-    runs-on: ubuntu-latest
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
-    steps:
-      - uses: google-github-actions/release-please-action@v4
-        id: release
-        with:
-          release-type: node
-          package-name: '@mcabreradev/filter'
-
-  publish-npm:
+  publish:
     name: 📦 Publish to NPM
-    needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
 
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v4
@@ -70,7 +65,17 @@ jobs:
           echo "Build files:"
           ls -la build/
 
-      - name: 🚀 Publish to NPM with provenance
-        run: pnpm publish --no-git-checks --access public --provenance
+      - name: 🚀 Publish to NPM
+        run: pnpm publish --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: 📝 Create Git Tag
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          git tag -a "v${PACKAGE_VERSION}" -m "Release v${PACKAGE_VERSION}"
+          git push origin "v${PACKAGE_VERSION}"
+
