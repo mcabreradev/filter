@@ -1,4 +1,5 @@
 name: Code Check
+
 on:
   push:
     branches:
@@ -6,32 +7,61 @@ on:
       - stage
       - main
       - prod
-  pull_request: {}
+  pull_request:
+    branches:
+      - dev
+      - stage
+      - main
+      - prod
 
 concurrency:
-  group: ${{ github.job }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  lint:
+  test:
     name: ⬣ Testing
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20, 22]
+
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v4.0.2
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: 20
+          version: 9
 
-      - name: 📥 Download deps
-        uses: oven-sh/setup-bun@v1
+      - name: ⎔ Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-      - name: 📦 Install dependencies
-        run: bun install --frozen-lockfile
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: 🃏 Run test
-        run: npm run test
+      - name: 🔍 Type check
+        run: pnpm run typecheck
+
+      - name: 🎨 Lint check
+        run: pnpm run lint
+
+      - name: 🃏 Run tests
+        run: pnpm run test
+
+      - name: 📊 Generate coverage report
+        run: pnpm run test:coverage
+
+      - name: 📤 Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: matrix.node-version == 20
+        with:
+          files: ./coverage/coverage-final.json
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
