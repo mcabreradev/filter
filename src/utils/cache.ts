@@ -9,11 +9,13 @@ export class FilterCache<T> {
     if (!this.cache.has(array)) {
       this.cache.set(array, new Map());
     }
-    this.cache.get(array)!.set(key, result);
+    const arrayMap = this.cache.get(array);
+    if (arrayMap) {
+      arrayMap.set(key, result);
+    }
   }
 
   clear(): void {
     this.cache = new WeakMap<T[], Map<string, T[]>>();
   }
 }
-

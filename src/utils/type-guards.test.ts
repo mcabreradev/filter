@@ -7,7 +7,7 @@ import {
   isPrimitive,
   isPredicateFunction,
   getTypeForFilter,
-  hasCustomToString
+  hasCustomToString,
 } from './type-guards';
 
 describe('type-guards', () => {
@@ -132,7 +132,7 @@ describe('type-guards', () => {
   describe('hasCustomToString', () => {
     it('returns true for objects with custom toString', () => {
       const obj = {
-        toString: () => 'custom'
+        toString: (): string => 'custom',
       };
       expect(hasCustomToString(obj)).toBe(true);
     });
@@ -147,4 +147,3 @@ describe('type-guards', () => {
     });
   });
 });
-

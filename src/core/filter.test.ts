@@ -8,7 +8,7 @@ const data = [
   { name: 'Bolido Comidas preparadas', city: 'Madrid' },
   { name: 'Bon app', city: 'Marseille' },
   { name: 'Bottom-Dollar Marketse', city: 'Tsawassen' },
-  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' }
+  { name: 'Cactus Comidas para llevar', city: 'Buenos Aires' },
 ];
 
 describe('filter', () => {
@@ -134,7 +134,7 @@ describe('filter', () => {
 
   describe('predicate functions', () => {
     it('filters based on a predicate function', () => {
-      const predicate = ({ city }: { city: string }) => city === 'Berlin';
+      const predicate = ({ city }: { city: string }): boolean => city === 'Berlin';
       const input = filter(data, predicate);
       const output = [{ name: 'Alfreds Futterkiste', city: 'Berlin' }];
 
@@ -142,19 +142,25 @@ describe('filter', () => {
     });
 
     it('filters based on two cities with OR logic', () => {
-      const predicate = ({ city }: { city: string }) => city === 'Berlin' || city === 'London';
+      const predicate = ({ city }: { city: string }): boolean =>
+        city === 'Berlin' || city === 'London';
       const input = filter(data, predicate);
       const output = [
         { name: 'Alfreds Futterkiste', city: 'Berlin' },
         { name: 'Around the Horn', city: 'London' },
-        { name: 'Bs Beverages', city: 'London' }
+        { name: 'Bs Beverages', city: 'London' },
       ];
 
       expect(input).toEqual(output);
     });
 
     it('filters based on two cities with AND logic (no match)', () => {
-      const predicate = ({ city }: { city: string }) => city === 'Berlin' && city === 'Caracas';
+      const predicate = ({ city }: { city: string }): boolean => {
+        // This is intentionally impossible to demonstrate filtering logic
+        const isBerlin = city === 'Berlin';
+        const isCaracas = city === 'Caracas';
+        return isBerlin && isCaracas;
+      };
       const input = filter(data, predicate);
       const output: typeof data = [];
 
@@ -170,7 +176,7 @@ describe('filter', () => {
 
     it('throws error for non-array input', () => {
       expect(() => filter('not an array' as unknown as unknown[], 'test')).toThrow(
-        'Expected array but received:'
+        'Expected array but received:',
       );
     });
 
@@ -201,4 +207,3 @@ describe('filter', () => {
     });
   });
 });
-

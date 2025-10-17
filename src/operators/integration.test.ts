@@ -19,7 +19,7 @@ const products: Product[] = [
     category: 'Electronics',
     tags: ['computer', 'portable'],
     inStock: true,
-    createdAt: new Date('2025-01-15')
+    createdAt: new Date('2025-01-15'),
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const products: Product[] = [
     category: 'Electronics',
     tags: ['computer', 'accessory'],
     inStock: true,
-    createdAt: new Date('2025-02-20')
+    createdAt: new Date('2025-02-20'),
   },
   {
     id: 3,
@@ -37,7 +37,7 @@ const products: Product[] = [
     category: 'Furniture',
     tags: ['office', 'large'],
     inStock: false,
-    createdAt: new Date('2025-03-10')
+    createdAt: new Date('2025-03-10'),
   },
   {
     id: 4,
@@ -46,7 +46,7 @@ const products: Product[] = [
     category: 'Furniture',
     tags: ['office', 'ergonomic'],
     inStock: true,
-    createdAt: new Date('2025-01-05')
+    createdAt: new Date('2025-01-05'),
   },
   {
     id: 5,
@@ -55,8 +55,8 @@ const products: Product[] = [
     category: 'Electronics',
     tags: ['computer', 'display'],
     inStock: true,
-    createdAt: new Date('2025-04-12')
-  }
+    createdAt: new Date('2025-04-12'),
+  },
 ];
 
 describe('operator integration tests', () => {
@@ -70,7 +70,7 @@ describe('operator integration tests', () => {
     it('filters products by price and category', () => {
       const result = filter(products, {
         price: { $gte: 100 },
-        category: 'Electronics'
+        category: 'Electronics',
       });
       expect(result).toHaveLength(2);
       expect(result.map((p) => p.name)).toEqual(['Laptop', 'Monitor']);
@@ -88,8 +88,8 @@ describe('operator integration tests', () => {
       const result = filter(products, {
         createdAt: {
           $gte: new Date('2025-02-01'),
-          $lte: new Date('2025-03-31')
-        }
+          $lte: new Date('2025-03-31'),
+        },
       });
       expect(result).toHaveLength(2);
       expect(result.map((p) => p.name)).toEqual(['Mouse', 'Desk']);
@@ -97,7 +97,7 @@ describe('operator integration tests', () => {
 
     it('filters out specific categories', () => {
       const result = filter(products, {
-        category: { $ne: 'Furniture' }
+        category: { $ne: 'Furniture' },
       });
       expect(result).toHaveLength(3);
       expect(result.every((p) => p.category === 'Electronics')).toBe(true);
@@ -107,7 +107,7 @@ describe('operator integration tests', () => {
       const result = filter(products, {
         price: { $lt: 500 },
         inStock: { $eq: true },
-        category: { $in: ['Electronics', 'Furniture'] }
+        category: { $in: ['Electronics', 'Furniture'] },
       });
       expect(result).toHaveLength(3);
       expect(result.map((p) => p.name)).toEqual(['Mouse', 'Chair', 'Monitor']);
@@ -116,7 +116,7 @@ describe('operator integration tests', () => {
     it('filters products by name pattern and price', () => {
       const result = filter(products, {
         name: { $startsWith: 'M' },
-        price: { $gt: 20 }
+        price: { $gt: 20 },
       });
       expect(result).toHaveLength(2);
       expect(result.map((p) => p.name)).toEqual(['Mouse', 'Monitor']);
@@ -124,7 +124,7 @@ describe('operator integration tests', () => {
 
     it('filters products not in specific ids', () => {
       const result = filter(products, {
-        id: { $nin: [1, 2, 3] }
+        id: { $nin: [1, 2, 3] },
       });
       expect(result).toHaveLength(2);
       expect(result.map((p) => p.name)).toEqual(['Chair', 'Monitor']);
@@ -133,7 +133,7 @@ describe('operator integration tests', () => {
     it('combines operators with array size check', () => {
       const result = filter(products, {
         tags: { $size: 2 },
-        inStock: { $eq: true }
+        inStock: { $eq: true },
       });
       expect(result).toHaveLength(4);
     });
@@ -143,7 +143,7 @@ describe('operator integration tests', () => {
     it('combines operator with simple equality', () => {
       const result = filter(products, {
         category: 'Electronics',
-        price: { $gte: 400 }
+        price: { $gte: 400 },
       });
       expect(result).toHaveLength(2);
       expect(result.map((p) => p.name)).toEqual(['Laptop', 'Monitor']);
@@ -152,7 +152,7 @@ describe('operator integration tests', () => {
     it('combines operator with wildcard pattern', () => {
       const result = filter(products, {
         name: 'M%',
-        price: { $lt: 100 }
+        price: { $lt: 100 },
       });
       expect(result).toHaveLength(1);
       expect(result[0].name).toBe('Mouse');
@@ -161,7 +161,7 @@ describe('operator integration tests', () => {
     it('combines operator with negation', () => {
       const result = filter(products, {
         category: '!Furniture',
-        price: { $gte: 100, $lte: 500 }
+        price: { $gte: 100, $lte: 500 },
       });
       expect(result).toHaveLength(1);
       expect(result.every((p) => p.category === 'Electronics')).toBe(true);
@@ -173,7 +173,7 @@ describe('operator integration tests', () => {
       const result = filter(products, {
         price: { $gte: 100, $lte: 500 },
         category: { $in: ['Electronics', 'Furniture'] },
-        name: { $startsWith: 'M' }
+        name: { $startsWith: 'M' },
       });
       expect(result).toHaveLength(1);
       expect(result[0].name).toBe('Monitor');
@@ -182,7 +182,7 @@ describe('operator integration tests', () => {
     it('handles multiple operator types on different properties', () => {
       const result = filter(products, {
         price: { $gt: 50, $lt: 500 },
-        tags: { $size: 2 }
+        tags: { $size: 2 },
       });
       expect(result).toHaveLength(3);
       expect(result.map((p) => p.name)).toEqual(['Desk', 'Chair', 'Monitor']);
@@ -192,7 +192,7 @@ describe('operator integration tests', () => {
       const result = filter(products, {
         createdAt: { $gte: new Date('2025-01-01') },
         price: { $lt: 300 },
-        inStock: { $eq: true }
+        inStock: { $eq: true },
       });
       expect(result).toHaveLength(2);
       expect(result.map((p) => p.name)).toEqual(['Mouse', 'Chair']);
@@ -201,46 +201,44 @@ describe('operator integration tests', () => {
 
   describe('edge cases and error handling', () => {
     it('handles empty arrays', () => {
-      const result = filter([], { price: { $gt: 100 } });
+      const result = filter([] as typeof products, { price: { $gt: 100 } });
       expect(result).toEqual([]);
     });
 
     it('handles no matching results', () => {
       const result = filter(products, {
-        price: { $gt: 10000 }
+        price: { $gt: 10000 },
       });
       expect(result).toEqual([]);
     });
 
     it('handles all items matching', () => {
       const result = filter(products, {
-        price: { $gt: 0 }
+        price: { $gt: 0 },
       });
       expect(result).toHaveLength(5);
     });
 
     it('handles multiple operators that create impossible condition', () => {
       const result = filter(products, {
-        price: { $gt: 500, $lt: 100 }
+        price: { $gt: 500, $lt: 100 },
       });
       expect(result).toEqual([]);
     });
 
     it('handles undefined properties gracefully', () => {
+      // Using type assertion to test handling of undefined properties
       const result = filter(products, {
-        description: { $contains: 'test' }
-      } as any);
+        // @ts-expect-error Testing undefined property handling
+        description: { $contains: 'test' },
+      });
       expect(result).toEqual([]);
     });
   });
 
   describe('operator with configuration options', () => {
     it('respects caseSensitive option with string operators', () => {
-      const result1 = filter(
-        products,
-        { name: { $startsWith: 'lap' } },
-        { caseSensitive: false }
-      );
+      const result1 = filter(products, { name: { $startsWith: 'lap' } }, { caseSensitive: false });
       expect(result1).toHaveLength(1);
 
       const result2 = filter(products, { name: { $startsWith: 'lap' } }, { caseSensitive: true });
@@ -252,8 +250,8 @@ describe('operator integration tests', () => {
         products,
         { price: { $gte: 100 } },
         {
-          customComparator: () => true
-        }
+          customComparator: () => true,
+        },
       );
       expect(result.length).toBeGreaterThan(0);
     });
@@ -270,4 +268,3 @@ describe('operator integration tests', () => {
     });
   });
 });
-
