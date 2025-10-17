@@ -215,9 +215,18 @@ After publish, verify:
 3. Git tag is pushed
 4. CHANGELOG is updated (Release Please workflow)
 
+## Version 4 Notes
+
+This setup uses `googleapis/release-please-action@v4` which:
+- Automatically detects package name from package.json
+- No longer requires `package-name` parameter
+- Uses simplified configuration
+- Supports manifest-based releases for monorepos
+
 ## Additional Resources
 
 - [Release Please Documentation](https://github.com/googleapis/release-please)
+- [Release Please Action](https://github.com/googleapis/release-please-action)
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [npm Publishing Guide](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry)
 
