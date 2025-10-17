@@ -1,34 +1,24 @@
-name: Publish to NPM
+name: Emergency Publish to NPM
 
 on:
-  release:
-    types: [published]
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version type (patch, minor, major)'
+      confirm:
+        description: 'Type "publish" to confirm emergency publish of current version'
         required: true
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
 
 permissions:
-  contents: write
   id-token: write
 
 jobs:
   publish:
-    name: 📦 Publish to NPM
+    name: 📦 Emergency Publish to NPM
     runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'publish'
 
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v4
@@ -42,7 +32,7 @@ jobs:
           version: 8
 
       - name: 📦 Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: 🔍 Type check
         run: pnpm run typecheck
@@ -69,13 +59,4 @@ jobs:
         run: pnpm publish --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: 📝 Create Git Tag
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          git tag -a "v${PACKAGE_VERSION}" -m "Release v${PACKAGE_VERSION}"
-          git push origin "v${PACKAGE_VERSION}"
 

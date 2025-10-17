@@ -77,34 +77,33 @@ git push origin main
 
 **Breaking Changes**: Add `BREAKING CHANGE:` in commit body to bump major version
 
-## Workflow 2: Manual Publish
+## Workflow 2: Emergency Publish
 
 **File**: `.github/workflows/npm-publish.yml`
 
-### Trigger Options
+### When to Use
 
-#### Option A: Workflow Dispatch (Manual)
+Use this workflow **only** for emergency situations when:
+- The automated Release Please workflow failed
+- You need to republish the current version
+- There's an urgent fix needed
+
+⚠️ **Note**: This workflow publishes the **current version** in package.json. For normal releases, use the Release Please workflow.
+
+### Usage
 
 1. Go to GitHub Actions tab
-2. Select "Publish to NPM" workflow
+2. Select "Emergency Publish to NPM" workflow
 3. Click "Run workflow"
-4. Select version type: `patch`, `minor`, or `major`
+4. Type **`publish`** in the confirmation field (exactly as shown)
 5. Click "Run workflow"
 
 This will:
-- Run all quality gates
-- Publish to npm
-- Create a git tag automatically
+- Run all quality gates (typecheck, lint, tests)
+- Build the package
+- Publish the current version to npm
 
-#### Option B: GitHub Release
-
-1. Go to repository "Releases" page
-2. Click "Draft a new release"
-3. Choose a tag version (e.g., `v4.1.0`)
-4. Fill in release title and description
-5. Click "Publish release"
-
-This will trigger the workflow and publish to npm.
+The workflow will **abort** if you don't type "publish" exactly.
 
 ## Quality Gates
 
@@ -192,13 +191,21 @@ This creates a `.tgz` file you can inspect.
 - Check if there are already unreleased changes
 - Try manually triggering with workflow_dispatch
 
-### Version Conflict
+### Version Already Exists on NPM
 
-**Issue**: Version in package.json already exists on npm
+**Issue**: Emergency publish fails because version already exists
 
 **Solution**:
-- Use Release Please workflow for automatic version management
-- Or manually bump version before running manual workflow
+- You cannot republish the same version to npm
+- Update the version in package.json manually
+- Commit and push the change
+- Then run emergency publish
+
+### Husky Fails During CI
+
+**Issue**: `pnpm install` fails trying to run husky
+
+**Solution**: The workflow now uses `--ignore-scripts` flag to skip husky setup in CI
 
 ## Version Strategy
 
