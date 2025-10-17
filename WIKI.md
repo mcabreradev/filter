@@ -552,13 +552,13 @@ filter(products, (product) =>
 
 // Date comparisons
 const orders = [
-  { id: 1, date: new Date('2024-01-15'), amount: 100 },
-  { id: 2, date: new Date('2024-02-20'), amount: 200 },
-  { id: 3, date: new Date('2024-03-10'), amount: 150 }
+  { id: 1, date: new Date('2025-01-15'), amount: 100 },
+  { id: 2, date: new Date('2025-02-20'), amount: 200 },
+  { id: 3, date: new Date('2025-03-10'), amount: 150 }
 ];
 
 filter(orders, (order) =>
-  order.date >= new Date('2024-02-01') &&
+  order.date >= new Date('2025-02-01') &&
   order.amount > 150
 );
 // → [{ id: 2, ... }]
@@ -632,12 +632,12 @@ filter(products, { price: { $gt: 100 } });
 
 // With dates
 const orders = [
-  { id: 1, date: new Date('2024-01-15') },
-  { id: 2, date: new Date('2024-02-20') },
-  { id: 3, date: new Date('2024-03-10') }
+  { id: 1, date: new Date('2025-01-15') },
+  { id: 2, date: new Date('2025-02-20') },
+  { id: 3, date: new Date('2025-03-10') }
 ];
 
-filter(orders, { date: { $gt: new Date('2024-02-01') } });
+filter(orders, { date: { $gt: new Date('2025-02-01') } });
 // → [{ id: 2, ... }, { id: 3, ... }]
 ```
 
@@ -649,7 +649,7 @@ filter(products, { price: { $gte: 150 } });
 
 // Date range start
 filter(orders, {
-  date: { $gte: new Date('2024-02-01') }
+  date: { $gte: new Date('2025-02-01') }
 });
 // → Includes orders from Feb 1st onwards
 ```
@@ -662,7 +662,7 @@ filter(products, { price: { $lt: 200 } });
 
 // Before a date
 filter(orders, {
-  date: { $lt: new Date('2024-03-01') }
+  date: { $lt: new Date('2025-03-01') }
 });
 // → Orders before March 1st
 ```
@@ -713,11 +713,11 @@ filter(products, {
 // Date range
 filter(orders, {
   date: {
-    $gte: new Date('2024-01-01'),
-    $lte: new Date('2024-02-29')
+    $gte: new Date('2025-01-01'),
+    $lte: new Date('2025-02-29')
   }
 });
-// → Orders in Q1 2024
+// → Orders in Q1 2025
 
 // Excluding boundaries
 filter(products, {
@@ -1178,16 +1178,16 @@ filter(products, {
 
 ```typescript
 const files = [
-  { name: 'report-2024.pdf', size: 1024 },
-  { name: 'image-2024.jpg', size: 2048 },
-  { name: 'video-2024.mp4', size: 10240 }
+  { name: 'report-2025.pdf', size: 1024 },
+  { name: 'image-2025.jpg', size: 2048 },
+  { name: 'video-2025.mp4', size: 10240 }
 ];
 
 filter(files, {
-  name: '%2024%',           // Wildcard
+  name: '%2025%',           // Wildcard
   size: { $lt: 5000 }       // Operator
 });
-// → [{ name: 'report-2024.pdf', ... }, { name: 'image-2024.jpg', ... }]
+// → [{ name: 'report-2025.pdf', ... }, { name: 'image-2025.jpg', ... }]
 ```
 
 ### Operators + Negation
@@ -1449,7 +1449,7 @@ const products: Product[] = [
     tags: ['laptop', 'gaming', 'professional'],
     discount: 10,
     images: ['img1.jpg', 'img2.jpg'],
-    createdAt: new Date('2024-01-15')
+    createdAt: new Date('2025-01-15')
   },
   // ... more products
 ];
@@ -1588,8 +1588,8 @@ const highValueTransactions = filter(transactions, {
 const failedPayments = filter(transactions, {
   status: 'failed',
   date: {
-    $gte: new Date('2024-01-01'),
-    $lte: new Date('2024-12-31')
+    $gte: new Date('2025-01-01'),
+    $lte: new Date('2025-12-31')
   }
 });
 
@@ -1614,8 +1614,8 @@ const cardPayments = filter(transactions, {
 // Monthly revenue (Q1 example)
 const q1Revenue = filter(transactions, {
   date: {
-    $gte: new Date('2024-01-01'),
-    $lte: new Date('2024-03-31')
+    $gte: new Date('2025-01-01'),
+    $lte: new Date('2025-03-31')
   },
   status: 'completed'
 });
@@ -1653,7 +1653,7 @@ const advancedSearch = filter(articles, {
   title: { $contains: 'typescript' },
   category: { $in: ['Technology', 'Programming'] },
   status: 'published',
-  publishDate: { $gte: new Date('2024-01-01') },
+  publishDate: { $gte: new Date('2025-01-01') },
   views: { $gte: 1000 }
 });
 
@@ -1673,7 +1673,7 @@ const taggedArticles = filter(articles, {
 // Recent articles by author
 const authorArticles = filter(articles, {
   author: { $startsWith: 'John' },
-  publishDate: { $gte: new Date('2024-01-01') },
+  publishDate: { $gte: new Date('2025-01-01') },
   status: 'published'
 });
 ```
@@ -2601,8 +2601,8 @@ const results = filter(products, loaded);
 ### How do I filter by date ranges?
 
 ```typescript
-const startDate = new Date('2024-01-01');
-const endDate = new Date('2024-12-31');
+const startDate = new Date('2025-01-01');
+const endDate = new Date('2025-12-31');
 
 const results = filter(orders, {
   date: {
@@ -2864,7 +2864,7 @@ We love hearing your ideas! Open an issue with:
 
 ## Version History
 
-### v4.0.0 (Latest - October 2024)
+### v4.0.0 (Latest - October 2025)
 
 **Major Features:**
 - 13 MongoDB-style operators ($gt, $gte, $lt, $lte, $eq, $ne, $in, $nin, $contains, $size, $startsWith, $endsWith)
@@ -2910,7 +2910,7 @@ See [MIGRATION.md](./MIGRATION.md) for detailed migration instructions.
 
 MIT License - see [LICENSE.md](./LICENSE.md) for details.
 
-Copyright (c) 2024 Miguelangel Cabrera
+Copyright (c) 2025 Miguelangel Cabrera
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -2950,5 +2950,5 @@ If you find this library useful, please consider giving it a star on [GitHub](ht
 
 ---
 
-*Last updated: October 2024 | Version 4.0.0*
+*Last updated: October 2025 | Version 4.0.0*
 

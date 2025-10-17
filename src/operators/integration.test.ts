@@ -19,7 +19,7 @@ const products: Product[] = [
     category: 'Electronics',
     tags: ['computer', 'portable'],
     inStock: true,
-    createdAt: new Date('2024-01-15')
+    createdAt: new Date('2025-01-15')
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const products: Product[] = [
     category: 'Electronics',
     tags: ['computer', 'accessory'],
     inStock: true,
-    createdAt: new Date('2024-02-20')
+    createdAt: new Date('2025-02-20')
   },
   {
     id: 3,
@@ -37,7 +37,7 @@ const products: Product[] = [
     category: 'Furniture',
     tags: ['office', 'large'],
     inStock: false,
-    createdAt: new Date('2024-03-10')
+    createdAt: new Date('2025-03-10')
   },
   {
     id: 4,
@@ -46,7 +46,7 @@ const products: Product[] = [
     category: 'Furniture',
     tags: ['office', 'ergonomic'],
     inStock: true,
-    createdAt: new Date('2024-01-05')
+    createdAt: new Date('2025-01-05')
   },
   {
     id: 5,
@@ -55,7 +55,7 @@ const products: Product[] = [
     category: 'Electronics',
     tags: ['computer', 'display'],
     inStock: true,
-    createdAt: new Date('2024-04-12')
+    createdAt: new Date('2025-04-12')
   }
 ];
 
@@ -87,8 +87,8 @@ describe('operator integration tests', () => {
     it('filters products by date range', () => {
       const result = filter(products, {
         createdAt: {
-          $gte: new Date('2024-02-01'),
-          $lte: new Date('2024-03-31')
+          $gte: new Date('2025-02-01'),
+          $lte: new Date('2025-03-31')
         }
       });
       expect(result).toHaveLength(2);
@@ -190,7 +190,7 @@ describe('operator integration tests', () => {
 
     it('filters with date, number, and boolean operators', () => {
       const result = filter(products, {
-        createdAt: { $gte: new Date('2024-01-01') },
+        createdAt: { $gte: new Date('2025-01-01') },
         price: { $lt: 300 },
         inStock: { $eq: true }
       });

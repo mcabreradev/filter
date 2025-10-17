@@ -80,15 +80,15 @@ All comparison operators work with dates:
 
 ```typescript
 const orders = [
-  { id: 1, date: new Date('2024-01-15') },
-  { id: 2, date: new Date('2024-02-20') },
-  { id: 3, date: new Date('2024-03-10') }
+  { id: 1, date: new Date('2025-01-15') },
+  { id: 2, date: new Date('2025-02-20') },
+  { id: 3, date: new Date('2025-03-10') }
 ];
 
 filter(orders, {
   date: {
-    $gte: new Date('2024-02-01'),
-    $lte: new Date('2024-03-31')
+    $gte: new Date('2025-02-01'),
+    $lte: new Date('2025-03-31')
   }
 });
 // → Returns: orders 2 and 3
@@ -328,8 +328,8 @@ const users: User[] = [
 filter(users, {
   age: { $gte: 18 },
   createdAt: {
-    $gte: new Date('2024-01-01'),
-    $lte: new Date('2024-12-31')
+    $gte: new Date('2025-01-01'),
+    $lte: new Date('2025-12-31')
   }
 });
 
@@ -364,8 +364,8 @@ const orders: Order[] = [
 filter(orders, {
   amount: { $gte: 1000 },
   orderDate: {
-    $gte: new Date('2024-01-01'),
-    $lte: new Date('2024-03-31')
+    $gte: new Date('2025-01-01'),
+    $lte: new Date('2025-03-31')
   },
   status: { $in: ['completed', 'shipped'] }
 });

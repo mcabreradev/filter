@@ -20,7 +20,7 @@ const products: Product[] = [
     tags: ['computer', 'portable', 'gaming'],
     inStock: true,
     rating: 4.5,
-    createdAt: new Date('2024-01-15')
+    createdAt: new Date('2025-01-15')
   },
   {
     id: 2,
@@ -30,7 +30,7 @@ const products: Product[] = [
     tags: ['computer', 'wireless'],
     inStock: true,
     rating: 4.0,
-    createdAt: new Date('2024-02-20')
+    createdAt: new Date('2025-02-20')
   },
   {
     id: 3,
@@ -40,7 +40,7 @@ const products: Product[] = [
     tags: ['office', 'large'],
     inStock: false,
     rating: 4.2,
-    createdAt: new Date('2024-03-10')
+    createdAt: new Date('2025-03-10')
   },
   {
     id: 4,
@@ -50,7 +50,7 @@ const products: Product[] = [
     tags: ['office', 'ergonomic'],
     inStock: true,
     rating: 4.8,
-    createdAt: new Date('2024-01-05')
+    createdAt: new Date('2025-01-05')
   },
   {
     id: 5,
@@ -60,7 +60,7 @@ const products: Product[] = [
     tags: ['computer', 'display', '4k'],
     inStock: true,
     rating: 4.7,
-    createdAt: new Date('2024-04-12')
+    createdAt: new Date('2025-04-12')
   }
 ];
 
@@ -81,9 +81,9 @@ console.log(
   filter(products, { price: { $ne: 25 } }).map((p) => `${p.name} ($${p.price})`)
 );
 
-console.log('\n4. Find products created after Feb 1, 2024:');
+console.log('\n4. Find products created after Feb 1, 2025:');
 console.log(
-  filter(products, { createdAt: { $gt: new Date('2024-02-01') } }).map(
+  filter(products, { createdAt: { $gt: new Date('2025-02-01') } }).map(
     (p) => `${p.name} (${p.createdAt.toLocaleDateString()})`
   )
 );

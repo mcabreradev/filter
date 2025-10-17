@@ -16,8 +16,8 @@ describe('comparison operators', () => {
     });
 
     it('works with dates', () => {
-      const date1 = new Date('2024-01-01');
-      const date2 = new Date('2024-01-02');
+      const date1 = new Date('2025-01-01');
+      const date2 = new Date('2025-01-02');
       expect(applyComparisonOperators(date2, { $gt: date1 })).toBe(true);
       expect(applyComparisonOperators(date1, { $gt: date2 })).toBe(false);
     });
@@ -37,7 +37,7 @@ describe('comparison operators', () => {
     });
 
     it('works with dates', () => {
-      const date = new Date('2024-01-01');
+      const date = new Date('2025-01-01');
       expect(applyComparisonOperators(date, { $gte: date })).toBe(true);
     });
   });
@@ -56,8 +56,8 @@ describe('comparison operators', () => {
     });
 
     it('works with dates', () => {
-      const date1 = new Date('2024-01-01');
-      const date2 = new Date('2024-01-02');
+      const date1 = new Date('2025-01-01');
+      const date2 = new Date('2025-01-02');
       expect(applyComparisonOperators(date1, { $lt: date2 })).toBe(true);
       expect(applyComparisonOperators(date2, { $lt: date1 })).toBe(false);
     });
@@ -77,7 +77,7 @@ describe('comparison operators', () => {
     });
 
     it('works with dates', () => {
-      const date = new Date('2024-01-01');
+      const date = new Date('2025-01-01');
       expect(applyComparisonOperators(date, { $lte: date })).toBe(true);
     });
   });
@@ -120,9 +120,9 @@ describe('comparison operators', () => {
     });
 
     it('handles date ranges', () => {
-      const start = new Date('2024-01-01');
-      const end = new Date('2024-12-31');
-      const midDate = new Date('2024-06-15');
+      const start = new Date('2025-01-01');
+      const end = new Date('2025-12-31');
+      const midDate = new Date('2025-06-15');
 
       expect(applyComparisonOperators(midDate, { $gte: start, $lte: end })).toBe(true);
       expect(applyComparisonOperators(new Date('2023-12-31'), { $gte: start, $lte: end })).toBe(
