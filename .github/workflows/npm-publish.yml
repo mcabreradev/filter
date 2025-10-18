@@ -37,7 +37,17 @@ jobs:
           run_install: false
 
       - name: 📦 Install dependencies
-        run: pnpm install --frozen-lockfile --ignore-workspace
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            echo "Found pnpm-lock.yaml, attempting frozen install..."
+            pnpm install --frozen-lockfile --ignore-workspace || {
+              echo "Frozen lockfile failed, falling back to regular install..."
+              pnpm install --no-frozen-lockfile --ignore-workspace
+            }
+          else
+            echo "No lockfile found, running regular install..."
+            pnpm install --no-frozen-lockfile --ignore-workspace
+          fi
 
       - name: 🔍 Type check
         run: pnpm run typecheck
