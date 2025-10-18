@@ -79,12 +79,12 @@ describe('string operators', () => {
 
   describe('combined operators', () => {
     it('handles $startsWith and $endsWith together', () => {
-      expect(applyStringOperators('hello world', { $startsWith: 'hello', $endsWith: 'world' })).toBe(
-        true
-      );
-      expect(applyStringOperators('hello world', { $startsWith: 'world', $endsWith: 'hello' })).toBe(
-        false
-      );
+      expect(
+        applyStringOperators('hello world', { $startsWith: 'hello', $endsWith: 'world' }),
+      ).toBe(true);
+      expect(
+        applyStringOperators('hello world', { $startsWith: 'world', $endsWith: 'hello' }),
+      ).toBe(false);
     });
 
     it('handles all three operators together', () => {
@@ -92,16 +92,16 @@ describe('string operators', () => {
         applyStringOperators(
           'hello beautiful world',
           { $startsWith: 'hello', $contains: 'beautiful', $endsWith: 'world' },
-          false
-        )
+          false,
+        ),
       ).toBe(true);
 
       expect(
         applyStringOperators(
           'hello world',
           { $startsWith: 'hello', $contains: 'beautiful', $endsWith: 'world' },
-          false
-        )
+          false,
+        ),
       ).toBe(false);
     });
 
@@ -112,16 +112,16 @@ describe('string operators', () => {
         applyStringOperators(
           text,
           { $startsWith: 'hello', $contains: 'beautiful', $endsWith: 'world' },
-          false
-        )
+          false,
+        ),
       ).toBe(true);
 
       expect(
         applyStringOperators(
           text,
           { $startsWith: 'hello', $contains: 'beautiful', $endsWith: 'world' },
-          true
-        )
+          true,
+        ),
       ).toBe(false);
     });
   });
@@ -133,7 +133,7 @@ describe('string operators', () => {
 
     it('returns false if any operator fails', () => {
       expect(applyStringOperators('hello world', { $startsWith: 'hello', $endsWith: 'xyz' })).toBe(
-        false
+        false,
       );
     });
 
@@ -148,4 +148,3 @@ describe('string operators', () => {
     });
   });
 });
-

@@ -11,7 +11,7 @@ export const comparisonOperatorSchema = z
     $lt: z.union([z.number(), z.date()]).optional(),
     $lte: z.union([z.number(), z.date()]).optional(),
     $eq: z.any().optional(),
-    $ne: z.any().optional()
+    $ne: z.any().optional(),
   })
   .strict();
 
@@ -20,7 +20,7 @@ export const arrayOperatorSchema = z
     $in: z.array(z.any()).optional(),
     $nin: z.array(z.any()).optional(),
     $contains: z.any().optional(),
-    $size: z.number().optional()
+    $size: z.number().optional(),
   })
   .strict();
 
@@ -28,7 +28,7 @@ export const stringOperatorSchema = z
   .object({
     $startsWith: z.string().optional(),
     $endsWith: z.string().optional(),
-    $contains: z.string().optional()
+    $contains: z.string().optional(),
   })
   .strict();
 
@@ -36,7 +36,7 @@ export const operatorExpressionSchema = z.union([
   comparisonOperatorSchema,
   arrayOperatorSchema,
   stringOperatorSchema,
-  comparisonOperatorSchema.merge(arrayOperatorSchema).merge(stringOperatorSchema)
+  comparisonOperatorSchema.merge(arrayOperatorSchema).merge(stringOperatorSchema),
 ]);
 
 export const objectExpressionSchema = z.record(z.any());
@@ -45,7 +45,7 @@ export const expressionSchema = z.union([
   primitiveSchema,
   predicateFunctionSchema,
   objectExpressionSchema,
-  operatorExpressionSchema
+  operatorExpressionSchema,
 ]);
 
 export const filterOptionsSchema = z
@@ -53,7 +53,6 @@ export const filterOptionsSchema = z
     caseSensitive: z.boolean().optional(),
     maxDepth: z.number().min(1).max(10).optional(),
     customComparator: z.function().optional(),
-    enableCache: z.boolean().optional()
+    enableCache: z.boolean().optional(),
   })
   .optional();
-

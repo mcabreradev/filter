@@ -3,7 +3,7 @@ import { hasWildcard, createWildcardRegex, hasNegation, removeNegation } from '.
 
 export function createStringPredicate<T>(
   expression: string,
-  config: FilterConfig
+  config: FilterConfig,
 ): (item: T) => boolean {
   if (hasNegation(expression)) {
     const cleanExpression = removeNegation(expression);
@@ -67,4 +67,3 @@ export function createStringPredicate<T>(
     });
   };
 }
-

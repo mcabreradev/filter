@@ -126,7 +126,7 @@ describe('comparison operators', () => {
 
       expect(applyComparisonOperators(midDate, { $gte: start, $lte: end })).toBe(true);
       expect(applyComparisonOperators(new Date('2023-12-31'), { $gte: start, $lte: end })).toBe(
-        false
+        false,
       );
     });
   });
@@ -151,4 +151,3 @@ describe('comparison operators', () => {
     });
   });
 });
-

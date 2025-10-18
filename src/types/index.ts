@@ -2,7 +2,7 @@ export type {
   PrimitiveExpression,
   PredicateFunction,
   ObjectExpression,
-  Expression
+  Expression,
 } from './expression.types';
 
 export type { FilterConfig, Comparator, FilterOptions } from './config.types';
@@ -12,6 +12,5 @@ export type {
   ArrayOperators,
   StringOperators,
   OperatorExpression,
-  ExtendedObjectExpression
+  ExtendedObjectExpression,
 } from './operators.types';
-

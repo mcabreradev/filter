@@ -60,4 +60,3 @@ describe('FilterCache', () => {
     expect(cache.get(array, 'key')).toBeUndefined();
   });
 });
-

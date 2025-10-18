@@ -10,13 +10,22 @@ export function compareAgainstAnyProperty(
   config: FilterConfig,
   anyPropertyKey: string,
   dontMatchWholeObject: boolean,
-  currentDepth: number
+  currentDepth: number,
 ): boolean {
   for (const key in actual) {
     if (
       key.charAt &&
       key.charAt(0) !== ANY_PROPERTY_KEY &&
-      deepCompare(actual[key], expected, comparator, config, anyPropertyKey, true, false, currentDepth + 1)
+      deepCompare(
+        actual[key],
+        expected,
+        comparator,
+        config,
+        anyPropertyKey,
+        true,
+        false,
+        currentDepth + 1,
+      )
     ) {
       return true;
     }
@@ -24,7 +33,16 @@ export function compareAgainstAnyProperty(
 
   return dontMatchWholeObject
     ? false
-    : deepCompare(actual, expected, comparator, config, anyPropertyKey, false, false, currentDepth + 1);
+    : deepCompare(
+        actual,
+        expected,
+        comparator,
+        config,
+        anyPropertyKey,
+        false,
+        false,
+        currentDepth + 1,
+      );
 }
 
 export function compareAllProperties(
@@ -33,7 +51,7 @@ export function compareAllProperties(
   comparator: Comparator,
   config: FilterConfig,
   anyPropertyKey: string,
-  currentDepth: number
+  currentDepth: number,
 ): boolean {
   for (const key in expected) {
     const expectedVal = expected[key];
@@ -52,7 +70,7 @@ export function compareAllProperties(
         anyPropertyKey,
         matchAnyProperty,
         matchAnyProperty,
-        currentDepth + 1
+        currentDepth + 1,
       )
     ) {
       return false;
@@ -61,4 +79,3 @@ export function compareAllProperties(
 
   return true;
 }
-

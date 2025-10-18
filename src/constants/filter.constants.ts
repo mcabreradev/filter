@@ -7,7 +7,7 @@ export const TYPE_NAMES = {
   STRING: 'string',
   OBJECT: 'object',
   FUNCTION: 'function',
-  UNDEFINED: 'undefined'
+  UNDEFINED: 'undefined',
 } as const;
 
 export const WILDCARD_PERCENT = '%';
@@ -27,7 +27,7 @@ export const OPERATORS = {
   CONTAINS: '$contains',
   SIZE: '$size',
   STARTS_WITH: '$startsWith',
-  ENDS_WITH: '$endsWith'
+  ENDS_WITH: '$endsWith',
 } as const;
 
 export const OPERATOR_KEYS = Object.values(OPERATORS);
@@ -35,6 +35,5 @@ export const OPERATOR_KEYS = Object.values(OPERATORS);
 export const DEFAULT_CONFIG: FilterConfig = {
   caseSensitive: false,
   maxDepth: 3,
-  enableCache: false
+  enableCache: false,
 };
-

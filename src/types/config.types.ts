@@ -8,4 +8,3 @@ export interface FilterConfig {
 export type Comparator = (actual: unknown, expected: unknown) => boolean;
 
 export type FilterOptions = Partial<FilterConfig>;
-

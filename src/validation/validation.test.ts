@@ -82,10 +82,9 @@ describe('validation', () => {
         caseSensitive: true,
         maxDepth: 3,
         enableCache: true,
-        customComparator: (a: unknown, b: unknown): boolean => a === b
+        customComparator: (a: unknown, b: unknown): boolean => a === b,
       };
       expect(() => validateOptions(options)).not.toThrow();
     });
   });
 });
-

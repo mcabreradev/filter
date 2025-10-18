@@ -6,6 +6,5 @@ export {
   ANY_PROPERTY_KEY,
   OPERATORS,
   OPERATOR_KEYS,
-  DEFAULT_CONFIG
+  DEFAULT_CONFIG,
 } from './filter.constants';
-

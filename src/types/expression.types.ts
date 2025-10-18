@@ -13,4 +13,3 @@ export type Expression<T> =
   | PredicateFunction<T>
   | ObjectExpression<T>
   | ExtendedObjectExpression<T>;
-

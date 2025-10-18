@@ -6,7 +6,7 @@ export {
   isPrimitive,
   isPredicateFunction,
   getTypeForFilter,
-  hasCustomToString
+  hasCustomToString,
 } from './type-guards';
 
 export {
@@ -14,7 +14,7 @@ export {
   createWildcardRegex,
   getCachedRegex,
   hasNegation,
-  removeNegation
+  removeNegation,
 } from './pattern-matching';
 
 export { lowercase, equals } from './string-helpers';
@@ -22,4 +22,3 @@ export { lowercase, equals } from './string-helpers';
 export { FilterCache } from './cache';
 
 export { isOperatorExpression, hasOperator } from './operator-detection';
-

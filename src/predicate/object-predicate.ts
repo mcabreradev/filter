@@ -6,13 +6,13 @@ import {
   removeNegation,
   isString,
   isObject,
-  isOperatorExpression
+  isOperatorExpression,
 } from '../utils';
 import { processOperators } from '../operators';
 
 export function createObjectPredicate<T>(
   expression: Record<string, unknown>,
-  config: FilterConfig
+  config: FilterConfig,
 ): (item: T) => boolean {
   return function (item: T): boolean {
     for (const key in expression) {
@@ -49,4 +49,3 @@ export function createObjectPredicate<T>(
     return true;
   };
 }
-

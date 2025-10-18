@@ -1,9 +1,6 @@
 import type { ArrayOperators } from '../types';
 
-export const applyArrayOperators = (
-  value: unknown,
-  operators: ArrayOperators
-): boolean => {
+export const applyArrayOperators = (value: unknown, operators: ArrayOperators): boolean => {
   if (operators.$in !== undefined) {
     if (!operators.$in.includes(value)) return false;
   }
@@ -24,4 +21,3 @@ export const applyArrayOperators = (
 
   return true;
 };
-

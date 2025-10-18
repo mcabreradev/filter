@@ -3,7 +3,7 @@ import {
   comparisonOperatorSchema,
   arrayOperatorSchema,
   stringOperatorSchema,
-  operatorExpressionSchema
+  operatorExpressionSchema,
 } from './schemas';
 
 describe('operator validation', () => {
@@ -47,7 +47,7 @@ describe('operator validation', () => {
     it('validates combined comparison operators', () => {
       const result = comparisonOperatorSchema.safeParse({
         $gte: 10,
-        $lte: 100
+        $lte: 100,
       });
       expect(result.success).toBe(true);
     });
@@ -102,7 +102,7 @@ describe('operator validation', () => {
     it('validates combined array operators', () => {
       const result = arrayOperatorSchema.safeParse({
         $contains: 'test',
-        $size: 5
+        $size: 5,
       });
       expect(result.success).toBe(true);
     });
@@ -147,7 +147,7 @@ describe('operator validation', () => {
     it('validates combined string operators', () => {
       const result = stringOperatorSchema.safeParse({
         $startsWith: 'hello',
-        $endsWith: 'world'
+        $endsWith: 'world',
       });
       expect(result.success).toBe(true);
     });
@@ -155,7 +155,7 @@ describe('operator validation', () => {
     it('allows empty string values', () => {
       const result = stringOperatorSchema.safeParse({
         $startsWith: '',
-        $contains: ''
+        $contains: '',
       });
       expect(result.success).toBe(true);
     });
@@ -170,7 +170,7 @@ describe('operator validation', () => {
     it('validates comparison operators only', () => {
       const result = operatorExpressionSchema.safeParse({
         $gte: 10,
-        $lte: 100
+        $lte: 100,
       });
       expect(result.success).toBe(true);
     });
@@ -178,7 +178,7 @@ describe('operator validation', () => {
     it('validates array operators only', () => {
       const result = operatorExpressionSchema.safeParse({
         $in: [1, 2, 3],
-        $size: 3
+        $size: 3,
       });
       expect(result.success).toBe(true);
     });
@@ -186,7 +186,7 @@ describe('operator validation', () => {
     it('validates string operators only', () => {
       const result = operatorExpressionSchema.safeParse({
         $startsWith: 'hello',
-        $endsWith: 'world'
+        $endsWith: 'world',
       });
       expect(result.success).toBe(true);
     });
@@ -195,7 +195,7 @@ describe('operator validation', () => {
       const result = operatorExpressionSchema.safeParse({
         $gte: 10,
         $in: [1, 2, 3],
-        $startsWith: 'test'
+        $startsWith: 'test',
       });
       expect(result.success).toBe(true);
     });
@@ -203,14 +203,14 @@ describe('operator validation', () => {
     it('rejects invalid operator combinations', () => {
       const result = operatorExpressionSchema.safeParse({
         $gt: 'not-a-number',
-        $in: 'not-an-array'
+        $in: 'not-an-array',
       });
       expect(result.success).toBe(false);
     });
 
     it('rejects unknown operators', () => {
       const result = operatorExpressionSchema.safeParse({
-        $unknown: 'value'
+        $unknown: 'value',
       });
       expect(result.success).toBe(false);
     });
@@ -225,14 +225,14 @@ describe('operator validation', () => {
     it('validates price range query', () => {
       const result = operatorExpressionSchema.safeParse({
         $gte: 100,
-        $lte: 500
+        $lte: 500,
       });
       expect(result.success).toBe(true);
     });
 
     it('validates category filter with $in', () => {
       const result = operatorExpressionSchema.safeParse({
-        $in: ['Electronics', 'Furniture', 'Books']
+        $in: ['Electronics', 'Furniture', 'Books'],
       });
       expect(result.success).toBe(true);
     });
@@ -240,7 +240,7 @@ describe('operator validation', () => {
     it('validates name search with string operators', () => {
       const result = operatorExpressionSchema.safeParse({
         $startsWith: 'Pro',
-        $contains: 'laptop'
+        $contains: 'laptop',
       });
       expect(result.success).toBe(true);
     });
@@ -248,7 +248,7 @@ describe('operator validation', () => {
     it('validates date range with comparison operators', () => {
       const result = operatorExpressionSchema.safeParse({
         $gte: new Date('2025-01-01'),
-        $lte: new Date('2025-12-31')
+        $lte: new Date('2025-12-31'),
       });
       expect(result.success).toBe(true);
     });
@@ -258,10 +258,9 @@ describe('operator validation', () => {
         $gte: 100,
         $lt: 1000,
         $ne: 500,
-        $nin: [250, 750]
+        $nin: [250, 750],
       });
       expect(result.success).toBe(true);
     });
   });
 });
-

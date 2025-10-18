@@ -9,7 +9,7 @@ export type {
   ObjectExpression,
   FilterConfig,
   FilterOptions,
-  Comparator
+  Comparator,
 } from './types';
 
 export { validateExpression, validateOptions } from './validation';
