@@ -1,8 +1,8 @@
 {
   "name": "@mcabreradev/filter",
-  "version": "5.0.0",
+  "version": "4.0.0",
   "type": "module",
-  "description": "Filters an array based on the provided expression, a helper for complex array filtering",
+  "description": "A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies",
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
@@ -57,7 +57,18 @@
     "node-js",
     "next-js",
     "next",
-    "array-methods"
+    "array-methods",
+    "mongodb",
+    "sql",
+    "pattern-matching",
+    "object-comparison",
+    "zero-dependencies",
+    "typescript",
+    "javascript",
+    "nodejs",
+    "react",
+    "nextjs",
+    "reactjs"
   ],
   "author": "Miguelangel Cabrera",
   "license": "MIT",
