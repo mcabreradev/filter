@@ -2,7 +2,6 @@
   "name": "@mcabreradev/filter",
   "version": "4.0.0",
   "type": "module",
-  "packageManager": "pnpm@9.0.0",
   "description": "A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies",
   "scripts": {
     "build": "tsc",
