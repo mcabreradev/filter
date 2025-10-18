@@ -1,6 +1,6 @@
-# Operators Guide (v4.0.0)
+# Operators Guide (v5.0.0)
 
-This guide covers all the MongoDB-style operators available in `@mcabreradev/filter` v4.0.0.
+This guide covers all the MongoDB-style operators available in `@mcabreradev/filter` v5.0.0.
 
 ## Table of Contents
 
@@ -408,7 +408,7 @@ const nameFilter: StringOperators = {
 
 ## Migration from v3.x
 
-Operators are a **new feature** in v4.0.0 and are 100% backward compatible. All existing v3.x syntax continues to work:
+Operators are a **new feature** in v5.0.0 and are 100% backward compatible. All existing v3.x syntax continues to work:
 
 ```typescript
 // v3.x syntax still works
@@ -416,7 +416,7 @@ filter(users, 'Berlin');
 filter(users, { city: 'Berlin' });
 filter(users, (u) => u.age > 25);
 
-// v4.0.0 new operator syntax
+// v5.0.0 new operator syntax
 filter(users, { age: { $gt: 25 } });
 ```
 

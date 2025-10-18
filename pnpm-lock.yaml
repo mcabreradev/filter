@@ -218,7 +218,7 @@ packages:
 
   '@eslint-community/regexpp@4.12.1':
     resolution: {integrity: sha512-CCZCDJuduB9OUkFkY2IgppNZMi2lBQgD2qzwXkEia16cge2pijY/aXi96CJMquDMn3nJdlPV1A5KrJEXwfLNzQ==}
-    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
+    engines: {node: ^12.0.0 || ^15.0.0 || >=16.0.0}
 
   '@eslint/config-array@0.21.1':
     resolution: {integrity: sha512-aw1gNayWpdI/jSYVgzN5pL0cfzU02GT3NBpeT/DXbx1/1x7ZKxFPd9bwrzygx/qiwIQiJ1sw/zD8qY/kRvlGHA==}
@@ -797,7 +797,7 @@ packages:
     engines: {node: '>=12'}
     hasBin: true
 
-  escape-string-regexp@4.0.0:
+  escape-string-regexp@5.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
 
@@ -965,7 +965,7 @@ packages:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
     hasBin: true
 
-  globals@14.0.0:
+  globals@15.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
@@ -984,7 +984,7 @@ packages:
     resolution: {integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg==}
     engines: {node: '>= 0.4'}
 
-  has-flag@4.0.0:
+  has-flag@5.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
@@ -1242,7 +1242,7 @@ packages:
   magicast@0.3.5:
     resolution: {integrity: sha512-L0WhttDl+2BOsybvEOLK7fW3UA0OQ0IQ2d6Zl2x/a6vVRs3bAY0ECOSHHeL5jD+SbOpOCUEi0y1DgHEn9Qn1AQ==}
 
-  make-dir@4.0.0:
+  make-dir@5.0.0:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
 
@@ -1400,7 +1400,7 @@ packages:
   parse-entities@2.0.0:
     resolution: {integrity: sha512-kkywGpCcRYhqQIchaWqZ875wzpS/bMKhz5HnN3p7wveJTkTtyAB/AlnS0f8DFSqYW1T82t6yEAkEcB+A1I3MbQ==}
 
-  path-exists@4.0.0:
+  path-exists@5.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
 
@@ -1483,7 +1483,7 @@ packages:
     resolution: {integrity: sha512-PV0dzCYDNfRi1jCDbJzpW7jNNDRuCOG/jI5ctQcGKt/clZD+YcPS3yIlWuTJMmESC8aevCFmWJy5wjAFgNqN6w==}
     engines: {node: '>=0.10'}
 
-  resolve-from@4.0.0:
+  resolve-from@5.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
 
@@ -1656,11 +1656,11 @@ packages:
 
   tinyrainbow@1.2.0:
     resolution: {integrity: sha512-weEDEq7Z5eTHPDh4xjX789+fHfF+P8boiFB+0vbWzpbnbsEr/GRaohi/uMKxg8RZMXnl1ItAi/IUHWMsjDV7kQ==}
-    engines: {node: '>=14.0.0'}
+    engines: {node: '>=15.0.0'}
 
   tinyspy@3.0.2:
     resolution: {integrity: sha512-n1cw8k1k0x4pgA2+9XrOkFydTerNcJ1zWCO5Nn9scWHTD+5tp8dghT2x1uduQePZTZgd3Tupf+x9BxJjeJi77Q==}
-    engines: {node: '>=14.0.0'}
+    engines: {node: '>=15.0.0'}
 
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
@@ -1980,7 +1980,7 @@ snapshots:
       ajv: 6.12.6
       debug: 4.4.3
       espree: 10.4.0
-      globals: 14.0.0
+      globals: 15.0.0
       ignore: 5.3.2
       import-fresh: 3.3.1
       js-yaml: 4.1.0
@@ -2644,7 +2644,7 @@ snapshots:
       '@esbuild/win32-ia32': 0.21.5
       '@esbuild/win32-x64': 0.21.5
 
-  escape-string-regexp@4.0.0: {}
+  escape-string-regexp@5.0.0: {}
 
   eslint-scope@8.4.0:
     dependencies:
@@ -2673,7 +2673,7 @@ snapshots:
       chalk: 4.1.2
       cross-spawn: 7.0.6
       debug: 4.4.3
-      escape-string-regexp: 4.0.0
+      escape-string-regexp: 5.0.0
       eslint-scope: 8.4.0
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
@@ -2761,7 +2761,7 @@ snapshots:
   find-up@5.0.0:
     dependencies:
       locate-path: 6.0.0
-      path-exists: 4.0.0
+      path-exists: 5.0.0
 
   flat-cache@4.0.1:
     dependencies:
@@ -2842,7 +2842,7 @@ snapshots:
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
 
-  globals@14.0.0: {}
+  globals@15.0.0: {}
 
   globalthis@1.0.4:
     dependencies:
@@ -2855,7 +2855,7 @@ snapshots:
 
   has-bigints@1.1.0: {}
 
-  has-flag@4.0.0: {}
+  has-flag@5.0.0: {}
 
   has-property-descriptors@1.0.2:
     dependencies:
@@ -2893,7 +2893,7 @@ snapshots:
   import-fresh@3.3.1:
     dependencies:
       parent-module: 1.0.1
-      resolve-from: 4.0.0
+      resolve-from: 5.0.0
 
   imurmurhash@0.1.4: {}
 
@@ -3037,7 +3037,7 @@ snapshots:
   istanbul-lib-report@3.0.1:
     dependencies:
       istanbul-lib-coverage: 3.2.2
-      make-dir: 4.0.0
+      make-dir: 5.0.0
       supports-color: 7.2.0
 
   istanbul-lib-source-maps@5.0.6:
@@ -3127,7 +3127,7 @@ snapshots:
       '@babel/types': 7.28.4
       source-map-js: 1.2.1
 
-  make-dir@4.0.0:
+  make-dir@5.0.0:
     dependencies:
       semver: 7.7.3
 
@@ -3139,7 +3139,7 @@ snapshots:
 
   mdast-util-find-and-replace@1.1.1:
     dependencies:
-      escape-string-regexp: 4.0.0
+      escape-string-regexp: 5.0.0
       unist-util-is: 4.1.0
       unist-util-visit-parents: 3.1.1
 
@@ -3346,7 +3346,7 @@ snapshots:
       is-decimal: 1.0.4
       is-hexadecimal: 1.0.4
 
-  path-exists@4.0.0: {}
+  path-exists@5.0.0: {}
 
   path-key@3.1.1: {}
 
@@ -3430,7 +3430,7 @@ snapshots:
 
   repeat-string@1.6.1: {}
 
-  resolve-from@4.0.0: {}
+  resolve-from@5.0.0: {}
 
   restore-cursor@5.1.0:
     dependencies:
@@ -3636,7 +3636,7 @@ snapshots:
 
   supports-color@7.2.0:
     dependencies:
-      has-flag: 4.0.0
+      has-flag: 5.0.0
 
   test-exclude@7.0.1:
     dependencies:

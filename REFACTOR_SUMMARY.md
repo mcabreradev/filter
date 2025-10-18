@@ -1,15 +1,15 @@
-# Filter v4.0.0 Refactor Summary
+# Filter v5.0.0 Refactor Summary
 
 ## Overview
 
-Successfully completed a major refactor of `@mcabreradev/filter` from v3.1.3 to v4.0.0. This document summarizes all changes made during the refactoring process.
+Successfully completed a major refactor of `@mcabreradev/filter` from v3.1.3 to v5.0.0. This document summarizes all changes made during the refactoring process.
 
 ## Completed Phases
 
 ### ✅ Phase 1: Project Foundation & Tooling Migration
 
 **Changes Made:**
-- Updated `package.json` to version 4.0.0
+- Updated `package.json` to version 5.0.0
 - Migrated from Jest to Vitest (v2.1.0)
 - Upgraded TypeScript to v5.7.0
 - Updated ESLint to v9.16.0 with flat config format
@@ -139,12 +139,12 @@ src/
 
 **New Documentation:**
 - `MIGRATION.md` - Complete migration guide from v3 to v4
-- Updated `README.md` with v4.0.0 features
+- Updated `README.md` with v5.0.0 features
 - Updated `WARP.md` with new commands and architecture
 - `REFACTOR_SUMMARY.md` - This document
 
 **README Updates:**
-- Added v4.0.0 release section with highlights
+- Added v5.0.0 release section with highlights
 - Added configuration API documentation
 - Added TypeScript usage examples
 - Added runtime validation examples
@@ -154,7 +154,7 @@ src/
 - Updated all commands for Vitest
 - Documented new directory structure
 - Updated architecture description
-- Added v4.0.0 changes summary
+- Added v5.0.0 changes summary
 
 ## Breaking Changes
 
@@ -171,7 +171,7 @@ import filter from '@mcabreradev/filter';
 const result = filter(data, expression);
 ```
 
-### After (v4.0.0)
+### After (v5.0.0)
 ```typescript
 import { filter, type FilterOptions } from '@mcabreradev/filter';
 
@@ -229,7 +229,7 @@ To complete the release:
 ## Migration Path for Users
 
 1. Update Node.js to v20+
-2. Install `@mcabreradev/filter@4.0.0`
+2. Install `@mcabreradev/filter@5.0.0`
 3. Add explicit type parameters (recommended)
 4. Handle validation errors in dynamic code
 5. Leverage new configuration options
@@ -247,7 +247,7 @@ To complete the release:
 
 ## Conclusion
 
-The v4.0.0 refactor successfully modernizes the `@mcabreradev/filter` library with:
+The v5.0.0 refactor successfully modernizes the `@mcabreradev/filter` library with:
 - Better type safety and developer experience
 - Enhanced configurability and flexibility
 - Improved performance through optimization

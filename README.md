@@ -27,7 +27,7 @@ Go beyond JavaScript's native `Array.filter()` with a library that understands y
 - **🔒 Type-Safe** - Built with strict TypeScript for maximum reliability
 - **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
 - **🚀 Performance Optimized** - Optional caching and regex compilation optimization
-- **📦 MongoDB-Style Operators** - 13 operators for advanced filtering (v4.0.0+)
+- **📦 MongoDB-Style Operators** - 13 operators for advanced filtering (v5.0.0+)
 - **🧪 Battle-Tested** - 240+ tests ensuring reliability
 
 ---
@@ -80,7 +80,7 @@ filter(users, '!London');
 filter(users, (user) => user.age > 28);
 // → Returns Alice and Charlie
 
-// v4.0.0: MongoDB-style operators
+// v5.0.0: MongoDB-style operators
 filter(users, { age: { $gte: 25, $lt: 35 } });
 // → Returns Bob and Alice
 
@@ -157,7 +157,7 @@ filter(users, {
 });
 ```
 
-### MongoDB-Style Operators (v4.0.0)
+### MongoDB-Style Operators (v5.0.0)
 
 Powerful operators for advanced filtering:
 
@@ -429,7 +429,7 @@ For performance optimization tips, see [Performance Guide in WIKI](./WIKI.md#per
 
 ## Migration from v3.x
 
-**Good news:** v4.0.0 is **100% backward compatible**! All v3.x code continues to work.
+**Good news:** v5.0.0 is **100% backward compatible**! All v3.x code continues to work.
 
 ```typescript
 // ✅ All v3.x syntax still works
@@ -438,12 +438,12 @@ filter(data, { prop: 'value' });
 filter(data, (item) => true);
 filter(data, '%pattern%');
 
-// ✅ New in v4.0.0
+// ✅ New in v5.0.0
 filter(data, { age: { $gte: 18 } });
 filter(data, expression, { caseSensitive: true });
 ```
 
-**What's New in v4.0.0:**
+**What's New in v5.0.0:**
 - 13 MongoDB-style operators
 - Configuration API
 - Runtime validation with Zod
@@ -518,7 +518,7 @@ The library has 240+ tests with comprehensive coverage of all features.
 
 ## Changelog
 
-### v4.0.0 (Latest)
+### v5.0.0 (Latest)
 - ✨ Added 13 MongoDB-style operators
 - ⚙️ Configuration API with 4 options
 - ✅ Runtime validation with Zod

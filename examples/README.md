@@ -1,6 +1,6 @@
 # Examples
 
-This directory contains comprehensive examples demonstrating the usage of `@mcabreradev/filter` v4.0.0.
+This directory contains comprehensive examples demonstrating the usage of `@mcabreradev/filter` v5.0.0.
 
 ## Running Examples
 
@@ -34,7 +34,7 @@ ts-node examples/operators-examples.ts
 
 ### `operators-examples.ts`
 
-Comprehensive examples showcasing all v4.0.0 operators:
+Comprehensive examples showcasing all v5.0.0 operators:
 
 - **Comparison Operators**: `$gt`, `$gte`, `$lt`, `$lte`, `$eq`, `$ne`
 - **Array Operators**: `$in`, `$nin`, `$contains`, `$size`

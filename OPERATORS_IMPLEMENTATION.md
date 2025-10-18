@@ -1,8 +1,8 @@
-# Operators Implementation Summary - v4.0.0
+# Operators Implementation Summary - v5.0.0
 
 ## Overview
 
-This document summarizes the implementation of MongoDB-style operators added to `@mcabreradev/filter` v4.0.0.
+This document summarizes the implementation of MongoDB-style operators added to `@mcabreradev/filter` v5.0.0.
 
 ## Implementation Date
 
@@ -197,7 +197,7 @@ filter(data, { prop: 'value' });  // ✅ Works
 filter(data, (item) => true);      // ✅ Works
 filter(data, '%pattern%');         // ✅ Works
 
-filter(data, { prop: { $gt: 5 } }); // ✅ NEW in v4.0.0
+filter(data, { prop: { $gt: 5 } }); // ✅ NEW in v5.0.0
 ```
 
 ## Performance
@@ -271,7 +271,7 @@ filter(products, (p) =>
 );
 ```
 
-### After (v4.0.0)
+### After (v5.0.0)
 
 ```typescript
 filter(products, {
@@ -299,7 +299,7 @@ All success criteria from the original plan were met:
 - ✅ Comprehensive documentation
 - ✅ Performance maintained or improved
 - ✅ Runtime validation for all operators
-- ✅ Integration with v4.0.0 features (config, validation, caching)
+- ✅ Integration with v5.0.0 features (config, validation, caching)
 
 ## Build & Release
 
@@ -320,13 +320,13 @@ All success criteria from the original plan were met:
 - [x] No breaking changes
 - [x] TypeScript types exported
 - [ ] CHANGELOG.md updated (pending)
-- [ ] Version bumped to 4.0.0 (already done)
+- [ ] Version bumped to 5.0.0 (already done)
 - [ ] Git commit and tag (pending user action)
 - [ ] NPM publish (pending user action)
 
 ## Conclusion
 
-The MongoDB-style operators feature has been successfully implemented for v4.0.0 with:
+The MongoDB-style operators feature has been successfully implemented for v5.0.0 with:
 
 - **13 operators** across 3 categories
 - **80+ comprehensive tests**

@@ -1,28 +1,28 @@
-# Migration Guide: v3.x → v4.0.0
+# Migration Guide: v3.x → v5.0.0
 
 ## Overview
 
-Version 4.0.0 represents a major refactoring of `@mcabreradev/filter` with improved type safety, modularity, and new features. This guide will help you migrate from v3.x to v4.0.0.
+Version 5.0.0 represents a major refactoring of `@mcabreradev/filter` with improved type safety, modularity, and new features. This guide will help you migrate from v3.x to v5.0.0.
 
 ## Breaking Changes
 
 ### 1. Minimum Node.js Version
 
 - **v3.x**: Node.js >= 18
-- **v4.0.0**: Node.js >= 20
+- **v5.0.0**: Node.js >= 20
 
 **Action Required**: Ensure your environment is running Node.js 20 or higher.
 
 ### 2. TypeScript Strict Mode
 
-v4.0.0 is built with strict TypeScript mode enabled, which may reveal type issues in your consuming code.
+v5.0.0 is built with strict TypeScript mode enabled, which may reveal type issues in your consuming code.
 
 **Before (v3.x)**:
 ```typescript
 const result = filter(data, expression);
 ```
 
-**After (v4.0.0)**:
+**After (v5.0.0)**:
 ```typescript
 import { filter } from '@mcabreradev/filter';
 const result = filter<MyType>(data, expression);
@@ -30,14 +30,14 @@ const result = filter<MyType>(data, expression);
 
 ### 3. Runtime Validation
 
-v4.0.0 includes runtime validation using Zod. Invalid expressions now throw descriptive errors.
+v5.0.0 includes runtime validation using Zod. Invalid expressions now throw descriptive errors.
 
 **Before (v3.x)**:
 ```typescript
 filter(data, undefined);
 ```
 
-**After (v4.0.0)**:
+**After (v5.0.0)**:
 ```typescript
 filter(data, undefined);
 ```
@@ -51,7 +51,7 @@ The project now standardizes on `pnpm`. While you can still use npm or yarn to i
 
 ### 1. Configuration Options
 
-v4.0.0 introduces an optional third parameter for configuration:
+v5.0.0 introduces an optional third parameter for configuration:
 
 ```typescript
 import { filter } from '@mcabreradev/filter';
@@ -72,7 +72,7 @@ const result = filter(data, expression, {
 
 ### 2. Enhanced Type Safety
 
-v4.0.0 provides better TypeScript support with explicit types:
+v5.0.0 provides better TypeScript support with explicit types:
 
 ```typescript
 import type { Expression, FilterOptions } from '@mcabreradev/filter';
@@ -106,7 +106,7 @@ try {
 
 ### 5. MongoDB-Style Operators (NEW)
 
-v4.0.0 introduces powerful MongoDB-style operators for advanced filtering:
+v5.0.0 introduces powerful MongoDB-style operators for advanced filtering:
 
 #### Comparison Operators
 
@@ -179,17 +179,17 @@ node --version
 
 Using npm:
 ```bash
-npm install @mcabreradev/filter@4.0.0
+npm install @mcabreradev/filter@5.0.0
 ```
 
 Using yarn:
 ```bash
-yarn add @mcabreradev/filter@4.0.0
+yarn add @mcabreradev/filter@5.0.0
 ```
 
 Using pnpm:
 ```bash
-pnpm add @mcabreradev/filter@4.0.0
+pnpm add @mcabreradev/filter@5.0.0
 ```
 
 ### Step 3: Update Imports
@@ -201,7 +201,7 @@ The default export remains the same, but named exports are recommended:
 import filter from '@mcabreradev/filter';
 ```
 
-**After (v4.0.0) - Both work**:
+**After (v5.0.0) - Both work**:
 ```typescript
 import filter from '@mcabreradev/filter';
 
@@ -286,7 +286,7 @@ const result = filter(customers, (item) => item.age > 18);
 
 ### Scenario 5: Case-Sensitive Filtering (NEW)
 
-**v4.0.0 feature**:
+**v5.0.0 feature**:
 
 ```typescript
 const result = filter(
@@ -304,7 +304,7 @@ const result = filter(
 const result = filter(products, (p) => p.price >= 100 && p.price <= 500);
 ```
 
-**After (v4.0.0)** - Using operators (recommended):
+**After (v5.0.0)** - Using operators (recommended):
 
 ```typescript
 const result = filter(products, {
@@ -330,7 +330,7 @@ const result = filter(products, (p) =>
 );
 ```
 
-**After (v4.0.0)**:
+**After (v5.0.0)**:
 
 ```typescript
 const result = filter(products, {
@@ -404,5 +404,5 @@ If you need to rollback to v3.x:
 npm install @mcabreradev/filter@3.1.3
 ```
 
-Note: v3.x will continue to receive critical bug fixes for 6 months after v4.0.0 release.
+Note: v3.x will continue to receive critical bug fixes for 6 months after v5.0.0 release.
 

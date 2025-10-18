@@ -15,7 +15,7 @@
   </a>
 </p>
 
-> **Version 4.0.0** - A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies.
+> **Version 5.0.0** - A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies.
 
 ---
 
@@ -78,7 +78,7 @@
 - **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
 - **🚀 Performance Optimized** - Optional caching and regex compilation optimization
 - **🧪 Battle-Tested** - 240+ tests ensuring reliability
-- **📦 MongoDB-Style Operators** - 13 operators for advanced filtering (v4.0.0+)
+- **📦 MongoDB-Style Operators** - 13 operators for advanced filtering (v5.0.0+)
 
 ### Why Choose This Library?
 
@@ -182,7 +182,7 @@ filter(users, { city: 'Berlin', age: 30 });
 filter(users, (user) => user.age > 28);
 // → [Alice, Charlie]
 
-// MongoDB-style operators (v4.0.0+)
+// MongoDB-style operators (v5.0.0+)
 filter(users, { age: { $gte: 25, $lt: 35 } });
 // → [Bob, Alice]
 ```
@@ -612,7 +612,7 @@ filter(items, {
 
 ## MongoDB-Style Operators
 
-Version 4.0.0 introduces 13 powerful MongoDB-style operators for advanced filtering.
+Version 5.0.0 introduces 13 powerful MongoDB-style operators for advanced filtering.
 
 ### Comparison Operators
 
@@ -1884,7 +1884,7 @@ console.timeEnd('Predicate');
 
 ## Migration Guides
 
-### Migrating to v4.0.0
+### Migrating to v5.0.0
 
 **From v3.x:**
 
@@ -1893,7 +1893,7 @@ console.timeEnd('Predicate');
 All v3.x code continues to work:
 
 ```typescript
-// ✅ v3.x syntax still works in v4.0.0
+// ✅ v3.x syntax still works in v5.0.0
 filter(data, 'string');
 filter(data, { prop: 'value' });
 filter(data, (item) => true);
@@ -1903,17 +1903,17 @@ filter(data, '%pattern%');
 **New Features to Adopt:**
 
 ```typescript
-// ✅ v4.0.0: MongoDB-style operators
+// ✅ v5.0.0: MongoDB-style operators
 filter(data, { age: { $gte: 18, $lt: 65 } });
 
-// ✅ v4.0.0: Configuration options
+// ✅ v5.0.0: Configuration options
 filter(data, expression, {
   caseSensitive: true,
   maxDepth: 5,
   enableCache: true
 });
 
-// ✅ v4.0.0: Runtime validation
+// ✅ v5.0.0: Runtime validation
 import { validateExpression, validateOptions } from '@mcabreradev/filter';
 ```
 
@@ -1923,7 +1923,7 @@ import { validateExpression, validateOptions } from '@mcabreradev/filter';
 // Before (v3.x) - Still works
 filter(products, (p) => p.price >= 100 && p.price <= 500);
 
-// After (v4.0.0) - Recommended
+// After (v5.0.0) - Recommended
 filter(products, {
   price: { $gte: 100, $lte: 500 }
 });
@@ -2855,7 +2855,7 @@ We love hearing your ideas! Open an issue with:
 ### Version Support Policy
 
 - **v4.x**: Active development, full support
-- **v3.x**: Bug fixes for 6 months after v4.0.0 release
+- **v3.x**: Bug fixes for 6 months after v5.0.0 release
 - **v2.x**: No longer supported
 
 [↑ Back to top](#table-of-contents)
@@ -2864,7 +2864,7 @@ We love hearing your ideas! Open an issue with:
 
 ## Version History
 
-### v4.0.0 (Latest - October 2025)
+### v5.0.0 (Latest - October 2025)
 
 **Major Features:**
 - 13 MongoDB-style operators ($gt, $gte, $lt, $lte, $eq, $ne, $in, $nin, $contains, $size, $startsWith, $endsWith)
@@ -2950,5 +2950,5 @@ If you find this library useful, please consider giving it a star on [GitHub](ht
 
 ---
 
-*Last updated: October 2025 | Version 4.0.0*
+*Last updated: October 2025 | Version 5.0.0*
 
