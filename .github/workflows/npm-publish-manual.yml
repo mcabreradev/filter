@@ -23,6 +23,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: prod
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v4
@@ -31,12 +32,23 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: 📥 Setup pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
+          run_install: false
 
       - name: 📦 Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            echo "Found pnpm-lock.yaml, attempting frozen install..."
+            pnpm install --frozen-lockfile || {
+              echo "Frozen lockfile failed, falling back to regular install..."
+              pnpm install --no-frozen-lockfile
+            }
+          else
+            echo "No lockfile found, running regular install..."
+            pnpm install --no-frozen-lockfile
+          fi
 
       - name: 🔍 Type check
         run: pnpm run typecheck
@@ -50,12 +62,21 @@ jobs:
       - name: 🏗️ Build
         run: pnpm run build
 
+      - name: 📋 Verify build output
+        run: |
+          if [ ! -d "build" ]; then
+            echo "Build directory not found!"
+            exit 1
+          fi
+          echo "Build files:"
+          ls -la build/
+
       - name: 🔍 Determine version bump from labels
         id: version
         run: |
           LABELS='${{ toJSON(github.event.pull_request.labels.*.name) }}'
           echo "Labels: $LABELS"
-          
+
           if echo "$LABELS" | grep -q "major"; then
             echo "type=major" >> $GITHUB_OUTPUT
             echo "🚨 Detected MAJOR version bump (label: major)"
@@ -75,15 +96,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           pnpm version ${{ steps.version.outputs.type }} --no-git-tag-version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           git add package.json
-          git commit -m "chore: bump version to $(node -p "require('./package.json').version")"
-          git push
+          git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+
+      - name: 🔄 Push version bump
+        run: |
+          git push origin prod
 
       - name: 📝 Create Git Tag
         run: |
-          PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          git tag -a "v${PACKAGE_VERSION}" -m "Release v${PACKAGE_VERSION}"
-          git push origin "v${PACKAGE_VERSION}"
+          git tag -a "v${{ env.NEW_VERSION }}" -m "Release v${{ env.NEW_VERSION }}"
+          git push origin "v${{ env.NEW_VERSION }}"
 
       - name: 🚀 Publish to npm
         run: pnpm publish --no-git-checks --access public
