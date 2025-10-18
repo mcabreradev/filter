@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Publish to npm (Manual Versioning)
 
 on:
   pull_request:
@@ -50,32 +50,24 @@ jobs:
       - name: 🏗️ Build
         run: pnpm run build
 
-      - name: 📋 Verify build output
-        run: |
-          if [ ! -d "build" ]; then
-            echo "Build directory not found!"
-            exit 1
-          fi
-          echo "Build files:"
-          ls -la build/
-
-      - name: 🔍 Determine version bump
+      - name: 🔍 Determine version bump from labels
         id: version
         run: |
-          # Get PR title and commits to determine version bump
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          echo "PR Title: $PR_TITLE"
+          LABELS='${{ toJSON(github.event.pull_request.labels.*.name) }}'
+          echo "Labels: $LABELS"
           
-          # Check for version indicators in PR title or commit messages
-          if echo "$PR_TITLE" | grep -iE "(breaking|major|BREAKING CHANGE)"; then
+          if echo "$LABELS" | grep -q "major"; then
             echo "type=major" >> $GITHUB_OUTPUT
-            echo "🚨 Detected MAJOR version bump"
-          elif echo "$PR_TITLE" | grep -iE "(feat|feature|minor)"; then
+            echo "🚨 Detected MAJOR version bump (label: major)"
+          elif echo "$LABELS" | grep -q "minor"; then
             echo "type=minor" >> $GITHUB_OUTPUT
-            echo "✨ Detected MINOR version bump"
+            echo "✨ Detected MINOR version bump (label: minor)"
+          elif echo "$LABELS" | grep -q "patch"; then
+            echo "type=patch" >> $GITHUB_OUTPUT
+            echo "🔧 Detected PATCH version bump (label: patch)"
           else
             echo "type=patch" >> $GITHUB_OUTPUT
-            echo "🔧 Detected PATCH version bump"
+            echo "🔧 No version label found, defaulting to PATCH"
           fi
 
       - name: 📈 Bump version
@@ -97,4 +89,3 @@ jobs:
         run: pnpm publish --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
