@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       zod:
-        specifier: ^4.1.5
+        specifier: ^4.1.12
         version: 4.1.12
     devDependencies:
       '@typescript-eslint/eslint-plugin':
