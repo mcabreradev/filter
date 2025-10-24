@@ -14,7 +14,7 @@ Successfully completed a major refactor of `@mcabreradev/filter` from v3.1.3 to 
 - Upgraded TypeScript to v5.7.0
 - Updated ESLint to v9.16.0 with flat config format
 - Updated all TypeScript/ESLint plugins to latest versions
-- Added Zod v3.23.8 as production dependency
+- Added Zod v4.1.12 as production dependency
 - Removed all Jest and Babel dependencies
 - Created `.npmrc` for pnpm configuration
 - Created `vitest.config.ts` for test configuration
