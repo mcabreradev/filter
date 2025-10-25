@@ -27,8 +27,8 @@ Go beyond JavaScript's native `Array.filter()` with a library that understands y
 - **🔒 Type-Safe** - Built with strict TypeScript for maximum reliability
 - **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
 - **🚀 Performance Optimized** - Optional caching and regex compilation optimization
-- **📦 MongoDB-Style Operators** - 13 operators for advanced filtering (v5.0.0+)
-- **🧪 Battle-Tested** - 240+ tests ensuring reliability
+- **📦 MongoDB-Style Operators** - 16 operators for advanced filtering (v5.0.0+)
+- **🧪 Battle-Tested** - 250+ tests ensuring reliability
 
 ---
 
@@ -232,6 +232,59 @@ filter(articles, {
 
 **Available:** `$startsWith`, `$endsWith`, `$contains`
 
+#### Logical Operators
+
+Combine multiple conditions with logical operators:
+
+```typescript
+// $and - All conditions must match
+filter(products, {
+  $and: [
+    { category: 'Electronics' },
+    { inStock: true },
+    { price: { $lt: 1000 } }
+  ]
+});
+
+// $or - At least one condition must match
+filter(products, {
+  $or: [
+    { category: 'Electronics' },
+    { category: 'Accessories' }
+  ]
+});
+
+// $not - Negates the condition
+filter(products, {
+  $not: { category: 'Furniture' }
+});
+
+// Complex nested queries
+filter(products, {
+  $and: [
+    { inStock: true },
+    {
+      $or: [
+        { rating: { $gte: 4.5 } },
+        { price: { $lt: 50 } }
+      ]
+    },
+    { $not: { category: 'Clearance' } }
+  ]
+});
+
+// Combine with field-level conditions
+filter(products, {
+  category: 'Electronics',
+  $and: [
+    { price: { $gte: 100 } },
+    { $or: [{ inStock: true }, { preOrder: true }] }
+  ]
+});
+```
+
+**Available:** `$and`, `$or`, `$not`
+
 #### Combining Operators
 
 ```typescript
@@ -410,7 +463,7 @@ For performance optimization tips, see [Performance Guide in WIKI](./docs/WIKI.m
 ### 📖 Complete Documentation
 
 - **[WIKI.md](./docs/WIKI.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
-- **[OPERATORS.md](./docs/OPERATORS.md)** - Detailed guide for all 13 MongoDB-style operators with examples
+- **[OPERATORS.md](./docs/OPERATORS.md)** - Detailed guide for all 16 MongoDB-style operators with examples
 - **[MIGRATION.md](./docs/MIGRATION.md)** - Migration guide from v3.x or native Array.filter()
 - **[Examples](./examples/)** - Real-world usage examples and code samples
 
@@ -444,7 +497,7 @@ filter(data, expression, { caseSensitive: true });
 ```
 
 **What's New in v5.0.0:**
-- 13 MongoDB-style operators
+- 16 MongoDB-style operators (including logical operators: $and, $or, $not)
 - Configuration API
 - Runtime validation with Zod
 - Performance optimizations
@@ -512,7 +565,7 @@ npm run test:coverage
 npm run typecheck
 ```
 
-The library has 240+ tests with comprehensive coverage of all features.
+The library has 250+ tests with comprehensive coverage of all features.
 
 ---
 
@@ -521,12 +574,12 @@ The library has 240+ tests with comprehensive coverage of all features.
 ### v5.0.2 (Latest)
 - 📁 Reorganized documentation into `/docs` directory
 - 🔗 Updated all internal documentation links
-- ✨ Added 13 MongoDB-style operators
+- ✨ Added 16 MongoDB-style operators (including logical: $and, $or, $not)
 - ⚙️ Configuration API with 4 options
 - ✅ Runtime validation with Zod
 - 🚀 Performance optimizations
 - 📘 Enhanced TypeScript support
-- 🧪 240+ tests
+- 🧪 250+ tests
 
 See [MIGRATION.md](./docs/MIGRATION.md) for detailed changelog and migration guide.
 

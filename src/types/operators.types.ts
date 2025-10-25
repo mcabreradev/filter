@@ -1,3 +1,5 @@
+import type { Expression } from './expression.types';
+
 export interface ComparisonOperators {
   $gt?: number | Date;
   $gte?: number | Date;
@@ -20,6 +22,12 @@ export interface StringOperators {
   $contains?: string;
 }
 
+export interface LogicalOperators<T> {
+  $and?: Expression<T>[];
+  $or?: Expression<T>[];
+  $not?: Expression<T>;
+}
+
 export type OperatorExpression =
   | ComparisonOperators
   | ArrayOperators
@@ -28,4 +36,5 @@ export type OperatorExpression =
 
 export type ExtendedObjectExpression<T> = Partial<{
   [K in keyof T]: T[K] | OperatorExpression | string;
-}>;
+}> &
+  Partial<LogicalOperators<T>>;

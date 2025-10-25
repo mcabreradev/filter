@@ -28,6 +28,9 @@ export const OPERATORS = {
   SIZE: '$size',
   STARTS_WITH: '$startsWith',
   ENDS_WITH: '$endsWith',
+  AND: '$and',
+  OR: '$or',
+  NOT: '$not',
 } as const;
 
 export const OPERATOR_KEYS = Object.values(OPERATORS);

@@ -32,11 +32,33 @@ export const stringOperatorSchema = z
   })
   .strict();
 
-export const operatorExpressionSchema = z.union([
+const baseExpressionSchema: z.ZodType = z.lazy(() =>
+  z.union([
+    primitiveSchema,
+    predicateFunctionSchema,
+    z.record(z.string(), z.any()),
+    baseOperatorExpressionSchema,
+  ]),
+);
+
+const baseOperatorExpressionSchema = z.union([
   comparisonOperatorSchema,
   arrayOperatorSchema,
   stringOperatorSchema,
   comparisonOperatorSchema.merge(arrayOperatorSchema).merge(stringOperatorSchema),
+]);
+
+export const logicalOperatorSchema = z
+  .object({
+    $and: z.array(baseExpressionSchema).min(1).optional(),
+    $or: z.array(baseExpressionSchema).min(1).optional(),
+    $not: baseExpressionSchema.optional(),
+  })
+  .strict();
+
+export const operatorExpressionSchema = z.union([
+  baseOperatorExpressionSchema,
+  logicalOperatorSchema,
 ]);
 
 export const objectExpressionSchema = z.record(z.string(), z.any());

@@ -1,4 +1,5 @@
-import type { FilterConfig, OperatorExpression } from '../types';
+import type { FilterConfig, OperatorExpression, LogicalOperators } from '../types';
+import { OPERATORS } from '../constants';
 import {
   hasWildcard,
   createWildcardRegex,
@@ -9,6 +10,11 @@ import {
   isOperatorExpression,
 } from '../utils';
 import { processOperators } from '../operators';
+import { applyLogicalOperators } from '../operators/logical.operators';
+
+const isLogicalOperator = (key: string): key is '$and' | '$or' | '$not' => {
+  return key === OPERATORS.AND || key === OPERATORS.OR || key === OPERATORS.NOT;
+};
 
 export function createObjectPredicate<T>(
   expression: Record<string, unknown>,
@@ -16,11 +22,23 @@ export function createObjectPredicate<T>(
 ): (item: T) => boolean {
   return function (item: T): boolean {
     for (const key in expression) {
+      if (isLogicalOperator(key)) {
+        const logicalExpr = expression as LogicalOperators<T>;
+        const operatorValue = logicalExpr[key];
+        if (
+          operatorValue !== undefined &&
+          !applyLogicalOperators(item, key, operatorValue, config)
+        ) {
+          return false;
+        }
+        continue;
+      }
+
       let expr = expression[key];
       const itemValue = (item as Record<string, unknown>)[key];
 
       if (isObject(expr) && isOperatorExpression(expr)) {
-        if (!processOperators(itemValue, expr as OperatorExpression, config)) {
+        if (!processOperators(itemValue, expr as OperatorExpression, config, item)) {
           return false;
         }
         continue;
