@@ -1,6 +1,6 @@
 # Examples
 
-This directory contains comprehensive examples demonstrating the usage of `@mcabreradev/filter` v5.0.0.
+This directory contains comprehensive examples demonstrating the usage of `@mcabreradev/filter` v5.1.0.
 
 ## Running Examples
 
@@ -43,6 +43,21 @@ Comprehensive examples showcasing all v5.0.0 operators:
 - **Mixed Syntax**: Operators combined with legacy v3.x syntax
 - **Real-World Scenarios**: E-commerce, inventory, and search use cases
 
+### `lazy-evaluation-examples.ts` (v5.1.0+)
+
+Comprehensive examples showcasing lazy evaluation features:
+
+- **Basic Lazy Filtering**: Using `filterLazy` for on-demand processing
+- **Early Exit Optimization**: Using `filterFirst` to stop after N matches
+- **Existence Checks**: Using `filterExists` for fast boolean checks
+- **Counting**: Using `filterCount` without creating result arrays
+- **Chunked Processing**: Using `filterChunked` and `filterLazyChunked` for batch operations
+- **Lazy Composition**: Combining `take`, `skip`, `map`, and other utilities
+- **Pagination**: Building efficient pagination with lazy operations
+- **Async Streams**: Using `filterLazyAsync` for async iterables
+- **Performance Comparison**: Benchmarking lazy vs standard filtering
+- **Memory Efficiency**: Demonstrating memory savings with large datasets
+
 ## Example Output
 
 Running `operators-examples.ts` will output filtered results for 20 different scenarios, demonstrating:
@@ -58,6 +73,7 @@ Running `operators-examples.ts` will output filtered results for 20 different sc
 ## Further Reading
 
 - [Full Operators Guide](../docs/OPERATORS.md)
+- [Lazy Evaluation Guide](../docs/LAZY_EVALUATION.md)
 - [Migration Guide](../docs/MIGRATION.md)
 - [Main README](../README.md)
 

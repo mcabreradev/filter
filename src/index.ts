@@ -2,6 +2,32 @@ import { filter } from './core';
 
 export { filter };
 
+export {
+  filterLazy,
+  filterLazyAsync,
+  filterChunked,
+  filterLazyChunked,
+  filterFirst,
+  filterExists,
+  filterCount,
+} from './core';
+
+export {
+  take,
+  skip,
+  map,
+  reduce,
+  toArray,
+  forEach,
+  every,
+  some,
+  find,
+  chunk,
+  flatten,
+  asyncMap,
+  asyncFilter,
+} from './utils';
+
 export type {
   Expression,
   PrimitiveExpression,
@@ -10,6 +36,10 @@ export type {
   FilterConfig,
   FilterOptions,
   Comparator,
+  LazyFilterOptions,
+  LazyFilterResult,
+  AsyncLazyFilterResult,
+  ChunkedFilterOptions,
 } from './types';
 
 export { validateExpression, validateOptions } from './validation';

@@ -15,3 +15,10 @@ export type {
   OperatorExpression,
   ExtendedObjectExpression,
 } from './operators.types';
+
+export type {
+  LazyFilterOptions,
+  LazyFilterResult,
+  AsyncLazyFilterResult,
+  ChunkedFilterOptions,
+} from './lazy.types';
