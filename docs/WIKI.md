@@ -1,4 +1,4 @@
-# @mcabreradev/filter - Complete Documentation Wiki
+# Complete Documentation Wiki
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@mcabreradev/filter">
@@ -15,7 +15,7 @@
   </a>
 </p>
 
-> **Version 5.0.0** - A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies.
+> A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies.
 
 ---
 
@@ -2854,9 +2854,7 @@ We love hearing your ideas! Open an issue with:
 
 ### Version Support Policy
 
-- **v4.x**: Active development, full support
-- **v3.x**: Bug fixes for 6 months after v5.0.0 release
-- **v2.x**: No longer supported
+- **v3.x**: No longer supported
 
 [↑ Back to top](#table-of-contents)
 
@@ -2918,7 +2916,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 ### Credits
 
-**Author:** Miguelangel Cabrera
+**Author:** Miguelángel Cabrera
 **GitHub:** [@mcabreradev](https://github.com/mcabreradev)
 **Repository:** [github.com/mcabreradev/filter](https://github.com/mcabreradev/filter)
 

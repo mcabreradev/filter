@@ -57,7 +57,7 @@ Running `operators-examples.ts` will output filtered results for 20 different sc
 
 ## Further Reading
 
-- [Full Operators Guide](../OPERATORS.md)
-- [Migration Guide](../MIGRATION.md)
+- [Full Operators Guide](../docs/OPERATORS.md)
+- [Migration Guide](../docs/MIGRATION.md)
 - [Main README](../README.md)
 
