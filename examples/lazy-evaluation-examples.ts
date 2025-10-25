@@ -11,7 +11,6 @@ import {
   skip,
   map,
   toArray,
-  chunk,
 } from '../src/index';
 
 interface User {
@@ -151,7 +150,7 @@ console.log('Composed result (skip 1, map, take 2):', result);
 console.log();
 
 console.log('8. Pagination Example');
-function paginate<T>(data: T[], expression: any, page: number, pageSize: number) {
+function paginate<T>(data: T[], expression: unknown, page: number, pageSize: number) {
   return toArray(take(skip(filterLazy(data, expression), page * pageSize), pageSize));
 }
 

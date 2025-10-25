@@ -2,6 +2,8 @@ import { filter } from './core';
 
 export { filter };
 
+export { clearFilterCache, getFilterCacheStats } from './core';
+
 export {
   filterLazy,
   filterLazyAsync,

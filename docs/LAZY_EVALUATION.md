@@ -487,7 +487,9 @@ const hasMatch = filterExists(largeDataset, { role: 'admin' });
 
 ## See Also
 
+- [Performance Benchmarks](./PERFORMANCE_BENCHMARKS.md)
 - [Performance Guide](./WIKI.md#performance-optimization)
 - [Operators Reference](./OPERATORS.md)
+- [Advanced Logical Operators](./ADVANCED_LOGICAL_OPERATORS.md)
 - [API Reference](./WIKI.md#api-reference)
 

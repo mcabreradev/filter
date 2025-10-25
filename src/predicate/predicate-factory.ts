@@ -13,11 +13,28 @@ import { deepCompare } from '../comparison';
 import { createStringPredicate } from './string-predicate';
 import { createObjectPredicate } from './object-predicate';
 import { createFunctionPredicate } from './function-predicate';
+import { memoization } from '../utils/memoization';
 
 export function createPredicateFn<T>(
   expression: Expression<T>,
   config: FilterConfig,
 ): (item: T) => boolean {
+  if (config.enableCache) {
+    const cacheKey = memoization.createExpressionHash(expression, config);
+    const cached = memoization.getCachedPredicate<T>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
+    const predicate = buildPredicate(expression, config);
+    memoization.setCachedPredicate(cacheKey, predicate);
+    return predicate;
+  }
+
+  return buildPredicate(expression, config);
+}
+
+function buildPredicate<T>(expression: Expression<T>, config: FilterConfig): (item: T) => boolean {
   const expressionType: string = getTypeForFilter(expression);
 
   if (isFunction(expression)) {

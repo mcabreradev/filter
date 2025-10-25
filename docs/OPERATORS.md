@@ -283,6 +283,191 @@ filter(users, { name: { $startsWith: 'al' } }, { caseSensitive: true });
 // → Returns: [] (case-sensitive, no match)
 ```
 
+### Advanced Regex Patterns
+
+#### Email Validation
+
+```typescript
+const users = [
+  { email: 'valid@example.com' },
+  { email: 'invalid@' },
+  { email: 'another.valid+tag@domain.co.uk' }
+];
+
+// RFC 5322 simplified email pattern
+filter(users, {
+  email: { $regex: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$' }
+});
+// → Returns: valid@example.com, another.valid+tag@domain.co.uk
+```
+
+#### Phone Number Patterns
+
+```typescript
+const contacts = [
+  { phone: '+1-555-0123' },
+  { phone: '555-0123' },
+  { phone: '+44-20-7123-4567' },
+  { phone: 'invalid' }
+];
+
+// US phone numbers
+filter(contacts, {
+  phone: { $regex: '^\\+1-\\d{3}-\\d{4}$' }
+});
+// → Returns: +1-555-0123
+
+// International format
+filter(contacts, {
+  phone: { $regex: '^\\+\\d{1,3}-\\d{2,4}-\\d{4,10}$' }
+});
+// → Returns: +1-555-0123, +44-20-7123-4567
+```
+
+#### URL Validation
+
+```typescript
+const links = [
+  { url: 'https://example.com' },
+  { url: 'http://sub.domain.com/path' },
+  { url: 'ftp://files.com' },
+  { url: 'not-a-url' }
+];
+
+// HTTP/HTTPS URLs only
+filter(links, {
+  url: { $regex: '^https?://[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(/.*)?$' }
+});
+// → Returns: https://example.com, http://sub.domain.com/path
+```
+
+#### Username Validation
+
+```typescript
+const users = [
+  { username: 'john_doe123' },
+  { username: 'alice' },
+  { username: 'bob@invalid' },
+  { username: 'x' }
+];
+
+// Alphanumeric + underscore, 3-16 characters
+filter(users, {
+  username: { $regex: '^[a-zA-Z0-9_]{3,16}$' }
+});
+// → Returns: john_doe123, alice
+```
+
+#### Postal Code Patterns
+
+```typescript
+const addresses = [
+  { zip: '12345' },
+  { zip: '12345-6789' },
+  { zip: 'SW1A 1AA' },
+  { zip: 'invalid' }
+];
+
+// US ZIP codes (5 digits or ZIP+4)
+filter(addresses, {
+  zip: { $regex: '^\\d{5}(-\\d{4})?$' }
+});
+// → Returns: 12345, 12345-6789
+
+// UK postcodes
+filter(addresses, {
+  zip: { $regex: '^[A-Z]{1,2}\\d{1,2}[A-Z]?\\s?\\d[A-Z]{2}$' }
+});
+// → Returns: SW1A 1AA
+```
+
+#### Case-Insensitive Regex
+
+```typescript
+// Using string pattern (respects caseSensitive config)
+filter(users, {
+  name: { $regex: '^john' }
+}, { caseSensitive: false });
+// → Matches: John, JOHN, john
+
+// Using RegExp with flags (ignores config)
+filter(users, {
+  name: { $regex: /^john/i }
+});
+// → Always case-insensitive
+```
+
+#### Complex Patterns
+
+```typescript
+// Product SKU format: ABC-1234-X
+filter(products, {
+  sku: { $regex: '^[A-Z]{3}-\\d{4}-[A-Z]$' }
+});
+
+// Date format: YYYY-MM-DD
+filter(records, {
+  date: { $regex: '^\\d{4}-\\d{2}-\\d{2}$' }
+});
+
+// IPv4 address
+filter(servers, {
+  ip: { $regex: '^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$' }
+});
+
+// Credit card (basic pattern)
+filter(payments, {
+  card: { $regex: '^\\d{4}-\\d{4}-\\d{4}-\\d{4}$' }
+});
+```
+
+#### Performance Considerations
+
+```typescript
+// ✅ Good: Compile regex once
+const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+filter(users, { email: { $regex: emailPattern } });
+
+// ⚠️ Less efficient: String pattern compiled on each filter
+filter(users, { email: { $regex: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$' } });
+
+// 💡 Best: Use simpler operators when possible
+filter(users, { email: { $endsWith: '@company.com' } });
+```
+
+#### Common Regex Patterns Reference
+
+| Pattern | Regex | Example |
+|---------|-------|---------|
+| Email | `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$` | `user@example.com` |
+| US Phone | `^\+1-\d{3}-\d{4}$` | `+1-555-0123` |
+| URL | `^https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(/.*)?$` | `https://example.com` |
+| ZIP Code | `^\d{5}(-\d{4})?$` | `12345` or `12345-6789` |
+| Username | `^[a-zA-Z0-9_]{3,16}$` | `john_doe123` |
+| Hex Color | `^#[0-9A-Fa-f]{6}$` | `#FF5733` |
+| IPv4 | `^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$` | `192.168.1.1` |
+| Date (YYYY-MM-DD) | `^\d{4}-\d{2}-\d{2}$` | `2025-10-25` |
+
+#### Escaping Special Characters
+
+Remember to escape special regex characters in string patterns:
+
+```typescript
+// Special characters: . * + ? ^ $ { } ( ) | [ ] \
+
+// ❌ Wrong: . matches any character
+filter(files, { name: { $regex: 'file.txt' } });
+
+// ✅ Correct: Escape the dot
+filter(files, { name: { $regex: 'file\\.txt' } });
+
+// ❌ Wrong: * is invalid regex
+filter(files, { name: { $regex: '*.txt' } });
+
+// ✅ Correct: Use .* for wildcard
+filter(files, { name: { $regex: '.*\\.txt$' } });
+```
+
 ## Logical Operators
 
 Logical operators allow you to combine multiple conditions with AND, OR, and NOT logic. They support recursive nesting for complex queries.
@@ -732,6 +917,10 @@ filter(users, { age: { $gt: 25 } });
 
 ## Further Reading
 
+- [Advanced Logical Operators Guide](./ADVANCED_LOGICAL_OPERATORS.md)
+- [Lazy Evaluation Guide](./LAZY_EVALUATION.md)
+- [Performance Benchmarks](./PERFORMANCE_BENCHMARKS.md)
+- [Security Best Practices](./SECURITY.md)
 - [Configuration API](../README.md#configuration-api)
 - [Migration Guide](./MIGRATION.md)
 - [Full API Documentation](../README.md)

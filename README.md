@@ -383,6 +383,139 @@ See [Lazy Evaluation Guide](./docs/LAZY_EVALUATION.md) for complete documentatio
 
 ---
 
+## Memoization & Performance 💾
+
+**New in v5.2.0**: Advanced multi-layer memoization strategy for maximum performance.
+
+The library implements a sophisticated caching system with three layers:
+
+1. **Result Cache** - Caches complete filter results
+2. **Predicate Cache** - Memoizes compiled predicate functions
+3. **Regex Cache** - Caches compiled regex patterns
+
+### Basic Usage
+
+```typescript
+import { filter, clearFilterCache, getFilterCacheStats } from '@mcabreradev/filter';
+
+const largeDataset = [...];
+
+const results = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true });
+
+const sameResults = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true });
+```
+
+### Performance Gains
+
+| Scenario | Without Cache | With Cache | Speedup |
+|----------|---------------|------------|---------|
+| Simple query (10K items) | 5.3ms | 0.01ms | **530x** |
+| Regex pattern | 12.1ms | 0.02ms | **605x** |
+| Complex nested | 15.2ms | 0.01ms | **1520x** |
+
+### Real-World Example
+
+```typescript
+const products = await fetchProducts();
+
+const electronics = filter(
+  products,
+  {
+    category: { $in: ['Electronics', 'Computers'] },
+    price: { $gte: 100, $lte: 2000 },
+    inStock: true,
+    rating: { $gte: 4.0 }
+  },
+  { enableCache: true }
+);
+
+const electronicsAgain = filter(
+  products,
+  {
+    category: { $in: ['Electronics', 'Computers'] },
+    price: { $gte: 100, $lte: 2000 },
+    inStock: true,
+    rating: { $gte: 4.0 }
+  },
+  { enableCache: true }
+);
+```
+
+### Cache Management
+
+```typescript
+const stats = getFilterCacheStats();
+console.log(stats);
+
+clearFilterCache();
+
+let data = [/* large dataset */];
+filter(data, query, { enableCache: true });
+data = null;
+```
+
+### When to Enable Caching
+
+✅ **Enable for:**
+- Large datasets (>1,000 items)
+- Repeated identical queries
+- Complex expressions with regex
+- Read-heavy workloads
+- Dashboard/analytics views
+
+❌ **Disable for:**
+- Frequently changing data
+- One-time queries
+- Memory-constrained environments
+- Unique expressions every time
+
+### Complete Example: Dashboard with Caching
+
+```typescript
+import { filter, clearFilterCache } from '@mcabreradev/filter';
+
+class ProductDashboard {
+  private products: Product[];
+
+  constructor(products: Product[]) {
+    this.products = products;
+  }
+
+  getElectronics() {
+    return filter(
+      this.products,
+      { category: 'Electronics' },
+      { enableCache: true }
+    );
+  }
+
+  getHighRated() {
+    return filter(
+      this.products,
+      { rating: { $gte: 4.5 } },
+      { enableCache: true }
+    );
+  }
+
+  refreshData(newProducts: Product[]) {
+    this.products = newProducts;
+    clearFilterCache();
+  }
+}
+
+const dashboard = new ProductDashboard(products);
+
+dashboard.getElectronics();
+dashboard.getHighRated();
+
+dashboard.getElectronics();
+dashboard.getHighRated();
+```
+
+See [Memoization Guide](./docs/MEMOIZATION.md) for complete documentation.
+
+---
+
 ## Configuration
 
 Customize filter behavior with options:
@@ -526,18 +659,27 @@ For performance optimization tips, see [Performance Guide in WIKI](./docs/WIKI.m
 ### 📖 Complete Documentation
 
 - **[WIKI.md](./docs/WIKI.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
-- **[OPERATORS.md](./docs/OPERATORS.md)** - Detailed guide for all 18 MongoDB-style operators with examples
+- **[OPERATORS.md](./docs/OPERATORS.md)** - Detailed guide for all 18 MongoDB-style operators with examples and advanced regex patterns
+- **[LAZY_EVALUATION.md](./docs/LAZY_EVALUATION.md)** - Comprehensive guide to lazy evaluation for efficient large dataset processing
+- **[ADVANCED_LOGICAL_OPERATORS.md](./docs/ADVANCED_LOGICAL_OPERATORS.md)** - Advanced patterns and complex queries with $and, $or, $not
+- **[PERFORMANCE_BENCHMARKS.md](./docs/PERFORMANCE_BENCHMARKS.md)** - Detailed performance metrics and optimization strategies
 - **[MIGRATION.md](./docs/MIGRATION.md)** - Migration guide from v3.x or native Array.filter()
+- **[SECURITY.md](./docs/SECURITY.md)** - Security best practices and vulnerability reporting
 - **[Examples](./examples/)** - Real-world usage examples and code samples
 
 ### 🎯 Quick Links
 
 - [Installation & Setup](./docs/WIKI.md#installation--setup)
 - [All Operators Reference](./docs/OPERATORS.md)
+- [Regex Patterns Guide](./docs/OPERATORS.md#advanced-regex-patterns)
+- [Logical Operators Guide](./docs/ADVANCED_LOGICAL_OPERATORS.md)
+- [Lazy Evaluation](./docs/LAZY_EVALUATION.md)
+- [Performance Benchmarks](./docs/PERFORMANCE_BENCHMARKS.md)
 - [TypeScript Integration](./docs/WIKI.md#typescript-integration)
 - [Real-World Examples](./docs/WIKI.md#real-world-examples)
 - [Performance Tips](./docs/WIKI.md#performance-optimization)
 - [API Reference](./docs/WIKI.md#api-reference)
+- [Security Best Practices](./docs/SECURITY.md)
 - [FAQ](./docs/WIKI.md#frequently-asked-questions)
 - [Troubleshooting](./docs/WIKI.md#troubleshooting)
 

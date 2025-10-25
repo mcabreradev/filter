@@ -38,3 +38,5 @@ export {
   asyncMap,
   asyncFilter,
 } from './lazy-iterators';
+
+export { memoization, MemoizationManager } from './memoization';

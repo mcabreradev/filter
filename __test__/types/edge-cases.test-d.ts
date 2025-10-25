@@ -1,6 +1,5 @@
-import { expectType, expectAssignable, expectNotAssignable } from 'tsd';
+import { expectType } from 'tsd';
 import { filter } from '../../src/core/filter';
-import type { ExtendedObjectExpression } from '../../src/types';
 
 interface EmptyInterface {}
 

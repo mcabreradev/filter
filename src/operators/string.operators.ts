@@ -1,4 +1,5 @@
 import type { StringOperators } from '../types';
+import { memoization } from '../utils/memoization';
 
 export const applyStringOperators = (
   value: unknown,
@@ -27,20 +28,31 @@ export const applyStringOperators = (
   }
 
   if (operators.$regex !== undefined) {
-    const regex =
-      typeof operators.$regex === 'string'
-        ? new RegExp(operators.$regex, caseSensitive ? '' : 'i')
-        : operators.$regex;
+    const regex = getOrCreateRegex(operators.$regex, caseSensitive);
     if (!regex.test(value)) return false;
   }
 
   if (operators.$match !== undefined) {
-    const regex =
-      typeof operators.$match === 'string'
-        ? new RegExp(operators.$match, caseSensitive ? '' : 'i')
-        : operators.$match;
+    const regex = getOrCreateRegex(operators.$match, caseSensitive);
     if (!regex.test(value)) return false;
   }
 
   return true;
 };
+
+function getOrCreateRegex(pattern: string | RegExp, caseSensitive: boolean): RegExp {
+  if (pattern instanceof RegExp) {
+    return pattern;
+  }
+
+  const flags = caseSensitive ? '' : 'i';
+  const cached = memoization.getCachedRegex(pattern, flags);
+
+  if (cached) {
+    return cached;
+  }
+
+  const regex = new RegExp(pattern, flags);
+  memoization.setCachedRegex(pattern, regex, flags);
+  return regex;
+}

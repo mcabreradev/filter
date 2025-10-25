@@ -1,4 +1,4 @@
-export { filter } from './filter';
+export { filter, clearFilterCache, getFilterCacheStats } from './filter';
 export {
   filterLazy,
   filterLazyAsync,
