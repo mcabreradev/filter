@@ -401,7 +401,7 @@ filter(largeData, expression, { enableCache: true });
 filter(data, (item) => complexCalculation(item));
 ```
 
-For performance optimization tips, see [Performance Guide in WIKI](./WIKI.md#performance-optimization).
+For performance optimization tips, see [Performance Guide in WIKI](./docs/WIKI.md#performance-optimization).
 
 ---
 
@@ -409,21 +409,21 @@ For performance optimization tips, see [Performance Guide in WIKI](./WIKI.md#per
 
 ### 📖 Complete Documentation
 
-- **[WIKI.md](./WIKI.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
-- **[OPERATORS.md](./OPERATORS.md)** - Detailed guide for all 13 MongoDB-style operators with examples
-- **[MIGRATION.md](./MIGRATION.md)** - Migration guide from v3.x or native Array.filter()
+- **[WIKI.md](./docs/WIKI.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
+- **[OPERATORS.md](./docs/OPERATORS.md)** - Detailed guide for all 13 MongoDB-style operators with examples
+- **[MIGRATION.md](./docs/MIGRATION.md)** - Migration guide from v3.x or native Array.filter()
 - **[Examples](./examples/)** - Real-world usage examples and code samples
 
 ### 🎯 Quick Links
 
-- [Installation & Setup](./WIKI.md#installation--setup)
-- [All Operators Reference](./OPERATORS.md)
-- [TypeScript Integration](./WIKI.md#typescript-integration)
-- [Real-World Examples](./WIKI.md#real-world-examples)
-- [Performance Tips](./WIKI.md#performance-optimization)
-- [API Reference](./WIKI.md#api-reference)
-- [FAQ](./WIKI.md#frequently-asked-questions)
-- [Troubleshooting](./WIKI.md#troubleshooting)
+- [Installation & Setup](./docs/WIKI.md#installation--setup)
+- [All Operators Reference](./docs/OPERATORS.md)
+- [TypeScript Integration](./docs/WIKI.md#typescript-integration)
+- [Real-World Examples](./docs/WIKI.md#real-world-examples)
+- [Performance Tips](./docs/WIKI.md#performance-optimization)
+- [API Reference](./docs/WIKI.md#api-reference)
+- [FAQ](./docs/WIKI.md#frequently-asked-questions)
+- [Troubleshooting](./docs/WIKI.md#troubleshooting)
 
 ---
 
@@ -450,7 +450,7 @@ filter(data, expression, { caseSensitive: true });
 - Performance optimizations
 - Enhanced TypeScript support
 
-See [MIGRATION.md](./MIGRATION.md) for detailed migration guide.
+See [MIGRATION.md](./docs/MIGRATION.md) for detailed migration guide.
 
 ---
 
@@ -469,7 +469,7 @@ mergeConfig(options?: FilterOptions): FilterConfig
 createFilterConfig(options?: FilterOptions): FilterConfig
 ```
 
-For complete API reference, see [WIKI.md - API Reference](./WIKI.md#api-reference).
+For complete API reference, see [WIKI.md - API Reference](./docs/WIKI.md#api-reference).
 
 ---
 
@@ -486,7 +486,7 @@ Works in all modern browsers and Node.js:
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see [CONTRIBUTING.md](./docs/CONTRIBUTING.md) for guidelines.
 
 **Ways to Contribute:**
 - Report bugs or request features via [GitHub Issues](https://github.com/mcabreradev/filter/issues)
@@ -518,7 +518,9 @@ The library has 240+ tests with comprehensive coverage of all features.
 
 ## Changelog
 
-### v5.0.0 (Latest)
+### v5.0.2 (Latest)
+- 📁 Reorganized documentation into `/docs` directory
+- 🔗 Updated all internal documentation links
 - ✨ Added 13 MongoDB-style operators
 - ⚙️ Configuration API with 4 options
 - ✅ Runtime validation with Zod
@@ -526,13 +528,13 @@ The library has 240+ tests with comprehensive coverage of all features.
 - 📘 Enhanced TypeScript support
 - 🧪 240+ tests
 
-See [MIGRATION.md](./MIGRATION.md) for detailed changelog and migration guide.
+See [MIGRATION.md](./docs/MIGRATION.md) for detailed changelog and migration guide.
 
 ---
 
 ## License
 
-MIT License - see [LICENSE.md](./LICENSE.md) for details.
+MIT License - see [LICENSE.md](./docs/LICENSE.md) for details.
 
 Copyright (c) 2025 Miguelangel Cabrera
 
@@ -540,7 +542,7 @@ Copyright (c) 2025 Miguelangel Cabrera
 
 ## Credits
 
-**Author:** [Miguelangel Cabrera](https://github.com/mcabreradev)
+**Author:** [Miguelángel Cabrera](https://github.com/mcabreradev)
 **Repository:** [github.com/mcabreradev/filter](https://github.com/mcabreradev/filter)
 
 Inspired by MongoDB query syntax, SQL wildcards, and functional programming patterns.
@@ -549,7 +551,7 @@ Inspired by MongoDB query syntax, SQL wildcards, and functional programming patt
 
 ## Support
 
-- 📖 [Complete Documentation (WIKI)](./WIKI.md)
+- 📖 [Complete Documentation (WIKI)](./docs/WIKI.md)
 - 💬 [GitHub Discussions](https://github.com/mcabreradev/filter/discussions)
 - 🐛 [Issue Tracker](https://github.com/mcabreradev/filter/issues)
 - ⭐ [Star on GitHub](https://github.com/mcabreradev/filter)

@@ -422,7 +422,7 @@ filter(users, { age: { $gt: 25 } });
 
 ## Further Reading
 
-- [Configuration API](./README.md#configuration-api)
+- [Configuration API](../README.md#configuration-api)
 - [Migration Guide](./MIGRATION.md)
-- [Full API Documentation](./README.md)
+- [Full API Documentation](../README.md)
 
