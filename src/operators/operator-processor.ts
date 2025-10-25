@@ -36,6 +36,8 @@ const hasStringOps = (ops: unknown): ops is StringOperators => {
   return (
     (ops as StringOperators)[OPERATORS.STARTS_WITH] !== undefined ||
     (ops as StringOperators)[OPERATORS.ENDS_WITH] !== undefined ||
+    (ops as StringOperators)[OPERATORS.REGEX] !== undefined ||
+    (ops as StringOperators)[OPERATORS.MATCH] !== undefined ||
     (typeof (ops as StringOperators)[OPERATORS.CONTAINS] === 'string' &&
       (ops as StringOperators)[OPERATORS.CONTAINS] !== undefined)
   );

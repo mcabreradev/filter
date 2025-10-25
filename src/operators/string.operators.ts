@@ -26,5 +26,21 @@ export const applyStringOperators = (
     if (!strValue.includes(compareValue)) return false;
   }
 
+  if (operators.$regex !== undefined) {
+    const regex =
+      typeof operators.$regex === 'string'
+        ? new RegExp(operators.$regex, caseSensitive ? '' : 'i')
+        : operators.$regex;
+    if (!regex.test(value)) return false;
+  }
+
+  if (operators.$match !== undefined) {
+    const regex =
+      typeof operators.$match === 'string'
+        ? new RegExp(operators.$match, caseSensitive ? '' : 'i')
+        : operators.$match;
+    if (!regex.test(value)) return false;
+  }
+
   return true;
 };

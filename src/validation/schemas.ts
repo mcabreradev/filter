@@ -29,6 +29,8 @@ export const stringOperatorSchema = z
     $startsWith: z.string().optional(),
     $endsWith: z.string().optional(),
     $contains: z.string().optional(),
+    $regex: z.union([z.string(), z.instanceof(RegExp)]).optional(),
+    $match: z.union([z.string(), z.instanceof(RegExp)]).optional(),
   })
   .strict();
 

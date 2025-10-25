@@ -207,6 +207,70 @@ filter(users, {
 // → Returns: Alice
 ```
 
+### `$regex` - Regular Expression Match
+
+Matches strings against a regular expression pattern. Accepts either a string pattern or a RegExp object.
+
+```typescript
+// String pattern
+filter(users, { email: { $regex: '^[a-z]+@example\\.com$' } });
+// → Returns users with emails matching the pattern
+
+// RegExp object
+filter(users, { phone: { $regex: /^\+1-\d{3}-\d{4}$/ } });
+// → Returns users with US phone numbers
+
+// Complex patterns
+filter(products, { sku: { $regex: '^[A-Z]{3}-\\d{4}-[A-Z]$' } });
+// → Returns products with SKU format like "ABC-1234-X"
+
+// Email validation
+filter(users, { email: { $regex: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$' } });
+// → Returns users with valid email format
+
+// Phone number patterns
+filter(users, { phone: { $regex: '^\\+1-\\d{3}-\\d{4}$' } });
+// → Returns US phone numbers in format +1-555-0123
+```
+
+**Case Sensitivity:**
+- String patterns respect the `caseSensitive` config (default: case-insensitive)
+- RegExp objects use their own flags (e.g., `/pattern/i` for case-insensitive)
+
+```typescript
+// Case-insensitive by default
+filter(users, { name: { $regex: '^alice$' } });
+// → Returns: Alice (case-insensitive)
+
+// Case-sensitive with config
+filter(users, { name: { $regex: '^alice$' } }, { caseSensitive: true });
+// → Returns: [] (no match)
+
+// Case-insensitive with RegExp flag
+filter(users, { name: { $regex: /^alice$/i } });
+// → Returns: Alice (case-insensitive regardless of config)
+```
+
+**Common Use Cases:**
+- Email validation: `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+- Phone numbers: `^\+\d{1,3}-\d{3}-\d{4}$`
+- Zip codes: `^\d{5}(-\d{4})?$`
+- Usernames: `^[a-zA-Z0-9_]{3,16}$`
+- URLs: `^https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(/.*)?$`
+
+### `$match` - Pattern Match (Alias)
+
+`$match` is an alias for `$regex` and works identically.
+
+```typescript
+filter(users, { username: { $match: '^[a-z]+\\d+$' } });
+// Same as: { username: { $regex: '^[a-z]+\\d+$' } }
+
+// Using RegExp object
+filter(products, { code: { $match: /^[A-Z]{2}\d{4}$/ } });
+// → Returns products with codes like "AB1234"
+```
+
 ### Case Sensitivity
 
 By default, string operators are case-insensitive:

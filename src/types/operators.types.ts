@@ -20,6 +20,8 @@ export interface StringOperators {
   $startsWith?: string;
   $endsWith?: string;
   $contains?: string;
+  $regex?: string | RegExp;
+  $match?: string | RegExp;
 }
 
 export interface LogicalOperators<T> {

@@ -31,6 +31,8 @@ export const OPERATORS = {
   AND: '$and',
   OR: '$or',
   NOT: '$not',
+  REGEX: '$regex',
+  MATCH: '$match',
 } as const;
 
 export const OPERATOR_KEYS = Object.values(OPERATORS);
