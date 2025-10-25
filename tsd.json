@@ -1,0 +1,9 @@
+{
+  "directory": "build",
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "lib": ["ES2022"]
+  }
+}
+

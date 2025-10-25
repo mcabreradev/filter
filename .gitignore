@@ -63,3 +63,8 @@ typings/
 .next
 
 .npmrc
+
+# Type tests
+__test__/types/*.js
+__test__/types/*.d.ts
+build/index.test-d.ts
