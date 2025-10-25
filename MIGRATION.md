@@ -30,7 +30,7 @@ const result = filter<MyType>(data, expression);
 
 ### 3. Runtime Validation
 
-v5.0.0 includes runtime validation using Zod. Invalid expressions now throw descriptive errors.
+v5.0.0+ includes runtime validation using Zod v4. Invalid expressions now throw descriptive errors.
 
 **Before (v3.x)**:
 ```typescript

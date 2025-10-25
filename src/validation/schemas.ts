@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const primitiveSchema = z.union([z.string(), z.number(), z.boolean(), z.null()]);
 
-export const predicateFunctionSchema = z.function().args(z.any()).returns(z.boolean());
+export const predicateFunctionSchema = z.function();
 
 export const comparisonOperatorSchema = z
   .object({
@@ -39,7 +39,7 @@ export const operatorExpressionSchema = z.union([
   comparisonOperatorSchema.merge(arrayOperatorSchema).merge(stringOperatorSchema),
 ]);
 
-export const objectExpressionSchema = z.record(z.any());
+export const objectExpressionSchema = z.record(z.string(), z.any());
 
 export const expressionSchema = z.union([
   primitiveSchema,
