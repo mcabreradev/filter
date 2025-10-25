@@ -28,6 +28,11 @@ export const OPERATORS = {
   SIZE: '$size',
   STARTS_WITH: '$startsWith',
   ENDS_WITH: '$endsWith',
+  AND: '$and',
+  OR: '$or',
+  NOT: '$not',
+  REGEX: '$regex',
+  MATCH: '$match',
 } as const;
 
 export const OPERATOR_KEYS = Object.values(OPERATORS);

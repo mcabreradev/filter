@@ -7,6 +7,7 @@ This guide covers all the MongoDB-style operators available in `@mcabreradev/fil
 - [Comparison Operators](#comparison-operators)
 - [Array Operators](#array-operators)
 - [String Operators](#string-operators)
+- [Logical Operators](#logical-operators)
 - [Combining Operators](#combining-operators)
 - [Real-World Examples](#real-world-examples)
 
@@ -206,6 +207,70 @@ filter(users, {
 // → Returns: Alice
 ```
 
+### `$regex` - Regular Expression Match
+
+Matches strings against a regular expression pattern. Accepts either a string pattern or a RegExp object.
+
+```typescript
+// String pattern
+filter(users, { email: { $regex: '^[a-z]+@example\\.com$' } });
+// → Returns users with emails matching the pattern
+
+// RegExp object
+filter(users, { phone: { $regex: /^\+1-\d{3}-\d{4}$/ } });
+// → Returns users with US phone numbers
+
+// Complex patterns
+filter(products, { sku: { $regex: '^[A-Z]{3}-\\d{4}-[A-Z]$' } });
+// → Returns products with SKU format like "ABC-1234-X"
+
+// Email validation
+filter(users, { email: { $regex: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$' } });
+// → Returns users with valid email format
+
+// Phone number patterns
+filter(users, { phone: { $regex: '^\\+1-\\d{3}-\\d{4}$' } });
+// → Returns US phone numbers in format +1-555-0123
+```
+
+**Case Sensitivity:**
+- String patterns respect the `caseSensitive` config (default: case-insensitive)
+- RegExp objects use their own flags (e.g., `/pattern/i` for case-insensitive)
+
+```typescript
+// Case-insensitive by default
+filter(users, { name: { $regex: '^alice$' } });
+// → Returns: Alice (case-insensitive)
+
+// Case-sensitive with config
+filter(users, { name: { $regex: '^alice$' } }, { caseSensitive: true });
+// → Returns: [] (no match)
+
+// Case-insensitive with RegExp flag
+filter(users, { name: { $regex: /^alice$/i } });
+// → Returns: Alice (case-insensitive regardless of config)
+```
+
+**Common Use Cases:**
+- Email validation: `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+- Phone numbers: `^\+\d{1,3}-\d{3}-\d{4}$`
+- Zip codes: `^\d{5}(-\d{4})?$`
+- Usernames: `^[a-zA-Z0-9_]{3,16}$`
+- URLs: `^https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(/.*)?$`
+
+### `$match` - Pattern Match (Alias)
+
+`$match` is an alias for `$regex` and works identically.
+
+```typescript
+filter(users, { username: { $match: '^[a-z]+\\d+$' } });
+// Same as: { username: { $regex: '^[a-z]+\\d+$' } }
+
+// Using RegExp object
+filter(products, { code: { $match: /^[A-Z]{2}\d{4}$/ } });
+// → Returns products with codes like "AB1234"
+```
+
 ### Case Sensitivity
 
 By default, string operators are case-insensitive:
@@ -217,6 +282,251 @@ filter(users, { name: { $startsWith: 'al' } });
 filter(users, { name: { $startsWith: 'al' } }, { caseSensitive: true });
 // → Returns: [] (case-sensitive, no match)
 ```
+
+## Logical Operators
+
+Logical operators allow you to combine multiple conditions with AND, OR, and NOT logic. They support recursive nesting for complex queries.
+
+### `$and` - Logical AND
+
+Returns items where **all** conditions in the array match.
+
+```typescript
+import { filter } from '@mcabreradev/filter';
+
+const products = [
+  { name: 'Laptop', price: 1200, category: 'Electronics', inStock: true },
+  { name: 'Mouse', price: 25, category: 'Accessories', inStock: true },
+  { name: 'Desk', price: 350, category: 'Furniture', inStock: false }
+];
+
+// Simple AND - all conditions must match
+filter(products, {
+  $and: [
+    { category: 'Electronics' },
+    { inStock: true }
+  ]
+});
+// → Returns: Laptop
+
+// AND with operators
+filter(products, {
+  $and: [
+    { price: { $gte: 100 } },
+    { price: { $lte: 500 } },
+    { inStock: true }
+  ]
+});
+// → Returns: Desk would match price range but is out of stock, so returns []
+
+// Nested AND conditions
+filter(products, {
+  $and: [
+    { category: { $in: ['Electronics', 'Accessories'] } },
+    { price: { $lt: 1000 } },
+    { inStock: { $eq: true } }
+  ]
+});
+// → Returns: Mouse
+```
+
+**Use Case:** When you need ALL conditions to be true simultaneously.
+
+### `$or` - Logical OR
+
+Returns items where **at least one** condition in the array matches.
+
+```typescript
+// Simple OR - any condition can match
+filter(products, {
+  $or: [
+    { category: 'Electronics' },
+    { category: 'Accessories' }
+  ]
+});
+// → Returns: Laptop and Mouse
+
+// OR with different properties
+filter(products, {
+  $or: [
+    { price: { $lt: 50 } },
+    { category: 'Furniture' }
+  ]
+});
+// → Returns: Mouse ($25) and Desk (Furniture)
+
+// OR with complex conditions
+filter(products, {
+  $or: [
+    { $and: [{ category: 'Electronics' }, { price: { $gt: 1000 } }] },
+    { $and: [{ category: 'Accessories' }, { inStock: true }] }
+  ]
+});
+// → Returns: Laptop (Electronics > $1000) and Mouse (Accessories in stock)
+```
+
+**Use Case:** When you want items matching ANY of several criteria.
+
+### `$not` - Logical NOT
+
+Returns items where the condition does **NOT** match. Accepts a single expression (not an array).
+
+```typescript
+// Simple NOT
+filter(products, {
+  $not: { category: 'Furniture' }
+});
+// → Returns: Laptop and Mouse (everything except Furniture)
+
+// NOT with operators
+filter(products, {
+  $not: { price: { $gt: 500 } }
+});
+// → Returns: Mouse and Desk (price <= $500)
+
+// NOT with complex conditions
+filter(products, {
+  $not: {
+    $and: [
+      { category: 'Furniture' },
+      { inStock: false }
+    ]
+  }
+});
+// → Returns: Laptop, Mouse, and any Furniture that IS in stock
+```
+
+**Use Case:** When you want to exclude items matching certain criteria.
+
+### Nested Logical Operators
+
+Logical operators can be nested to create complex queries:
+
+```typescript
+// Complex nested query: (Electronics OR Accessories) AND in stock AND affordable
+filter(products, {
+  $and: [
+    {
+      $or: [
+        { category: 'Electronics' },
+        { category: 'Accessories' }
+      ]
+    },
+    { inStock: true },
+    { price: { $lt: 100 } }
+  ]
+});
+// → Returns: Mouse (Accessories, in stock, $25)
+
+// NOT with nested conditions
+filter(products, {
+  $not: {
+    $or: [
+      { price: { $gt: 1000 } },
+      { inStock: false }
+    ]
+  }
+});
+// → Returns: Mouse (not expensive and not out of stock)
+
+// Deeply nested logic
+filter(products, {
+  $or: [
+    {
+      $and: [
+        { category: 'Electronics' },
+        { $not: { price: { $lt: 500 } } }
+      ]
+    },
+    {
+      $and: [
+        { category: 'Accessories' },
+        { inStock: true }
+      ]
+    }
+  ]
+});
+// → Returns: Laptop (Electronics >= $500) and Mouse (Accessories in stock)
+```
+
+### Combining Logical Operators with Field Conditions
+
+You can mix logical operators with regular field-level conditions:
+
+```typescript
+// Field condition + logical operator
+filter(products, {
+  category: 'Electronics',
+  $and: [
+    { price: { $gte: 100 } },
+    { inStock: true }
+  ]
+});
+// → Returns: Laptop (Electronics, price >= $100, in stock)
+
+// Multiple logical operators
+filter(products, {
+  inStock: true,
+  $or: [
+    { category: 'Electronics' },
+    { price: { $lt: 50 } }
+  ],
+  $not: { name: { $startsWith: 'Old' } }
+});
+// → Returns: Items in stock that are either Electronics OR cheap, but NOT starting with "Old"
+```
+
+### Real-World Logical Operator Examples
+
+```typescript
+interface User {
+  name: string;
+  age: number;
+  role: string;
+  active: boolean;
+  lastLogin: Date;
+}
+
+const users: User[] = [
+  { name: 'Alice', age: 30, role: 'admin', active: true, lastLogin: new Date('2025-10-20') },
+  { name: 'Bob', age: 25, role: 'user', active: false, lastLogin: new Date('2025-09-15') },
+  { name: 'Charlie', age: 35, role: 'moderator', active: true, lastLogin: new Date('2025-10-24') }
+];
+
+// Find active admins or moderators
+filter(users, {
+  $and: [
+    { active: true },
+    { $or: [{ role: 'admin' }, { role: 'moderator' }] }
+  ]
+});
+// → Returns: Alice and Charlie
+
+// Find users who need attention (inactive OR haven't logged in recently)
+filter(users, {
+  $or: [
+    { active: false },
+    { lastLogin: { $lt: new Date('2025-10-01') } }
+  ]
+});
+// → Returns: Bob (inactive and old login)
+
+// Find eligible users (NOT guest AND (active OR recent login))
+filter(users, {
+  $and: [
+    { $not: { role: 'guest' } },
+    {
+      $or: [
+        { active: true },
+        { lastLogin: { $gte: new Date('2025-10-15') } }
+      ]
+    }
+  ]
+});
+// → Returns: Alice and Charlie
+```
+
+**Available:** `$and`, `$or`, `$not`
 
 ## Combining Operators
 

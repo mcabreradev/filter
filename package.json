@@ -13,6 +13,7 @@
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run test",
     "prepare": "husky",
     "prepublish": "pnpm run lint && pnpm run typecheck",
     "version": "pnpm run format && git add -A src",
