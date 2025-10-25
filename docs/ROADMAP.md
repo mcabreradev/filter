@@ -1,4 +1,4 @@
-# 🗺️ @mcabreradev/filter - Product Roadmap
+# 🗺️ Product Roadmap
 
 > **Last Updated**: October 25, 2025
 > **Current Version**: v5.0.2
@@ -856,7 +856,7 @@ Features are prioritized based on:
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/mcabreradev/filter/issues)
 - **GitHub Discussions**: [Community discussions](https://github.com/mcabreradev/filter/discussions)
-- **Email**: [Your email for roadmap feedback]
+- **Email**: [mcabrera.dev@gmail.com]
 - **Twitter**: [@mcabreradev]
 
 ---
