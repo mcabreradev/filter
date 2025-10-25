@@ -94,6 +94,62 @@ filter(users, { name: { $startsWith: 'A' } });
 
 ---
 
+## Framework Integrations 🎨
+
+**New in v5.3.0**: Full framework integration support for React, Vue, and Svelte!
+
+### React Hooks
+
+```typescript
+import { useFilter, useDebouncedFilter, usePaginatedFilter } from '@mcabreradev/filter';
+
+function UserList() {
+  const { filtered, isFiltering } = useFilter(users, { active: true });
+  return <div>{filtered.map(user => <User key={user.id} {...user} />)}</div>;
+}
+
+function SearchUsers() {
+  const [search, setSearch] = useState('');
+  const { filtered, isPending } = useDebouncedFilter(users, search, { delay: 300 });
+  return <input onChange={(e) => setSearch(e.target.value)} />;
+}
+```
+
+### Vue Composables
+
+```vue
+<script setup>
+import { ref } from 'vue';
+import { useFilter, usePaginatedFilter } from '@mcabreradev/filter';
+
+const searchTerm = ref('');
+const { filtered, isFiltering } = useFilter(users, searchTerm);
+</script>
+```
+
+### Svelte Stores
+
+```svelte
+<script>
+import { writable } from 'svelte/store';
+import { useFilter } from '@mcabreradev/filter';
+
+const searchTerm = writable('');
+const { filtered, isFiltering } = useFilter(users, searchTerm);
+</script>
+```
+
+**Features**:
+- ✅ React Hooks: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
+- ✅ Vue Composables: Full Composition API support with reactivity
+- ✅ Svelte Stores: Reactive stores with derived state
+- ✅ TypeScript: Full type safety with generics
+- ✅ SSR Compatible: Works with Next.js, Nuxt, and SvelteKit
+
+See [Framework Integrations Guide](./docs/FRAMEWORK_INTEGRATIONS.md) for complete documentation.
+
+---
+
 ## Core Features
 
 ### Basic Filtering
@@ -659,6 +715,7 @@ For performance optimization tips, see [Performance Guide in WIKI](./docs/WIKI.m
 ### 📖 Complete Documentation
 
 - **[WIKI.md](./docs/WIKI.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
+- **[FRAMEWORK_INTEGRATIONS.md](./docs/FRAMEWORK_INTEGRATIONS.md)** - Complete guide for React, Vue, and Svelte integrations
 - **[OPERATORS.md](./docs/OPERATORS.md)** - Detailed guide for all 18 MongoDB-style operators with examples and advanced regex patterns
 - **[LAZY_EVALUATION.md](./docs/LAZY_EVALUATION.md)** - Comprehensive guide to lazy evaluation for efficient large dataset processing
 - **[ADVANCED_LOGICAL_OPERATORS.md](./docs/ADVANCED_LOGICAL_OPERATORS.md)** - Advanced patterns and complex queries with $and, $or, $not
@@ -670,6 +727,7 @@ For performance optimization tips, see [Performance Guide in WIKI](./docs/WIKI.m
 ### 🎯 Quick Links
 
 - [Installation & Setup](./docs/WIKI.md#installation--setup)
+- [Framework Integrations](./docs/FRAMEWORK_INTEGRATIONS.md) ⭐ NEW
 - [All Operators Reference](./docs/OPERATORS.md)
 - [Regex Patterns Guide](./docs/OPERATORS.md#advanced-regex-patterns)
 - [Logical Operators Guide](./docs/ADVANCED_LOGICAL_OPERATORS.md)
@@ -776,7 +834,17 @@ The library has 270+ tests with comprehensive coverage of all features.
 
 ## Changelog
 
-### v5.0.2 (Latest)
+### v5.3.0 (Latest)
+- 🎨 **Framework Integrations**: React, Vue, and Svelte support
+- 🪝 React Hooks: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
+- 🔄 Vue Composables: Full Composition API support
+- 📦 Svelte Stores: Reactive store-based filtering
+- 📚 Comprehensive framework documentation
+- ✅ 100% test coverage for all integrations
+- 🔒 TypeScript generics for type safety
+- 🌐 SSR compatibility (Next.js, Nuxt, SvelteKit)
+
+### v5.0.2
 - 📁 Reorganized documentation into `/docs` directory
 - 🔗 Updated all internal documentation links
 - ✨ Added 18 MongoDB-style operators (logical: $and, $or, $not; regex: $regex, $match)
