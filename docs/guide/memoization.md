@@ -1,3 +1,8 @@
+---
+title: Memoization
+description: Multi-layer caching strategy for 530x performance boost
+---
+
 # Memoization Strategy Guide 💾
 
 Complete guide to the multi-layer memoization system in `@mcabreradev/filter`.
@@ -718,9 +723,9 @@ filter(data1, { age: { $gte: 18 } }, { enableCache: true });
 
 ## See Also
 
-- [Performance Benchmarks](./PERFORMANCE_BENCHMARKS.md)
-- [Lazy Evaluation Guide](./LAZY_EVALUATION.md)
-- [Complete Wiki](./WIKI.md)
+- [Performance Benchmarks](../advanced/performance-benchmarks.md)
+- [Lazy Evaluation Guide](./lazy-evaluation.md)
+- [Complete Wiki](../advanced/wiki.md)
 
 ---
 

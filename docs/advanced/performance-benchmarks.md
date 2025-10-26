@@ -1,3 +1,8 @@
+---
+title: Performance Benchmarks
+description: Detailed performance metrics and optimization strategies
+---
+
 # Performance Benchmarks
 
 ## Benchmark Environment
@@ -373,7 +378,7 @@ Benchmarks are run automatically in CI/CD on every PR to detect performance regr
 
 ## See Also
 
-- [Performance Optimization Guide](./WIKI.md#performance-optimization)
-- [Lazy Evaluation Guide](./LAZY_EVALUATION.md)
-- [Operators Guide](./OPERATORS.md)
+- [Performance Optimization Guide](./wiki.md#performance-optimization)
+- [Lazy Evaluation Guide](../guide/lazy-evaluation.md)
+- [Operators Guide](../guide/operators.md)
 

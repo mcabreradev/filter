@@ -1,3 +1,8 @@
+---
+title: Migration Guide
+description: Migrate from v3.x to v5.x or from native Array.filter()
+---
+
 # Migration Guide: v3.x → v5.0.0
 
 ## Overview
@@ -163,7 +168,7 @@ filter(products, {
 });
 ```
 
-**See**: [OPERATORS.md](./OPERATORS.md) for comprehensive operator documentation.
+**See**: [Operators Guide](../guide/operators.md) for comprehensive operator documentation.
 
 ## Migration Steps
 

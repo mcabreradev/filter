@@ -1,17 +1,22 @@
+---
+title: Complete Wiki
+description: Comprehensive documentation for @mcabreradev/filter
+---
+
 # Complete Documentation Wiki
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@mcabreradev/filter">
-    <img alt="NPM version" src="https://img.shields.io/npm/v/@mcabreradev/filter.svg?style=for-the-badge&labelColor=0869B8">
+    <img alt="NPM version" src="https://img.shields.io/npm/v/@mcabreradev/filter.svg?style=for-the-badge&labelColor=0869B8" />
   </a>
   <a href="https://github.com/mcabreradev/filter/blob/main/LICENSE.md">
-    <img alt="License" src="https://img.shields.io/npm/l/@mcabreradev/filter.svg?style=for-the-badge&labelColor=579805">
+    <img alt="License" src="https://img.shields.io/npm/l/@mcabreradev/filter.svg?style=for-the-badge&labelColor=579805" />
   </a>
   <a href="https://bundlephobia.com/package/@mcabreradev/filter">
-    <img alt="Bundle Size" src="https://img.shields.io/bundlephobia/minzip/@mcabreradev/filter?style=for-the-badge&labelColor=orange">
+    <img alt="Bundle Size" src="https://img.shields.io/bundlephobia/minzip/@mcabreradev/filter?style=for-the-badge&labelColor=orange" />
   </a>
   <a href="#">
-    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=for-the-badge&labelColor=blue">
+    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=for-the-badge&labelColor=blue" />
   </a>
 </p>
 
@@ -1230,8 +1235,8 @@ const topResults = filterFirst(
 *WeakMap automatically garbage collects
 
 **See also:**
-- [Memoization Guide](./MEMOIZATION.md) - Complete caching documentation
-- [Performance Benchmarks](./PERFORMANCE_BENCHMARKS.md) - Detailed benchmarks
+- [Memoization Guide](../guide/memoization.md) - Complete caching documentation
+- [Performance Benchmarks](./performance-benchmarks.md) - Detailed benchmarks
 
 ### customComparator
 
@@ -2935,7 +2940,7 @@ filter(products, { price: priceFilter });
 
 ### Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see the contributing guidelines for details.
 
 **How to Contribute:**
 
@@ -3019,7 +3024,7 @@ We love hearing your ideas! Open an issue with:
 
 ### Migration Path
 
-See [MIGRATION.md](./MIGRATION.md) for detailed migration instructions.
+See [Migration Guide](./migration.md) for detailed migration instructions.
 
 [↑ Back to top](#table-of-contents)
 
@@ -3029,7 +3034,7 @@ See [MIGRATION.md](./MIGRATION.md) for detailed migration instructions.
 
 ### License
 
-MIT License - see [LICENSE.md](./LICENSE.md) for details.
+MIT License - see the LICENSE file for details.
 
 Copyright (c) 2025 Miguelangel Cabrera
 
