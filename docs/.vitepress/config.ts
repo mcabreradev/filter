@@ -23,15 +23,24 @@ export default defineConfig({
     nav: [
       { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
       { text: 'Frameworks', link: '/frameworks/overview', activeMatch: '/frameworks/' },
-      { text: 'Advanced', link: '/advanced/performance-benchmarks', activeMatch: '/advanced/' },
       { text: 'API', link: '/api/reference', activeMatch: '/api/' },
       { text: 'Examples', link: '/examples/basic', activeMatch: '/examples/' },
       {
-        text: 'More',
+        text: 'Advanced',
         items: [
+          { text: 'Architecture', link: '/advanced/architecture' },
+          { text: 'Type System', link: '/advanced/type-system' },
+          { text: 'Performance', link: '/advanced/performance-benchmarks' },
           { text: 'Implementation', link: '/implementation/operators' },
-          { text: 'Roadmap', link: '/project/roadmap' },
+        ],
+      },
+      {
+        text: 'Resources',
+        items: [
+          { text: 'Changelog', link: '/project/changelog' },
           { text: 'Contributing', link: '/project/contributing' },
+          { text: 'Roadmap', link: '/project/roadmap' },
+          { text: 'FAQ', link: '/guide/faq' },
         ],
       },
     ],
@@ -45,6 +54,7 @@ export default defineConfig({
             { text: 'Introduction', link: '/guide/getting-started' },
             { text: 'Installation', link: '/guide/installation' },
             { text: 'Quick Start', link: '/guide/quick-start' },
+            { text: 'Basic Filtering', link: '/guide/basic-filtering' },
             { text: 'Migration Guide v5.4', link: '/guide/migration-v2' },
           ],
         },
@@ -60,12 +70,25 @@ export default defineConfig({
             { text: 'Autocomplete', link: '/guide/autocomplete' },
           ],
         },
+        {
+          text: 'Configuration & Help',
+          collapsed: false,
+          items: [
+            { text: 'Configuration', link: '/guide/configuration' },
+            { text: 'Best Practices', link: '/guide/best-practices' },
+            { text: 'Troubleshooting', link: '/guide/troubleshooting' },
+            { text: 'FAQ', link: '/guide/faq' },
+            { text: 'Library Comparison', link: '/guide/comparison' },
+          ],
+        },
       ],
       '/advanced/': [
         {
           text: 'Advanced Topics',
           collapsed: false,
           items: [
+            { text: 'Architecture', link: '/advanced/architecture' },
+            { text: 'Type System', link: '/advanced/type-system' },
             { text: 'Performance Benchmarks', link: '/advanced/performance-benchmarks' },
             { text: 'Migration Guide', link: '/advanced/migration' },
             { text: 'Complete Documentation', link: '/advanced/complete-documentation' },
@@ -75,11 +98,32 @@ export default defineConfig({
       '/frameworks/': [
         {
           text: 'Framework Integrations',
+          collapsed: false,
           items: [
             { text: 'Overview', link: '/frameworks/overview' },
             { text: 'React', link: '/frameworks/react' },
             { text: 'Vue', link: '/frameworks/vue' },
             { text: 'Svelte', link: '/frameworks/svelte' },
+          ],
+        },
+        {
+          text: 'SSR Frameworks',
+          collapsed: false,
+          items: [
+            { text: 'Next.js', link: '/frameworks/nextjs' },
+            { text: 'Nuxt', link: '/frameworks/nuxt' },
+            { text: 'SvelteKit', link: '/frameworks/sveltekit' },
+          ],
+        },
+      ],
+      '/api/': [
+        {
+          text: 'API Reference',
+          collapsed: false,
+          items: [
+            { text: 'Core API', link: '/api/reference' },
+            { text: 'Operators', link: '/api/operators' },
+            { text: 'Types', link: '/api/types' },
           ],
         },
       ],
@@ -97,16 +141,26 @@ export default defineConfig({
       '/project/': [
         {
           text: 'Project',
-          items: [{ text: 'Roadmap', link: '/project/roadmap' }],
+          collapsed: false,
+          items: [
+            { text: 'Roadmap', link: '/project/roadmap' },
+            { text: 'Changelog', link: '/project/changelog' },
+            { text: 'Contributing', link: '/project/contributing' },
+            { text: 'Code of Conduct', link: '/project/code-of-conduct' },
+            { text: 'License', link: '/project/license' },
+          ],
         },
       ],
       '/examples/': [
         {
           text: 'Examples',
+          collapsed: false,
           items: [
             { text: 'Basic Usage', link: '/examples/basic' },
             { text: 'Advanced Patterns', link: '/examples/advanced' },
             { text: 'Real-World Cases', link: '/examples/real-world' },
+            { text: 'E-Commerce', link: '/examples/ecommerce' },
+            { text: 'Analytics', link: '/examples/analytics' },
           ],
         },
       ],
