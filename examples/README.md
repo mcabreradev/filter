@@ -32,6 +32,18 @@ ts-node examples/operators-examples.ts
 
 ## Available Examples
 
+### `autocomplete-demo.ts`
+
+Interactive examples demonstrating intelligent autocomplete for operators:
+
+- **Type-Based Suggestions**: TypeScript suggests only valid operators for each property type
+- **Number Operators**: Autocomplete for `$gt`, `$gte`, `$lt`, `$lte`, `$eq`, `$ne`
+- **String Operators**: Autocomplete for `$startsWith`, `$endsWith`, `$contains`, `$regex`, `$match`
+- **Array Operators**: Autocomplete for `$in`, `$nin`, `$contains`, `$size`
+- **Boolean Operators**: Autocomplete for `$eq`, `$ne`
+- **Date Operators**: Autocomplete for date comparison operators
+- **Combined Examples**: Multiple operators with intelligent suggestions
+
 ### `operators-examples.ts`
 
 Comprehensive examples showcasing all v5.0.0 operators:
