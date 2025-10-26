@@ -11,12 +11,12 @@ filter(users, {
 
 // TypeScript shows:
 // ┌─────────────────────────────────────┐
-// │ ✓ $gt     - Greater than           │
-// │ ✓ $gte    - Greater than or equal  │
-// │ ✓ $lt     - Less than              │
-// │ ✓ $lte    - Less than or equal     │
-// │ ✓ $eq     - Equal                  │
-// │ ✓ $ne     - Not equal              │
+// │ ✓ $gt     - Greater than            │
+// │ ✓ $gte    - Greater than or equal   │
+// │ ✓ $lt     - Less than               │
+// │ ✓ $lte    - Less than or equal      │
+// │ ✓ $eq     - Equal                   │
+// │ ✓ $ne     - Not equal               │
 // └─────────────────────────────────────┘
 ```
 
@@ -200,6 +200,111 @@ filter(users, {
 filter(users, {
   name: {
     $gt: 'John'  // TypeScript marks this as an error
+  }
+});
+```
+
+## Nested Object Support
+
+The autocomplete system supports deeply nested objects up to 4 levels:
+
+```typescript
+interface User {
+  name: string;
+  address: {
+    city: string;
+    coordinates: {
+      lat: number;
+      lng: number;
+    };
+  };
+  settings: {
+    privacy: {
+      showEmail: boolean;
+    };
+  };
+}
+
+// ✅ Level 1: Root properties
+filter(users, {
+  name: { $startsWith: 'John' }  // Autocompletes string operators
+});
+
+// ✅ Level 2: Nested objects
+filter(users, {
+  address: {
+    city: { $startsWith: 'New' }  // Autocompletes string operators
+  }
+});
+
+// ✅ Level 3: Deeply nested objects
+filter(users, {
+  address: {
+    coordinates: {
+      lat: { $gte: -90, $lte: 90 }  // Autocompletes number operators
+    }
+  }
+});
+
+// ✅ Level 4: Very deeply nested objects
+filter(users, {
+  settings: {
+    privacy: {
+      showEmail: { $eq: true }  // Autocompletes boolean operators
+    }
+  }
+});
+```
+
+### Complex Nested Queries
+
+You can combine multiple nested levels in a single query:
+
+```typescript
+filter(users, {
+  name: { $startsWith: 'J' },
+  address: {
+    city: { $eq: 'New York' },
+    coordinates: {
+      lat: { $gte: 40, $lte: 41 }
+    }
+  },
+  settings: {
+    privacy: {
+      showEmail: { $eq: true }
+    }
+  }
+});
+```
+
+### Logical Operators with Nested Objects
+
+```typescript
+filter(users, {
+  $or: [
+    {
+      address: {
+        city: { $eq: 'New York' }
+      }
+    },
+    {
+      address: {
+        city: { $eq: 'Los Angeles' }
+      }
+    }
+  ]
+});
+```
+
+### Mixed Syntax
+
+You can mix direct values with operators at different nesting levels:
+
+```typescript
+filter(users, {
+  address: {
+    country: 'USA',              // Direct value
+    city: { $startsWith: 'New' } // Operator
   }
 });
 ```

@@ -30,6 +30,26 @@ export interface LogicalOperators<T> {
   $not?: Expression<T>;
 }
 
+type IsPlainObject<T> = T extends object
+  ? T extends Array<unknown>
+    ? false
+    : T extends Date
+      ? false
+      : T extends Function
+        ? false
+        : true
+  : false;
+
+type Decrement<N extends number> = N extends 4
+  ? 3
+  : N extends 3
+    ? 2
+    : N extends 2
+      ? 1
+      : N extends 1
+        ? 0
+        : never;
+
 type OperatorsForType<T> = T extends string
   ? {
       $startsWith?: string;
@@ -75,8 +95,24 @@ type OperatorsForType<T> = T extends string
               $ne?: T;
             };
 
+type NestedObjectExpression<T, Depth extends number = 4> = [Depth] extends [0]
+  ? never
+  : IsPlainObject<T> extends true
+    ? Partial<{
+        [K in keyof T]:
+          | T[K]
+          | OperatorsForType<T[K]>
+          | NestedObjectExpression<T[K], Decrement<Depth>>
+          | string;
+      }>
+    : never;
+
 export type ExtendedObjectExpression<T> = Partial<{
-  [K in keyof T]: T[K] | OperatorsForType<T[K]> | string;
+  [K in keyof T]:
+    | T[K]
+    | OperatorsForType<T[K]>
+    | (IsPlainObject<T[K]> extends true ? NestedObjectExpression<T[K]> : never)
+    | string;
 }> &
   Partial<LogicalOperators<T>>;
 

@@ -48,25 +48,35 @@ description: Comprehensive documentation for @mcabreradev/filter
    - [Comparison Operators](#comparison-operators)
    - [Array Operators](#array-operators)
    - [String Operators](#string-operators)
+   - [Regex Operators](#regex-operators)
+   - [Logical Operators](#logical-operators)
    - [Combining Operators](#combining-operators)
-9. [Configuration API](#configuration-api)
+9. [Intelligent Autocomplete](#intelligent-autocomplete)
+   - [Type-Aware Suggestions](#type-aware-suggestions)
+   - [Nested Object Autocomplete](#nested-object-autocomplete)
+   - [Editor Support](#editor-support)
+10. [Lazy Evaluation](#lazy-evaluation)
+    - [filterLazy](#filterlazy)
+    - [filterFirst](#filterfirst)
+    - [Performance Benefits](#performance-benefits)
+11. [Configuration API](#configuration-api)
    - [caseSensitive](#casesensitive)
    - [maxDepth](#maxdepth)
    - [enableCache](#enablecache)
    - [customComparator](#customcomparator)
-10. [Mixing Syntax Patterns](#mixing-syntax-patterns)
-11. [TypeScript Integration](#typescript-integration)
-12. [Real-World Examples](#real-world-examples)
-13. [Performance Optimization](#performance-optimization)
-14. [Migration Guides](#migration-guides)
-15. [Validation & Error Handling](#validation--error-handling)
-16. [API Reference](#api-reference)
-17. [Testing Your Filters](#testing-your-filters)
-18. [Frequently Asked Questions](#frequently-asked-questions)
-19. [Troubleshooting](#troubleshooting)
-20. [Contributing & Support](#contributing--support)
-21. [Version History](#version-history)
-22. [License & Credits](#license--credits)
+12. [Mixing Syntax Patterns](#mixing-syntax-patterns)
+13. [TypeScript Integration](#typescript-integration)
+14. [Real-World Examples](#real-world-examples)
+15. [Performance Optimization](#performance-optimization)
+16. [Migration Guides](#migration-guides)
+17. [Validation & Error Handling](#validation--error-handling)
+18. [API Reference](#api-reference)
+19. [Testing Your Filters](#testing-your-filters)
+20. [Frequently Asked Questions](#frequently-asked-questions)
+21. [Troubleshooting](#troubleshooting)
+22. [Contributing & Support](#contributing--support)
+23. [Version History](#version-history)
+24. [License & Credits](#license--credits)
 
 ---
 
@@ -82,8 +92,12 @@ description: Comprehensive documentation for @mcabreradev/filter
 - **🔒 Type-Safe** - Built with strict TypeScript for maximum reliability
 - **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
 - **🚀 Performance Optimized** - Optional caching and regex compilation optimization
-- **🧪 Battle-Tested** - 240+ tests ensuring reliability
-- **📦 MongoDB-Style Operators** - 13 operators for advanced filtering (v5.0.0+)
+- **🧪 Battle-Tested** - 463+ tests ensuring reliability
+- **📦 MongoDB-Style Operators** - 18 operators for advanced filtering (v5.0.0+)
+- **🤖 Intelligent Autocomplete** - Type-aware operator suggestions (v5.2.4+)
+- **🏗️ Nested Object Support** - 4-level deep autocomplete (v5.2.4+)
+- **💨 Lazy Evaluation** - Process large datasets efficiently (v5.1.0+)
+- **🔀 Logical Operators** - Complex queries with $and, $or, $not (v5.2.0+)
 
 ### Why Choose This Library?
 
@@ -912,6 +926,235 @@ filter(links, {
 // → API endpoints only
 ```
 
+### Regex Operators
+
+**New in v5.2.0** - Pattern matching with regular expressions.
+
+#### $regex - Regular Expression Match
+
+Match strings using regular expressions.
+
+```typescript
+const users = [
+  { email: 'user@gmail.com' },
+  { email: 'admin@company.com' },
+  { email: 'test@GMAIL.com' }
+];
+
+// Case-insensitive email matching
+filter(users, {
+  email: { $regex: /@gmail\.com$/i }
+});
+// → [{ email: 'user@gmail.com' }, { email: 'test@GMAIL.com' }]
+
+// Pattern validation
+const products = [
+  { sku: 'PROD-001-A' },
+  { sku: 'PROD-002-B' },
+  { sku: 'SERV-001-A' }
+];
+
+filter(products, {
+  sku: { $regex: /^PROD-\d{3}-[A-Z]$/ }
+});
+// → [{ sku: 'PROD-001-A' }, { sku: 'PROD-002-B' }]
+
+// Phone number validation
+const contacts = [
+  { phone: '+1-555-0100' },
+  { phone: '555-0200' },
+  { phone: '+1-555-0300' }
+];
+
+filter(contacts, {
+  phone: { $regex: /^\+1-\d{3}-\d{4}$/ }
+});
+// → [{ phone: '+1-555-0100' }, { phone: '+1-555-0300' }]
+```
+
+#### $match - Alias for $regex
+
+`$match` is an alias for `$regex` for more intuitive naming:
+
+```typescript
+// These are equivalent:
+filter(users, { email: { $regex: /^admin/ } });
+filter(users, { email: { $match: /^admin/ } });
+```
+
+#### Complex Patterns
+
+```typescript
+// URL validation
+const links = [
+  { url: 'https://example.com/api/v1/users' },
+  { url: 'http://test.com/admin' },
+  { url: 'https://example.com/api/v2/products' }
+];
+
+filter(links, {
+  url: { $regex: /^https:\/\/.*\/api\/v[12]\// }
+});
+// → API v1 and v2 endpoints with HTTPS
+
+// Date format matching (YYYY-MM-DD)
+const records = [
+  { date: '2025-01-15' },
+  { date: '01/15/2025' },
+  { date: '2025-02-20' }
+];
+
+filter(records, {
+  date: { $regex: /^\d{4}-\d{2}-\d{2}$/ }
+});
+// → [{ date: '2025-01-15' }, { date: '2025-02-20' }]
+```
+
+::: warning Performance Note
+Regex operators are powerful but slower than simple string operators. Use `$startsWith`, `$endsWith`, or `$contains` when possible for better performance.
+
+```typescript
+// ⚠️ Slower: Regex
+filter(users, { email: { $regex: /@gmail\.com$/ } });
+
+// ✅ Faster: String operator
+filter(users, { email: { $endsWith: '@gmail.com' } });
+```
+:::
+
+### Logical Operators
+
+**New in v5.2.0** - Combine multiple conditions with logical operators for complex queries.
+
+#### $and - All Conditions Must Match
+
+```typescript
+const products = [
+  { name: 'Laptop', price: 1200, rating: 4.5, inStock: true },
+  { name: 'Mouse', price: 25, rating: 4.0, inStock: true },
+  { name: 'Monitor', price: 450, rating: 4.7, inStock: false }
+];
+
+// Find products that are affordable AND highly rated AND in stock
+filter(products, {
+  $and: [
+    { price: { $lte: 500 } },
+    { rating: { $gte: 4.5 } },
+    { inStock: true }
+  ]
+});
+// → [] (Monitor is not in stock, Mouse rating is 4.0)
+```
+
+::: tip Implicit AND
+Multiple properties at the same level use implicit AND logic:
+```typescript
+// These are equivalent:
+filter(products, { price: { $lte: 500 }, inStock: true });
+filter(products, { $and: [{ price: { $lte: 500 } }, { inStock: true }] });
+```
+:::
+
+#### $or - Any Condition Must Match
+
+```typescript
+const users = [
+  { name: 'Alice', age: 17, isPremium: false },
+  { name: 'Bob', age: 25, isPremium: true },
+  { name: 'Charlie', age: 30, isPremium: false }
+];
+
+// Find users who are either adults OR premium members
+filter(users, {
+  $or: [
+    { age: { $gte: 18 } },
+    { isPremium: true }
+  ]
+});
+// → [{ name: 'Bob', ... }, { name: 'Charlie', ... }]
+```
+
+#### $not - Negation
+
+```typescript
+// Find products that are NOT out of stock
+filter(products, {
+  $not: {
+    inStock: false
+  }
+});
+// → [{ name: 'Laptop', ... }, { name: 'Mouse', ... }]
+
+// Complex negation: NOT (cheap OR low-rated)
+filter(products, {
+  $not: {
+    $or: [
+      { price: { $lt: 100 } },
+      { rating: { $lt: 4.0 } }
+    ]
+  }
+});
+// → [{ name: 'Laptop', ... }, { name: 'Monitor', ... }]
+```
+
+#### Combining Logical Operators
+
+```typescript
+// Complex e-commerce query:
+// (High rating OR popular brand) AND in stock AND affordable
+filter(products, {
+  $and: [
+    {
+      $or: [
+        { rating: { $gte: 4.5 } },
+        { brand: { $in: ['Apple', 'Samsung', 'Sony'] } }
+      ]
+    },
+    { inStock: true },
+    { price: { $lte: 1000 } }
+  ]
+});
+
+// Clearance items: On sale BUT NOT (out of stock OR discontinued)
+filter(products, {
+  discount: { $gt: 0 },
+  $not: {
+    $or: [
+      { inStock: false },
+      { tags: { $contains: 'discontinued' } }
+    ]
+  }
+});
+```
+
+#### Nested Logical Operators
+
+```typescript
+// Find users in specific age ranges with certain conditions
+filter(users, {
+  $or: [
+    {
+      $and: [
+        { age: { $gte: 18, $lt: 25 } },
+        { status: 'student' }
+      ]
+    },
+    {
+      $and: [
+        { age: { $gte: 25, $lt: 65 } },
+        { status: 'employed' }
+      ]
+    },
+    {
+      $and: [
+        { age: { $gte: 65 } },
+        { status: 'retired' }
+      ]
+    }
+  ]
+});
+```
+
 ### Combining Operators
 
 #### Multiple Operators on Same Property
@@ -978,6 +1221,325 @@ filter(inventory, {
 });
 // → [{ name: 'Product A', ... }]
 ```
+
+[↑ Back to top](#table-of-contents)
+
+---
+
+## Intelligent Autocomplete
+
+**New in v5.2.4** - TypeScript provides intelligent, type-aware operator suggestions that improve developer experience and prevent errors at compile time.
+
+### Overview
+
+The type system analyzes each property of your interface and suggests only valid operators for that specific type. No more guessing which operators work with which data types!
+
+### Type-Aware Suggestions
+
+When you type in your editor, TypeScript shows only relevant operators:
+
+```typescript
+interface User {
+  name: string;
+  age: number;
+  tags: string[];
+  isActive: boolean;
+  createdAt: Date;
+}
+
+const users: User[] = [];
+
+// When you type: filter(users, { age: { $
+// Press Ctrl+Space (or Cmd+Space on Mac)
+// TypeScript shows ONLY:
+// ┌─────────────────────────────────────┐
+// │ ✓ $gt     - Greater than            │
+// │ ✓ $gte    - Greater than or equal   │
+// │ ✓ $lt     - Less than               │
+// │ ✓ $lte    - Less than or equal      │
+// │ ✓ $eq     - Equal                   │
+// │ ✓ $ne     - Not equal               │
+// └─────────────────────────────────────┘
+
+// You WON'T see $startsWith, $contains, etc.
+// (they don't make sense for numbers!)
+```
+
+### Operator Mapping by Type
+
+| Type | Available Operators |
+|------|---------------------|
+| `string` | `$startsWith`, `$endsWith`, `$contains`, `$regex`, `$match`, `$eq`, `$ne` |
+| `number` | `$gt`, `$gte`, `$lt`, `$lte`, `$eq`, `$ne` |
+| `Date` | `$gt`, `$gte`, `$lt`, `$lte`, `$eq`, `$ne` |
+| `Array\<T>` | `$in`, `$nin`, `$contains`, `$size` |
+| `boolean` | `$eq`, `$ne` |
+| `other` | `$eq`, `$ne` |
+
+### Nested Object Autocomplete
+
+**New in v5.2.4** - Autocomplete works up to **4 levels deep** for nested objects:
+
+```typescript
+interface User {
+  name: string;
+  address: {
+    city: string;
+    coordinates: {
+      lat: number;
+      lng: number;
+    };
+  };
+  settings: {
+    privacy: {
+      showEmail: boolean;
+    };
+  };
+}
+
+const users: User[] = [];
+
+// ✅ Level 1: Root properties
+filter(users, {
+  name: { $startsWith: 'John' }  // Autocompletes string operators
+});
+
+// ✅ Level 2: Nested objects
+filter(users, {
+  address: {
+    city: { $startsWith: 'New' }  // Autocompletes string operators
+  }
+});
+
+// ✅ Level 3: Deeply nested objects
+filter(users, {
+  address: {
+    coordinates: {
+      lat: { $gte: -90, $lte: 90 }  // Autocompletes number operators
+    }
+  }
+});
+
+// ✅ Level 4: Very deeply nested objects
+filter(users, {
+  settings: {
+    privacy: {
+      showEmail: { $eq: true }  // Autocompletes boolean operators
+    }
+  }
+});
+```
+
+### Type Safety
+
+TypeScript prevents errors at compile time:
+
+```typescript
+interface User {
+  age: number;
+  name: string;
+}
+
+// ❌ Error: $startsWith is not valid for numbers
+filter(users, {
+  age: {
+    $startsWith: '25'  // TypeScript marks this as an error
+  }
+});
+
+// ✅ Correct usage
+filter(users, {
+  age: { $gte: 25 },           // Number operators
+  name: { $startsWith: 'John' } // String operators
+});
+```
+
+### Editor Support
+
+Autocomplete works in any editor with TypeScript support:
+
+- **VS Code/Cursor**: Press `Ctrl+Space` (Windows/Linux) or `Cmd+Space` (Mac)
+- **WebStorm/IntelliJ**: Autocomplete appears automatically
+- **Vim/Neovim**: With LSP configured (coc.nvim, nvim-lsp)
+- **Sublime Text**: With LSP-typescript
+- **Emacs**: With lsp-mode or eglot
+
+### Benefits
+
+1. **Discovery**: Discover available operators without consulting documentation
+2. **Error Prevention**: TypeScript prevents the use of incorrect operators
+3. **Productivity**: Write code faster with intelligent suggestions
+4. **Maintainability**: Code is easier to understand and maintain
+5. **Safe Refactoring**: Type changes propagate automatically
+6. **Zero Cost**: Pure TypeScript feature, no runtime overhead
+
+[↑ Back to top](#table-of-contents)
+
+---
+
+## Lazy Evaluation
+
+**New in v5.1.0** - Process large datasets efficiently with generators and lazy evaluation. Stop processing early and save resources.
+
+### Overview
+
+Lazy evaluation allows you to process items on-demand rather than filtering the entire array upfront. This approach:
+
+- **500x faster** for early exits (finding first N matches)
+- **Reduces memory footprint** - Only processes items as needed
+- **Improves performance** - Stops early when conditions are met
+- **Enables infinite streams** - Works with generators and async iterables
+- **Supports chunked processing** - Process data in manageable batches
+
+### filterLazy
+
+Returns a lazy iterator that yields filtered items on-demand.
+
+**Signature:**
+```typescript
+function filterLazy<T>(
+  iterable: Iterable<T>,
+  expression: Expression<T>,
+  options?: FilterOptions
+): Generator<T, void, undefined>
+```
+
+**Example:**
+```typescript
+import { filterLazy } from '@mcabreradev/filter';
+
+const millionRecords = [/* 1,000,000 items */];
+
+// Lazy evaluation - items processed on-demand
+const filtered = filterLazy(millionRecords, {
+  status: 'active',
+  score: { $gte: 90 }
+});
+
+// Consume only what you need
+for (const item of filtered) {
+  console.log(item);
+  if (someCondition) break; // Stop early - remaining items never processed!
+}
+```
+
+### filterFirst
+
+Find the first N matching items and stop processing.
+
+**Signature:**
+```typescript
+function filterFirst<T>(
+  iterable: Iterable<T>,
+  expression: Expression<T>,
+  limit: number,
+  options?: FilterOptions
+): T[]
+```
+
+**Example:**
+```typescript
+import { filterFirst } from '@mcabreradev/filter';
+
+// Find first 10 high-value transactions
+const topTransactions = filterFirst(
+  millionTransactions,
+  { amount: { $gte: 10000 }, status: 'completed' },
+  10  // Stop after finding 10 matches
+);
+// → 500x faster than filtering entire array!
+```
+
+### Performance Benefits
+
+#### Performance Comparison
+
+```typescript
+const largeDataset = Array.from({ length: 1_000_000 }, (_, i) => ({
+  id: i,
+  value: Math.random() * 1000,
+  status: i % 2 === 0 ? 'active' : 'inactive'
+}));
+
+// ❌ Slow: Process entire array
+console.time('eager');
+const eager = filter(largeDataset, { status: 'active', value: { $gte: 900 } });
+const first10Eager = eager.slice(0, 10);
+console.timeEnd('eager');  // ~250ms
+
+// ✅ Fast: Stop after finding 10
+console.time('lazy');
+const first10Lazy = filterFirst(
+  largeDataset,
+  { status: 'active', value: { $gte: 900 } },
+  10
+);
+console.timeEnd('lazy');  // ~0.5ms (500x faster!)
+```
+
+### Real-World Use Cases
+
+#### Pagination
+
+```typescript
+function getPage(
+  data: Item[],
+  page: number,
+  pageSize: number,
+  filters: Expression<Item>
+) {
+  const skip = page * pageSize;
+  const lazy = filterLazy(data, filters);
+
+  let count = 0;
+  const results: Item[] = [];
+
+  for (const item of lazy) {
+    if (count >= skip && results.length < pageSize) {
+      results.push(item);
+    }
+    count++;
+    if (results.length === pageSize) break;  // Stop when page is full
+  }
+
+  return results;
+}
+```
+
+#### Search with Limit
+
+```typescript
+function searchProducts(query: string, limit: number = 20) {
+  return filterFirst(
+    products,
+    { name: { $contains: query }, inStock: true },
+    limit
+  );
+}
+```
+
+### Combining with Caching
+
+```typescript
+// Lazy evaluation + caching for repeated queries
+const results = filterFirst(
+  largeDataset,
+  { category: 'Electronics', price: { $lte: 1000 } },
+  50,
+  { enableCache: true }
+);
+// First run: ~15ms (early exit)
+// Cached run: ~0.01ms (instant!)
+```
+
+### Performance Metrics
+
+| Operation | Eager Filter | Lazy Filter | Speedup |
+|-----------|-------------|-------------|---------|
+| Find first 10 (1M items) | 250ms | 0.5ms | 500x |
+| Find first 100 (1M items) | 250ms | 5ms | 50x |
+| Process until condition | 250ms | Variable | 10-500x |
+| Memory usage (1M items) | 80MB | <1MB | 80x less |
 
 [↑ Back to top](#table-of-contents)
 
@@ -1489,7 +2051,7 @@ interface Product {
   price: number;
 }
 
-const products: Product[] = [...];
+const products: Product[] = [/* ... */];
 
 // Fully typed predicate
 filter<Product>(products, (product: Product): boolean => {
@@ -1642,7 +2204,7 @@ interface User {
   lastLogin: Date;
 }
 
-const users: User[] = [...];
+const users: User[] = [/* ... */];
 
 // Active admin users
 const activeAdmins = filter(users, {
@@ -1704,7 +2266,7 @@ interface Transaction {
   country: string;
 }
 
-const transactions: Transaction[] = [...];
+const transactions: Transaction[] = [/* ... */];
 
 // Successful transactions above threshold
 const highValueTransactions = filter(transactions, {
@@ -1767,7 +2329,7 @@ interface Article {
   status: 'draft' | 'published' | 'archived';
 }
 
-const articles: Article[] = [...];
+const articles: Article[] = [/* ... */];
 
 // Full-text search (title + content)
 const searchTerm = 'typescript';
@@ -1808,7 +2370,7 @@ const authorArticles = filter(articles, {
 
 ### Inventory Management
 
-```typescript
+```ts
 interface InventoryItem {
   sku: string;
   name: string;
@@ -1822,7 +2384,7 @@ interface InventoryItem {
   tags: string[];
 }
 
-const inventory: InventoryItem[] = [...];
+const inventory: InventoryItem[] = [/* ... */];
 
 // Low stock alerts
 const lowStock = filter(inventory, (item) =>
@@ -1909,7 +2471,7 @@ Tips and strategies for optimal performance.
 ### Caching Strategy
 
 ```typescript
-const largeDataset = [...]; // 100,000 items
+const largeDataset = [/* ... */]; // 100,000 items
 
 // ❌ Without cache: Re-computes every time
 for (let i = 0; i < 1000; i++) {
@@ -2266,7 +2828,7 @@ console.log('Data length:', data.length);
 
 Complete reference for all exported functions and types.
 
-### filter<T>(array, expression, options?)
+### filter\<T>(array, expression, options?)
 
 Main filtering function.
 
@@ -2282,7 +2844,7 @@ function filter<T>(
 **Parameters:**
 
 - `array` (`T[]`): Array to filter
-- `expression` (`Expression<T>`): Filter expression (string, number, boolean, null, object, or predicate)
+- `expression` (`Expression\<T>`): Filter expression (string, number, boolean, null, object, or predicate)
 - `options` (`FilterOptions`, optional): Configuration options
 
 **Returns:** `T[]` - Filtered array
@@ -2312,7 +2874,7 @@ function validateExpression<T>(expression: unknown): Expression<T>
 **Parameters:**
 - `expression` (`unknown`): Expression to validate
 
-**Returns:** `Expression<T>` - Validated expression
+**Returns:** `Expression\<T>` - Validated expression
 
 **Throws:** Error if expression is invalid
 
@@ -2668,7 +3230,7 @@ Yes! Works in any JavaScript/TypeScript environment:
 ```typescript
 // React
 const FilteredList = () => {
-  const [products, setProducts] = useState([...]);
+  const [products, setProducts] = useState([/* ... */]);
   const [priceFilter, setPriceFilter] = useState(100);
 
   const filtered = filter(products, {
@@ -2990,10 +3552,53 @@ We love hearing your ideas! Open an issue with:
 
 ## Version History
 
-### v5.0.0 (Latest - October 2025)
+### v5.2.4 (Latest - October 2025)
 
 **Major Features:**
-- 13 MongoDB-style operators ($gt, $gte, $lt, $lte, $eq, $ne, $in, $nin, $contains, $size, $startsWith, $endsWith)
+- 🤖 **Intelligent Autocomplete** - Type-aware operator suggestions
+- 🏗️ **Nested Object Autocomplete** - 4-level deep autocomplete support
+- 📝 **Regex Operators** - $regex and $match for pattern matching
+- 🔀 **Logical Operators** - $and, $or, $not for complex queries
+- 💨 **Lazy Evaluation** - filterLazy, filterFirst for efficient processing
+- 🚀 **Enhanced Caching** - Multi-layer memoization (530x faster)
+- 📦 **18 Total Operators** - Complete MongoDB-style operator suite
+
+**Operator Count:**
+- Comparison: 6 operators ($gt, $gte, $lt, $lte, $eq, $ne)
+- Array: 4 operators ($in, $nin, $contains, $size)
+- String: 5 operators ($startsWith, $endsWith, $contains, $regex, $match)
+- Logical: 3 operators ($and, $or, $not)
+- **Total: 18 operators**
+
+**Performance Improvements:**
+- 530x faster with result caching
+- 500x faster with lazy evaluation for early exits
+- 80x less memory usage with filterLazy
+- Optimized regex pattern caching
+
+**Breaking Changes:**
+- None (100% backward compatible)
+
+**Improvements:**
+- Better TypeScript inference for nested objects
+- Improved performance with lazy evaluation
+- Enhanced documentation with all features
+- Real-world examples for all operators
+- 463+ comprehensive tests
+
+### v5.1.0 (September 2025)
+
+**Major Features:**
+- Lazy evaluation with filterLazy
+- filterFirst for early exits
+- toArray helper function
+- Generator support
+- 500x performance improvement for limited results
+
+### v5.0.0 (August 2025)
+
+**Major Features:**
+- 13 MongoDB-style operators
 - Configuration API with 4 options (caseSensitive, maxDepth, enableCache, customComparator)
 - Runtime validation with Zod
 - Performance optimizations (caching, early exit)

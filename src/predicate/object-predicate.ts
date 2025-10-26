@@ -44,6 +44,14 @@ export function createObjectPredicate<T>(
         continue;
       }
 
+      if (isObject(expr) && !isOperatorExpression(expr) && isObject(itemValue)) {
+        const nestedPredicate = createObjectPredicate(expr as Record<string, unknown>, config);
+        if (!nestedPredicate(itemValue)) {
+          return false;
+        }
+        continue;
+      }
+
       let shouldNegate = false;
 
       if (isString(expr) && hasNegation(expr)) {

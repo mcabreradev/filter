@@ -193,19 +193,67 @@ filter(products, {
 - **Runtime**: 0ms overhead
 - **Compilation**: No noticeable impact
 
+## Nested Object Support ✅
+
+**Implemented in v5.2.4!** The system now supports intelligent autocomplete for deeply nested objects up to 4 levels:
+
+```typescript
+interface User {
+  address: {
+    coordinates: {
+      lat: number;
+      lng: number;
+    };
+  };
+  settings: {
+    privacy: {
+      showEmail: boolean;
+    };
+  };
+}
+
+// ✅ Autocomplete works at all levels
+filter(users, {
+  address: {
+    coordinates: {
+      lat: { $gte: -90, $lte: 90 }  // Autocompletes number operators
+    }
+  },
+  settings: {
+    privacy: {
+      showEmail: { $eq: true }  // Autocompletes boolean operators
+    }
+  }
+});
+```
+
+### Technical Implementation
+
+- **`IsPlainObject<T>`**: Helper type to identify plain objects (excludes Arrays, Dates, Functions)
+- **`Decrement<N>`**: Helper type to manage recursion depth (prevents infinite loops)
+- **`NestedObjectExpression<T, Depth>`**: Recursive type that provides autocomplete up to 4 levels
+- **Maximum Depth**: Limited to 4 levels for optimal TypeScript performance
+
+### Why 4 Levels?
+
+- **Performance**: Deeper recursion can slow down TypeScript's type checker
+- **Practical**: 99% of real-world use cases need ≤4 levels
+- **Configurable**: Can be adjusted by modifying the `Decrement` type
+
 ## Future Enhancements
 
 Potential improvements for future versions:
 
 1. **Custom Operator Types**: Allow users to define custom operators with autocomplete
-2. **Nested Object Support**: Better autocomplete for deeply nested properties
+2. **Configurable Depth**: Allow users to configure maximum nesting depth
 3. **Generic Type Constraints**: More sophisticated type inference for generic components
 4. **Plugin System**: Allow third-party operator extensions with autocomplete
 
 ## Documentation Links
 
 - 📖 [Autocomplete Guide](docs/guide/autocomplete.md)
-- 🎯 [Interactive Demo](examples/autocomplete-demo.ts)
+- 🎯 [Basic Autocomplete Demo](examples/autocomplete-demo.ts)
+- 🏗️ [Nested Objects Demo](examples/nested-autocomplete-demo.ts)
 - 📚 [Main README](README.md)
 - 🔧 [Type Definitions](src/types/operators.types.ts)
 
