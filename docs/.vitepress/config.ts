@@ -52,9 +52,11 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'Operators', link: '/guide/operators' },
+            { text: 'Regex Operators', link: '/guide/regex-operators' },
             { text: 'Logical Operators', link: '/guide/logical-operators' },
             { text: 'Lazy Evaluation', link: '/guide/lazy-evaluation' },
             { text: 'Memoization', link: '/guide/memoization' },
+            { text: 'Autocomplete', link: '/guide/autocomplete' },
           ],
         },
       ],
@@ -65,6 +67,7 @@ export default defineConfig({
           items: [
             { text: 'Performance Benchmarks', link: '/advanced/performance-benchmarks' },
             { text: 'Migration Guide', link: '/advanced/migration' },
+            { text: 'Complete Documentation', link: '/advanced/complete-documentation' },
           ],
         },
       ],
@@ -127,7 +130,6 @@ export default defineConfig({
       provider: 'local',
       options: {
         detailedView: true,
-        placeholder: 'Search documentation...',
       },
     },
 
@@ -152,6 +154,4 @@ export default defineConfig({
       },
     },
   },
-
-  srcExclude: ['**/wiki.md'],
 });

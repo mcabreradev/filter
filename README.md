@@ -25,6 +25,7 @@ Go beyond JavaScript's native `Array.filter()` with a library that understands y
 - **🔍 Deep Object Filtering** - Search through nested objects up to configurable depths
 - **⚡ Zero Dependencies** - Lightweight and production-ready (only Zod for runtime validation)
 - **🔒 Type-Safe** - Built with strict TypeScript for maximum reliability
+- **✨ Smart Autocomplete** - IntelliSense suggests only valid operators for each property type
 - **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
 - **🚀 Performance Optimized** - Optional caching and regex compilation optimization
 - **📦 MongoDB-Style Operators** - 18 operators for advanced filtering (v5.0.0+)
@@ -216,7 +217,39 @@ filter(users, {
 
 ### MongoDB-Style Operators (v5.0.0)
 
-Powerful operators for advanced filtering:
+Powerful operators for advanced filtering with **intelligent autocomplete** - TypeScript suggests only valid operators for each property type!
+
+```typescript
+interface Product {
+  name: string;
+  price: number;
+  tags: string[];
+  inStock: boolean;
+}
+
+// TypeScript autocompletes operators based on property types
+filter(products, {
+  price: {
+    // Suggests: $gt, $gte, $lt, $lte, $eq, $ne
+    $gte: 100,
+    $lte: 500
+  },
+  name: {
+    // Suggests: $startsWith, $endsWith, $contains, $regex, $match, $eq, $ne
+    $startsWith: 'Laptop'
+  },
+  tags: {
+    // Suggests: $in, $nin, $contains, $size
+    $contains: 'sale'
+  },
+  inStock: {
+    // Suggests: $eq, $ne
+    $eq: true
+  }
+});
+```
+
+📖 **[Learn more about autocomplete →](docs/guide/autocomplete.md)**
 
 #### Comparison Operators
 

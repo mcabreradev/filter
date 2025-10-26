@@ -32,6 +32,31 @@ ts-node examples/operators-examples.ts
 
 ## Available Examples
 
+### `autocomplete-demo.ts`
+
+Interactive examples demonstrating intelligent autocomplete for operators:
+
+- **Type-Based Suggestions**: TypeScript suggests only valid operators for each property type
+- **Number Operators**: Autocomplete for `$gt`, `$gte`, `$lt`, `$lte`, `$eq`, `$ne`
+- **String Operators**: Autocomplete for `$startsWith`, `$endsWith`, `$contains`, `$regex`, `$match`
+- **Array Operators**: Autocomplete for `$in`, `$nin`, `$contains`, `$size`
+- **Boolean Operators**: Autocomplete for `$eq`, `$ne`
+- **Date Operators**: Autocomplete for date comparison operators
+- **Combined Examples**: Multiple operators with intelligent suggestions
+
+### `nested-autocomplete-demo.ts`
+
+Advanced examples showcasing autocomplete for deeply nested objects:
+
+- **Multi-Level Nesting**: Autocomplete works up to 4 levels deep
+- **Level 2 Filtering**: Filter by nested object properties (e.g., `address.city`)
+- **Level 3 Filtering**: Filter by deeply nested properties (e.g., `address.coordinates.lat`)
+- **Level 4 Filtering**: Filter by very deeply nested properties (e.g., `settings.privacy.showEmail`)
+- **Complex Queries**: Combine multiple nested levels in a single query
+- **Logical Operators**: Use `$or`, `$and`, `$not` with nested objects
+- **Mixed Syntax**: Combine direct values and operators at different levels
+- **Real-World Examples**: Practical use cases with nested data structures
+
 ### `operators-examples.ts`
 
 Comprehensive examples showcasing all v5.0.0 operators:
