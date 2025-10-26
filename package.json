@@ -137,7 +137,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "files": [
-    "build/**/*"
+    "build/**/*",
+    "__test__/types/**/*.test-d.ts"
   ],
   "publishConfig": {
     "access": "public",
