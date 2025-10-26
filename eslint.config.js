@@ -22,7 +22,7 @@ export default [
     }
   },
   {
-    files: ['src/**/*.test.ts'],
+    files: ['src/**/*.test.ts', '__test__/**/*.ts', 'examples/**/*.ts'],
     languageOptions: {
       parser,
       parserOptions: {
@@ -36,7 +36,7 @@ export default [
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': 'error',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-non-null-assertion': 'warn'
     }
   }

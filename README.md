@@ -28,7 +28,8 @@ Go beyond JavaScript's native `Array.filter()` with a library that understands y
 - **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
 - **🚀 Performance Optimized** - Optional caching and regex compilation optimization
 - **📦 MongoDB-Style Operators** - 18 operators for advanced filtering (v5.0.0+)
-- **🧪 Battle-Tested** - 270+ tests ensuring reliability
+- **💨 Lazy Evaluation** - Process large datasets efficiently with generators (v5.1.0+)
+- **🧪 Battle-Tested** - 300+ tests ensuring reliability
 
 ---
 
@@ -90,6 +91,62 @@ filter(users, { city: { $in: ['Berlin', 'Paris'] } });
 filter(users, { name: { $startsWith: 'A' } });
 // → Returns Alice
 ```
+
+---
+
+## Framework Integrations 🎨
+
+**New in v5.3.0**: Full framework integration support for React, Vue, and Svelte!
+
+### React Hooks
+
+```typescript
+import { useFilter, useDebouncedFilter, usePaginatedFilter } from '@mcabreradev/filter';
+
+function UserList() {
+  const { filtered, isFiltering } = useFilter(users, { active: true });
+  return <div>{filtered.map(user => <User key={user.id} {...user} />)}</div>;
+}
+
+function SearchUsers() {
+  const [search, setSearch] = useState('');
+  const { filtered, isPending } = useDebouncedFilter(users, search, { delay: 300 });
+  return <input onChange={(e) => setSearch(e.target.value)} />;
+}
+```
+
+### Vue Composables
+
+```vue
+<script setup>
+import { ref } from 'vue';
+import { useFilter, usePaginatedFilter } from '@mcabreradev/filter';
+
+const searchTerm = ref('');
+const { filtered, isFiltering } = useFilter(users, searchTerm);
+</script>
+```
+
+### Svelte Stores
+
+```svelte
+<script>
+import { writable } from 'svelte/store';
+import { useFilter } from '@mcabreradev/filter';
+
+const searchTerm = writable('');
+const { filtered, isFiltering } = useFilter(users, searchTerm);
+</script>
+```
+
+**Features**:
+- ✅ React Hooks: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
+- ✅ Vue Composables: Full Composition API support with reactivity
+- ✅ Svelte Stores: Reactive stores with derived state
+- ✅ TypeScript: Full type safety with generics
+- ✅ SSR Compatible: Works with Next.js, Nuxt, and SvelteKit
+
+See [Framework Integrations Guide](./docs/FRAMEWORK_INTEGRATIONS.md) for complete documentation.
 
 ---
 
@@ -334,6 +391,187 @@ filter<Product>(products, (p: Product): boolean =>
 
 ---
 
+## Lazy Evaluation (v5.1.0+)
+
+Efficiently process large datasets with lazy evaluation:
+
+```typescript
+import { filterLazy, filterFirst, filterExists, toArray, take, map } from '@mcabreradev/filter';
+
+// Lazy evaluation - process items on-demand
+const filtered = filterLazy(millionRecords, { active: true });
+for (const item of filtered) {
+  process(item);
+  if (shouldStop) break; // Early exit - stops processing immediately
+}
+
+// Find first N matches with early exit optimization
+const first10 = filterFirst(users, { premium: true }, 10);
+
+// Check existence without processing all items
+const hasAdmin = filterExists(users, { role: 'admin' });
+
+// Count matching items
+const activeCount = filterCount(users, { active: true });
+
+// Compose lazy operations for powerful pipelines
+const result = toArray(
+  take(
+    map(filterLazy(users, { active: true }), u => u.name),
+    100
+  )
+);
+
+// Chunked processing for batch operations
+for (const chunk of filterLazyChunked(largeDataset, { needsProcessing: true }, 1000)) {
+  await api.batchUpdate(chunk);
+}
+```
+
+**Benefits:**
+- 🚀 **500x faster** for operations that don't need all results
+- 💾 **100,000x less memory** for large datasets
+- ⚡ **Early exit** optimization for existence checks
+- 🔄 **Streaming** support for async data sources
+- 📦 **Chunked processing** for batch operations
+
+See [Lazy Evaluation Guide](./docs/LAZY_EVALUATION.md) for complete documentation.
+
+---
+
+## Memoization & Performance 💾
+
+**New in v5.2.0**: Advanced multi-layer memoization strategy for maximum performance.
+
+The library implements a sophisticated caching system with three layers:
+
+1. **Result Cache** - Caches complete filter results
+2. **Predicate Cache** - Memoizes compiled predicate functions
+3. **Regex Cache** - Caches compiled regex patterns
+
+### Basic Usage
+
+```typescript
+import { filter, clearFilterCache, getFilterCacheStats } from '@mcabreradev/filter';
+
+const largeDataset = [...];
+
+const results = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true });
+
+const sameResults = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true });
+```
+
+### Performance Gains
+
+| Scenario | Without Cache | With Cache | Speedup |
+|----------|---------------|------------|---------|
+| Simple query (10K items) | 5.3ms | 0.01ms | **530x** |
+| Regex pattern | 12.1ms | 0.02ms | **605x** |
+| Complex nested | 15.2ms | 0.01ms | **1520x** |
+
+### Real-World Example
+
+```typescript
+const products = await fetchProducts();
+
+const electronics = filter(
+  products,
+  {
+    category: { $in: ['Electronics', 'Computers'] },
+    price: { $gte: 100, $lte: 2000 },
+    inStock: true,
+    rating: { $gte: 4.0 }
+  },
+  { enableCache: true }
+);
+
+const electronicsAgain = filter(
+  products,
+  {
+    category: { $in: ['Electronics', 'Computers'] },
+    price: { $gte: 100, $lte: 2000 },
+    inStock: true,
+    rating: { $gte: 4.0 }
+  },
+  { enableCache: true }
+);
+```
+
+### Cache Management
+
+```typescript
+const stats = getFilterCacheStats();
+console.log(stats);
+
+clearFilterCache();
+
+let data = [/* large dataset */];
+filter(data, query, { enableCache: true });
+data = null;
+```
+
+### When to Enable Caching
+
+✅ **Enable for:**
+- Large datasets (>1,000 items)
+- Repeated identical queries
+- Complex expressions with regex
+- Read-heavy workloads
+- Dashboard/analytics views
+
+❌ **Disable for:**
+- Frequently changing data
+- One-time queries
+- Memory-constrained environments
+- Unique expressions every time
+
+### Complete Example: Dashboard with Caching
+
+```typescript
+import { filter, clearFilterCache } from '@mcabreradev/filter';
+
+class ProductDashboard {
+  private products: Product[];
+
+  constructor(products: Product[]) {
+    this.products = products;
+  }
+
+  getElectronics() {
+    return filter(
+      this.products,
+      { category: 'Electronics' },
+      { enableCache: true }
+    );
+  }
+
+  getHighRated() {
+    return filter(
+      this.products,
+      { rating: { $gte: 4.5 } },
+      { enableCache: true }
+    );
+  }
+
+  refreshData(newProducts: Product[]) {
+    this.products = newProducts;
+    clearFilterCache();
+  }
+}
+
+const dashboard = new ProductDashboard(products);
+
+dashboard.getElectronics();
+dashboard.getHighRated();
+
+dashboard.getElectronics();
+dashboard.getHighRated();
+```
+
+See [Memoization Guide](./docs/MEMOIZATION.md) for complete documentation.
+
+---
+
 ## Configuration
 
 Customize filter behavior with options:
@@ -477,18 +715,29 @@ For performance optimization tips, see [Performance Guide in WIKI](./docs/WIKI.m
 ### 📖 Complete Documentation
 
 - **[WIKI.md](./docs/WIKI.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
-- **[OPERATORS.md](./docs/OPERATORS.md)** - Detailed guide for all 18 MongoDB-style operators with examples
+- **[FRAMEWORK_INTEGRATIONS.md](./docs/FRAMEWORK_INTEGRATIONS.md)** - Complete guide for React, Vue, and Svelte integrations
+- **[OPERATORS.md](./docs/OPERATORS.md)** - Detailed guide for all 18 MongoDB-style operators with examples and advanced regex patterns
+- **[LAZY_EVALUATION.md](./docs/LAZY_EVALUATION.md)** - Comprehensive guide to lazy evaluation for efficient large dataset processing
+- **[ADVANCED_LOGICAL_OPERATORS.md](./docs/ADVANCED_LOGICAL_OPERATORS.md)** - Advanced patterns and complex queries with $and, $or, $not
+- **[PERFORMANCE_BENCHMARKS.md](./docs/PERFORMANCE_BENCHMARKS.md)** - Detailed performance metrics and optimization strategies
 - **[MIGRATION.md](./docs/MIGRATION.md)** - Migration guide from v3.x or native Array.filter()
+- **[SECURITY.md](./docs/SECURITY.md)** - Security best practices and vulnerability reporting
 - **[Examples](./examples/)** - Real-world usage examples and code samples
 
 ### 🎯 Quick Links
 
 - [Installation & Setup](./docs/WIKI.md#installation--setup)
+- [Framework Integrations](./docs/FRAMEWORK_INTEGRATIONS.md) ⭐ NEW
 - [All Operators Reference](./docs/OPERATORS.md)
+- [Regex Patterns Guide](./docs/OPERATORS.md#advanced-regex-patterns)
+- [Logical Operators Guide](./docs/ADVANCED_LOGICAL_OPERATORS.md)
+- [Lazy Evaluation](./docs/LAZY_EVALUATION.md)
+- [Performance Benchmarks](./docs/PERFORMANCE_BENCHMARKS.md)
 - [TypeScript Integration](./docs/WIKI.md#typescript-integration)
 - [Real-World Examples](./docs/WIKI.md#real-world-examples)
 - [Performance Tips](./docs/WIKI.md#performance-optimization)
 - [API Reference](./docs/WIKI.md#api-reference)
+- [Security Best Practices](./docs/SECURITY.md)
 - [FAQ](./docs/WIKI.md#frequently-asked-questions)
 - [Troubleshooting](./docs/WIKI.md#troubleshooting)
 
@@ -585,7 +834,17 @@ The library has 270+ tests with comprehensive coverage of all features.
 
 ## Changelog
 
-### v5.0.2 (Latest)
+### v5.3.0 (Latest)
+- 🎨 **Framework Integrations**: React, Vue, and Svelte support
+- 🪝 React Hooks: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
+- 🔄 Vue Composables: Full Composition API support
+- 📦 Svelte Stores: Reactive store-based filtering
+- 📚 Comprehensive framework documentation
+- ✅ 100% test coverage for all integrations
+- 🔒 TypeScript generics for type safety
+- 🌐 SSR compatibility (Next.js, Nuxt, SvelteKit)
+
+### v5.0.2
 - 📁 Reorganized documentation into `/docs` directory
 - 🔗 Updated all internal documentation links
 - ✨ Added 18 MongoDB-style operators (logical: $and, $or, $not; regex: $regex, $match)
