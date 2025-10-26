@@ -1,5 +1,5 @@
 {
-  "directory": "build",
+  "directory": "__test__/types",
   "compilerOptions": {
     "strict": true,
     "target": "ES2022",
