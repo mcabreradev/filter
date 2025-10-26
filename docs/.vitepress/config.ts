@@ -31,7 +31,7 @@ export default defineConfig({
         items: [
           { text: 'Implementation', link: '/implementation/operators' },
           { text: 'Roadmap', link: '/project/roadmap' },
-          { text: 'Contributing', link: '/contributing' },
+          { text: 'Contributing', link: '/project/contributing' },
         ],
       },
     ],

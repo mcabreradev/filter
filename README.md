@@ -800,13 +800,20 @@ Works in all modern browsers and Node.js:
 
 ## Contributing
 
-We welcome contributions! See the [GitHub repository](https://github.com/mcabreradev/filter) for guidelines.
+We welcome contributions! Please read our [Contributing Guide](./CONTRIBUTING.md) for details on:
+
+- Development setup and workflow
+- Testing requirements
+- Coding standards
+- Pull request process
 
 **Ways to Contribute:**
 - Report bugs or request features via [GitHub Issues](https://github.com/mcabreradev/filter/issues)
 - Submit pull requests with bug fixes or new features
 - Improve documentation
 - Share your use cases and examples
+
+For detailed guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ---
 

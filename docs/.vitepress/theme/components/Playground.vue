@@ -29,6 +29,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { filter } from '../../../../src/index';
 
 interface Example {
   id: string;
@@ -137,12 +138,13 @@ const executeCode = () => {
     const wrappedCode = `
       (function() {
         const console = arguments[0];
+        const filter = arguments[1];
         ${code.value.replace(/import.*from.*['"];?\n?/g, '')}
       })
     `;
 
     const fn = eval(wrappedCode);
-    fn(mockConsole);
+    fn(mockConsole, filter);
 
     output.value = logs.join('\n') || 'No output';
   } catch (e) {
