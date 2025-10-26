@@ -146,7 +146,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
 - ✅ TypeScript: Full type safety with generics
 - ✅ SSR Compatible: Works with Next.js, Nuxt, and SvelteKit
 
-See [Framework Integrations Guide](./docs/FRAMEWORK_INTEGRATIONS.md) for complete documentation.
+See [Framework Integrations Guide](./docs/frameworks/overview.md) for complete documentation.
 
 ---
 
@@ -435,7 +435,7 @@ for (const chunk of filterLazyChunked(largeDataset, { needsProcessing: true }, 1
 - 🔄 **Streaming** support for async data sources
 - 📦 **Chunked processing** for batch operations
 
-See [Lazy Evaluation Guide](./docs/LAZY_EVALUATION.md) for complete documentation.
+See [Lazy Evaluation Guide](./docs/guide/lazy-evaluation.md) for complete documentation.
 
 ---
 
@@ -568,7 +568,7 @@ dashboard.getElectronics();
 dashboard.getHighRated();
 ```
 
-See [Memoization Guide](./docs/MEMOIZATION.md) for complete documentation.
+See [Memoization Guide](./docs/guide/memoization.md) for complete documentation.
 
 ---
 
@@ -706,7 +706,7 @@ filter(largeData, expression, { enableCache: true });
 filter(data, (item) => complexCalculation(item));
 ```
 
-For performance optimization tips, see [Performance Guide in WIKI](./docs/WIKI.md#performance-optimization).
+For performance optimization tips, see [Performance Guide](./docs/advanced/wiki.md#performance-optimization).
 
 ---
 
@@ -714,32 +714,30 @@ For performance optimization tips, see [Performance Guide in WIKI](./docs/WIKI.m
 
 ### 📖 Complete Documentation
 
-- **[WIKI.md](./docs/WIKI.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
-- **[FRAMEWORK_INTEGRATIONS.md](./docs/FRAMEWORK_INTEGRATIONS.md)** - Complete guide for React, Vue, and Svelte integrations
-- **[OPERATORS.md](./docs/OPERATORS.md)** - Detailed guide for all 18 MongoDB-style operators with examples and advanced regex patterns
-- **[LAZY_EVALUATION.md](./docs/LAZY_EVALUATION.md)** - Comprehensive guide to lazy evaluation for efficient large dataset processing
-- **[ADVANCED_LOGICAL_OPERATORS.md](./docs/ADVANCED_LOGICAL_OPERATORS.md)** - Advanced patterns and complex queries with $and, $or, $not
-- **[PERFORMANCE_BENCHMARKS.md](./docs/PERFORMANCE_BENCHMARKS.md)** - Detailed performance metrics and optimization strategies
-- **[MIGRATION.md](./docs/MIGRATION.md)** - Migration guide from v3.x or native Array.filter()
-- **[SECURITY.md](./docs/SECURITY.md)** - Security best practices and vulnerability reporting
+- **[Complete Wiki](./docs/advanced/wiki.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
+- **[Framework Integrations](./docs/frameworks/overview.md)** - Complete guide for React, Vue, and Svelte integrations
+- **[Operators Guide](./docs/guide/operators.md)** - Detailed guide for all 18 MongoDB-style operators with examples and advanced regex patterns
+- **[Lazy Evaluation](./docs/guide/lazy-evaluation.md)** - Comprehensive guide to lazy evaluation for efficient large dataset processing
+- **[Logical Operators](./docs/guide/logical-operators.md)** - Advanced patterns and complex queries with $and, $or, $not
+- **[Performance Benchmarks](./docs/advanced/performance-benchmarks.md)** - Detailed performance metrics and optimization strategies
+- **[Migration Guide](./docs/advanced/migration.md)** - Migration guide from v3.x or native Array.filter()
 - **[Examples](./examples/)** - Real-world usage examples and code samples
 
 ### 🎯 Quick Links
 
-- [Installation & Setup](./docs/WIKI.md#installation--setup)
-- [Framework Integrations](./docs/FRAMEWORK_INTEGRATIONS.md) ⭐ NEW
-- [All Operators Reference](./docs/OPERATORS.md)
-- [Regex Patterns Guide](./docs/OPERATORS.md#advanced-regex-patterns)
-- [Logical Operators Guide](./docs/ADVANCED_LOGICAL_OPERATORS.md)
-- [Lazy Evaluation](./docs/LAZY_EVALUATION.md)
-- [Performance Benchmarks](./docs/PERFORMANCE_BENCHMARKS.md)
-- [TypeScript Integration](./docs/WIKI.md#typescript-integration)
-- [Real-World Examples](./docs/WIKI.md#real-world-examples)
-- [Performance Tips](./docs/WIKI.md#performance-optimization)
-- [API Reference](./docs/WIKI.md#api-reference)
-- [Security Best Practices](./docs/SECURITY.md)
-- [FAQ](./docs/WIKI.md#frequently-asked-questions)
-- [Troubleshooting](./docs/WIKI.md#troubleshooting)
+- [Installation & Setup](./docs/guide/installation.md)
+- [Framework Integrations](./docs/frameworks/overview.md) ⭐ NEW
+- [All Operators Reference](./docs/guide/operators.md)
+- [Regex Patterns Guide](./docs/guide/operators.md#string-operators)
+- [Logical Operators Guide](./docs/guide/logical-operators.md)
+- [Lazy Evaluation](./docs/guide/lazy-evaluation.md)
+- [Performance Benchmarks](./docs/advanced/performance-benchmarks.md)
+- [TypeScript Integration](./docs/advanced/wiki.md#typescript-integration)
+- [Real-World Examples](./docs/examples/real-world.md)
+- [Performance Tips](./docs/advanced/wiki.md#performance-optimization)
+- [API Reference](./docs/api/reference.md)
+- [FAQ](./docs/advanced/wiki.md#frequently-asked-questions)
+- [Troubleshooting](./docs/advanced/wiki.md#troubleshooting)
 
 ---
 
@@ -766,7 +764,7 @@ filter(data, expression, { caseSensitive: true });
 - Performance optimizations
 - Enhanced TypeScript support
 
-See [MIGRATION.md](./docs/MIGRATION.md) for detailed migration guide.
+See [Migration Guide](./docs/advanced/migration.md) for detailed migration guide.
 
 ---
 
@@ -785,7 +783,7 @@ mergeConfig(options?: FilterOptions): FilterConfig
 createFilterConfig(options?: FilterOptions): FilterConfig
 ```
 
-For complete API reference, see [WIKI.md - API Reference](./docs/WIKI.md#api-reference).
+For complete API reference, see [API Reference](./docs/api/reference.md).
 
 ---
 
@@ -802,13 +800,20 @@ Works in all modern browsers and Node.js:
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](./docs/CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please read our [Contributing Guide](./CONTRIBUTING.md) for details on:
+
+- Development setup and workflow
+- Testing requirements
+- Coding standards
+- Pull request process
 
 **Ways to Contribute:**
 - Report bugs or request features via [GitHub Issues](https://github.com/mcabreradev/filter/issues)
 - Submit pull requests with bug fixes or new features
 - Improve documentation
 - Share your use cases and examples
+
+For detailed guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ---
 
@@ -854,13 +859,13 @@ The library has 270+ tests with comprehensive coverage of all features.
 - 📘 Enhanced TypeScript support
 - 🧪 270+ tests
 
-See [MIGRATION.md](./docs/MIGRATION.md) for detailed changelog and migration guide.
+See [Migration Guide](./docs/advanced/migration.md) for detailed changelog and migration guide.
 
 ---
 
 ## License
 
-MIT License - see [LICENSE.md](./docs/LICENSE.md) for details.
+MIT License - see [LICENSE.md](./LICENSE.md) for details.
 
 Copyright (c) 2025 Miguelangel Cabrera
 
@@ -877,7 +882,7 @@ Inspired by MongoDB query syntax, SQL wildcards, and functional programming patt
 
 ## Support
 
-- 📖 [Complete Documentation (WIKI)](./docs/WIKI.md)
+- 📖 [Complete Documentation](./docs/advanced/wiki.md)
 - 💬 [GitHub Discussions](https://github.com/mcabreradev/filter/discussions)
 - 🐛 [Issue Tracker](https://github.com/mcabreradev/filter/issues)
 - ⭐ [Star on GitHub](https://github.com/mcabreradev/filter)

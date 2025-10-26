@@ -1,3 +1,8 @@
+---
+title: Migration Guide
+description: Migrate from v3.x to v5.x or from native Array.filter()
+---
+
 # Migration Guide: v3.x → v5.0.0
 
 ## Overview
@@ -163,7 +168,7 @@ filter(products, {
 });
 ```
 
-**See**: [OPERATORS.md](./OPERATORS.md) for comprehensive operator documentation.
+**See**: [Operators Guide](../guide/operators.md) for comprehensive operator documentation.
 
 ## Migration Steps
 
@@ -392,7 +397,7 @@ const result = filter<MyType>(data, expression);
 
 If you encounter issues during migration:
 
-1. Check the [README](../README.md) for updated examples
+1. Check the [README](../../README.md) for updated examples
 2. Review the [TypeScript types](./build/index.d.ts) for API reference
 3. Open an issue on [GitHub](https://github.com/mcabreradev/filter/issues)
 

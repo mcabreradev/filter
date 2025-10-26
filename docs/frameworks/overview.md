@@ -1,3 +1,8 @@
+---
+title: Framework Integrations
+description: Complete guide for React, Vue, and Svelte integrations
+---
+
 # Framework Integrations
 
 > **Version**: 5.3.0+

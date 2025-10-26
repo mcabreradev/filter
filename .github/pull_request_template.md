@@ -1,15 +1,38 @@
-# Description & Technical Solution
+## Description
 
-Describe problems, if any, clearly and concisely.
-Summarize the impact to the system.
-Please also include relevant motivation and context.
-Please include a summary of the technical solution and how it solves the problem.
+Brief description of changes
 
-# Checklist
+## Type of Change
 
-- [ ] I have commented my code, particularly in hard-to-understand areas.
-- [ ] Already rebased against main branch.
+- [ ] ✨ New feature
+- [ ] 🛠️ Bug fix
+- [ ] ❌ Breaking change
+- [ ] 🧹 Code refactor
+- [ ] 📝 Documentation
+- [ ] 🗑️ Chore
 
-# Screenshots
+## Changes Made
 
-Provide screenshots or videos of the changes made if any.
+- List specific changes
+- Include technical details
+- Mention any breaking changes
+
+## Testing
+
+- [ ] Unit tests added/updated
+- [ ] Type tests added/updated
+- [ ] Integration tests added/updated
+- [ ] All tests pass locally
+
+## Documentation
+
+- [ ] Documentation updated
+- [ ] Examples added/updated
+- [ ] API reference updated
+
+## Checklist
+
+- [ ] Code builds successfully
+- [ ] No TypeScript errors
+- [ ] No linter issues
+- [ ] Follows coding standards

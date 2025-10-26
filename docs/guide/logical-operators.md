@@ -1,3 +1,8 @@
+---
+title: Logical Operators
+description: Advanced patterns and complex queries with $and, $or, $not operators
+---
+
 # Advanced Logical Operators Guide
 
 ## Complex Query Patterns
@@ -340,7 +345,7 @@ filter(data, {
 
 ## See Also
 
-- [Main Operators Guide](./OPERATORS.md)
-- [Performance Optimization](./WIKI.md#performance-optimization)
-- [Real-World Examples](./WIKI.md#real-world-examples)
+- [Main Operators Guide](./operators.md)
+- [Performance Optimization](../advanced/wiki.md#performance-optimization)
+- [Real-World Examples](../advanced/wiki.md#real-world-examples)
 

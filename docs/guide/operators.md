@@ -1,3 +1,8 @@
+---
+title: Operators Guide
+description: Complete guide to all 18 MongoDB-style operators in @mcabreradev/filter
+---
+
 # Operators Guide (v5.0.0)
 
 This guide covers all the MongoDB-style operators available in `@mcabreradev/filter` v5.0.0.
@@ -917,11 +922,11 @@ filter(users, { age: { $gt: 25 } });
 
 ## Further Reading
 
-- [Advanced Logical Operators Guide](./ADVANCED_LOGICAL_OPERATORS.md)
-- [Lazy Evaluation Guide](./LAZY_EVALUATION.md)
-- [Performance Benchmarks](./PERFORMANCE_BENCHMARKS.md)
+- [Advanced Logical Operators Guide](./logical-operators.md)
+- [Lazy Evaluation Guide](./lazy-evaluation.md)
+- [Performance Benchmarks](../advanced/performance-benchmarks.md)
 - [Security Best Practices](./SECURITY.md)
 - [Configuration API](../README.md#configuration-api)
-- [Migration Guide](./MIGRATION.md)
+- [Migration Guide](../advanced/migration.md)
 - [Full API Documentation](../README.md)
 
