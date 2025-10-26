@@ -67,7 +67,7 @@ export default defineConfig({
           items: [
             { text: 'Performance Benchmarks', link: '/advanced/performance-benchmarks' },
             { text: 'Migration Guide', link: '/advanced/migration' },
-            { text: 'Wiki', link: '/advanced/wiki' },
+            { text: 'Complete Documentation', link: '/advanced/complete-documentation' },
           ],
         },
       ],

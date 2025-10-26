@@ -1,84 +1,9 @@
 ---
-title: Complete Wiki
+title: Complete Documentation
 description: Comprehensive documentation for @mcabreradev/filter
 ---
 
-# Complete Documentation Wiki
-
-<p align="center">
-  <a href="https://www.npmjs.com/package/@mcabreradev/filter">
-    <img alt="NPM version" src="https://img.shields.io/npm/v/@mcabreradev/filter.svg?style=for-the-badge&labelColor=0869B8" />
-  </a>
-  <a href="https://github.com/mcabreradev/filter/blob/main/LICENSE.md">
-    <img alt="License" src="https://img.shields.io/npm/l/@mcabreradev/filter.svg?style=for-the-badge&labelColor=579805" />
-  </a>
-  <a href="https://bundlephobia.com/package/@mcabreradev/filter">
-    <img alt="Bundle Size" src="https://img.shields.io/bundlephobia/minzip/@mcabreradev/filter?style=for-the-badge&labelColor=orange" />
-  </a>
-  <a href="#">
-    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=for-the-badge&labelColor=blue" />
-  </a>
-</p>
-
-> A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies.
-
----
-
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Installation & Setup](#installation--setup)
-3. [Quick Start](#quick-start)
-4. [Basic Usage](#basic-usage)
-   - [String Filtering](#string-filtering)
-   - [Number Filtering](#number-filtering)
-   - [Boolean Filtering](#boolean-filtering)
-5. [Wildcard Patterns](#wildcard-patterns)
-   - [Percent Wildcard (%)](#percent-wildcard-)
-   - [Underscore Wildcard (_)](#underscore-wildcard-_)
-   - [Negation (!)](#negation-)
-6. [Object-Based Filtering](#object-based-filtering)
-   - [Single Property Match](#single-property-match)
-   - [Multiple Properties (AND Logic)](#multiple-properties-and-logic)
-   - [Nested Objects](#nested-objects)
-7. [Predicate Functions](#predicate-functions)
-   - [Basic Predicates](#basic-predicates)
-   - [Advanced Predicates](#advanced-predicates)
-8. [MongoDB-Style Operators](#mongodb-style-operators)
-   - [Comparison Operators](#comparison-operators)
-   - [Array Operators](#array-operators)
-   - [String Operators](#string-operators)
-   - [Regex Operators](#regex-operators)
-   - [Logical Operators](#logical-operators)
-   - [Combining Operators](#combining-operators)
-9. [Intelligent Autocomplete](#intelligent-autocomplete)
-   - [Type-Aware Suggestions](#type-aware-suggestions)
-   - [Nested Object Autocomplete](#nested-object-autocomplete)
-   - [Editor Support](#editor-support)
-10. [Lazy Evaluation](#lazy-evaluation)
-    - [filterLazy](#filterlazy)
-    - [filterFirst](#filterfirst)
-    - [Performance Benefits](#performance-benefits)
-11. [Configuration API](#configuration-api)
-   - [caseSensitive](#casesensitive)
-   - [maxDepth](#maxdepth)
-   - [enableCache](#enablecache)
-   - [customComparator](#customcomparator)
-12. [Mixing Syntax Patterns](#mixing-syntax-patterns)
-13. [TypeScript Integration](#typescript-integration)
-14. [Real-World Examples](#real-world-examples)
-15. [Performance Optimization](#performance-optimization)
-16. [Migration Guides](#migration-guides)
-17. [Validation & Error Handling](#validation--error-handling)
-18. [API Reference](#api-reference)
-19. [Testing Your Filters](#testing-your-filters)
-20. [Frequently Asked Questions](#frequently-asked-questions)
-21. [Troubleshooting](#troubleshooting)
----
-
-## Introduction
-
-`@mcabreradev/filter` is a powerful filtering library that goes far beyond JavaScript's native `Array.filter()`. It provides multiple filtering strategies including string patterns, wildcards, object matching, predicates, and MongoDB-style operators.
+# Complete Documentation
 
 ### Key Features
 
@@ -104,7 +29,6 @@ description: Comprehensive documentation for @mcabreradev/filter
 5. **Modern**: Built with latest best practices and tools
 6. **Documented**: Extensive documentation with real-world examples
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -168,7 +92,6 @@ import filter = require('@mcabreradev/filter');
 import filter from '@mcabreradev/filter';
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -202,7 +125,6 @@ filter(users, { age: { $gte: 25, $lt: 35 } });
 // → [Bob, Alice]
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -291,7 +213,6 @@ filter(tasks, false);
 // → [{ title: 'Task 2', completed: false }]
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -436,7 +357,6 @@ filter(files, '!%.pdf');
 // → [{ name: 'image.jpg' }, { name: 'video.mp4' }]
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -516,7 +436,6 @@ filter(items, { code: 'PROD-%' });
 // → [{ name: 'Product A', ... }, { name: 'Product B', ... }]
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -621,7 +540,6 @@ filter(items, {
 });
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -1218,7 +1136,6 @@ filter(inventory, {
 // → [{ name: 'Product A', ... }]
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -1369,7 +1286,6 @@ Autocomplete works in any editor with TypeScript support:
 5. **Safe Refactoring**: Type changes propagate automatically
 6. **Zero Cost**: Pure TypeScript feature, no runtime overhead
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -1537,7 +1453,6 @@ const results = filterFirst(
 | Process until condition | 250ms | Variable | 10-500x |
 | Memory usage (1M items) | 80MB | <1MB | 80x less |
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -1836,7 +1751,6 @@ const localeCompare = (actual: unknown, expected: unknown) => {
 };
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -1929,7 +1843,6 @@ filter(products, {
 // → [{ name: 'Gaming Laptop', ... }]
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -2094,7 +2007,6 @@ const partialOptions: FilterOptions = {
 };
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -2427,7 +2339,6 @@ const warehouseElectronics = filter(inventory, {
 });
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -2564,7 +2475,6 @@ filter(testData, (item) => item.value >= 500);
 console.timeEnd('Predicate');
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -2691,7 +2601,6 @@ const results = filter(users, {
 - No dependencies requirement is strict
 - Project already has comprehensive native filter logic
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -2816,7 +2725,6 @@ console.log('Data sample:', data[0]);
 console.log('Data length:', data.length);
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -3007,7 +2915,6 @@ export interface StringOperators {
 }
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -3147,7 +3054,6 @@ describe('E-commerce Integration', () => {
 });
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -3342,7 +3248,6 @@ filter(users, {
 }, { caseSensitive: true });
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -3490,7 +3395,6 @@ const priceFilter: ComparisonOperators = { $gt: 100 };
 filter(products, { price: priceFilter });
 ```
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -3542,7 +3446,6 @@ We love hearing your ideas! Open an issue with:
 
 - **v3.x**: No longer supported
 
-[↑ Back to top](#table-of-contents)
 
 ---
 
