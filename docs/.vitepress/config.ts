@@ -45,6 +45,7 @@ export default defineConfig({
             { text: 'Introduction', link: '/guide/getting-started' },
             { text: 'Installation', link: '/guide/installation' },
             { text: 'Quick Start', link: '/guide/quick-start' },
+            { text: 'Migration Guide v5.4', link: '/guide/migration-v2' },
           ],
         },
         {

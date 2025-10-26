@@ -120,6 +120,24 @@ const { filtered, isPending } = useDebouncedFilter(
 
 Filtering with pagination support.
 
+### API Reference
+
+```typescript
+interface UsePaginatedFilterResult<T> {
+  filtered: Readable<T[]>;
+  isFiltering: Readable<boolean>;
+  pagination: Readable<PaginationResult<T>>;
+  currentPage: Writable<number>;
+  pageSize: Writable<number>;
+  nextPage: () => void;
+  previousPage: () => void;
+  goToPage: (page: number) => void;
+  setPageSize: (size: number) => void;
+}
+```
+
+### Basic Usage
+
 ```svelte
 <script lang="ts">
 import { usePaginatedFilter } from '@mcabreradev/filter';
@@ -128,31 +146,40 @@ const users = [...];
 
 const {
   filtered,
+  isFiltering,
+  pagination,
   currentPage,
-  totalPages,
+  pageSize,
   nextPage,
-  prevPage,
-  hasNextPage,
-  hasPrevPage,
-} = usePaginatedFilter(users, { active: true }, {
-  initialPage: 1,
-  initialPageSize: 10,
-});
+  previousPage,
+  goToPage,
+  setPageSize,
+} = usePaginatedFilter(users, { active: true }, 10);
 </script>
 
 <div>
-  {#each $filtered as user (user.id)}
+  <p>Page {$currentPage} of {$pagination.totalPages}</p>
+  <p>Showing {$pagination.data.length} of {$filtered.length} results</p>
+
+  {#each $pagination.data as user (user.id)}
     <div>{user.name}</div>
   {/each}
+
   <div class="pagination">
-    <button on:click={prevPage} disabled={!$hasPrevPage}>
+    <button on:click={previousPage} disabled={!$pagination.hasPreviousPage}>
       Previous
     </button>
-    <span>Page {$currentPage} of {$totalPages}</span>
-    <button on:click={nextPage} disabled={!$hasNextPage}>
+    <span>Page {$currentPage} of {$pagination.totalPages}</span>
+    <button on:click={nextPage} disabled={!$pagination.hasNextPage}>
       Next
     </button>
   </div>
+
+  <select bind:value={$pageSize} on:change={() => setPageSize($pageSize)}>
+    <option value={10}>10 per page</option>
+    <option value={25}>25 per page</option>
+    <option value={50}>50 per page</option>
+  </select>
 </div>
 ```
 
