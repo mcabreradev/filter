@@ -23,6 +23,7 @@ export default defineConfig({
     nav: [
       { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
       { text: 'Frameworks', link: '/frameworks/overview', activeMatch: '/frameworks/' },
+      { text: 'Backend', link: '/backend/express', activeMatch: '/backend/' },
       { text: 'API', link: '/api/reference', activeMatch: '/api/' },
       { text: 'Examples', link: '/examples/basic', activeMatch: '/examples/' },
       {
@@ -113,6 +114,17 @@ export default defineConfig({
             { text: 'Next.js', link: '/frameworks/nextjs' },
             { text: 'Nuxt', link: '/frameworks/nuxt' },
             { text: 'SvelteKit', link: '/frameworks/sveltekit' },
+          ],
+        },
+      ],
+      '/backend/': [
+        {
+          text: 'Backend Integration',
+          collapsed: false,
+          items: [
+            { text: 'Express.js', link: '/backend/express' },
+            { text: 'NestJS', link: '/backend/nestjs' },
+            { text: 'Deno', link: '/backend/deno' },
           ],
         },
       ],
