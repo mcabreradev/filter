@@ -59,7 +59,7 @@ importers:
         version: 3.6.2
       svelte:
         specifier: ^5.18.3
-        version: 5.42.1
+        version: 5.42.2
       tsd:
         specifier: ^0.33.0
         version: 0.33.0
@@ -1363,8 +1363,8 @@ packages:
     resolution: {integrity: sha512-ca9pw9fomFcKPvFLXhBKUK90ZvGibiGOvRJNbjljY7s7uq/5YO4BOzcYtJqExdx99rF6aAcnRxHmcUHcz6sQsg==}
     engines: {node: '>=0.10'}
 
-  esrap@2.1.0:
-    resolution: {integrity: sha512-yzmPNpl7TBbMRC5Lj2JlJZNPml0tzqoqP5B1JXycNUwtqma9AKCO0M2wHrdgsHcy1WRW7S9rJknAMtByg3usgA==}
+  esrap@2.1.1:
+    resolution: {integrity: sha512-ebTT9B6lOtZGMgJ3o5r12wBacHctG7oEWazIda8UlPfA3HD/Wrv8FdXoVo73vzdpwCxNyXjPauyN2bbJzMkB9A==}
 
   esrecurse@4.3.0:
     resolution: {integrity: sha512-KmfKL3b6G+RXvP8N1vr3Tq1kL/oCFgn2NYXEtqP8/L3pKapUA4G8cFVaoF3SU323CD4XypR/ffioHmkti6/Tag==}
@@ -1898,6 +1898,9 @@ packages:
 
   magic-string@0.30.19:
     resolution: {integrity: sha512-2N21sPY9Ws53PZvsEpVtNuSW+ScYbQdp4b9qUaL+9QkHUrGFKo56Lg9Emg5s9V/qrtNBmiR01sYhUOwu3H+VOw==}
+
+  magic-string@0.30.21:
+    resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
   magicast@0.3.5:
     resolution: {integrity: sha512-L0WhttDl+2BOsybvEOLK7fW3UA0OQ0IQ2d6Zl2x/a6vVRs3bAY0ECOSHHeL5jD+SbOpOCUEi0y1DgHEn9Qn1AQ==}
@@ -2520,8 +2523,8 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  svelte@5.42.1:
-    resolution: {integrity: sha512-gc0yfYY7OcuFbK2k/R/cHYYoN7A3SvYsnWHiWYayEV7OZpjSKyVHA1Ex0tW5eEbfQui6guN+sZ2whvhuz+qHpg==}
+  svelte@5.42.2:
+    resolution: {integrity: sha512-iSry5jsBHispVczyt9UrBX/1qu3HQ/UyKPAIjqlvlu3o/eUvc+kpyMyRS2O4HLLx4MvLurLGIUOyyP11pyD59g==}
     engines: {node: '>=18'}
 
   tabbable@6.3.0:
@@ -3673,7 +3676,7 @@ snapshots:
       '@vue/compiler-ssr': 3.5.22
       '@vue/shared': 3.5.22
       estree-walker: 2.0.2
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       postcss: 8.5.6
       source-map-js: 1.2.1
 
@@ -4278,7 +4281,7 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  esrap@2.1.0:
+  esrap@2.1.1:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
@@ -4818,6 +4821,10 @@ snapshots:
   lz-string@1.5.0: {}
 
   magic-string@0.30.19:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.5.5
+
+  magic-string@0.30.21:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
@@ -5590,7 +5597,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte@5.42.1:
+  svelte@5.42.2:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       '@jridgewell/sourcemap-codec': 1.5.5
@@ -5601,10 +5608,10 @@ snapshots:
       axobject-query: 4.1.0
       clsx: 2.1.1
       esm-env: 1.2.2
-      esrap: 2.1.0
+      esrap: 2.1.1
       is-reference: 3.0.3
       locate-character: 3.0.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       zimmerframe: 1.1.4
 
   tabbable@6.3.0: {}
