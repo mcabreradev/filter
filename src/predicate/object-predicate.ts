@@ -59,6 +59,21 @@ export function createObjectPredicate<T>(
         shouldNegate = true;
       }
 
+      if (Array.isArray(expr)) {
+        const matchesAny = expr.some((value) => {
+          if (isString(value) && hasWildcard(value)) {
+            const regex = createWildcardRegex(value, config.caseSensitive);
+            return typeof itemValue === 'string' && regex.test(itemValue);
+          }
+          return itemValue === value;
+        });
+
+        if (shouldNegate ? matchesAny : !matchesAny) {
+          return false;
+        }
+        continue;
+      }
+
       if (isString(expr) && hasWildcard(expr)) {
         const regex = createWildcardRegex(expr, config.caseSensitive);
         const matches = typeof itemValue === 'string' && regex.test(itemValue);

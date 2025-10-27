@@ -169,6 +169,184 @@ filter(products, {
 // → Returns all products (all have exactly 2 tags)
 ```
 
+### Array Syntax - Syntactic Sugar for `$in`
+
+You can use array values directly as a shorthand for the `$in` operator. This provides a cleaner, more intuitive syntax for OR logic.
+
+#### Basic Usage
+
+```typescript
+const users = [
+  { name: 'Alice', city: 'Berlin', age: 30 },
+  { name: 'Bob', city: 'London', age: 25 },
+  { name: 'Charlie', city: 'Berlin', age: 35 },
+  { name: 'David', city: 'Paris', age: 30 }
+];
+
+// Array syntax (syntactic sugar)
+filter(users, { city: ['Berlin', 'London'] });
+// → Returns: Alice, Bob, Charlie
+
+// Equivalent explicit $in operator
+filter(users, { city: { $in: ['Berlin', 'London'] } });
+// → Returns: Alice, Bob, Charlie (identical result)
+```
+
+#### How It Works
+
+When you provide an **array as a property value** (without an explicit operator), the filter automatically applies **OR logic** to match any value in the array:
+
+```typescript
+// These are functionally equivalent:
+{ city: ['Berlin', 'London', 'Paris'] }
+{ city: { $in: ['Berlin', 'London', 'Paris'] } }
+
+// Both mean: city === 'Berlin' OR city === 'London' OR city === 'Paris'
+```
+
+#### Combining with AND Logic
+
+Array syntax (OR logic) combines with other properties using AND logic:
+
+```typescript
+// Find users in Berlin OR London AND age 30
+filter(users, {
+  city: ['Berlin', 'London'],
+  age: 30
+});
+// → Returns: Alice (Berlin, age 30)
+// Logic: (city === 'Berlin' OR city === 'London') AND age === 30
+```
+
+#### Multiple Array Properties
+
+You can use arrays on multiple properties - each applies OR logic independently:
+
+```typescript
+// Find users in (Berlin OR Paris) AND age (30 OR 35)
+filter(users, {
+  city: ['Berlin', 'Paris'],
+  age: [30, 35]
+});
+// → Returns: Alice (Berlin, 30), Charlie (Berlin, 35), David (Paris, 30)
+// Logic: (city === 'Berlin' OR city === 'Paris') AND (age === 30 OR age === 35)
+```
+
+#### Wildcard Support
+
+Array syntax supports wildcards within array values:
+
+```typescript
+// Match cities starting with 'B' or ending with 'is'
+filter(users, { city: ['B%', '%is'] });
+// → Returns: Bob (London matches 'B%'), David (Paris matches '%is')
+
+// Underscore wildcard
+filter(users, { city: ['_erlin', 'L_ndon'] });
+// → Returns: Alice (Berlin), Bob (London)
+```
+
+#### Works with All Types
+
+Array syntax works with strings, numbers, booleans, and other primitive types:
+
+```typescript
+// Numbers
+filter(users, { age: [25, 30, 35] });
+// → Returns users aged 25, 30, or 35
+
+// Strings
+filter(users, { name: ['Alice', 'Bob'] });
+// → Returns Alice and Bob
+
+// Booleans
+filter(products, { inStock: [true] });
+// → Returns products in stock
+```
+
+#### Edge Cases
+
+```typescript
+// Empty array matches nothing
+filter(users, { city: [] });
+// → Returns: []
+
+// Single-element array
+filter(users, { city: ['Berlin'] });
+// → Returns: Alice, Charlie (same as { city: 'Berlin' })
+```
+
+#### Important: Explicit Operators Take Precedence
+
+When you use an **explicit operator**, the array syntax does NOT apply:
+
+```typescript
+// Array syntax - applies OR logic
+filter(users, { city: ['Berlin', 'London'] });
+// → Matches: Berlin OR London
+
+// Explicit $in operator - uses operator logic
+filter(users, { city: { $in: ['Berlin', 'London'] } });
+// → Matches: Berlin OR London (same result, explicit syntax)
+
+// Other operators are NOT affected by array syntax
+filter(users, { age: { $gte: 25, $lte: 35 } });
+// → Uses operator logic, NOT array syntax
+```
+
+#### When to Use Array Syntax vs `$in`
+
+**Use Array Syntax when:**
+- You want clean, readable code
+- You're filtering by multiple exact values
+- You want OR logic on a single property
+
+```typescript
+// ✅ Clean and intuitive
+filter(users, { status: ['active', 'pending'] });
+```
+
+**Use Explicit `$in` when:**
+- You want to be explicit about using the $in operator
+- You're combining with other operators
+- You're migrating from MongoDB-style queries
+
+```typescript
+// ✅ Explicit and clear intent
+filter(users, { status: { $in: ['active', 'pending'] } });
+```
+
+Both syntaxes produce **identical results** - choose based on your preference and code style.
+
+#### Real-World Examples
+
+```typescript
+// E-commerce: Filter products by multiple categories
+filter(products, {
+  category: ['Electronics', 'Accessories'],
+  price: { $lte: 500 },
+  inStock: true
+});
+
+// User management: Find users with specific roles
+filter(users, {
+  role: ['admin', 'moderator'],
+  active: true
+});
+
+// Analytics: Orders from multiple statuses
+filter(orders, {
+  status: ['completed', 'shipped', 'delivered'],
+  amount: { $gte: 100 }
+});
+
+// Content filtering: Posts with multiple tags
+filter(posts, {
+  tags: ['javascript', 'typescript', 'react'],
+  published: true
+});
+```
+
 ## String Operators
 
 All string operators respect the `caseSensitive` configuration option (defaults to `false`).

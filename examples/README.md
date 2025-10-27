@@ -32,6 +32,20 @@ ts-node examples/operators-examples.ts
 
 ## Available Examples
 
+### `array-or-syntax-examples.ts` (v5.4.0+)
+
+Comprehensive examples showcasing the new array OR syntax (syntactic sugar for `$in`):
+
+- **Basic Array Syntax**: Using arrays for OR logic on property values
+- **Equivalence with $in**: Demonstrating that array syntax equals explicit `$in` operator
+- **AND + OR Combination**: Combining array OR logic with other AND conditions
+- **Multiple Array Properties**: Using arrays on multiple properties independently
+- **Wildcard Support**: Using wildcards (%, _) within array values
+- **Type Support**: Examples with strings, numbers, booleans
+- **Edge Cases**: Empty arrays, single-element arrays
+- **Complex Filtering**: Multi-condition queries with array syntax
+- **Real-World Use Cases**: E-commerce, user management, analytics examples
+
 ### `autocomplete-demo.ts`
 
 Interactive examples demonstrating intelligent autocomplete for operators:

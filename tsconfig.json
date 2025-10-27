@@ -20,6 +20,6 @@
     "resolveJsonModule": true,
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "build", "src/**/*.test.ts", "src/**/*.test.tsx"]
+  "include": ["src/**/*", "__test__/**/*"],
+  "exclude": ["node_modules", "build", "src/**/*.test.ts", "src/**/*.test.tsx", "__test__/types/**/*"]
 }
