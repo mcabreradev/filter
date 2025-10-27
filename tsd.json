@@ -1,6 +1,6 @@
 {
   "directory": "__test__/types",
-  "typingsFile": "src/index.ts",
+  "typingsFile": "build/index.d.ts",
   "compilerOptions": {
     "strict": true,
     "target": "ES2022",

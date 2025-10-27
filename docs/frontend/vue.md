@@ -125,6 +125,24 @@ const { filtered, isPending } = useDebouncedFilter(
 
 Filtering with pagination support.
 
+### API Reference
+
+```typescript
+interface UsePaginatedFilterResult<T> {
+  filtered: ComputedRef<T[]>;
+  isFiltering: ComputedRef<boolean>;
+  pagination: ComputedRef<PaginationResult<T>>;
+  currentPage: Ref<number>;
+  pageSize: Ref<number>;
+  nextPage: () => void;
+  previousPage: () => void;
+  goToPage: (page: number) => void;
+  setPageSize: (size: number) => void;
+}
+```
+
+### Basic Usage
+
 ```vue
 <script setup lang="ts">
 import { usePaginatedFilter } from '@mcabreradev/filter';
@@ -133,32 +151,41 @@ const users = [...];
 
 const {
   filtered,
+  isFiltering,
+  pagination,
   currentPage,
-  totalPages,
+  pageSize,
   nextPage,
-  prevPage,
-  hasNextPage,
-  hasPrevPage,
-} = usePaginatedFilter(users, { active: true }, {
-  initialPage: 1,
-  initialPageSize: 10,
-});
+  previousPage,
+  goToPage,
+  setPageSize,
+} = usePaginatedFilter(users, { active: true }, 10);
 </script>
 
 <template>
   <div>
-    <div v-for="user in filtered" :key="user.id">
+    <p>Page {{ currentPage }} of {{ pagination.totalPages }}</p>
+    <p>Showing {{ pagination.data.length }} of {{ filtered.length }} results</p>
+
+    <div v-for="user in pagination.data" :key="user.id">
       {{ user.name }}
     </div>
+
     <div class="pagination">
-      <button @click="prevPage" :disabled="!hasPrevPage">
+      <button @click="previousPage" :disabled="!pagination.hasPreviousPage">
         Previous
       </button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="!hasNextPage">
+      <span>Page {{ currentPage }} of {{ pagination.totalPages }}</span>
+      <button @click="nextPage" :disabled="!pagination.hasNextPage">
         Next
       </button>
     </div>
+
+    <select v-model="pageSize" @change="setPageSize(Number($event.target.value))">
+      <option :value="10">10 per page</option>
+      <option :value="25">25 per page</option>
+      <option :value="50">50 per page</option>
+    </select>
   </div>
 </template>
 ```

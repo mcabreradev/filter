@@ -106,13 +106,26 @@ import { useFilter, useDebouncedFilter, usePaginatedFilter } from '@mcabreradev/
 
 function UserList() {
   const { filtered, isFiltering } = useFilter(users, { active: true });
-  return <div>{filtered.map(user => <User key={user.id} {...user} />)}</div>;
+
+  return (
+    <div>
+      {isFiltering && <span>Filtering...</span>}
+      {filtered.map(user => <User key={user.id} {...user} />)}
+    </div>
+  );
 }
 
 function SearchUsers() {
   const [search, setSearch] = useState('');
   const { filtered, isPending } = useDebouncedFilter(users, search, { delay: 300 });
-  return <input onChange={(e) => setSearch(e.target.value)} />;
+
+  return (
+    <div>
+      <input onChange={(e) => setSearch(e.target.value)} />
+      {isPending && <span>Loading...</span>}
+      {filtered.map(user => <User key={user.id} {...user} />)}
+    </div>
+  );
 }
 ```
 
@@ -126,6 +139,13 @@ import { useFilter, usePaginatedFilter } from '@mcabreradev/filter';
 const searchTerm = ref('');
 const { filtered, isFiltering } = useFilter(users, searchTerm);
 </script>
+
+<template>
+  <div>
+    <span v-if="isFiltering">Filtering...</span>
+    <div v-for="user in filtered" :key="user.id">{{ user.name }}</div>
+  </div>
+</template>
 ```
 
 ### Svelte Stores
@@ -138,6 +158,13 @@ import { useFilter } from '@mcabreradev/filter';
 const searchTerm = writable('');
 const { filtered, isFiltering } = useFilter(users, searchTerm);
 </script>
+
+{#if $isFiltering}
+  <span>Filtering...</span>
+{/if}
+{#each $filtered as user (user.id)}
+  <div>{user.name}</div>
+{/each}
 ```
 
 **Features**:
@@ -872,25 +899,42 @@ The library has 270+ tests with comprehensive coverage of all features.
 
 ## Changelog
 
-### v5.3.0 (Latest)
+### v5.4.0 (Current)
 - 🎨 **Framework Integrations**: React, Vue, and Svelte support
 - 🪝 React Hooks: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
-- 🔄 Vue Composables: Full Composition API support
+- 🔄 Vue Composables: Full Composition API support with reactive refs
 - 📦 Svelte Stores: Reactive store-based filtering
 - 📚 Comprehensive framework documentation
 - ✅ 100% test coverage for all integrations
 - 🔒 TypeScript generics for type safety
 - 🌐 SSR compatibility (Next.js, Nuxt, SvelteKit)
+- 🐛 Bug fixes and stability improvements
 
-### v5.0.2
-- 📁 Reorganized documentation into `/docs` directory
-- 🔗 Updated all internal documentation links
-- ✨ Added 18 MongoDB-style operators (logical: $and, $or, $not; regex: $regex, $match)
+### v5.3.0
+- 🎨 Initial framework integration support
+- 🪝 React hooks implementation
+- 🔄 Vue composables implementation
+- 📦 Svelte stores implementation
+
+### v5.2.0
+- 💾 **Enhanced Memoization**: Multi-layer caching (530x faster)
+- 🔀 **Logical Operators**: $and, $or, $not for complex queries
+- 📝 **Regex Operators**: $regex and $match for pattern matching
+- 🚀 Performance optimizations
+
+### v5.1.0
+- 💨 **Lazy Evaluation**: filterLazy, filterFirst for efficient processing
+- 🔄 Generator-based filtering
+- ⚡ Early exit optimization
+
+### v5.0.0
+- ✨ Added 18 MongoDB-style operators
 - ⚙️ Configuration API with 4 options
 - ✅ Runtime validation with Zod
 - 🚀 Performance optimizations
 - 📘 Enhanced TypeScript support
 - 🧪 270+ tests
+- 📁 Reorganized documentation into `/docs` directory
 
 See [Migration Guide](./docs/advanced/migration.md) for detailed changelog and migration guide.
 
