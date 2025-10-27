@@ -8,7 +8,7 @@ Understanding the TypeScript type system in @mcabreradev/filter.
 
 ## Core Type Definitions
 
-### Expression<T>
+### Expression`<T>`
 
 The main type for filter expressions that adapts to your data structure.
 
@@ -39,7 +39,7 @@ const expression: Expression<User> = {
 };
 ```
 
-### OperatorExpression<T>
+### OperatorExpression`<T>`
 
 Type-safe operator expressions that adapt to property types.
 
@@ -274,7 +274,7 @@ function isLogicalExpression<T>(
 
 ## Utility Types
 
-### DeepPartial<T>
+### DeepPartial`<T>`
 
 Make all properties and nested properties optional:
 
@@ -284,7 +284,7 @@ type DeepPartial<T> = {
 };
 ```
 
-### NestedKeyOf<T>
+### NestedKeyOf`<T>`
 
 Get all possible nested property paths:
 

@@ -22,7 +22,7 @@ export default defineConfig({
 
     nav: [
       { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
-      { text: 'Frameworks', link: '/frameworks/overview', activeMatch: '/frameworks/' },
+      { text: 'Frontend', link: '/frontend/overview', activeMatch: '/frontend/' },
       { text: 'Backend', link: '/backend/express', activeMatch: '/backend/' },
       { text: 'API', link: '/api/reference', activeMatch: '/api/' },
       { text: 'Examples', link: '/examples/basic', activeMatch: '/examples/' },
@@ -96,24 +96,24 @@ export default defineConfig({
           ],
         },
       ],
-      '/frameworks/': [
+      '/frontend/': [
         {
           text: 'Framework Integrations',
           collapsed: false,
           items: [
-            { text: 'Overview', link: '/frameworks/overview' },
-            { text: 'React', link: '/frameworks/react' },
-            { text: 'Vue', link: '/frameworks/vue' },
-            { text: 'Svelte', link: '/frameworks/svelte' },
+            { text: 'Overview', link: '/frontend/overview' },
+            { text: 'React', link: '/frontend/react' },
+            { text: 'Vue', link: '/frontend/vue' },
+            { text: 'Svelte', link: '/frontend/svelte' },
           ],
         },
         {
           text: 'SSR Frameworks',
           collapsed: false,
           items: [
-            { text: 'Next.js', link: '/frameworks/nextjs' },
-            { text: 'Nuxt', link: '/frameworks/nuxt' },
-            { text: 'SvelteKit', link: '/frameworks/sveltekit' },
+            { text: 'Next.js', link: '/frontend/nextjs' },
+            { text: 'Nuxt', link: '/frontend/nuxt' },
+            { text: 'SvelteKit', link: '/frontend/sveltekit' },
           ],
         },
       ],

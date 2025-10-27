@@ -4,7 +4,7 @@ Complete TypeScript type definitions for @mcabreradev/filter.
 
 ## Core Types
 
-### Expression<T>
+### Expression`<T>`
 
 The main type for filter expressions.
 
@@ -28,7 +28,7 @@ const expression: Expression<User> = {
 };
 ```
 
-### OperatorExpression<T>
+### OperatorExpression`<T>`
 
 Type for operator-based expressions.
 
@@ -49,7 +49,7 @@ interface OperatorExpression<T> {
 }
 ```
 
-### LogicalExpression<T>
+### LogicalExpression`<T>`
 
 Type for logical operators.
 
@@ -84,7 +84,7 @@ interface FilterOptions {
 
 ## React Types
 
-### UseFilterResult<T>
+### UseFilterResult`<T>`
 
 Return type for `useFilter` hook.
 
@@ -103,7 +103,7 @@ const { filtered, isFiltering }: UseFilterResult<User> = useFilter(
 );
 ```
 
-### UseFilteredStateResult<T>
+### UseFilteredStateResult`<T>`
 
 Return type for `useFilteredState` hook.
 
@@ -128,7 +128,7 @@ interface UseDebouncedFilterOptions extends FilterOptions {
 }
 ```
 
-### UseDebouncedFilterResult<T>
+### UseDebouncedFilterResult`<T>`
 
 Return type for `useDebouncedFilter` hook.
 
@@ -140,7 +140,7 @@ interface UseDebouncedFilterResult<T> {
 }
 ```
 
-### UsePaginatedFilterResult<T>
+### UsePaginatedFilterResult`<T>`
 
 Return type for `usePaginatedFilter` hook.
 
@@ -356,7 +356,7 @@ type StringOperator = '$regex' | '$startsWith' | '$endsWith';
 
 ## Advanced Types
 
-### DeepPartial<T>
+### DeepPartial`<T>`
 
 Recursive partial type for nested objects.
 
@@ -366,7 +366,7 @@ type DeepPartial<T> = {
 };
 ```
 
-### NestedKeyOf<T>
+### NestedKeyOf`<T>`
 
 Type for nested property paths.
 
@@ -437,7 +437,7 @@ Constraint for filterable types.
 type Filterable = Record<string, any>;
 ```
 
-### FilterableArray<T>
+### FilterableArray`<T>`
 
 Constraint for filterable arrays.
 
