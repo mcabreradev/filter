@@ -4,6 +4,7 @@ import { validateExpression } from '../validation';
 import { mergeConfig } from '../config';
 import { FilterCache } from '../utils';
 import { memoization } from '../utils/memoization';
+import { filterDebug } from '../debug';
 
 const globalFilterCache = new FilterCache<unknown>();
 
@@ -14,6 +15,12 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
 
   const config = mergeConfig(options);
   const validatedExpression = validateExpression<T>(expression);
+
+  if (config.debug) {
+    const result = filterDebug(array, validatedExpression, options);
+    result.print();
+    return result.items;
+  }
 
   if (config.enableCache) {
     const cacheKey = memoization.createExpressionHash(validatedExpression, config);

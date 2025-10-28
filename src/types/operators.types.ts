@@ -59,6 +59,8 @@ type OperatorsForType<T> = T extends string
       $match?: string | RegExp;
       $eq?: string;
       $ne?: string;
+      $in?: string[];
+      $nin?: string[];
     }
   : T extends number
     ? {
@@ -68,6 +70,8 @@ type OperatorsForType<T> = T extends string
         $lte?: number;
         $eq?: number;
         $ne?: number;
+        $in?: number[];
+        $nin?: number[];
       }
     : T extends Date
       ? {
@@ -77,6 +81,8 @@ type OperatorsForType<T> = T extends string
           $lte?: Date;
           $eq?: Date;
           $ne?: Date;
+          $in?: Date[];
+          $nin?: Date[];
         }
       : T extends (infer U)[]
         ? {
@@ -89,10 +95,14 @@ type OperatorsForType<T> = T extends string
           ? {
               $eq?: boolean;
               $ne?: boolean;
+              $in?: boolean[];
+              $nin?: boolean[];
             }
           : {
               $eq?: T;
               $ne?: T;
+              $in?: T[];
+              $nin?: T[];
             };
 
 type NestedObjectExpression<T, Depth extends number = 4> = [Depth] extends [0]
@@ -101,20 +111,26 @@ type NestedObjectExpression<T, Depth extends number = 4> = [Depth] extends [0]
     ? Partial<{
         [K in keyof T]:
           | T[K]
+          | ArrayValueForOperator<T[K]>
           | OperatorsForType<T[K]>
           | NestedObjectExpression<T[K], Decrement<Depth>>
           | string;
       }>
     : never;
 
-export type ExtendedObjectExpression<T> = Partial<{
-  [K in keyof T]:
-    | T[K]
-    | OperatorsForType<T[K]>
-    | (IsPlainObject<T[K]> extends true ? NestedObjectExpression<T[K]> : never)
-    | string;
-}> &
-  Partial<LogicalOperators<T>>;
+type ArrayValueForOperator<T> = T extends unknown[] ? never : T[];
+
+export type ExtendedObjectExpression<T> = T extends object
+  ? Partial<{
+      [K in keyof T]:
+        | T[K]
+        | ArrayValueForOperator<T[K]>
+        | OperatorsForType<T[K]>
+        | (IsPlainObject<T[K]> extends true ? NestedObjectExpression<T[K]> : never)
+        | string;
+    }> &
+      Partial<LogicalOperators<T>>
+  : never;
 
 export type OperatorExpression =
   | ComparisonOperators

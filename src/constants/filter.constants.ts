@@ -41,4 +41,5 @@ export const DEFAULT_CONFIG: FilterConfig = {
   caseSensitive: false,
   maxDepth: 3,
   enableCache: false,
+  debug: false,
 };

@@ -1,5 +1,5 @@
 {
-  "directory": "__test__/types",
+  "directory": "__test__",
   "typingsFile": "build/index.d.ts",
   "compilerOptions": {
     "strict": true,

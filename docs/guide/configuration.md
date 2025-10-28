@@ -1,444 +1,609 @@
 # Configuration
 
-Complete reference for configuring @mcabreradev/filter.
+Filter provides flexible configuration options to customize behavior for your specific needs. Configure globally or per-filter call.
 
 ## Overview
 
-The library supports various configuration options to customize filtering behavior, optimize performance, and enable advanced features.
+Available configuration options:
+- **`caseSensitive`** - Control case sensitivity for string matching
+- **`maxDepth`** - Set maximum depth for nested object traversal
+- **`enableCache`** - Enable performance caching
+- **`customComparator`** - Provide custom comparison logic
+- **`debug`** - Enable debug mode with visual tree output
+- **`verbose`** - Show additional debug details (requires debug: true)
+- **`showTimings`** - Display execution timings (requires debug: true)
+- **`colorize`** - Use ANSI colors in debug output (requires debug: true)
 
-## Filter Options
+## Configuration Options
 
-### Basic Options
+### caseSensitive
+
+Controls whether string comparisons are case-sensitive.
+
+**Type**: `boolean`
+**Default**: `false`
 
 ```typescript
-interface FilterOptions {
-  memoize?: boolean;
-  caseSensitive?: boolean;
-  debug?: boolean;
-  lazy?: boolean;
+filter(users, 'alice');
+
+filter(users, 'Alice', { caseSensitive: true });
+```
+
+**Use Cases:**
+- Case-insensitive search (default)
+- Exact case matching for codes/IDs
+- Case-sensitive email validation
+
+**Examples:**
+
+```typescript
+const users = [
+  { name: 'Alice' },
+  { name: 'alice' },
+  { name: 'ALICE' },
+];
+
+filter(users, 'alice');
+
+filter(users, 'alice', { caseSensitive: true });
+```
+
+### maxDepth
+
+Controls how deep the filter traverses nested objects.
+
+**Type**: `number`
+**Default**: `3`
+**Range**: `0-10` (recommended: `1-5`)
+
+```typescript
+filter(data, expression, { maxDepth: 5 });
+```
+
+**Use Cases:**
+- Limit traversal for performance
+- Control nested object filtering depth
+- Prevent excessive recursion
+
+**Examples:**
+
+```typescript
+interface DeepObject {
+  level1: {
+    level2: {
+      level3: {
+        value: string;
+      };
+    };
+  };
 }
+
+filter(data, {
+  level1: {
+    level2: {
+      level3: {
+        value: 'test'
+      }
+    }
+  }
+}, { maxDepth: 3 });
 ```
 
-### Memoization
+**Performance Impact:**
+- Lower values = faster filtering
+- Higher values = more flexible but slower
+- Default (3) balances flexibility and performance
 
-Cache filter results for improved performance on repeated operations.
+### enableCache
+
+Enables caching of filter predicates and regex patterns for improved performance.
+
+**Type**: `boolean`
+**Default**: `false`
 
 ```typescript
-const { filtered } = useFilter(data, expression, {
-  memoize: true
-});
+filter(data, expression, { enableCache: true });
 ```
 
-**When to use**:
-- Large datasets (1,000+ items)
-- Expensive filter operations
+**Use Cases:**
 - Repeated filtering with same expression
+- High-frequency filtering operations
+- Performance-critical applications
 
-**Trade-offs**:
-- Increased memory usage
-- Cache invalidation complexity
+**Performance Gains:**
+- Up to 530x faster for cached predicates
+- Significant improvement for regex patterns
+- Best for repeated identical queries
 
-### Case Sensitivity
-
-Control string comparison behavior.
+**Examples:**
 
 ```typescript
-const { filtered } = useFilter(data, expression, {
-  caseSensitive: false
+const expression = { age: { $gte: 18 } };
+
+filter(users, expression, { enableCache: true });
+filter(users, expression, { enableCache: true });
+```
+
+**Cache Management:**
+
+```typescript
+import { clearFilterCache, getFilterCacheStats } from '@mcabreradev/filter';
+
+clearFilterCache();
+
+const stats = getFilterCacheStats();
+console.log(stats);
+```
+
+### debug
+
+Enable debug mode to visualize filter execution with tree output and statistics.
+
+**Type**: `boolean`
+**Default**: `false`
+
+```typescript
+filter(users, { city: 'Berlin' }, { debug: true });
+```
+
+**Use Cases:**
+- Understanding complex filter logic
+- Debugging why items match or don't match
+- Performance analysis
+- Development and testing
+
+**Output:**
+```
+Filter Debug Tree
+└── city = "Berlin" (2/3 matched, 66.7%)
+
+Statistics:
+├── Matched: 2 / 3 items (66.7%)
+├── Execution Time: 0.45ms
+├── Cache Hit: No
+└── Conditions Evaluated: 1
+```
+
+**Examples:**
+
+```typescript
+filter(users, {
+  $and: [
+    { city: 'Berlin' },
+    { age: { $gte: 25 } }
+  ]
+}, { debug: true });
+```
+
+**Debug Options:**
+
+Combine with verbose, showTimings, and colorize for enhanced output:
+
+```typescript
+filter(users, expression, {
+  debug: true,
+  verbose: true,
+  showTimings: true,
+  colorize: true
 });
 ```
 
-**Default**: `true`
+See [Debug Mode Guide](/guide/debug) for complete documentation.
 
-**Example**:
-```typescript
-const expression = {
-  name: { $eq: 'john' }
-};
+### verbose
 
-const options = { caseSensitive: false };
-```
+Show additional details in debug output (only works with `debug: true`).
 
-### Debug Mode
-
-Enable detailed logging for troubleshooting.
+**Type**: `boolean`
+**Default**: `false`
 
 ```typescript
-const { filtered } = useFilter(data, expression, {
-  debug: true
+filter(users, expression, {
+  debug: true,
+  verbose: true
 });
 ```
 
-**Output**:
-- Expression parsing details
-- Operator execution logs
-- Performance metrics
+### showTimings
 
-### Lazy Evaluation
+Display execution time for each node in debug tree (only works with `debug: true`).
 
-Defer filtering until results are needed.
+**Type**: `boolean`
+**Default**: `false`
 
 ```typescript
-const { filtered } = useFilter(data, expression, {
-  lazy: true
+filter(users, expression, {
+  debug: true,
+  showTimings: true
 });
 ```
 
-**Benefits**:
-- Reduced initial computation
-- Memory efficient for large datasets
-- Chainable operations
+### colorize
 
-## Debounced Filter Options
+Use ANSI colors in debug output for better readability (only works with `debug: true`).
 
-### Configuration
+**Type**: `boolean`
+**Default**: `false`
 
 ```typescript
-interface UseDebouncedFilterOptions extends FilterOptions {
-  delay?: number;
-}
-```
-
-### Delay Setting
-
-Control debounce timing for search inputs.
-
-```typescript
-const { filtered, isPending } = useDebouncedFilter(data, expression, {
-  delay: 300
+filter(users, expression, {
+  debug: true,
+  colorize: true
 });
 ```
 
-**Default**: `300ms`
+### customComparator
 
-**Recommendations**:
-- Search inputs: `300-500ms`
-- Real-time updates: `100-200ms`
-- Heavy operations: `500-1000ms`
+Provide custom comparison logic for string matching.
 
-### Example: Search Input
+**Type**: `(actual: unknown, expected: unknown) => boolean`
+**Default**: Case-insensitive substring matching
 
 ```typescript
-const SearchComponent = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const expression = useMemo(() => ({
-    name: { $regex: new RegExp(searchTerm, 'i') }
-  }), [searchTerm]);
-
-  const { filtered, isPending } = useDebouncedFilter(users, expression, {
-    delay: 300,
-    memoize: true
-  });
-
-  return (
-    <div>
-      <input
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Search users..."
-      />
-      {isPending && <Spinner />}
-      <UserList users={filtered} />
-    </div>
-  );
-};
-```
-
-## Paginated Filter Options
-
-### Configuration
-
-```typescript
-interface UsePaginatedFilterOptions extends FilterOptions {
-  initialPage?: number;
-}
-```
-
-### Page Size
-
-Set number of items per page.
-
-```typescript
-const { filtered, currentPage, totalPages } = usePaginatedFilter(
-  data,
-  expression,
-  50
-);
-```
-
-**Default**: `10`
-
-**Recommendations**:
-- Tables: `10-25`
-- Cards/Grid: `12-24`
-- Lists: `20-50`
-
-### Initial Page
-
-Start on specific page.
-
-```typescript
-const { filtered } = usePaginatedFilter(data, expression, 20, {
-  initialPage: 2
+filter(data, expression, {
+  customComparator: (actual, expected) => {
+    return String(actual) === String(expected);
+  }
 });
 ```
 
-### Complete Example
+**Use Cases:**
+- Custom string comparison logic
+- Locale-specific comparisons
+- Special matching rules
+- Domain-specific equality
+
+**Examples:**
 
 ```typescript
-const PaginatedTable = () => {
-  const [pageSize, setPageSize] = useState(25);
-
-  const {
-    filtered,
-    currentPage,
-    totalPages,
-    nextPage,
-    previousPage,
-    goToPage,
-    setPageSize: updatePageSize
-  } = usePaginatedFilter(users, expression, pageSize, {
-    memoize: true
-  });
-
-  return (
-    <div>
-      <Table data={filtered} />
-
-      <Pagination
-        current={currentPage}
-        total={totalPages}
-        onNext={nextPage}
-        onPrevious={previousPage}
-        onGoTo={goToPage}
-      />
-
-      <select
-        value={pageSize}
-        onChange={(e) => {
-          const newSize = Number(e.target.value);
-          setPageSize(newSize);
-          updatePageSize(newSize);
-        }}
-      >
-        <option value={10}>10 per page</option>
-        <option value={25}>25 per page</option>
-        <option value={50}>50 per page</option>
-      </select>
-    </div>
-  );
-};
+filter(users, 'alice', {
+  customComparator: (actual, expected) => {
+    return String(actual).toLowerCase() === String(expected).toLowerCase();
+  }
+});
 ```
 
-## Configuration Builder
+**Advanced Comparator:**
 
-### Creating Configurations
+```typescript
+filter(products, 'widget', {
+  customComparator: (actual, expected) => {
+    const actualStr = String(actual).toLowerCase().trim();
+    const expectedStr = String(expected).toLowerCase().trim();
 
-Use the builder pattern for complex setups.
+    return actualStr.includes(expectedStr) ||
+           expectedStr.includes(actualStr);
+  }
+});
+```
+
+## Configuration Methods
+
+### Per-Filter Configuration
+
+Pass options to individual filter calls:
+
+```typescript
+filter(users, expression, {
+  caseSensitive: true,
+  maxDepth: 5,
+  enableCache: true
+});
+```
+
+### Configuration Builder
+
+Use the configuration builder for reusable configs:
 
 ```typescript
 import { createFilterConfig } from '@mcabreradev/filter';
 
-const config = createFilterConfig<User>()
-  .withMemoization(true)
-  .withCaseSensitivity(false)
-  .withDebug(process.env.NODE_ENV === 'development')
-  .build();
+const config = createFilterConfig({
+  caseSensitive: true,
+  enableCache: true,
+  maxDepth: 4
+});
 
-const { filtered } = useFilter(data, expression, config);
+filter(users, expression, config);
 ```
 
-### Preset Configurations
+### Merging Configurations
 
-#### Development Mode
+Merge multiple configurations:
 
 ```typescript
-const devConfig = createFilterConfig()
-  .withDebug(true)
-  .withMemoization(false)
-  .build();
+import { mergeConfig } from '@mcabreradev/filter';
+
+const baseConfig = { caseSensitive: true };
+const cacheConfig = { enableCache: true };
+
+const merged = mergeConfig(baseConfig, cacheConfig);
 ```
 
-#### Production Mode
+## Real-World Examples
+
+### Case-Sensitive Code Matching
 
 ```typescript
-const prodConfig = createFilterConfig()
-  .withDebug(false)
-  .withMemoization(true)
-  .build();
+const products = [
+  { sku: 'PRD-001' },
+  { sku: 'prd-001' },
+];
+
+filter(products, { sku: 'PRD-001' }, {
+  caseSensitive: true
+});
 ```
 
-#### Performance Mode
+### Deep Object Filtering
 
 ```typescript
-const perfConfig = createFilterConfig()
-  .withMemoization(true)
-  .withLazy(true)
-  .build();
-```
-
-## Environment-Based Configuration
-
-### Setup
-
-```typescript
-const getFilterConfig = (): FilterOptions => {
-  const isDev = process.env.NODE_ENV === 'development';
-  const isProd = process.env.NODE_ENV === 'production';
-
-  return {
-    debug: isDev,
-    memoize: isProd,
-    lazy: isProd
+interface Organization {
+  department: {
+    team: {
+      lead: {
+        name: string;
+      };
+    };
   };
-};
+}
 
-const config = getFilterConfig();
+filter(orgs, {
+  department: {
+    team: {
+      lead: {
+        name: 'Alice'
+      }
+    }
+  }
+}, {
+  maxDepth: 4
+});
 ```
 
-### Usage
+### High-Performance Dashboard
 
 ```typescript
-const { filtered } = useFilter(data, expression, config);
-```
-
-## Global Configuration
-
-### Setting Defaults
-
-```typescript
-import { setDefaultConfig } from '@mcabreradev/filter';
-
-setDefaultConfig({
-  memoize: true,
+const dashboardConfig = {
+  enableCache: true,
   caseSensitive: false,
-  debug: false
-});
+  maxDepth: 3
+};
+
+const activeUsers = filter(users, { status: 'active' }, dashboardConfig);
+const premiumUsers = filter(users, { premium: true }, dashboardConfig);
 ```
 
-### Overriding Defaults
+### Custom Fuzzy Matching
 
 ```typescript
-const { filtered } = useFilter(data, expression, {
-  debug: true
+filter(products, 'laptop', {
+  customComparator: (actual, expected) => {
+    const actualStr = String(actual).toLowerCase();
+    const expectedStr = String(expected).toLowerCase();
+
+    const distance = levenshteinDistance(actualStr, expectedStr);
+    return distance <= 2;
+  }
 });
 ```
 
-## Performance Tuning
+## Configuration Patterns
 
-### Large Datasets (10,000+ items)
+### Development vs Production
 
 ```typescript
 const config = {
-  memoize: true,
-  lazy: true
+  enableCache: process.env.NODE_ENV === 'production',
+  caseSensitive: false,
+  maxDepth: 3
 };
+
+filter(data, expression, config);
 ```
 
-### Real-Time Updates
+### Feature Flags
 
 ```typescript
 const config = {
-  memoize: false,
-  lazy: false
+  enableCache: featureFlags.caching,
+  caseSensitive: featureFlags.strictMatching,
+  maxDepth: featureFlags.deepSearch ? 5 : 3
 };
 ```
 
-### Memory-Constrained Environments
+### User Preferences
 
 ```typescript
-const config = {
-  memoize: false,
-  lazy: true
-};
-```
-
-## Framework-Specific Configuration
-
-### React
-
-```typescript
-const config = useMemo(() => ({
-  memoize: true,
-  caseSensitive: false
-}), []);
-
-const { filtered } = useFilter(data, expression, config);
-```
-
-### Vue
-
-```typescript
-import { reactive } from 'vue';
-
-const config = reactive({
-  memoize: true,
-  caseSensitive: false
+const getUserConfig = (preferences) => ({
+  caseSensitive: preferences.exactMatch,
+  enableCache: preferences.performanceMode,
+  maxDepth: preferences.searchDepth || 3
 });
 
-const { filtered } = useFilter(data, expression, config);
+filter(data, expression, getUserConfig(userPreferences));
 ```
 
-### Svelte
+## Performance Guidelines
 
-```typescript
-import { writable } from 'svelte/store';
+### When to Enable Caching
 
-const config = writable({
-  memoize: true,
-  caseSensitive: false
-});
+**Enable caching when:**
+- Filtering the same data repeatedly
+- Using identical expressions multiple times
+- Performance is critical
+- Working with large datasets
 
-const { filtered } = useFilter(data, expression, $config);
-```
+**Don't enable caching when:**
+- Expressions change frequently
+- Memory is constrained
+- Filtering small datasets
+- One-time queries
+
+### Optimal maxDepth
+
+| Use Case | Recommended maxDepth |
+|----------|---------------------|
+| Flat objects | 1 |
+| Simple nesting | 2-3 (default) |
+| Complex structures | 4-5 |
+| Very deep nesting | 6+ (use sparingly) |
+
+### caseSensitive Impact
+
+- **Case-insensitive** (default): Slightly slower but more flexible
+- **Case-sensitive**: Faster but stricter matching
 
 ## Best Practices
 
-### 1. Memoize Configuration Objects
+### 1. Use Sensible Defaults
 
 ```typescript
-const config = useMemo(() => ({
-  memoize: true,
-  caseSensitive: false
-}), []);
-```
-
-### 2. Use Environment Variables
-
-```typescript
-const config = {
-  debug: process.env.NODE_ENV === 'development',
-  memoize: process.env.NODE_ENV === 'production'
+const defaultConfig = {
+  caseSensitive: false,
+  maxDepth: 3,
+  enableCache: false
 };
 ```
 
-### 3. Profile Before Optimizing
+### 2. Enable Caching for Repeated Queries
 
 ```typescript
-const config = {
-  debug: true
+const config = { enableCache: true };
+
+setInterval(() => {
+  const active = filter(users, { status: 'active' }, config);
+  updateDashboard(active);
+}, 1000);
+```
+
+### 3. Adjust maxDepth Based on Data
+
+```typescript
+const shallowConfig = { maxDepth: 2 };
+const deepConfig = { maxDepth: 5 };
+
+filter(simpleData, expression, shallowConfig);
+filter(complexData, expression, deepConfig);
+```
+
+### 4. Document Custom Comparators
+
+```typescript
+const fuzzyComparator = (actual, expected) => {
+  return similarity(actual, expected) > 0.8;
 };
 
-console.time('filter');
-const { filtered } = useFilter(data, expression, config);
-console.timeEnd('filter');
+filter(data, expression, {
+  customComparator: fuzzyComparator
+});
 ```
 
-### 4. Clear Cache When Needed
+### 5. Clear Cache Periodically
 
 ```typescript
-import { clearMemoizationCache } from '@mcabreradev/filter';
+import { clearFilterCache } from '@mcabreradev/filter';
 
-useEffect(() => {
-  return () => clearMemoizationCache();
-}, []);
+setInterval(() => {
+  clearFilterCache();
+}, 60000);
 ```
 
-## Related Resources
+## TypeScript Support
 
-- [Performance Optimization](/advanced/performance)
-- [Best Practices](/guide/best-practices)
-- [Troubleshooting](/guide/troubleshooting)
-- [API Reference](/api/configuration)
+Full type safety for configuration:
+
+```typescript
+import type { FilterOptions } from '@mcabreradev/filter';
+
+const config: FilterOptions = {
+  caseSensitive: true,
+  maxDepth: 4,
+  enableCache: true,
+  customComparator: (a, b) => String(a) === String(b)
+};
+
+filter(users, expression, config);
+```
+
+## Troubleshooting
+
+### Nested Properties Not Matching
+
+Increase maxDepth:
+
+```typescript
+filter(data, expression, { maxDepth: 5 });
+```
+
+### Case Sensitivity Issues
+
+Check caseSensitive setting:
+
+```typescript
+filter(users, 'Alice', { caseSensitive: false });
+```
+
+### Performance Problems
+
+Enable caching:
+
+```typescript
+filter(data, expression, { enableCache: true });
+```
+
+### Custom Comparator Not Working
+
+Verify comparator signature:
+
+```typescript
+const comparator = (actual: unknown, expected: unknown): boolean => {
+  return String(actual) === String(expected);
+};
+
+filter(data, expression, { customComparator: comparator });
+```
+
+## Advanced Configuration
+
+### Combining All Options
+
+```typescript
+const advancedConfig = {
+  caseSensitive: true,
+  maxDepth: 5,
+  enableCache: true,
+  customComparator: (actual, expected) => {
+    if (typeof actual === 'string' && typeof expected === 'string') {
+      return actual.localeCompare(expected, 'en', { sensitivity: 'base' }) === 0;
+    }
+    return actual === expected;
+  }
+};
+
+filter(data, expression, advancedConfig);
+```
+
+### Environment-Based Configuration
+
+```typescript
+const getConfig = (): FilterOptions => {
+  const env = process.env.NODE_ENV;
+
+  return {
+    caseSensitive: env === 'production',
+    maxDepth: env === 'development' ? 5 : 3,
+    enableCache: env === 'production',
+  };
+};
+
+filter(data, expression, getConfig());
+```
+
+## See Also
+
+- [Memoization](/guide/memoization) - Caching and performance
+- [Nested Objects](/guide/nested-objects) - maxDepth usage
+- [Wildcards](/guide/wildcards) - Case sensitivity
+- [Performance Benchmarks](/advanced/performance-benchmarks) - Optimization tips
 
