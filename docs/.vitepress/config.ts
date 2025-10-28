@@ -134,6 +134,7 @@ export default defineConfig({
           text: 'Backend Integration',
           collapsed: false,
           items: [
+            { text: 'Node.js', link: '/backend/nodejs' },
             { text: 'Express.js', link: '/backend/express' },
             { text: 'NestJS', link: '/backend/nestjs' },
             { text: 'Deno', link: '/backend/deno' },
