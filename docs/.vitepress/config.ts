@@ -22,6 +22,7 @@ export default defineConfig({
 
     nav: [
       { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
+      { text: 'Playground', link: '/playground/', activeMatch: '/playground/' },
       { text: 'Frontend', link: '/frontend/overview', activeMatch: '/frontend/' },
       { text: 'Backend', link: '/backend/express', activeMatch: '/backend/' },
       { text: 'API', link: '/api/reference', activeMatch: '/api/' },
@@ -85,6 +86,13 @@ export default defineConfig({
             { text: 'FAQ', link: '/guide/faq' },
             { text: 'Library Comparison', link: '/guide/comparison' },
           ],
+        },
+      ],
+      '/playground/': [
+        {
+          text: 'Playground',
+          collapsed: false,
+          items: [{ text: 'Interactive Playground', link: '/playground/' }],
         },
       ],
       '/advanced/': [

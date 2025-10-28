@@ -28,9 +28,10 @@ Go beyond JavaScript's native `Array.filter()` with a library that understands y
 - **✨ Smart Autocomplete** - IntelliSense suggests only valid operators for each property type
 - **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
 - **🚀 Performance Optimized** - Optional caching and regex compilation optimization
-- **📦 MongoDB-Style Operators** - 18 operators for advanced filtering (v5.0.0+)
+- **📦 MongoDB-Style Operators** - 18+ operators for advanced filtering (v5.0.0+)
 - **💨 Lazy Evaluation** - Process large datasets efficiently with generators (v5.1.0+)
-- **🧪 Battle-Tested** - 300+ tests ensuring reliability
+- **🎨 Framework Integrations** - React, Vue, and Svelte support (v5.3.0+)
+- **🧪 Battle-Tested** - 270+ tests ensuring reliability
 
 ---
 
@@ -93,11 +94,13 @@ filter(users, { name: { $startsWith: 'A' } });
 // → Returns Alice
 ```
 
+> 🎮 **[Try it live in the Interactive Playground!](https://filter-docs.vercel.app/playground/)**
+
 ---
 
 ## Framework Integrations 🎨
 
-**New in v5.3.0**: Full framework integration support for React, Vue, and Svelte!
+**New in v5.4.0**: Full framework integration support for React, Vue, and Svelte!
 
 ### React Hooks
 
@@ -174,7 +177,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
 - ✅ TypeScript: Full type safety with generics
 - ✅ SSR Compatible: Works with Next.js, Nuxt, and SvelteKit
 
-See [Framework Integrations Guide](./docs/frameworks/overview.md) for complete documentation.
+See Framework Integrations Guide for complete documentation.
 
 ---
 
@@ -242,7 +245,7 @@ filter(users, {
 });
 ```
 
-### MongoDB-Style Operators (v5.0.0)
+### MongoDB-Style Operators (v5.0.0+)
 
 Powerful operators for advanced filtering with **intelligent autocomplete** - TypeScript suggests only valid operators for each property type!
 
@@ -363,7 +366,7 @@ filter(users, {
 
 **Available:** `$startsWith`, `$endsWith`, `$contains`, `$regex`, `$match`
 
-#### Logical Operators
+#### Logical Operators (v5.2.0+)
 
 Combine multiple conditions with logical operators:
 
@@ -456,7 +459,7 @@ filter<Product>(products, (p: Product): boolean =>
 Efficiently process large datasets with lazy evaluation:
 
 ```typescript
-import { filterLazy, filterFirst, filterExists, toArray, take, map } from '@mcabreradev/filter';
+import { filterLazy, filterFirst, filterExists, filterCount, toArray, take, map } from '@mcabreradev/filter';
 
 // Lazy evaluation - process items on-demand
 const filtered = filterLazy(millionRecords, { active: true });
@@ -516,8 +519,10 @@ import { filter, clearFilterCache, getFilterCacheStats } from '@mcabreradev/filt
 
 const largeDataset = [...];
 
+// First call - processes data
 const results = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true });
 
+// Second call - returns cached result instantly
 const sameResults = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true });
 ```
 
@@ -560,14 +565,18 @@ const electronicsAgain = filter(
 ### Cache Management
 
 ```typescript
+// Get cache statistics
 const stats = getFilterCacheStats();
 console.log(stats);
+// { hits: 150, misses: 10, size: 25, hitRate: 0.9375 }
 
+// Clear cache when data changes
 clearFilterCache();
 
+// Memory management
 let data = [/* large dataset */];
 filter(data, query, { enableCache: true });
-data = null;
+data = null; // Cache will be garbage collected
 ```
 
 ### When to Enable Caching
@@ -752,7 +761,8 @@ Filter is optimized for performance:
 
 - **Operators** use early exit strategies for fast evaluation
 - **Regex patterns** are compiled and cached
-- **Optional caching** for repeated queries on large datasets
+- **Optional caching** for repeated queries on large datasets (530x-1520x faster)
+- **Lazy evaluation** for efficient large dataset processing (500x faster)
 - **Type guards** for fast type checking
 
 ```typescript
@@ -761,6 +771,9 @@ filter(data, { age: { $gte: 18 } });
 
 // ✅ Fast with caching for repeated queries
 filter(largeData, expression, { enableCache: true });
+
+// ✅ Fast with lazy evaluation for large datasets
+const result = filterFirst(millionRecords, { active: true }, 100);
 
 // ⚠️ Slower: Complex predicates (but more flexible)
 filter(data, (item) => complexCalculation(item));
@@ -776,7 +789,7 @@ For performance optimization tips, see [Performance Guide](./docs/advanced/wiki.
 
 - **[Complete Wiki](./docs/advanced/wiki.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
 - **[Framework Integrations](./docs/frameworks/overview.md)** - Complete guide for React, Vue, and Svelte integrations
-- **[Operators Guide](./docs/guide/operators.md)** - Detailed guide for all 18 MongoDB-style operators with examples and advanced regex patterns
+- **[Operators Guide](./docs/guide/operators.md)** - Detailed guide for all 18+ MongoDB-style operators with examples and advanced regex patterns
 - **[Lazy Evaluation](./docs/guide/lazy-evaluation.md)** - Comprehensive guide to lazy evaluation for efficient large dataset processing
 - **[Logical Operators](./docs/guide/logical-operators.md)** - Advanced patterns and complex queries with $and, $or, $not
 - **[Performance Benchmarks](./docs/advanced/performance-benchmarks.md)** - Detailed performance metrics and optimization strategies
@@ -786,11 +799,13 @@ For performance optimization tips, see [Performance Guide](./docs/advanced/wiki.
 ### 🎯 Quick Links
 
 - [Installation & Setup](./docs/guide/installation.md)
+- [Interactive Playground](https://filter-docs.vercel.app/playground/) 🎮 NEW
 - [Framework Integrations](./docs/frameworks/overview.md) ⭐ NEW
 - [All Operators Reference](./docs/guide/operators.md)
 - [Regex Patterns Guide](./docs/guide/operators.md#string-operators)
 - [Logical Operators Guide](./docs/guide/logical-operators.md)
 - [Lazy Evaluation](./docs/guide/lazy-evaluation.md)
+- [Memoization & Caching](./docs/guide/memoization.md)
 - [Performance Benchmarks](./docs/advanced/performance-benchmarks.md)
 - [TypeScript Integration](./docs/advanced/wiki.md#typescript-integration)
 - [Real-World Examples](./docs/examples/real-world.md)
@@ -803,7 +818,7 @@ For performance optimization tips, see [Performance Guide](./docs/advanced/wiki.
 
 ## Migration from v3.x
 
-**Good news:** v5.0.0 is **100% backward compatible**! All v3.x code continues to work.
+**Good news:** v5.x is **100% backward compatible**! All v3.x code continues to work.
 
 ```typescript
 // ✅ All v3.x syntax still works
@@ -812,17 +827,18 @@ filter(data, { prop: 'value' });
 filter(data, (item) => true);
 filter(data, '%pattern%');
 
-// ✅ New in v5.0.0
+// ✅ New in v5.x
 filter(data, { age: { $gte: 18 } });
 filter(data, expression, { caseSensitive: true });
+filter(data, expression, { enableCache: true });
 ```
 
-**What's New in v5.0.0:**
-- 18 MongoDB-style operators (including logical: $and, $or, $not; regex: $regex, $match)
-- Configuration API
-- Runtime validation with Zod
-- Performance optimizations
-- Enhanced TypeScript support
+**What's New in v5.x:**
+- **v5.4.0**: Framework integrations (React, Vue, Svelte)
+- **v5.3.0**: Initial framework support
+- **v5.2.0**: Enhanced memoization, logical operators ($and, $or, $not), regex operators
+- **v5.1.0**: Lazy evaluation with generators
+- **v5.0.0**: 18+ MongoDB-style operators, configuration API, runtime validation
 
 See [Migration Guide](./docs/advanced/migration.md) for detailed migration guide.
 
@@ -834,13 +850,28 @@ See [Migration Guide](./docs/advanced/migration.md) for detailed migration guide
 // Main filter function
 filter<T>(array: T[], expression: Expression<T>, options?: FilterOptions): T[]
 
+// Lazy evaluation functions
+filterLazy<T>(array: T[], expression: Expression<T>, options?: FilterOptions): IterableIterator<T>
+filterFirst<T>(array: T[], expression: Expression<T>, count: number, options?: FilterOptions): T[]
+filterExists<T>(array: T[], expression: Expression<T>, options?: FilterOptions): boolean
+filterCount<T>(array: T[], expression: Expression<T>, options?: FilterOptions): number
+
 // Validation functions
 validateExpression(expression: unknown): Expression<T>
 validateOptions(options: unknown): FilterOptions
 
+// Cache management
+clearFilterCache(): void
+getFilterCacheStats(): { hits: number; misses: number; size: number; hitRate: number }
+
 // Configuration
 mergeConfig(options?: FilterOptions): FilterConfig
 createFilterConfig(options?: FilterOptions): FilterConfig
+
+// Framework integrations
+useFilter<T>(data: T[], expression: Expression<T>, options?: FilterOptions) // React
+useFilter<T>(data: Ref<T[]>, expression: Ref<Expression<T>>, options?: FilterOptions) // Vue
+filterStore<T>(data: Writable<T[]>, expression: Writable<Expression<T>>, options?: FilterOptions) // Svelte
 ```
 
 For complete API reference, see [API Reference](./docs/api/reference.md).
@@ -881,16 +912,16 @@ For detailed guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ```bash
 # Run tests
-npm test
+pnpm test
 
 # Watch mode
-npm run test:watch
+pnpm test:watch
 
 # Coverage report
-npm run test:coverage
+pnpm test:coverage
 
 # Type checking
-npm run typecheck
+pnpm typecheck
 ```
 
 The library has 270+ tests with comprehensive coverage of all features.
@@ -928,7 +959,7 @@ The library has 270+ tests with comprehensive coverage of all features.
 - ⚡ Early exit optimization
 
 ### v5.0.0
-- ✨ Added 18 MongoDB-style operators
+- ✨ Added 18+ MongoDB-style operators
 - ⚙️ Configuration API with 4 options
 - ✅ Runtime validation with Zod
 - 🚀 Performance optimizations
@@ -959,7 +990,7 @@ Inspired by MongoDB query syntax, SQL wildcards, and functional programming patt
 
 ## Support
 
-- 📖 [Complete Documentation](./docs/advanced/wiki.md)
+- 📖 Complete Documentation
 - 💬 [GitHub Discussions](https://github.com/mcabreradev/filter/discussions)
 - 🐛 [Issue Tracker](https://github.com/mcabreradev/filter/issues)
 - ⭐ [Star on GitHub](https://github.com/mcabreradev/filter)
