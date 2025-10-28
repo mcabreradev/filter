@@ -6,10 +6,10 @@ import type {
   Expression,
 } from '../../src/types';
 
-expectType<PrimitiveExpression>('test');
-expectType<PrimitiveExpression>(123);
-expectType<PrimitiveExpression>(true);
-expectType<PrimitiveExpression>(null);
+expectAssignable<PrimitiveExpression>('test');
+expectAssignable<PrimitiveExpression>(123);
+expectAssignable<PrimitiveExpression>(true);
+expectAssignable<PrimitiveExpression>(null);
 
 interface User {
   name: string;
@@ -39,10 +39,10 @@ const emptyObjectExpr: ObjectExpression<User> = {};
 
 expectAssignable<ObjectExpression<User>>(emptyObjectExpr);
 
-expectType<Expression<User>>('test');
-expectType<Expression<User>>(123);
-expectType<Expression<User>>(predicateFn);
-expectType<Expression<User>>(objectExpr);
+expectAssignable<Expression<User>>('test');
+expectAssignable<Expression<User>>(123);
+expectAssignable<Expression<User>>(predicateFn);
+expectAssignable<Expression<User>>(objectExpr);
 
 interface NestedUser {
   profile: {

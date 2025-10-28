@@ -52,6 +52,10 @@ features:
     title: Lazy Evaluation
     details: Process large datasets efficiently with generators. 500x faster for early exits.
 
+  - icon: 🐛
+    title: Debug Mode
+    details: Visual debugging with tree visualization, match statistics, and performance metrics. Understand your filters.
+
   - icon: 🎨
     title: Framework Integration
     details: React Hooks, Vue Composables, and Svelte Stores. First-class framework support.
@@ -112,6 +116,19 @@ filter(users, {
   ]
 });
 // → Returns Alice and Charlie
+
+// Debug mode for visual inspection
+import { filterDebug } from '@mcabreradev/filter';
+
+const result = filterDebug(users, {
+  $and: [
+    { city: 'Berlin' },
+    { $or: [{ age: { $lt: 30 } }, { premium: true }] }
+  ]
+});
+
+result.print();
+// Outputs visual tree with match statistics
 ```
 
 ## Framework Integration

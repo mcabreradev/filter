@@ -8,6 +8,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
+    "rootDir": "src",
     "outDir": "build",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -20,6 +21,6 @@
     "resolveJsonModule": true,
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*", "__test__/**/*"],
-  "exclude": ["node_modules", "build", "src/**/*.test.ts", "src/**/*.test.tsx", "__test__/types/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "build", "src/**/*.test.ts", "src/**/*.test.tsx"]
 }
