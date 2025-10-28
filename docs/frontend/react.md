@@ -24,6 +24,17 @@ npm install @mcabreradev/filter react
 
 Basic filtering with automatic memoization.
 
+### API Reference
+
+```typescript
+interface UseFilterResult<T> {
+  filtered: T[];        // Filtered results
+  isFiltering: boolean; // True if filter is active (filtered.length !== data.length)
+}
+```
+
+### Basic Usage
+
 ```typescript
 import { useFilter } from '@mcabreradev/filter';
 
@@ -43,9 +54,31 @@ function UserList() {
 
   return (
     <div>
+      {isFiltering && <p>Filtering {users.length} users...</p>}
       <p>Showing {filtered.length} active users</p>
       {filtered.map((user) => (
         <div key={user.id}>{user.name}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+### With Complex Expressions
+
+```typescript
+function ProductList({ products }: { products: Product[] }) {
+  const { filtered, isFiltering } = useFilter(products, {
+    price: { $gte: 100, $lte: 500 },
+    category: { $in: ['Electronics', 'Books'] },
+    inStock: true
+  });
+
+  return (
+    <div>
+      <p>Found {filtered.length} products</p>
+      {filtered.map(product => (
+        <ProductCard key={product.id} product={product} />
       ))}
     </div>
   );
@@ -131,6 +164,34 @@ function SearchUsers() {
 
 Filtering with pagination support.
 
+### API Reference
+
+```typescript
+interface UsePaginatedFilterResult<T> extends PaginationResult<T>, PaginationActions {
+  filtered: T[];        // All filtered results
+  isFiltering: boolean;
+}
+
+interface PaginationResult<T> {
+  data: T[];           // Current page data
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+interface PaginationActions {
+  nextPage: () => void;
+  previousPage: () => void;
+  goToPage: (page: number) => void;
+  setPageSize: (size: number) => void;
+}
+```
+
+### Basic Usage
+
 ```typescript
 import { usePaginatedFilter } from '@mcabreradev/filter';
 
@@ -139,29 +200,32 @@ function PaginatedList() {
 
   const {
     filtered,
+    isFiltering,
+    data,
     currentPage,
     totalPages,
     pageSize,
-    setPage,
-    setPageSize,
-    nextPage,
-    prevPage,
     hasNextPage,
-    hasPrevPage,
-  } = usePaginatedFilter(users, { active: true }, {
-    initialPage: 1,
-    initialPageSize: 10,
-  });
+    hasPreviousPage,
+    nextPage,
+    previousPage,
+    goToPage,
+    setPageSize,
+  } = usePaginatedFilter(users, { active: true }, 10);
 
   return (
     <div>
+      <p>Page {currentPage} of {totalPages}</p>
+      <p>Showing {data.length} of {filtered.length} results</p>
+
       <div>
-        {filtered.map((user) => (
+        {data.map((user) => (
           <div key={user.id}>{user.name}</div>
         ))}
       </div>
+
       <div>
-        <button onClick={prevPage} disabled={!hasPrevPage}>
+        <button onClick={previousPage} disabled={!hasPreviousPage}>
           Previous
         </button>
         <span>Page {currentPage} of {totalPages}</span>
@@ -169,6 +233,12 @@ function PaginatedList() {
           Next
         </button>
       </div>
+
+      <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
+        <option value={10}>10 per page</option>
+        <option value={25}>25 per page</option>
+        <option value={50}>50 per page</option>
+      </select>
     </div>
   );
 }

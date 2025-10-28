@@ -1,45 +1,124 @@
-# Contributing Guide
+# Contributing to Filter
 
-Thank you for your interest in contributing to Filter! We welcome contributions from the community.
+Thank you for your interest in contributing to @mcabreradev/filter! This guide will help you get started.
 
-## Quick Links
+## Table of Contents
 
-- [GitHub Repository](https://github.com/mcabreradev/filter)
-- [Issue Tracker](https://github.com/mcabreradev/filter/issues)
-- [Pull Requests](https://github.com/mcabreradev/filter/pulls)
+- [Code of Conduct](#code-of-conduct)
+- [Getting Started](#getting-started)
+- [Development Setup](#development-setup)
+- [Project Structure](#project-structure)
+- [Development Workflow](#development-workflow)
+- [Testing](#testing)
+- [Documentation](#documentation)
+- [Pull Request Process](#pull-request-process)
+- [Coding Standards](#coding-standards)
+- [Framework Integrations](#framework-integrations)
+- [Performance Considerations](#performance-considerations)
+
+## Code of Conduct
+
+By participating in this project, you agree to maintain a respectful and inclusive environment for all contributors.
+
+### Our Standards
+
+- Use welcoming and inclusive language
+- Be respectful of differing viewpoints and experiences
+- Gracefully accept constructive criticism
+- Focus on what is best for the community
+- Show empathy towards other community members
 
 ## Getting Started
 
-### Prerequisites
+### Fork and Clone
 
-- Node.js 20+ or 22+
-- pnpm (recommended package manager)
-- Git
+1. Fork the repository on GitHub
+2. Clone your fork locally:
 
-### Setup
-
-1. **Fork the repository** on GitHub
-
-2. **Clone your fork**:
 ```bash
 git clone https://github.com/YOUR_USERNAME/filter.git
 cd filter
 ```
 
-3. **Add upstream remote**:
+3. Add upstream remote:
+
 ```bash
 git remote add upstream https://github.com/mcabreradev/filter.git
 ```
 
-4. **Install dependencies**:
+### Stay Synced
+
+Keep your fork up to date:
+
+```bash
+git fetch upstream
+git checkout main
+git merge upstream/main
+```
+
+## Development Setup
+
+### Prerequisites
+
+- Node.js 18+ or 20+
+- pnpm 8+ (recommended)
+
+### Installation
+
 ```bash
 pnpm install
 ```
 
-5. **Verify setup**:
+### Available Scripts
+
 ```bash
 pnpm test
+pnpm test:watch
+pnpm test:coverage
+pnpm test:types
+
 pnpm build
+pnpm type-check
+
+pnpm docs:dev
+pnpm docs:build
+```
+
+## Project Structure
+
+```
+filter/
+├── src/
+│   ├── core/              # Core filter functionality
+│   │   ├── filter.ts
+│   │   ├── filter-lazy.ts
+│   │   └── index.ts
+│   ├── operators/         # Operator implementations
+│   │   ├── comparison.operators.ts
+│   │   ├── logical.operators.ts
+│   │   ├── string.operators.ts
+│   │   ├── array.operators.ts
+│   │   └── operator-processor.ts
+│   ├── comparison/        # Comparison utilities
+│   │   ├── deep-compare.ts
+│   │   ├── object-compare.ts
+│   │   └── property-compare.ts
+│   ├── config/            # Configuration
+│   │   ├── config-builder.ts
+│   │   └── default-config.ts
+│   ├── integrations/      # Framework integrations
+│   │   ├── react/
+│   │   ├── vue/
+│   │   ├── svelte/
+│   │   └── shared/
+│   ├── predicate/         # Predicate functions
+│   ├── types/             # TypeScript type definitions
+│   ├── utils/             # Utility functions
+│   └── validation/        # Validation schemas
+├── __test__/              # Test files
+├── docs/                  # Documentation
+├── examples/              # Usage examples
+└── build/                 # Build output
 ```
 
 ## Development Workflow
@@ -53,36 +132,45 @@ git checkout -b feature/your-feature-name
 Branch naming conventions:
 - `feature/` - New features
 - `fix/` - Bug fixes
-- `docs/` - Documentation updates
+- `docs/` - Documentation changes
 - `refactor/` - Code refactoring
-- `test/` - Test improvements
+- `test/` - Test additions/changes
+- `chore/` - Maintenance tasks
 
 ### 2. Make Changes
 
-- Write clean, maintainable code
-- Follow the project's coding standards
-- Add tests for new functionality
-- Update documentation as needed
+- Write clean, readable code
+- Follow TypeScript best practices
+- Add/update tests
+- Update documentation
 
 ### 3. Test Your Changes
 
 ```bash
 pnpm test
-
 pnpm test:coverage
-
 pnpm type-check
 ```
 
-### 4. Commit Your Changes
+### 4. Commit Changes
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```bash
-git commit -m "feat: add new operator for date comparison"
-git commit -m "fix: resolve issue with nested object filtering"
-git commit -m "docs: update installation guide"
+git commit -m "feat: add new operator for date filtering"
+git commit -m "fix: resolve memory leak in memoization"
+git commit -m "docs: update React integration guide"
 ```
+
+Commit types:
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `style:` - Code style changes (formatting)
+- `refactor:` - Code refactoring
+- `test:` - Test changes
+- `chore:` - Maintenance tasks
+- `perf:` - Performance improvements
 
 ### 5. Push and Create PR
 
@@ -90,65 +178,20 @@ git commit -m "docs: update installation guide"
 git push origin feature/your-feature-name
 ```
 
-Then open a Pull Request on GitHub.
-
-## Project Structure
-
-```
-filter/
-├── src/
-│   ├── core/              # Core filtering logic
-│   ├── operators/         # Operator implementations
-│   ├── comparison/        # Comparison utilities
-│   ├── config/            # Configuration management
-│   ├── integrations/      # Framework integrations
-│   │   ├── react/         # React hooks and components
-│   │   ├── vue/           # Vue composables
-│   │   └── svelte/        # Svelte stores
-│   ├── predicate/         # Predicate functions
-│   ├── types/             # TypeScript definitions
-│   ├── utils/             # Utility functions
-│   └── validation/        # Validation schemas
-├── __test__/              # Test files
-├── docs/                  # Documentation
-├── examples/              # Usage examples
-└── build/                 # Build output
-```
+Open a Pull Request on GitHub.
 
 ## Testing
 
-### Running Tests
+### Unit Tests
+
+All new features and bug fixes must include tests.
 
 ```bash
 pnpm test
 
 pnpm test:watch
 
-pnpm test:coverage
-```
-
-### Writing Tests
-
-All new features must include tests:
-
-```typescript
-import { describe, it, expect } from 'vitest';
-import { filter } from '../src';
-
-describe('Feature Name', () => {
-  it('should handle basic case', () => {
-    const data = [{ id: 1 }, { id: 2 }];
-    const expression = { field: 'id', operator: 'eq', value: 1 };
-
-    const result = filter(data, expression);
-
-    expect(result).toEqual([{ id: 1 }]);
-  });
-
-  it('should handle edge case', () => {
-    // Test edge cases
-  });
-});
+pnpm test filter.test.ts
 ```
 
 ### Type Tests
@@ -159,55 +202,127 @@ Type-level tests ensure TypeScript types work correctly:
 pnpm test:types
 ```
 
-Located in `__test__/types/`, these tests verify type inference and type safety.
+### Coverage
+
+Maintain 100% code coverage:
+
+```bash
+pnpm test:coverage
+```
+
+### Writing Tests
+
+Follow these guidelines:
+
+**1. Descriptive Names**
+
+```typescript
+it('should filter users by age greater than 18', () => {
+  // test
+});
+```
+
+**2. Arrange-Act-Assert Pattern**
+
+```typescript
+it('should filter array by simple condition', () => {
+  const data = [{ age: 25 }, { age: 30 }];
+  const expression = { age: { $gt: 26 } };
+
+  const result = filter(data, expression);
+
+  expect(result).toEqual([{ age: 30 }]);
+});
+```
+
+**3. Test Edge Cases**
+
+```typescript
+it('should handle empty arrays', () => {
+  expect(filter([], expression)).toEqual([]);
+});
+
+it('should handle null values', () => {
+  const data = [{ age: null }, { age: 25 }];
+  expect(filter(data, { age: { $gt: 20 } })).toEqual([{ age: 25 }]);
+});
+```
+
+**4. Test Error Conditions**
+
+```typescript
+it('should throw error for invalid operator', () => {
+  expect(() => filter(data, { age: { $invalid: 20 } }))
+    .toThrow('Invalid operator');
+});
+```
 
 ## Documentation
 
-### Running Documentation Locally
+### Code Documentation
+
+Add JSDoc comments for public APIs:
+
+```typescript
+/**
+ * Filters an array based on the provided expression.
+ *
+ * @template T - The type of items in the array
+ * @param data - The array to filter
+ * @param expression - The filter expression
+ * @param options - Optional configuration
+ * @returns Filtered array
+ *
+ * @example
+ * ```typescript
+ * const users = [{ age: 25 }, { age: 30 }];
+ * const filtered = filter(users, { age: { $gte: 26 } });
+ * ```
+ */
+export function filter<T>(
+  data: T[],
+  expression: Expression<T>,
+  options?: FilterOptions
+): T[] {
+  // implementation
+}
+```
+
+### Documentation Site
+
+Documentation is built with VitePress:
 
 ```bash
 pnpm docs:dev
+
+pnpm docs:build
 ```
 
-Visit `http://localhost:5173` to view the documentation.
-
-### Documentation Structure
-
-- `docs/guide/` - User guides and tutorials
-- `docs/api/` - API reference
-- `docs/examples/` - Usage examples
-- `docs/frameworks/` - Framework-specific guides
-- `docs/advanced/` - Advanced topics
-- `docs/project/` - Project information
-
-### Adding Documentation
-
 When adding features:
-1. Update relevant guide pages
+1. Update relevant documentation pages
 2. Add examples to `docs/examples/`
-3. Update API reference if needed
-4. Include code examples with explanations
+3. Update API reference
+4. Add to changelog
 
-## Pull Request Guidelines
+## Pull Request Process
 
 ### Before Submitting
 
-Ensure your PR meets these criteria:
+Checklist:
+- [ ] Tests pass locally
+- [ ] Code follows style guidelines
+- [ ] Documentation is updated
+- [ ] Type checks pass
+- [ ] No linter errors
+- [ ] Commit messages follow conventions
+- [ ] Branch is up to date with main
 
-- [ ] All tests pass
-- [ ] Code coverage maintained at 100%
-- [ ] Type checks pass without errors
-- [ ] Documentation updated
-- [ ] Examples added/updated if applicable
-- [ ] Commit messages follow conventional commits
-- [ ] No linter errors or warnings
-
-### PR Template
+### PR Description Template
 
 ```markdown
 ## Description
 
-Brief description of changes
+Brief description of changes and motivation.
 
 ## Type of Change
 
@@ -218,24 +333,19 @@ Brief description of changes
 - [ ] 📝 Documentation
 - [ ] 🗑️ Chore
 
-## Changes Made
-
-- List specific changes
-- Include technical details
-- Mention any breaking changes
-
 ## Testing
 
 - [ ] Unit tests added/updated
 - [ ] Type tests added/updated
-- [ ] Integration tests added/updated
-- [ ] All tests pass locally
+- [ ] All tests pass
+- [ ] Coverage maintained at 100%
 
 ## Documentation
 
 - [ ] Documentation updated
 - [ ] Examples added/updated
 - [ ] API reference updated
+- [ ] Changelog updated
 
 ## Checklist
 
@@ -245,64 +355,71 @@ Brief description of changes
 - [ ] Follows coding standards
 ```
 
+### Review Process
+
+1. Maintainers review your PR
+2. Address feedback and requested changes
+3. Once approved, PR will be merged
+4. Your contribution will be included in the next release
+
 ## Coding Standards
 
 ### TypeScript
+
+- Use strict TypeScript mode
+- Prefer `interface` over `type` for objects
+- Avoid `any` - use proper types
+- Use type guards for runtime checks
+- Leverage type inference
 
 ```typescript
 interface User {
   id: number;
   name: string;
-  email: string;
+  age: number;
 }
 
-const filterUsers = (users: User[], minId: number): User[] => {
-  return filter(users, {
-    field: 'id',
-    operator: 'gte',
-    value: minId
-  });
-};
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    'name' in value &&
+    'age' in value
+  );
+}
 ```
-
-**Guidelines:**
-- Use strict TypeScript mode
-- Prefer `interface` over `type` for objects
-- Avoid `any` - use proper types or `unknown`
-- Use descriptive names
-- Document complex types with JSDoc
 
 ### Code Style
 
-```typescript
-const processData = <T extends Record<string, unknown>>(
-  data: T[],
-  config: FilterConfig
-): T[] => {
-  if (!data.length) {
-    return [];
-  }
-
-  return filter(data, config.expression, config.options);
-};
-```
-
-**Guidelines:**
 - Use functional programming patterns
-- Keep functions small and focused
 - Follow DRY principle
-- Use meaningful variable names
-- Avoid deep nesting
+- Keep functions small and focused
+- Use meaningful names
+- Avoid side effects
+
+```typescript
+const filterByAge = (minAge: number) => (user: User) => user.age >= minAge;
+
+const adults = users.filter(filterByAge(18));
+```
 
 ### Naming Conventions
 
-| Type | Convention | Example |
-|------|-----------|---------|
-| Variables | camelCase | `userData`, `isActive` |
-| Functions | camelCase | `filterData`, `handleClick` |
-| Types/Interfaces | PascalCase | `FilterExpression`, `User` |
-| Files | kebab-case | `filter.ts`, `user-utils.ts` |
-| Constants | UPPERCASE | `MAX_DEPTH`, `DEFAULT_CONFIG` |
+- `camelCase` - variables, functions, methods
+- `PascalCase` - types, interfaces, classes
+- `kebab-case` - file names
+- `UPPERCASE` - constants, environment variables
+
+```typescript
+const userName = 'John';
+
+interface UserProfile {
+  id: number;
+}
+
+const MAX_RETRIES = 3;
+```
 
 ### File Organization
 
@@ -312,88 +429,85 @@ feature/
 ├── feature.types.ts        # Type definitions
 ├── feature.utils.ts        # Utility functions
 ├── feature.constants.ts    # Constants
-└── feature.test.ts         # Tests
+├── feature.test.ts         # Unit tests
+└── index.ts                # Public exports
 ```
 
 ## Framework Integrations
 
-### Adding New Framework Support
+When adding framework integrations:
 
-1. Create directory in `src/integrations/[framework]/`
-2. Implement framework-specific hooks/composables
-3. Add comprehensive tests
-4. Create documentation in `docs/frameworks/[framework].md`
-5. Add examples
+### 1. Follow Framework Best Practices
 
-### Example Structure
+**React**: Use hooks, avoid class components
+**Vue**: Use Composition API
+**Svelte**: Use stores
 
+### 2. Maintain Type Safety
+
+```typescript
+export function useFilter<T>(
+  data: T[],
+  expression: Expression<T>,
+  options?: FilterOptions
+): UseFilterResult<T> {
+  // implementation
+}
 ```
-src/integrations/react/
-├── hooks/
-│   ├── use-filter.ts
-│   └── use-filter.test.ts
-├── types/
-│   └── react.types.ts
-└── index.ts
+
+### 3. Add Comprehensive Examples
+
+Include examples for common use cases.
+
+### 4. Update Framework Documentation
+
+Add/update documentation in `docs/frameworks/`.
+
+### 5. Add Integration Tests
+
+Test framework-specific behavior.
+
+## Performance Considerations
+
+### Benchmarking
+
+Benchmark performance-critical changes:
+
+```typescript
+console.time('filter');
+const result = filter(largeDataset, expression);
+console.timeEnd('filter');
 ```
 
-## Performance Guidelines
+### Optimization Guidelines
 
 - Use memoization for expensive operations
 - Implement lazy evaluation where appropriate
-- Benchmark performance-critical changes
-- Document performance characteristics
-- Avoid unnecessary re-computations
+- Avoid unnecessary re-renders in React
+- Minimize reactivity overhead in Vue
+- Optimize store updates in Svelte
 
-## Common Tasks
+### Memory Management
 
-### Adding a New Operator
+- Clear caches when appropriate
+- Avoid memory leaks in subscriptions
+- Use weak references where possible
 
-1. Define operator in `src/operators/[category].operators.ts`
-2. Add operator type to `src/types/operators.types.ts`
-3. Update operator processor if needed
-4. Add comprehensive tests
-5. Document in `docs/guide/operators.md`
-6. Add examples
+## Questions and Support
 
-### Adding a New Framework Integration
-
-1. Create integration directory
-2. Implement framework-specific API
-3. Add tests (unit + integration)
-4. Create documentation page
-5. Add to main exports
-6. Update README
-
-### Fixing a Bug
-
-1. Create test that reproduces the bug
-2. Fix the issue
-3. Ensure test passes
-4. Add regression test if needed
-5. Update documentation if applicable
-
-## Release Process
-
-Releases are handled by maintainers:
-
-1. Version bump following semantic versioning
-2. Update CHANGELOG.md
-3. Create GitHub release
-4. Publish to npm
-
-## Getting Help
-
-- **Issues**: [GitHub Issues](https://github.com/mcabreradev/filter/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/mcabreradev/filter/discussions)
-- **Documentation**: [Filter Docs](https://filter-docs.vercel.app)
+- **Questions**: Open a [GitHub Discussion](https://github.com/mcabreradev/filter/discussions)
+- **Bugs**: Open a [GitHub Issue](https://github.com/mcabreradev/filter/issues)
+- **Security**: Email security@mcabreradev.com
 
 ## Recognition
 
 Contributors are recognized in:
-- GitHub contributors page
+- README.md contributors section
 - Release notes
-- Project README
+- GitHub contributors page
 
-Thank you for contributing to Filter! 🎉
+Thank you for contributing! 🎉
 
+## License
+
+By contributing, you agree that your contributions will be licensed under the MIT License.

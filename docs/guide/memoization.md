@@ -72,8 +72,6 @@ const data = [/* 10,000 items */];
 const query = { age: { $gte: 18 } };
 
 filter(data, query, { enableCache: true });
-
-filter(data, query, { enableCache: true });
 ```
 
 ### 2. Predicate Cache
@@ -92,7 +90,6 @@ Map<ExpressionHash, { predicate: Function, timestamp: number }>
 **How it works:**
 ```typescript
 filter(data1, { age: { $gte: 18 } }, { enableCache: true });
-
 filter(data2, { age: { $gte: 18 } }, { enableCache: true });
 ```
 
@@ -107,7 +104,6 @@ Map<PatternHash, RegExp>
 **How it works:**
 ```typescript
 filter(users, { email: { $regex: '^admin@' } });
-
 filter(customers, { email: { $regex: '^admin@' } });
 filter(vendors, { email: { $regex: '^admin@' } });
 ```
@@ -145,7 +141,6 @@ const users2 = [/* 3,000 different users */];
 const query = { age: { $gte: 18 }, active: true };
 
 filter(users1, query, { enableCache: true });
-
 filter(users2, query, { enableCache: true });
 ```
 
@@ -160,7 +155,6 @@ filter(users2, query, { enableCache: true });
 const pattern = { email: { $regex: '^[a-z]+@example\\.com$' } };
 
 filter(users, pattern);
-
 filter(customers, pattern);
 filter(admins, pattern);
 ```
