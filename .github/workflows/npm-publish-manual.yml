@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [closed]
     branches:
-      - master
+      - main
 
 permissions:
   contents: write
@@ -23,7 +23,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-          ref: master
+          ref: main
 
       - name: ⎔ Setup node
         uses: actions/setup-node@v6
@@ -173,7 +173,7 @@ jobs:
 
       - name: 🔄 Push version bump
         run: |
-          git push origin master
+          git push origin main
 
       - name: 📝 Create Git Tag
         run: |
