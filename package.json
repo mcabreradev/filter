@@ -1,12 +1,41 @@
 {
   "name": "@mcabreradev/filter",
-  "version": "2.0.2",
-  "description": "Filter helper for complex searchs",
-  "main": "index.js",
+  "version": "5.5.0",
+  "type": "module",
+  "description": "A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies",
   "scripts": {
-    "build": "babel src -d dist",
-    "test": "jest",
-    "lint": ""
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:types": "tsd --files '__test__/test-d/**/*.test-d.ts'",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "check": "pnpm exec lint-staged && pnpm run typecheck && pnpm run test:types && pnpm run lint && pnpm run test",
+    "prepare": "husky",
+    "prepublish": "pnpm run lint && pnpm run typecheck && pnpm run test:types",
+    "version": "pnpm run format && git add -A src",
+    "publish:major": "pnpm version major && pnpm publish",
+    "publish:minor": "pnpm version minor && pnpm publish",
+    "publish:patch": "pnpm version patch && pnpm publish",
+    "release": "git push origin --tags",
+    "release:major": "pnpm run publish:major && pnpm run release",
+    "release:minor": "pnpm run publish:minor && pnpm run release",
+    "release:patch": "pnpm run publish:patch && pnpm run release",
+    "doctoc": "doctoc --title='## Table of Contents' --github README.md",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "docs:api": "typedoc"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "repository": {
     "type": "git",
@@ -15,10 +44,43 @@
   "keywords": [
     "filter",
     "node",
-    "javascript",
+    "typescript",
+    "search",
+    "react",
+    "vue",
+    "svelte",
+    "nextjs",
     "array",
     "object",
-    "search"
+    "nodejs",
+    "javascript",
+    "front-end",
+    "es6",
+    "frontend",
+    "backend",
+    "arrow-functions",
+    "back-end",
+    "arrays",
+    "toolset",
+    "node-js",
+    "next-js",
+    "next",
+    "array-methods",
+    "mongodb",
+    "sql",
+    "pattern-matching",
+    "object-comparison",
+    "zero-dependencies",
+    "typescript",
+    "javascript",
+    "nodejs",
+    "react",
+    "nextjs",
+    "reactjs",
+    "react-hooks",
+    "vue-composables",
+    "svelte-stores",
+    "framework-integration"
   ],
   "author": "Miguelangel Cabrera",
   "license": "MIT",
@@ -27,19 +89,59 @@
   },
   "homepage": "https://github.com/mcabreradev/filter#readme",
   "devDependencies": {
-    "@babel/cli": "^7.10.4",
-    "@babel/core": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "jest": "^26.1.0"
+    "@testing-library/react": "^16.1.0",
+    "@types/node": "^24.9.1",
+    "@types/react": "^18.3.18",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "@vitest/coverage-v8": "^2.1.0",
+    "@vitest/ui": "^2.1.0",
+    "@vue/repl": "^4.7.0",
+    "@vue/test-utils": "^2.4.6",
+    "doctoc": "^2.2.1",
+    "eslint": "^9.16.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.4",
+    "prettier": "^3.4.0",
+    "svelte": "^5.18.3",
+    "tsd": "^0.33.0",
+    "typedoc": "^0.28.14",
+    "typedoc-plugin-markdown": "^4.9.0",
+    "typescript": "^5.7.0",
+    "vitepress": "^1.6.4",
+    "vitest": "^2.1.0",
+    "vue": "^3.5.13"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "svelte": ">=4.0.0 || >=5.0.0",
+    "vue": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
   },
   "engines": {
-    "node": ">=12.16.3"
+    "node": ">=20"
   },
-  "jest": {
-    "collectCoverage": true,
-    "coverageReporters": [
-      "json",
-      "text"
-    ]
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build/**/*",
+    "__test__/types/**/*.test-d.ts"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }

@@ -1,0 +1,186 @@
+name: Publish to npm (Manual Versioning)
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - prod
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+jobs:
+  publish:
+    name: 📦 Publish to npm
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: prod
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: 📥 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: 📦 Install dependencies
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            echo "Found pnpm-lock.yaml, attempting frozen install..."
+            pnpm install --frozen-lockfile || {
+              echo "Frozen lockfile failed, falling back to regular install..."
+              pnpm install --no-frozen-lockfile
+            }
+          else
+            echo "No lockfile found, running regular install..."
+            pnpm install --no-frozen-lockfile
+          fi
+
+      - name: 🔍 Type check
+        run: pnpm run typecheck
+
+      - name: 🧹 Lint
+        run: pnpm run lint
+
+      - name: 🃏 Run tests
+        run: pnpm run test
+
+      - name: 🏗️ Build
+        run: pnpm run build
+
+      - name: 📋 Verify build output
+        run: |
+          if [ ! -d "build" ]; then
+            echo "Build directory not found!"
+            exit 1
+          fi
+          echo "Build files:"
+          ls -la build/
+
+      - name: 🔍 Determine version bump from PR title or labels
+        id: version
+        run: |
+          VERSION_TYPE=""
+          DETECTION_METHOD=""
+
+          # ============================================
+          # PASO 1: Intentar detectar por título del PR
+          # ============================================
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          echo "📋 PR Title: $PR_TITLE"
+
+          # Extraer el tipo (soporta: "type: msg", "type(scope): msg", "type!: msg")
+          TYPE=$(echo "$PR_TITLE" | sed -E 's/^([a-zA-Z]+)(\([^)]+\))?[!]?:.*/\1/' | tr '[:upper:]' '[:lower:]')
+
+          # Verificar si tiene "!" para breaking change
+          if echo "$PR_TITLE" | grep -qE '^[a-zA-Z]+(\([^)]+\))?!:'; then
+            VERSION_TYPE="major"
+            DETECTION_METHOD="PR title with breaking change indicator (!)"
+            echo "🚨 Detected from title: MAJOR (breaking change '!')"
+          elif [ -n "$TYPE" ] && echo "$PR_TITLE" | grep -qE '^[a-zA-Z]+(\([^)]+\))?:'; then
+            case "$TYPE" in
+              major|breaking)
+                VERSION_TYPE="major"
+                DETECTION_METHOD="PR title (type: $TYPE)"
+                echo "🚨 Detected from title: MAJOR (type: $TYPE)"
+                ;;
+              minor|feat|feature)
+                VERSION_TYPE="minor"
+                DETECTION_METHOD="PR title (type: $TYPE)"
+                echo "✨ Detected from title: MINOR (type: $TYPE)"
+                ;;
+              patch|fix|bugfix|hotfix|chore|docs|style|refactor|perf|test|build|ci)
+                VERSION_TYPE="patch"
+                DETECTION_METHOD="PR title (type: $TYPE)"
+                echo "🔧 Detected from title: PATCH (type: $TYPE)"
+                ;;
+            esac
+          fi
+
+          # ============================================
+          # PASO 2: Si no se detectó, buscar en labels
+          # ============================================
+          if [ -z "$VERSION_TYPE" ]; then
+            echo "⚠️ No valid conventional commit format in title, checking labels..."
+
+            LABELS='${{ toJSON(github.event.pull_request.labels) }}'
+            LABEL_NAMES=$(echo "$LABELS" | jq -r '.[].name' 2>/dev/null || echo "")
+
+            if [ -n "$LABEL_NAMES" ]; then
+              echo "🏷️ Labels found: $LABEL_NAMES"
+
+              if echo "$LABEL_NAMES" | grep -q "^major$"; then
+                VERSION_TYPE="major"
+                DETECTION_METHOD="label"
+                echo "🚨 Detected from label: MAJOR"
+              elif echo "$LABEL_NAMES" | grep -q "^minor$"; then
+                VERSION_TYPE="minor"
+                DETECTION_METHOD="label"
+                echo "✨ Detected from label: MINOR"
+              elif echo "$LABEL_NAMES" | grep -q "^patch$"; then
+                VERSION_TYPE="patch"
+                DETECTION_METHOD="label"
+                echo "🔧 Detected from label: PATCH"
+              fi
+            else
+              echo "⚠️ No labels found"
+            fi
+          fi
+
+          # ============================================
+          # PASO 3: Default a PATCH si no se detectó nada
+          # ============================================
+          if [ -z "$VERSION_TYPE" ]; then
+            VERSION_TYPE="patch"
+            DETECTION_METHOD="default (no title format or label found)"
+            echo "⚠️ No version detected, defaulting to PATCH"
+          fi
+
+          # ============================================
+          # Output final
+          # ============================================
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ Final decision: $VERSION_TYPE"
+          echo "📍 Detection method: $DETECTION_METHOD"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          echo "type=$VERSION_TYPE" >> $GITHUB_OUTPUT
+
+      - name: 📈 Bump version
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pnpm version ${{ steps.version.outputs.type }} --no-git-tag-version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          git add package.json
+          git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+
+      - name: 🔄 Push version bump
+        run: |
+          git push origin prod
+
+      - name: 📝 Create Git Tag
+        run: |
+          git tag -a "v${{ env.NEW_VERSION }}" -m "Release v${{ env.NEW_VERSION }}"
+          git push origin "v${{ env.NEW_VERSION }}"
+
+      - name: 🚀 Publish to npm
+        run: pnpm publish --no-git-checks --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,0 +1,10 @@
+{
+  "directory": "__test__",
+  "typingsFile": "build/index.d.ts",
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "lib": ["ES2022"]
+  }
+}
+
