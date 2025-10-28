@@ -5,13 +5,13 @@ on:
     branches:
       - dev
       - stage
-      - main
+      - master
       - prod
   pull_request:
     branches:
       - dev
       - stage
-      - main
+      - master
       - prod
 
 concurrency:
