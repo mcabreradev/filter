@@ -57,6 +57,9 @@ jobs:
       - name: 📊 Generate coverage report
         run: pnpm run test:coverage
 
+      - name: Re Check All
+        run: pnpm run check
+
       - name: 📤 Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         if: matrix.node-version == 20

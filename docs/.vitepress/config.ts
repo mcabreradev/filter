@@ -22,6 +22,7 @@ export default defineConfig({
 
     nav: [
       { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
+      { text: 'Playground', link: '/playground/', activeMatch: '/playground/' },
       { text: 'Frontend', link: '/frontend/overview', activeMatch: '/frontend/' },
       { text: 'Backend', link: '/backend/express', activeMatch: '/backend/' },
       { text: 'API', link: '/api/reference', activeMatch: '/api/' },
@@ -87,6 +88,13 @@ export default defineConfig({
           ],
         },
       ],
+      '/playground/': [
+        {
+          text: 'Playground',
+          collapsed: false,
+          items: [{ text: 'Interactive Playground', link: '/playground/' }],
+        },
+      ],
       '/advanced/': [
         {
           text: 'Advanced Topics',
@@ -126,6 +134,7 @@ export default defineConfig({
           text: 'Backend Integration',
           collapsed: false,
           items: [
+            { text: 'Node.js', link: '/backend/nodejs' },
             { text: 'Express.js', link: '/backend/express' },
             { text: 'NestJS', link: '/backend/nestjs' },
             { text: 'Deno', link: '/backend/deno' },
