@@ -1,4 +1,4 @@
-import type { Expression } from '../types';
+import type { Expression, FilterOptions } from '../types';
 import type { DebugResult, DebugOptions, DebugNode } from './debug.types';
 import { validateExpression } from '../validation';
 import { mergeConfig } from '../config';
@@ -9,7 +9,7 @@ import { formatDebugTree } from './debug-formatter';
 export const filterDebug = <T>(
   array: T[],
   expression: Expression<T>,
-  options?: DebugOptions,
+  options?: FilterOptions,
 ): DebugResult<T> => {
   if (!Array.isArray(array)) {
     throw new Error(`Expected array but received: ${typeof array}`);
@@ -42,7 +42,8 @@ export const filterDebug = <T>(
       conditionsEvaluated,
     },
     print: () => {
-      const treeOutput = formatDebugTree(populatedTree, options || {});
+      const debugOpts = getDebugOptions(options);
+      const treeOutput = formatDebugTree(populatedTree, debugOpts);
       console.log(treeOutput);
       console.log('');
       console.log(`Statistics:`);
@@ -56,6 +57,14 @@ export const filterDebug = <T>(
   };
 
   return result;
+};
+
+export const getDebugOptions = (options?: FilterOptions): DebugOptions => {
+  return {
+    verbose: options?.verbose,
+    showTimings: options?.showTimings,
+    colorize: options?.colorize,
+  };
 };
 
 const countConditions = (node: DebugNode): number => {

@@ -1,5 +1,3 @@
-import type { FilterOptions } from '../types';
-
 export type DebugNodeType = 'logical' | 'comparison' | 'field' | 'operator' | 'primitive';
 
 export interface DebugNode {
@@ -29,7 +27,7 @@ export interface DebugResult<T> {
   print: () => void;
 }
 
-export interface DebugOptions extends FilterOptions {
+export interface DebugOptions {
   verbose?: boolean;
   showTimings?: boolean;
   colorize?: boolean;
