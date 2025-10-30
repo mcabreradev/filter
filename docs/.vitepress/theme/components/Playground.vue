@@ -4,7 +4,7 @@
       <span>Interactive Playground</span>
       <div class="header-controls">
         <button 
-          @click="toggleBuilder" 
+          @click="showBuilder = !showBuilder" 
           class="builder-toggle"
           :class="{ active: showBuilder }"
           title="Toggle Filter Builder"
@@ -14,7 +14,7 @@
           </svg>
         </button>
         <button 
-          @click="toggleLayout" 
+          @click="isVerticalLayout = !isVerticalLayout" 
           class="layout-toggle"
           :title="isVerticalLayout ? 'Switch to side-by-side' : 'Switch to stacked'"
         >
@@ -27,7 +27,7 @@
             <rect x="3" y="14" width="18" height="7" rx="1"></rect>
           </svg>
         </button>
-        <select v-model="selectedExample" @change="loadExample" class="example-selector">
+        <select v-model="selectedExample" @change="handleLoadExample" class="example-selector">
           <option v-for="example in examples" :key="example.id" :value="example.id">
             {{ example.name }}
           </option>
@@ -40,12 +40,12 @@
       <div class="builder-header">
         <span>Visual Filter Builder</span>
         <div class="builder-header-controls">
-          <select v-model="selectedDataset" @change="changeDataset" class="dataset-selector">
+          <select v-model="selectedDataset" @change="handleDatasetChange" class="dataset-selector">
             <option v-for="dataset in datasets" :key="dataset.id" :value="dataset.id">
               Dataset: {{ dataset.name }}
             </option>
           </select>
-          <button @click="applyBuilderFilter" class="btn-apply">Apply to Code</button>
+          <button @click="handleApplyFilter" class="btn-apply">Apply to Code</button>
         </div>
       </div>
       <div class="builder-content">
@@ -104,6 +104,7 @@
       </div>
     </div>
 
+    <!-- Code Editor and Output -->
     <div class="playground-content" :class="{ 'layout-horizontal': !isVerticalLayout }">
       <div class="editor-section">
         <div class="editor-header">Code</div>
@@ -113,7 +114,7 @@
             v-model="code"
             class="code-editor"
             spellcheck="false"
-            @input="debouncedExecute"
+            @input="handleCodeInput"
             @scroll="syncScroll"
           ></textarea>
         </div>
@@ -128,461 +129,125 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { filter } from '../../../../src/index';
 
-interface Example {
-  id: string;
-  name: string;
-  code: string;
-}
+import { useCodeEditor } from '../composables/useCodeEditor';
+import { useFilterBuilder } from '../composables/useFilterBuilder';
+import { useCodeAnalysis } from '../composables/useCodeAnalysis';
+import { useEditorResize } from '../composables/useEditorResize';
+import { useDebouncedExecute } from '../composables/useDebounce';
 
-interface BuilderRule {
-  field: string;
-  operator: string;
-  value: string;
-}
+import { examples } from '../data/examples';
+import { datasets, getDatasetSampleFilter } from '../data/datasets';
 
-interface OperatorOption {
-  value: string;
-  label: string;
-}
-
-interface Dataset {
-  id: string;
-  name: string;
-  code: string;
-  fields: string[];
-}
-
-// Predefined datasets that users can select
-const datasets: Dataset[] = [
-  {
-    id: 'users',
-    name: 'Users',
-    code: `const users = [
-  { name: 'Alice', age: 30, city: 'Berlin' },
-  { name: 'Bob', age: 25, city: 'London' },
-  { name: 'Charlie', age: 35, city: 'Berlin' }
-];`,
-    fields: ['name', 'age', 'city']
-  },
-  {
-    id: 'products',
-    name: 'Products',
-    code: `const products = [
-  { name: 'Laptop', price: 1200, rating: 4.5, category: 'Electronics', inStock: true },
-  { name: 'Mouse', price: 25, rating: 4.0, category: 'Electronics', inStock: true },
-  { name: 'Monitor', price: 450, rating: 4.8, category: 'Electronics', inStock: false },
-  { name: 'Desk', price: 300, rating: 4.2, category: 'Furniture', inStock: true }
-];`,
-    fields: ['name', 'price', 'rating', 'category', 'inStock']
-  },
-  {
-    id: 'emails',
-    name: 'Emails',
-    code: `const emails = [
-  { email: 'alice@example.com', verified: true, spam: false },
-  { email: 'bob@test.com', verified: false, spam: false },
-  { email: 'charlie@example.com', verified: true, spam: false },
-  { email: 'spam@fake.com', verified: false, spam: true }
-];`,
-    fields: ['email', 'verified', 'spam']
-  },
-  {
-    id: 'orders',
-    name: 'Orders',
-    code: `const orders = [
-  { id: 1, amount: 1200, status: 'completed', customerId: 101 },
-  { id: 2, amount: 450, status: 'pending', customerId: 102 },
-  { id: 3, amount: 890, status: 'shipped', customerId: 101 },
-  { id: 4, amount: 230, status: 'cancelled', customerId: 103 }
-];`,
-    fields: ['id', 'amount', 'status', 'customerId']
-  },
-  {
-    id: 'employees',
-    name: 'Employees',
-    code: `const employees = [
-  { name: 'Alice Johnson', department: 'Engineering', salary: 95000, level: 'Senior' },
-  { name: 'Bob Smith', department: 'Marketing', salary: 65000, level: 'Mid' },
-  { name: 'Charlie Brown', department: 'Engineering', salary: 110000, level: 'Staff' },
-  { name: 'Diana Prince', department: 'Sales', salary: 75000, level: 'Senior' }
-];`,
-    fields: ['name', 'department', 'salary', 'level']
-  }
-];
-
-const examples: Example[] = [
-  {
-    id: 'basic',
-    name: 'Basic Filtering',
-    code: `import { filter } from '@mcabreradev/filter';
-
-const users = [
-  { name: 'Alice', age: 30, city: 'Berlin' },
-  { name: 'Bob', age: 25, city: 'London' },
-  { name: 'Charlie', age: 35, city: 'Berlin' }
-];
-
-const result = filter(users, { city: 'Berlin' });
-console.log(result);`,
-  },
-  {
-    id: 'operators',
-    name: 'MongoDB Operators',
-    code: `import { filter } from '@mcabreradev/filter';
-
-const products = [
-  { name: 'Laptop', price: 1200, rating: 4.5 },
-  { name: 'Mouse', price: 25, rating: 4.0 },
-  { name: 'Monitor', price: 450, rating: 4.8 }
-];
-
-const result = filter(products, {
-  price: { $gte: 100, $lte: 500 },
-  rating: { $gte: 4.5 }
-});
-console.log(result);`,
-  },
-  {
-    id: 'wildcards',
-    name: 'Wildcard Patterns',
-    code: `import { filter } from '@mcabreradev/filter';
-
-const emails = [
-  { email: 'alice@example.com', verified: true },
-  { email: 'bob@test.com', verified: false },
-  { email: 'charlie@example.com', verified: true }
-];
-
-const result = filter(emails, '%@example.com%');
-console.log(result);`,
-  },
-  {
-    id: 'logical',
-    name: 'Logical Operators',
-    code: `import { filter } from '@mcabreradev/filter';
-
-const products = [
-  { name: 'Laptop', category: 'Electronics', price: 1200, inStock: true },
-  { name: 'Desk', category: 'Furniture', price: 300, inStock: false },
-  { name: 'Mouse', category: 'Electronics', price: 25, inStock: true }
-];
-
-const result = filter(products, {
-  $and: [
-    { inStock: true },
-    { $or: [
-      { category: 'Electronics' },
-      { price: { $lt: 50 } }
-    ]}
-  ]
-});
-console.log(result);`,
-  },
-];
-
-// Operators by type - following MongoDB-style operators from the library
-const operatorsByType = {
-  string: [
-    { value: '$eq', label: 'equals' },
-    { value: '$ne', label: 'not equals' },
-    { value: '$contains', label: 'contains' },
-    { value: '$startsWith', label: 'starts with' },
-    { value: '$endsWith', label: 'ends with' },
-    { value: '$regex', label: 'matches regex' },
-  ],
-  number: [
-    { value: '$eq', label: 'equals' },
-    { value: '$ne', label: 'not equals' },
-    { value: '$gt', label: 'greater than' },
-    { value: '$gte', label: 'greater or equal' },
-    { value: '$lt', label: 'less than' },
-    { value: '$lte', label: 'less or equal' },
-  ],
-  boolean: [
-    { value: '$eq', label: 'equals' },
-    { value: '$ne', label: 'not equals' },
-  ],
-  array: [
-    { value: '$in', label: 'in array' },
-    { value: '$nin', label: 'not in array' },
-  ],
-};
-
-const code = ref('');
-const output = ref('');
-const error = ref('');
-const selectedExample = ref('basic');
-const selectedDataset = ref('users');
-const highlightedCode = ref('');
 const isVerticalLayout = ref(true);
 const showBuilder = ref(false);
-const logicalOperator = ref<'$and' | '$or'>('$and');
+const selectedExample = ref('basic');
+const selectedDataset = ref('users');
 
-const builderRules = ref<BuilderRule[]>([
-  { field: '', operator: '$eq', value: '' }
-]);
+const { code, highlightedCode, output, error, highlightCode, executeCode, setCode } = useCodeEditor();
 
-let debounceTimer: number | null = null;
+const {
+  builderRules,
+  logicalOperator,
+  generatedExpression,
+  addRule,
+  removeRule,
+  clearBuilder,
+} = useFilterBuilder();
 
-/**
- * Dynamically extract available fields from the selected dataset
- */
-const availableFields = computed(() => {
-  const dataset = datasets.find(d => d.id === selectedDataset.value);
-  if (dataset) {
-    return dataset.fields;
+const currentDataset = computed(() => datasets.find((d) => d.id === selectedDataset.value));
+const datasetFields = computed(() => currentDataset.value?.fields);
+
+const {
+  availableFields,
+  fieldTypes,
+  getOperatorsForField,
+  getInputTypeForOperator,
+  getPlaceholderForOperator,
+} = useCodeAnalysis(code, datasetFields);
+
+const { autoResize, syncScroll } = useEditorResize(isVerticalLayout);
+
+const executeAndHighlight = (): void => {
+  highlightCode();
+  executeCode(filter);
+};
+
+const { debouncedExecute } = useDebouncedExecute(executeAndHighlight, 300);
+
+const handleCodeInput = (): void => {
+  if (isVerticalLayout.value) {
+    const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
+    if (textarea) autoResize(textarea);
   }
-  
-  // Fallback: extract from code
-  try {
-    const arrayMatch = code.value.match(/const\s+\w+\s*=\s*\[([\s\S]*?)\];/);
-    if (!arrayMatch) return [];
+  debouncedExecute();
+};
 
-    const arrayContent = arrayMatch[1];
-    const firstObjectMatch = arrayContent.match(/\{([^}]+)\}/);
-    if (!firstObjectMatch) return [];
+const handleLoadExample = (): void => {
+  const example = examples.find((e) => e.id === selectedExample.value);
+  if (!example) return;
 
-    const objectContent = firstObjectMatch[1];
-    const fieldMatches = objectContent.matchAll(/(\w+):/g);
-    const fields = Array.from(fieldMatches, match => match[1]);
-    
-    return [...new Set(fields)];
-  } catch (e) {
-    console.error('Error extracting fields:', e);
-    return [];
-  }
-});
+  setCode(example.code);
+  executeCode(filter);
 
-/**
- * Infer field types from the selected dataset
- */
-const fieldTypes = computed(() => {
-  try {
-    const types: Record<string, 'string' | 'number' | 'boolean'> = {};
-    
-    // Get the dataset code
-    const dataset = datasets.find(d => d.id === selectedDataset.value);
-    const codeToAnalyze = dataset ? dataset.code : code.value;
-    
-    const arrayMatch = codeToAnalyze.match(/const\s+\w+\s*=\s*\[([\s\S]*?)\];/);
-    if (!arrayMatch) return types;
-
-    const arrayContent = arrayMatch[1];
-    const firstObjectMatch = arrayContent.match(/\{([^}]+)\}/);
-    if (!firstObjectMatch) return types;
-
-    const objectContent = firstObjectMatch[1];
-    const fieldPattern = /(\w+):\s*([^,}]+)/g;
-    let match;
-    
-    while ((match = fieldPattern.exec(objectContent)) !== null) {
-      const [, fieldName, value] = match;
-      const trimmedValue = value.trim();
-      
-      if (trimmedValue === 'true' || trimmedValue === 'false') {
-        types[fieldName] = 'boolean';
-      } else if (trimmedValue.startsWith("'") || trimmedValue.startsWith('"')) {
-        types[fieldName] = 'string';
-      } else if (!isNaN(Number(trimmedValue))) {
-        types[fieldName] = 'number';
-      } else {
-        types[fieldName] = 'string';
-      }
+  const datasetMatch = example.code.match(/const\s+(\w+)\s*=/);
+  if (datasetMatch) {
+    const varName = datasetMatch[1];
+    const dataset = datasets.find((d) => d.id === varName);
+    if (dataset) {
+      selectedDataset.value = dataset.id;
     }
-    
-    return types;
-  } catch (e) {
-    console.error('Error inferring types:', e);
-    return {};
   }
-});
 
-const toggleLayout = () => {
-  isVerticalLayout.value = !isVerticalLayout.value;
+  nextTick(() => {
+    if (isVerticalLayout.value) {
+      const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
+      if (textarea) autoResize(textarea);
+    }
+  });
 };
 
-const toggleBuilder = () => {
-  showBuilder.value = !showBuilder.value;
-};
-
-const changeDataset = () => {
-  const dataset = datasets.find(d => d.id === selectedDataset.value);
+const handleDatasetChange = (): void => {
+  const dataset = currentDataset.value;
   if (!dataset) return;
-  
-  // Extract variable name from dataset code
+
   const datasetVarMatch = dataset.code.match(/const\s+(\w+)\s*=/);
-  const datasetVarName = datasetVarMatch ? datasetVarMatch[1] : 'data';
-  
-  // Generate appropriate sample filter expression based on dataset
-  let sampleFilter = '{}';
-  
-  switch (dataset.id) {
-    case 'users':
-      sampleFilter = `{ city: 'Berlin' }`;
-      break;
-    case 'products':
-      sampleFilter = `{
-  price: { $gte: 100, $lte: 500 },
-  inStock: true
-}`;
-      break;
-    case 'emails':
-      sampleFilter = `{ verified: true }`;
-      break;
-    case 'orders':
-      sampleFilter = `{
-  status: { $in: ['completed', 'shipped'] },
-  amount: { $gte: 500 }
-}`;
-      break;
-    case 'employees':
-      sampleFilter = `{
-  department: 'Engineering',
-  salary: { $gte: 80000 }
-}`;
-      break;
-    default:
-      sampleFilter = '{}';
-  }
-  
-  // Build new code with dataset-specific sample
-  code.value = `import { filter } from '@mcabreradev/filter';
+  const datasetVarName = datasetVarMatch?.[1] || 'data';
+  const sampleFilter = getDatasetSampleFilter(dataset.id);
+
+  const newCode = `import { filter } from '@mcabreradev/filter';
 
 ${dataset.code}
 
 const result = filter(${datasetVarName}, ${sampleFilter});
 console.log(result);`;
-  
-  // Reset builder rules when dataset changes
-  builderRules.value = [{ field: '', operator: '$eq', value: '' }];
-  
-  highlightCode();
-  executeCode();
-  
-  setTimeout(() => {
+
+  setCode(newCode);
+  executeCode(filter);
+  clearBuilder();
+
+  nextTick(() => {
     if (isVerticalLayout.value) {
       const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
-      if (textarea) {
-        autoResize(textarea);
-      }
-    }
-  }, 50);
-};
-
-const getOperatorsForField = (field: string): OperatorOption[] => {
-  if (!field) return operatorsByType.string;
-  const type = fieldTypes.value[field] || 'string';
-  return operatorsByType[type];
-};
-
-const getInputTypeForOperator = (operator: string): string => {
-  if (operator === '$eq' || operator === '$ne') return 'text';
-  if (operator.startsWith('$gt') || operator.startsWith('$lt')) return 'number';
-  return 'text';
-};
-
-const getPlaceholderForOperator = (operator: string): string => {
-  if (operator === '$in' || operator === '$nin') return 'value1, value2, value3';
-  if (operator === '$regex') return '^pattern$';
-  return 'Enter value...';
-};
-
-const addRule = () => {
-  builderRules.value.push({ field: '', operator: '$eq', value: '' });
-};
-
-const removeRule = (index: number) => {
-  if (builderRules.value.length > 1) {
-    builderRules.value.splice(index, 1);
-  }
-};
-
-const clearBuilder = () => {
-  builderRules.value = [{ field: '', operator: '$eq', value: '' }];
-  logicalOperator.value = '$and';
-};
-
-const generatedExpression = computed(() => {
-  const validRules = builderRules.value.filter(r => r.field && r.value);
-  
-  if (validRules.length === 0) {
-    return '{}';
-  }
-  
-  if (validRules.length === 1) {
-    const rule = validRules[0];
-    return buildRuleExpression(rule);
-  }
-  
-  // Multiple rules with logical operator
-  const ruleExpressions = validRules.map(rule => {
-    const expr = buildRuleExpression(rule);
-    try {
-      return JSON.parse(expr);
-    } catch {
-      return expr;
+      if (textarea) autoResize(textarea);
     }
   });
-  
-  const result = {
-    [logicalOperator.value]: ruleExpressions
-  };
-  
-  return JSON.stringify(result, null, 2);
-});
-
-const buildRuleExpression = (rule: BuilderRule): string => {
-  const { field, operator, value } = rule;
-  
-  // Handle array operators
-  if (operator === '$in' || operator === '$nin') {
-    const values = value.split(',').map(v => {
-      const trimmed = v.trim();
-      const num = Number(trimmed);
-      return isNaN(num) ? `"${trimmed}"` : num;
-    });
-    return `{ "${field}": { "${operator}": [${values.join(', ')}] } }`;
-  }
-  
-  // Handle regex
-  if (operator === '$regex') {
-    return `{ "${field}": { "${operator}": "${value}" } }`;
-  }
-  
-  // Handle boolean values
-  if (value === 'true' || value === 'false') {
-    return `{ "${field}": { "${operator}": ${value} } }`;
-  }
-  
-  // Handle numeric values
-  const numValue = Number(value);
-  if (!isNaN(numValue) && value !== '') {
-    return `{ "${field}": { "${operator}": ${numValue} } }`;
-  }
-  
-  // Handle string values
-  return `{ "${field}": { "${operator}": "${value}" } }`;
 };
 
-const applyBuilderFilter = () => {
+const handleApplyFilter = (): void => {
   const expression = generatedExpression.value;
-  
-  // Find the data array in the current code
   const dataMatch = code.value.match(/const\s+(\w+)\s*=\s*\[[\s\S]*?\];/);
+  
   if (!dataMatch) {
     error.value = 'No data array found in code';
     return;
   }
-  
+
   const dataName = dataMatch[1];
-  
-  // Generate new filter code
   const newFilterCode = `const result = filter(${dataName}, ${expression});`;
-  
-  // Replace existing filter call or append
+
   if (code.value.includes('filter(')) {
     code.value = code.value.replace(
       /const result = filter\([^)]+(?:,\s*[\s\S]*?)?\);/,
@@ -590,200 +255,49 @@ const applyBuilderFilter = () => {
     );
   } else {
     const lines = code.value.split('\n');
-    const consoleIndex = lines.findIndex(l => l.includes('console.log'));
+    const consoleIndex = lines.findIndex((l) => l.includes('console.log'));
     if (consoleIndex > 0) {
       lines.splice(consoleIndex, 0, '', newFilterCode);
       code.value = lines.join('\n');
     }
   }
-  
+
   highlightCode();
-  executeCode();
-  
-  // Auto-resize after applying
-  setTimeout(() => {
+  executeCode(filter);
+
+  nextTick(() => {
     if (isVerticalLayout.value) {
       const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
-      if (textarea) {
-        autoResize(textarea);
-      }
+      if (textarea) autoResize(textarea);
     }
-  }, 50);
+  });
 };
 
-// Watch for layout changes and adjust editor size
-watch(isVerticalLayout, (newValue) => {
-  setTimeout(() => {
+watch(isVerticalLayout, () => {
+  nextTick(() => {
     const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
-    if (textarea) {
-      if (newValue) {
-        // Switching to vertical - auto-resize
-        autoResize(textarea);
-      } else {
-        // Switching to horizontal - reset wrapper height
-        const wrapper = textarea.parentElement;
-        if (wrapper) {
-          wrapper.style.height = '';
-        }
-      }
-    }
-  }, 50);
-});
+    if (!textarea) return;
 
-// Watch for code changes to update available fields
-watch(code, () => {
-  const currentFields = availableFields.value;
-  builderRules.value = builderRules.value.map(rule => {
-    if (rule.field && !currentFields.includes(rule.field)) {
-      return { field: '', operator: '$eq', value: '' };
+    if (isVerticalLayout.value) {
+      autoResize(textarea);
+    } else {
+      const wrapper = textarea.parentElement;
+      if (wrapper) wrapper.style.height = '';
     }
-    return rule;
   });
 });
 
-const loadExample = () => {
-  const example = examples.find(e => e.id === selectedExample.value);
-  if (example) {
-    code.value = example.code;
-    
-    // Try to detect which dataset this example uses
-    const datasetMatch = example.code.match(/const\s+(\w+)\s*=/);
-    if (datasetMatch) {
-      const varName = datasetMatch[1];
-      const dataset = datasets.find(d => d.id === varName);
-      if (dataset) {
-        selectedDataset.value = dataset.id;
-      }
-    }
-    
-    highlightCode();
-    executeCode();
-    
-    // Auto-resize after loading example
-    setTimeout(() => {
-      if (isVerticalLayout.value) {
-        const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
-        if (textarea) {
-          autoResize(textarea);
-        }
-      }
-    }, 50);
-  }
-};
+watch(availableFields, (currentFields) => {
+  builderRules.value = builderRules.value.map((rule) =>
+    rule.field && !currentFields.includes(rule.field)
+      ? { field: '', operator: '$eq', value: '' }
+      : rule
+  );
+});
 
-const highlightCode = () => {
-  let codeText = code.value;
-  
-  // Escape HTML first
-  codeText = codeText
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-  
-  // Apply syntax highlighting in specific order
-  codeText = codeText
-    // Comments first (to avoid matching keywords inside comments)
-    .replace(/(\/\/.*$)/gm, '<span class="token-comment">$1</span>')
-    .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="token-comment">$1</span>')
-    // Strings (including those with escaped quotes)
-    .replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)/g, '<span class="token-string">$1</span>')
-    // Numbers
-    .replace(/\b(\d+\.?\d*)\b/g, '<span class="token-number">$1</span>')
-    // Keywords
-    .replace(/\b(import|from|const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|this|true|false|null|undefined|typeof|instanceof|try|catch|finally|throw|async|await|export|default)\b/g, '<span class="token-keyword">$1</span>')
-    // Function calls
-    .replace(/\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/g, '<span class="token-function">$1</span>')
-    // Object properties (after dot)
-    .replace(/\.([a-zA-Z_$][a-zA-Z0-9_$]*)/g, '.<span class="token-property">$1</span>');
-  
-  highlightedCode.value = codeText;
-};
-
-const executeCode = () => {
-  try {
-    error.value = '';
-    const logs: string[] = [];
-
-    const mockConsole = {
-      log: (...args: unknown[]) => {
-        logs.push(args.map(arg =>
-          typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-        ).join(' '));
-      }
-    };
-
-    const wrappedCode = `
-      (function() {
-        const console = arguments[0];
-        const filter = arguments[1];
-        ${code.value.replace(/import.*from.*['"];?\n?/g, '')}
-      })
-    `;
-
-    const fn = eval(wrappedCode);
-    fn(mockConsole, filter);
-
-    output.value = logs.join('\n') || 'No output';
-  } catch (e) {
-    error.value = e instanceof Error ? e.message : String(e);
-    output.value = '';
-  }
-};
-
-const debouncedExecute = () => {
-  // Auto-resize immediately on input in vertical layout
-  if (isVerticalLayout.value) {
-    const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
-    if (textarea) {
-      autoResize(textarea);
-    }
-  }
-  
-  if (debounceTimer) {
-    clearTimeout(debounceTimer);
-  }
-  debounceTimer = window.setTimeout(() => {
-    highlightCode();
-    executeCode();
-  }, 300);
-};
-
-const syncScroll = (event: Event) => {
-  const textarea = event.target as HTMLTextAreaElement;
-  const highlight = textarea.previousElementSibling as HTMLPreElement;
-  if (highlight) {
-    highlight.scrollTop = textarea.scrollTop;
-    highlight.scrollLeft = textarea.scrollLeft;
-  }
-  
-  // Auto-resize in vertical layout
-  if (isVerticalLayout.value) {
-    autoResize(textarea);
-  }
-};
-
-const autoResize = (textarea: HTMLTextAreaElement) => {
-  const wrapper = textarea.parentElement;
-  const highlight = textarea.previousElementSibling as HTMLPreElement;
-  if (!wrapper || !highlight) return;
-  
-  // Temporarily set to auto to get true content height
-  wrapper.style.height = 'auto';
-  
-  // Force a reflow to ensure highlight has updated
-  setTimeout(() => {
-    // Get the actual content height from the highlight element
-    const scrollHeight = highlight.scrollHeight;
-    const minHeight = 200;
-    
-    // Set height based on content with minimum bound (no maximum - grow infinitely)
-    const newHeight = Math.max(minHeight, scrollHeight + 20);
-    wrapper.style.height = `${newHeight}px`;
-  }, 0);
-};
-
+// Lifecycle
 onMounted(() => {
-  loadExample();
+  handleLoadExample();
 });
 </script>
 
@@ -1099,13 +613,11 @@ onMounted(() => {
   min-height: 300px;
 }
 
-/* In vertical layout, allow sections to grow with content */
 .playground-content:not(.layout-horizontal) .editor-section,
 .playground-content:not(.layout-horizontal) .output-section {
   flex: 0 0 auto;
 }
 
-/* In horizontal layout, use flex: 1 to split evenly */
 .playground-content.layout-horizontal .editor-section,
 .playground-content.layout-horizontal .output-section {
   flex: 1;
@@ -1134,14 +646,12 @@ onMounted(() => {
   min-height: 200px;
 }
 
-/* In vertical layout, let the editor wrapper grow with content */
 .playground-content:not(.layout-horizontal) .editor-wrapper {
   min-height: fit-content;
   height: auto;
   overflow: visible;
 }
 
-/* In horizontal layout, constrain height and enable scrolling */
 .playground-content.layout-horizontal .editor-wrapper {
   overflow: hidden;
   max-height: 600px;
@@ -1270,7 +780,6 @@ onMounted(() => {
   }
 }
 
-/* Custom scrollbar styling for code editor and output */
 .code-editor::-webkit-scrollbar,
 .code-highlight::-webkit-scrollbar,
 .output-content::-webkit-scrollbar,
@@ -1302,31 +811,29 @@ onMounted(() => {
   background: var(--vp-c-text-3);
 }
 
-/* Syntax Highlighting for Code Editor - VitePress Dark Theme */
 .code-highlight :deep(.token-keyword) {
-  color: #c792ea; /* Purple for keywords */
+  color: #c792ea;
   font-weight: bold;
 }
 
 .code-highlight :deep(.token-string) {
-  color: #c3e88d; /* Light green for strings */
+  color: #c3e88d;
 }
 
 .code-highlight :deep(.token-number) {
-  color: #f78c6c; /* Orange for numbers */
+  color: #f78c6c;
 }
 
 .code-highlight :deep(.token-comment) {
-  color: #676e95; /* Gray for comments */
+  color: #676e95;
   font-style: italic;
 }
 
 .code-highlight :deep(.token-function) {
-  color: #82aaff; /* Light blue for functions */
+  color: #82aaff;
 }
 
 .code-highlight :deep(.token-property) {
-  color: #89ddff; /* Cyan for properties */
+  color: #89ddff;
 }
 </style>
-
