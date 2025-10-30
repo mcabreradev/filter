@@ -1,7 +1,7 @@
 # 🗺️ Product Roadmap
 
-> **Last Updated**: October 25, 2025
-> **Current Version**: v5.0.2
+> **Last Updated**: October 30, 2025
+> **Current Version**: v5.5.1
 > **Status**: Active Development
 
 ---
@@ -35,24 +35,193 @@ Build a **thriving ecosystem** with community contributions, extensions, and ent
 
 ## 📅 Release Timeline
 
-### v5.1.0 - Infrastructure & DX (Target: Q1 2025)
-**Theme**: Foundation & Automation
+### v5.5.1 - Stability & Polish (Released: October 30, 2025) ✅
+**Theme**: Bug Fixes & Refinements
 
-### v5.2.0 - Advanced Features (Target: Q2 2025)
-**Theme**: Power & Flexibility
+### v5.5.0 - Developer Experience (Released: October 28, 2025) ✅
+**Theme**: Debugging & Usability
 
-### v5.3.0 - Ecosystem & Integrations (Target: Q3 2025)
+### v5.4.0 - Framework Integrations (Released: October 26, 2024) ✅
 **Theme**: Community & Extensions
 
-### v6.0.0 - Major Evolution (Target: Q4 2025)
+### v5.1.0 - Infrastructure & DX (Target: Q1 2026)
+**Theme**: Foundation & Automation
+
+### v5.2.0 - Advanced Features (Target: Q2 2026)
+**Theme**: Power & Flexibility
+
+### v6.0.0 - Major Evolution (Target: Q4 2026)
 **Theme**: Enterprise-Ready
 
 ---
 
-## 🚀 v5.1.0 - Infrastructure & DX
+## ✅ v5.5.1 - Stability & Polish
+
+**Status**: ✅ Completed
+**Release Date**: October 30, 2025
+**Focus**: Bug fixes and stability improvements
+
+### 🟢 Completed
+
+#### Bug Fixes & Stability ✅
+**Epic**: Production Readiness
+**Effort**: 1 day
+**Impact**: 🔥 High
+**Status**: ✅ Completed
+
+**Deliverables**:
+- ✅ Bug fixes and stability improvements
+- ✅ Build optimization issues resolved
+- ✅ Type definition exports corrected
+- ✅ Documentation updated with latest features
+- ✅ Improved error messages
+- ✅ Enhanced performance for array operations
+
+**Success Metrics**:
+- ✅ All critical bugs resolved
+- ✅ Build process optimized
+- ✅ Type safety improved
+
+---
+
+## ✅ v5.5.0 - Developer Experience
+
+**Status**: ✅ Completed
+**Release Date**: October 28, 2025
+**Focus**: Debugging tools and developer experience
+
+### 🔴 Critical Priority - Completed
+
+#### Array OR Syntax ✅
+**Epic**: Intuitive Filtering API
+**Effort**: 2-3 days
+**Impact**: 🔥 High
+**Status**: ✅ Completed
+
+**Deliverables**:
+- ✅ Array-based OR filtering without explicit `$in` operator
+- ✅ Wildcard support within array values
+- ✅ Works with strings, numbers, booleans
+- ✅ 100% backward compatible
+- ✅ Comprehensive tests (20+ test cases)
+- ✅ Documentation and examples
+
+**Example Usage**:
+```typescript
+// Clean and intuitive (OR logic)
+filter(products, { category: ['Electronics', 'Books'] });
+// Equivalent to: { category: { $in: ['Electronics', 'Books'] } }
+
+// Multiple properties with array OR
+filter(users, {
+  city: ['Berlin', 'Paris'],
+  age: 30,
+  role: ['admin', 'moderator']
+});
+```
+
+**Success Metrics**:
+- ✅ Intuitive API implemented
+- ✅ Full test coverage
+- ✅ Documentation complete
+
+---
+
+#### Visual Debugging ✅
+**Epic**: Debug Mode with Tree Visualization
+**Effort**: 3-4 days
+**Impact**: � High
+**Status**: ✅ Completed
+
+**Deliverables**:
+- ✅ Built-in debug mode with expression tree visualization
+- ✅ `debug` option to enable debug mode
+- ✅ `verbose` option for detailed evaluation info
+- ✅ `showTimings` option to display execution timings
+- ✅ `colorize` option for ANSI color support
+- ✅ `filterDebug` function for programmatic access
+- ✅ Performance metrics and condition tracking
+- ✅ Comprehensive tests
+- ✅ Documentation and examples
+
+**Example Usage**:
+```typescript
+// Enable debug mode
+filter(users, { city: 'Berlin' }, { debug: true });
+
+// Programmatic access
+const result = filterDebug(users, { age: { $gte: 30 } });
+console.log('Matched:', result.stats.matched);
+console.log('Execution time:', result.stats.executionTime);
+```
+
+**Success Metrics**:
+- ✅ Debug mode fully functional
+- ✅ Tree visualization working
+- ✅ Performance metrics accurate
+- ✅ Documentation complete
+
+---
+
+#### Interactive Playground ✅
+**Epic**: Try Before You Buy
+**Effort**: 3-4 days
+**Impact**: 🔥 High
+**Status**: ✅ Completed
+
+**Deliverables**:
+- ✅ Web-based playground
+  - Live code editor
+  - Data input (JSON)
+  - Expression builder
+  - Options configurator
+  - Real-time results
+  - Example library
+- ✅ Hosted online at filter-docs.vercel.app/playground
+- ✅ Shareable playground links
+- ✅ Embedded in documentation
+
+**Success Metrics**:
+- ✅ Users can try library without installing
+- ✅ Examples demonstrate all features
+- ✅ Shareable playground links working
+
+---
+
+## ✅ v5.4.0 - Framework Integrations
+
+**Status**: ✅ Completed
+**Release Date**: October 26, 2024
+**Focus**: Community and framework integrations
+
+### 🔴 Critical Priority - Completed
+
+#### Framework Integrations ✅
+**Epic**: React, Vue, Svelte Hooks
+**Effort**: 5-6 days
+**Impact**: 🔥 High
+**Status**: ✅ Completed
+
+**Deliverables**:
+- ✅ React integration (useFilter, useFilteredState, useDebouncedFilter, usePaginatedFilter)
+- ✅ Vue integration (Composition API composables)
+- ✅ Svelte integration (Store-based filtering)
+- ✅ TypeScript support with full generics
+- ✅ 100% test coverage
+- ✅ Comprehensive documentation
+- ✅ SSR compatibility (Next.js, Nuxt, SvelteKit)
+
+**Success Metrics**:
+- ✅ All framework integrations completed
+- ✅ 100% test coverage achieved
+- ✅ SSR compatibility verified
+
+---
+
+## �🚀 v5.1.0 - Infrastructure & DX
 
 **Status**: 🔴 Not Started
-**Target Release**: Q1 2025
+**Target Release**: Q1 2026
 **Focus**: Critical infrastructure and developer experience
 
 ### 🔴 Critical Priority
@@ -252,67 +421,12 @@ CHANGELOG.md
 ## 🎨 v5.2.0 - Advanced Features
 
 **Status**: 🟡 Planned
-**Target Release**: Q2 2025
+**Target Release**: Q2 2026
 **Focus**: Feature expansion and flexibility
 
 ### 🔴 Critical Priority
 
-#### 7. Logical Operators ($and, $or, $not)
-**Epic**: MongoDB Query Parity
-**Effort**: 4-5 days
-**Impact**: 🔥 Critical
-
-**Deliverables**:
-- [ ] Implement logical operators
-  - `$and` - All conditions must match
-  - `$or` - At least one condition matches
-  - `$not` - Negation of condition
-- [ ] Support nested logical operators
-- [ ] Type-safe logical operator definitions
-- [ ] Comprehensive tests (50+ test cases)
-- [ ] Documentation and examples
-- [ ] Performance benchmarks vs predicates
-
-**Files to Create/Update**:
-```
-src/
-  types/
-    operators.types.ts (update)
-  operators/
-    logical.operators.ts (new)
-    logical.operators.test.ts (new)
-docs/
-  LOGICAL_OPERATORS.md (new)
-```
-
-**Example Usage**:
-```typescript
-// Complex queries without predicates
-filter(products, {
-  $and: [
-    { price: { $gte: 100, $lte: 500 } },
-    {
-      $or: [
-        { category: 'Electronics' },
-        { rating: { $gte: 4.5 } }
-      ]
-    }
-  ]
-});
-
-filter(users, {
-  $not: { status: 'archived' }
-});
-```
-
-**Success Metrics**:
-- ✅ Full MongoDB logical operator parity
-- ✅ Nested operators work correctly
-- ✅ Performance comparable to predicates
-
----
-
-#### 8. Plugin System
+#### 7. Plugin System
 **Epic**: Extensibility & Custom Operators
 **Effort**: 5-6 days
 **Impact**: 🔥 High
@@ -366,63 +480,28 @@ filter(users, {
 
 ### 🟡 High Priority
 
-#### 9. Interactive Playground
-**Epic**: Try Before You Buy
-**Effort**: 3-4 days
-**Impact**: 🔥 Medium-High
-
-**Deliverables**:
-- [ ] Web-based playground
-  - Live code editor
-  - Data input (JSON)
-  - Expression builder
-  - Options configurator
-  - Real-time results
-  - Example library
-- [ ] CodeSandbox template
-- [ ] StackBlitz template
-- [ ] Embedded playground in docs
-
-**Files to Create**:
-```
-playground/
-  index.html
-  app.ts
-  styles.css
-  examples.ts
-templates/
-  codesandbox/
-  stackblitz/
-```
-
-**Success Metrics**:
-- ✅ Users can try library without installing
-- ✅ Examples demonstrate all features
-- ✅ Shareable playground links
-
----
-
-#### 10. Advanced Performance Optimizations
+#### 8. Advanced Performance Optimizations
 **Epic**: Speed & Efficiency
-**Effort**: 3-4 days
+**Effort**: 2-3 days
 **Impact**: 🔥 Medium
 
+**Note**: Lazy evaluation and memoization already implemented in v5.1.0 and v5.2.0
+
 **Deliverables**:
-- [ ] LRU cache for predicates
-- [ ] Memoization strategy
-- [ ] Lazy evaluation for large datasets
-- [ ] Early exit optimizations
-- [ ] Memory profiling
-- [ ] Performance documentation
+- [ ] LRU cache for predicates (enhancement)
+- [ ] Enhanced memoization strategy
+- [ ] Lazy evaluation improvements
+- [ ] Additional early exit optimizations
+- [ ] Memory profiling tools
+- [ ] Performance documentation updates
 
 **Files to Create/Update**:
 ```
 src/
   utils/
-    memoization.ts (new)
     lru-cache.ts (new)
   core/
-    filter-lazy.ts (new)
+    filter-lazy.ts (enhance existing)
 docs/
   PERFORMANCE.md (update)
 ```
@@ -430,13 +509,13 @@ docs/
 **Success Metrics**:
 - ✅ 20%+ performance improvement on large datasets
 - ✅ Reduced memory footprint
-- ✅ Lazy evaluation available
+- ✅ Enhanced lazy evaluation
 
 ---
 
 ### 🟢 Nice to Have
 
-#### 11. Property-Based Testing
+#### 9. Property-Based Testing
 **Epic**: Comprehensive Test Coverage
 **Effort**: 2-3 days
 **Impact**: 🔥 Low-Medium
@@ -459,6 +538,42 @@ src/
 **Success Metrics**:
 - ✅ 1000+ random test cases pass
 - ✅ Edge cases discovered and fixed
+
+---
+
+#### 10. Mutation Testing
+**Epic**: Test Quality Verification
+**Effort**: 2 days
+**Impact**: 🔥 Low
+
+**Deliverables**:
+- [ ] Configure Stryker
+- [ ] Run mutation tests
+- [ ] Improve test quality based on results
+- [ ] Document mutation score
+
+**Files to Create**:
+```
+stryker.config.js
+docs/
+  TESTING.md (update)
+```
+
+**Success Metrics**:
+- ✅ Mutation score > 80%
+- ✅ Test quality validated
+
+---
+
+## 🌍 v5.6.0 - Extended Ecosystem
+
+**Status**: 🔵 Future
+**Target Release**: Q3 2026
+**Focus**: Additional integrations and tooling
+
+### 🔴 Critical Priority
+
+#### 11. TypeDoc API Documentation
 
 ---
 
@@ -651,7 +766,7 @@ docs/
 
 ### 🟡 High Priority
 
-#### 15. Developer Tools
+#### 12. Developer Tools
 **Epic**: VSCode Extension & ESLint Plugin
 **Effort**: 4-5 days
 **Impact**: 🔥 Medium
@@ -689,7 +804,7 @@ packages/
 
 ---
 
-#### 16. Migration Tools
+#### 13. Migration Tools
 **Epic**: Automated Code Migration
 **Effort**: 3-4 days
 **Impact**: 🔥 Medium
@@ -721,7 +836,7 @@ packages/
 
 ### 🟢 Nice to Have
 
-#### 17. Community Templates
+#### 14. Community Templates
 **Epic**: Issue Templates & Contributing Guide
 **Effort**: 1-2 days
 **Impact**: 🔥 Low-Medium
@@ -751,7 +866,7 @@ packages/
 
 ---
 
-#### 18. Telemetry & Analytics (Optional)
+#### 15. Telemetry & Analytics (Optional)
 **Epic**: Usage Insights
 **Effort**: 2-3 days
 **Impact**: 🔥 Low
@@ -781,12 +896,12 @@ src/
 ## 🚀 v6.0.0 - Major Evolution
 
 **Status**: 🔵 Future
-**Target Release**: Q4 2025
+**Target Release**: Q4 2026
 **Focus**: Enterprise features and breaking improvements
 
 ### Potential Features (TBD)
 
-#### 19. Query Builder API
+#### 16. Query Builder API
 **Epic**: Fluent Interface
 **Effort**: 5-7 days
 **Impact**: 🔥 High
@@ -807,7 +922,7 @@ const results = filter(users, query);
 
 ---
 
-#### 20. SQL-Like Query Language
+#### 17. SQL-Like Query Language
 **Epic**: String-Based Queries
 **Effort**: 7-10 days
 **Impact**: 🔥 Medium-High
@@ -820,7 +935,7 @@ filter(products, 'price BETWEEN 100 AND 500 AND inStock = true');
 
 ---
 
-#### 21. GraphQL Integration
+#### 18. GraphQL Integration
 **Epic**: GraphQL Filter Resolver
 **Effort**: 5-6 days
 **Impact**: 🔥 Medium
@@ -841,7 +956,7 @@ const resolvers = {
 
 ---
 
-#### 22. Database Adapters
+#### 19. Database Adapters
 **Epic**: Query Translation
 **Effort**: 10-15 days
 **Impact**: 🔥 High
@@ -864,22 +979,22 @@ const mongoQuery = adapter.translate({
 ## 📊 Success Metrics & KPIs
 
 ### Adoption Metrics
-- **NPM Downloads**: 10K/month by Q4 2025
-- **GitHub Stars**: 500+ by Q4 2025
+- **NPM Downloads**: 10K/month by Q4 2026
+- **GitHub Stars**: 500+ by Q4 2026
 - **Contributors**: 10+ active contributors
-- **Framework Integrations**: React, Vue, Svelte
+- **Framework Integrations**: ✅ React, Vue, Svelte (Completed)
 
 ### Quality Metrics
-- **Test Coverage**: Maintain 100%
-- **Type Coverage**: 100%
+- **Test Coverage**: ✅ Maintain 100%
+- **Type Coverage**: ✅ 100%
 - **Bundle Size**: < 10 KB (full library)
-- **Performance**: 20%+ improvement over v5.0
+- **Performance**: ✅ 530x-1520x improvement with caching
 
 ### Community Metrics
 - **GitHub Issues**: < 10 open issues
 - **Response Time**: < 48 hours
 - **Documentation**: 95%+ satisfaction
-- **Plugin Ecosystem**: 5+ community plugins
+- **Plugin Ecosystem**: 5+ community plugins (target)
 
 ---
 
@@ -905,15 +1020,25 @@ Features are prioritized based on:
 ## 📝 Changelog & Updates
 
 ### Roadmap Updates
+- **2025-10-30**: Updated for v5.5.1 release
+- **2025-10-28**: Added v5.5.0 features (Array OR Syntax, Visual Debugging, Interactive Playground)
 - **2025-10-25**: Initial roadmap created (v5.0.2)
 - **TBD**: Next review and update
 
 ### Completed Items
-- ✅ v5.3.0: Framework Integrations (React, Vue, Svelte)
-- ✅ v5.3.0: React Hooks with full feature set
-- ✅ v5.3.0: Vue Composables with Composition API
-- ✅ v5.3.0: Svelte Stores with reactivity
-- ✅ v5.3.0: Comprehensive framework documentation
+- ✅ v5.5.1: Bug fixes and stability improvements
+- ✅ v5.5.0: Array OR Syntax
+- ✅ v5.5.0: Visual Debugging (debug mode, tree visualization, performance metrics)
+- ✅ v5.5.0: Interactive Playground
+- ✅ v5.4.0: Framework Integrations (React, Vue, Svelte)
+- ✅ v5.4.0: React Hooks with full feature set
+- ✅ v5.4.0: Vue Composables with Composition API
+- ✅ v5.4.0: Svelte Stores with reactivity
+- ✅ v5.4.0: Comprehensive framework documentation
+- ✅ v5.2.0: Enhanced memoization (530x-1520x faster)
+- ✅ v5.2.0: Logical operators ($and, $or, $not)
+- ✅ v5.2.0: Regex operators ($regex, $match)
+- ✅ v5.1.0: Lazy evaluation with generators
 - ✅ v5.0.0: MongoDB-style operators
 - ✅ v5.0.0: Configuration API
 - ✅ v5.0.0: Runtime validation
@@ -934,8 +1059,8 @@ Features are prioritized based on:
 
 This roadmap is subject to change based on community feedback, technical constraints, and strategic priorities.
 
-**Last Updated**: October 25, 2025
-**Next Review**: Q1 2025
+**Last Updated**: October 30, 2025
+**Next Review**: Q1 2026
 
 ---
 
