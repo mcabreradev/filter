@@ -9,5 +9,8 @@ pnpm run typecheck
 echo "🔍 Linting all files..."
 pnpm run lint
 
+echo "✅ All checks passed! Verifying final conditions..."
+pnpm run check
+
 echo "✅ Pre-push checks passed! Ready to push."
 
