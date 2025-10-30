@@ -3,6 +3,9 @@ echo "🧪 Running pre-push checks..."
 echo "🧪 Running tests..."
 pnpm run test
 
+echo "🧪 Running type tests..."
+pnpm run test:types 
+
 echo "📝 Type checking..."
 pnpm run typecheck
 
