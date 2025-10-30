@@ -34,19 +34,19 @@ interface User {
 
 const users: User[] = [];
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     name: { $startsWith: 'John' },
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     age: { $gte: 18, $lt: 65 },
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     address: {
       city: { $startsWith: 'New' },
@@ -54,7 +54,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     address: {
       zipCode: { $gte: 10000, $lte: 99999 },
@@ -62,7 +62,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     address: {
       coordinates: {
@@ -72,7 +72,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     address: {
       coordinates: {
@@ -83,7 +83,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     settings: {
       theme: { $eq: 'dark' },
@@ -91,7 +91,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     settings: {
       notifications: { $eq: true },
@@ -99,7 +99,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     settings: {
       privacy: {
@@ -109,7 +109,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     settings: {
       privacy: {
@@ -120,7 +120,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     metadata: {
       createdAt: { $gte: new Date('2024-01-01') },
@@ -128,7 +128,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     metadata: {
       tags: { $contains: 'verified' },
@@ -136,7 +136,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     name: { $startsWith: 'J' },
     age: { $gte: 25 },
@@ -155,7 +155,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     $or: [
       {
@@ -172,7 +172,7 @@ expectType<ChainableArray<User>>(
   }),
 );
 
-expectType<ChainableArray<User>>(
+expectType<User[]>(
   filter(users, {
     $and: [
       {
