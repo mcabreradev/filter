@@ -431,6 +431,49 @@ filter(products, {
 });
 ```
 
+#### Array OR Syntax (v5.5.0+)
+
+**New in v5.5.0**: Intuitive array-based OR filtering without explicit `$in` operator!
+
+```typescript
+// Array syntax - clean and intuitive (OR logic)
+filter(products, { category: ['Electronics', 'Books'] });
+// Equivalent to: { category: { $in: ['Electronics', 'Books'] } }
+
+// Multiple properties with array OR (independent OR conditions)
+filter(products, {
+  category: ['Electronics', 'Accessories'],
+  price: [100, 200, 300]
+});
+// Logic: (category === 'Electronics' OR category === 'Accessories') 
+//    AND (price === 100 OR price === 200 OR price === 300)
+
+// Combining array OR with other conditions (AND logic)
+filter(users, {
+  city: ['Berlin', 'Paris'],
+  age: 30,
+  role: ['admin', 'moderator']
+});
+// Logic: (city === 'Berlin' OR city === 'Paris') 
+//    AND age === 30 
+//    AND (role === 'admin' OR role === 'moderator')
+
+// Works with wildcards
+filter(users, { email: ['%@gmail.com', '%@yahoo.com'] });
+// Matches emails ending with @gmail.com OR @yahoo.com
+
+// Empty array matches nothing
+filter(products, { category: [] });
+// → Returns empty array
+```
+
+**Benefits:**
+- ✨ More intuitive than `$in` operator
+- 📝 Cleaner, more readable code
+- 🔄 100% backward compatible
+- 🎯 Works with strings, numbers, booleans
+- 🌟 Supports wildcard patterns
+
 ### Predicate Functions
 
 For complex custom logic:
@@ -641,6 +684,130 @@ See [Memoization Guide](./docs/guide/memoization.md) for complete documentation.
 
 ---
 
+## Visual Debugging (v5.5.0+) 🐛
+
+**New in v5.5.0**: Built-in debug mode with expression tree visualization, performance metrics, and condition tracking!
+
+### Basic Debug Mode
+
+Enable debug mode to see how your filter expressions are evaluated:
+
+```typescript
+import { filter } from '@mcabreradev/filter';
+
+// Enable debug mode with config option
+filter(users, { city: 'Berlin' }, { debug: true });
+
+// Console output:
+// ┌─ Filter Debug Tree
+// │  Expression: {"city":"Berlin"}
+// │  Matched: 3/10 (30.0%)
+// │  Execution time: 0.42ms
+// └─ ✓ city = "Berlin"
+```
+
+### Advanced Debugging Features
+
+```typescript
+// Verbose mode - detailed evaluation info
+filter(users, { age: { $gte: 25 } }, { 
+  debug: true, 
+  verbose: true 
+});
+
+// Show execution timings
+filter(products, { premium: true }, { 
+  debug: true, 
+  showTimings: true 
+});
+
+// Colorized output (ANSI colors)
+filter(users, { city: 'Berlin' }, { 
+  debug: true, 
+  colorize: true 
+});
+
+// All options combined
+filter(users, { 
+  age: { $gte: 25 }, 
+  city: 'Berlin' 
+}, { 
+  debug: true, 
+  verbose: true, 
+  showTimings: true, 
+  colorize: true 
+});
+```
+
+### Programmatic Access
+
+Use `filterDebug` for programmatic access to debug information:
+
+```typescript
+import { filterDebug } from '@mcabreradev/filter';
+
+const result = filterDebug(users, { age: { $gte: 30 } });
+
+console.log('Matched:', result.items.map(u => u.name));
+console.log('Stats:', {
+  matched: result.stats.matched,
+  total: result.stats.total,
+  percentage: result.stats.percentage,
+  executionTime: result.stats.executionTime,
+  conditionsEvaluated: result.stats.conditionsEvaluated
+});
+
+// Access debug tree
+console.log('Debug Tree:', result.debug.tree);
+```
+
+### Debug Complex Expressions
+
+Visualize complex nested expressions:
+
+```typescript
+filter(products, {
+  $and: [
+    { category: 'Electronics' },
+    { inStock: true },
+    {
+      $or: [
+        { rating: { $gte: 4.5 } },
+        { price: { $lt: 50 } }
+      ]
+    }
+  ]
+}, { debug: true, verbose: true });
+
+// Console output shows tree structure:
+// ┌─ Filter Debug Tree
+// │  Expression: Complex nested query
+// │  Matched: 5/10 (50.0%)
+// │  Execution time: 1.23ms
+// ├─ AND
+// │  ├─ ✓ category = "Electronics"
+// │  ├─ ✓ inStock = true
+// │  └─ OR
+// │     ├─ ✓ rating >= 4.5
+// │     └─ ✗ price < 50
+// └─ Conditions evaluated: 8
+```
+
+**Debug Options:**
+- `debug` (boolean) - Enable debug mode
+- `verbose` (boolean) - Show detailed evaluation info
+- `showTimings` (boolean) - Display execution timings
+- `colorize` (boolean) - Use ANSI colors in output
+
+**Use Cases:**
+- 🔍 Understanding complex filter logic
+- ⚡ Performance optimization
+- 🐛 Debugging unexpected results
+- 📊 Analytics and monitoring
+- 🧪 Testing and validation
+
+---
+
 ## Configuration
 
 Customize filter behavior with options:
@@ -657,6 +824,9 @@ filter(data, expression, { maxDepth: 5 });
 // Enable caching for repeated queries
 filter(largeDataset, expression, { enableCache: true });
 
+// Enable debug mode (v5.5.0+)
+filter(users, expression, { debug: true });
+
 // Custom comparison logic
 filter(data, expression, {
   customComparator: (actual, expected) => actual === expected
@@ -668,6 +838,10 @@ filter(data, expression, {
 - `caseSensitive` (boolean, default: `false`) - Case-sensitive string matching
 - `maxDepth` (number, default: `3`, range: 1-10) - Max depth for nested objects
 - `enableCache` (boolean, default: `false`) - Enable result caching
+- `debug` (boolean, default: `false`) - Enable debug mode with tree visualization (v5.5.0+)
+- `verbose` (boolean, default: `false`) - Show detailed evaluation info in debug mode (v5.5.0+)
+- `showTimings` (boolean, default: `false`) - Display execution timings in debug mode (v5.5.0+)
+- `colorize` (boolean, default: `false`) - Use ANSI colors in debug output (v5.5.0+)
 - `customComparator` (function, optional) - Custom comparison function
 
 ---
@@ -799,7 +973,7 @@ For performance optimization tips, see [Performance Guide](./docs/advanced/wiki.
 ### 🎯 Quick Links
 
 - [Installation & Setup](./docs/guide/installation.md)
-- [Interactive Playground](https://filter-docs.vercel.app/playground/) 🎮 NEW
+- [Interactive Playground](https://mcabreradev-filter.vercel.app/playground/) 🎮 NEW
 - [Framework Integrations](./docs/frameworks/overview.md) ⭐ NEW
 - [All Operators Reference](./docs/guide/operators.md)
 - [Regex Patterns Guide](./docs/guide/operators.md#string-operators)
@@ -834,6 +1008,7 @@ filter(data, expression, { enableCache: true });
 ```
 
 **What's New in v5.x:**
+- **v5.5.0**: Array OR syntax, visual debugging, interactive playground
 - **v5.4.0**: Framework integrations (React, Vue, Svelte)
 - **v5.3.0**: Initial framework support
 - **v5.2.0**: Enhanced memoization, logical operators ($and, $or, $not), regex operators
@@ -930,7 +1105,20 @@ The library has 270+ tests with comprehensive coverage of all features.
 
 ## Changelog
 
-### v5.4.0 (Current)
+### v5.5.1 (Current)
+- 🐛 Bug fixes and stability improvements
+- 📚 Documentation updates
+- 🔧 Build optimizations
+
+### v5.5.0
+- 🎨 **Array OR Syntax**: Intuitive array-based OR filtering (`{ city: ['Berlin', 'Paris'] }`)
+- 🐛 **Visual Debugging**: Built-in debug mode with expression tree visualization
+- 🎮 **Interactive Playground**: New online playground for testing filters
+- 📊 **Debug Analytics**: Performance metrics and condition evaluation tracking
+- 🎨 **Colorized Output**: ANSI color support for debug tree visualization
+- ⚡ Performance improvements for array operations
+
+### v5.4.0
 - 🎨 **Framework Integrations**: React, Vue, and Svelte support
 - 🪝 React Hooks: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
 - 🔄 Vue Composables: Full Composition API support with reactive refs
@@ -939,7 +1127,6 @@ The library has 270+ tests with comprehensive coverage of all features.
 - ✅ 100% test coverage for all integrations
 - 🔒 TypeScript generics for type safety
 - 🌐 SSR compatibility (Next.js, Nuxt, SvelteKit)
-- 🐛 Bug fixes and stability improvements
 
 ### v5.3.0
 - 🎨 Initial framework integration support
