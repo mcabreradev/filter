@@ -5,6 +5,53 @@ All notable changes to @mcabreradev/filter are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.5.1] - 2025-10-30
+
+### Fixed
+- Bug fixes and stability improvements
+- Build optimization issues
+- Type definition exports
+
+### Changed
+- Updated documentation with latest features
+- Improved error messages
+- Enhanced performance for array operations
+
+## [5.5.0] - 2025-10-28
+
+### Added
+- **Array OR Syntax**: Intuitive array-based OR filtering without explicit `$in` operator
+  - `filter(products, { category: ['Electronics', 'Books'] })`
+  - Supports wildcards within array values
+  - Works with strings, numbers, booleans
+  - 100% backward compatible with existing syntax
+- **Visual Debugging**: Built-in debug mode with expression tree visualization
+  - `debug` option to enable debug mode
+  - `verbose` option for detailed evaluation info
+  - `showTimings` option to display execution timings
+  - `colorize` option for ANSI color support in output
+  - `filterDebug` function for programmatic access to debug information
+- **Interactive Playground**: New online playground for testing filters live
+  - Real-time filter testing
+  - Code examples and templates
+  - Share filter expressions via URL
+- **Debug Analytics**: Performance metrics and condition tracking
+  - Execution time measurement
+  - Conditions evaluated counter
+  - Match statistics (matched/total/percentage)
+  - Expression tree visualization
+
+### Changed
+- Enhanced array operator performance
+- Improved type inference for array expressions
+- Optimized debug tree building
+- Better error messages for invalid expressions
+
+### Fixed
+- Edge cases with empty arrays in expressions
+- Type inference issues with array OR syntax
+- Debug output formatting inconsistencies
+
 ## [5.4.0] - 2024-10-26
 
 ### Added
