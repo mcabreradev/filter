@@ -1,8 +1,9 @@
-import { onUnmounted } from 'vue';
+import { onUnmounted, getCurrentInstance } from 'vue';
 
 interface UseEditorResizeReturn {
   autoResize: (textarea: HTMLTextAreaElement) => void;
   syncScroll: (event: Event) => void;
+  cleanup: () => void;
 }
 
 export function useEditorResize(): UseEditorResizeReturn {
@@ -39,14 +40,21 @@ export function useEditorResize(): UseEditorResizeReturn {
     autoResize(textarea);
   };
 
-  onUnmounted(() => {
+  const cleanup = (): void => {
     if (resizeTimeout) {
       clearTimeout(resizeTimeout);
+      resizeTimeout = null;
     }
-  });
+  };
+
+  // Only register onUnmounted if we're in a Vue component context
+  if (getCurrentInstance()) {
+    onUnmounted(cleanup);
+  }
 
   return {
     autoResize,
     syncScroll,
+    cleanup,
   };
 }

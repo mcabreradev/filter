@@ -2,17 +2,25 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { useDebouncedExecute } from '../composables/useDebounce';
 
 describe('useDebouncedExecute', () => {
+  let cleanup: (() => void) | null = null;
+
   beforeEach(() => {
     vi.useFakeTimers();
   });
 
   afterEach(() => {
+    if (cleanup) {
+      cleanup();
+      cleanup = null;
+    }
     vi.restoreAllMocks();
   });
 
   it('should debounce function execution', () => {
     const callback = vi.fn();
-    const { debouncedExecute } = useDebouncedExecute(callback, 300);
+    const result = useDebouncedExecute(callback, 300);
+    cleanup = result.cleanup;
+    const { debouncedExecute } = result;
 
     debouncedExecute();
     expect(callback).not.toHaveBeenCalled();
@@ -26,7 +34,9 @@ describe('useDebouncedExecute', () => {
 
   it('should reset timer on subsequent calls', () => {
     const callback = vi.fn();
-    const { debouncedExecute } = useDebouncedExecute(callback, 300);
+    const result = useDebouncedExecute(callback, 300);
+    cleanup = result.cleanup;
+    const { debouncedExecute } = result;
 
     debouncedExecute();
     vi.advanceTimersByTime(200);
@@ -41,7 +51,9 @@ describe('useDebouncedExecute', () => {
 
   it('should only execute callback once after multiple rapid calls', () => {
     const callback = vi.fn();
-    const { debouncedExecute } = useDebouncedExecute(callback, 300);
+    const result = useDebouncedExecute(callback, 300);
+    cleanup = result.cleanup;
+    const { debouncedExecute } = result;
 
     debouncedExecute();
     debouncedExecute();
@@ -56,7 +68,9 @@ describe('useDebouncedExecute', () => {
 
   it('should use custom delay', () => {
     const callback = vi.fn();
-    const { debouncedExecute } = useDebouncedExecute(callback, 500);
+    const result = useDebouncedExecute(callback, 500);
+    cleanup = result.cleanup;
+    const { debouncedExecute } = result;
 
     debouncedExecute();
 
@@ -69,7 +83,9 @@ describe('useDebouncedExecute', () => {
 
   it('should use default delay of 300ms', () => {
     const callback = vi.fn();
-    const { debouncedExecute } = useDebouncedExecute(callback);
+    const result = useDebouncedExecute(callback);
+    cleanup = result.cleanup;
+    const { debouncedExecute } = result;
 
     debouncedExecute();
 
@@ -82,7 +98,9 @@ describe('useDebouncedExecute', () => {
 
   it('should execute callback multiple times if enough time passes', () => {
     const callback = vi.fn();
-    const { debouncedExecute } = useDebouncedExecute(callback, 100);
+    const result = useDebouncedExecute(callback, 100);
+    cleanup = result.cleanup;
+    const { debouncedExecute } = result;
 
     debouncedExecute();
     vi.advanceTimersByTime(100);
@@ -99,7 +117,9 @@ describe('useDebouncedExecute', () => {
 
   it('should handle callback execution', () => {
     const callback = vi.fn();
-    const { debouncedExecute } = useDebouncedExecute(callback, 300);
+    const result = useDebouncedExecute(callback, 300);
+    cleanup = result.cleanup;
+    const { debouncedExecute } = result;
 
     debouncedExecute();
     vi.advanceTimersByTime(300);
@@ -109,7 +129,9 @@ describe('useDebouncedExecute', () => {
 
   it('should clear pending timer when called rapidly', () => {
     const callback = vi.fn();
-    const { debouncedExecute } = useDebouncedExecute(callback, 300);
+    const result = useDebouncedExecute(callback, 300);
+    cleanup = result.cleanup;
+    const { debouncedExecute } = result;
 
     debouncedExecute();
     const firstTimerId = vi.getTimerCount();
@@ -123,7 +145,9 @@ describe('useDebouncedExecute', () => {
 
   it('should execute callback immediately after delay expires', () => {
     const callback = vi.fn();
-    const { debouncedExecute } = useDebouncedExecute(callback, 0);
+    const result = useDebouncedExecute(callback, 0);
+    cleanup = result.cleanup;
+    const { debouncedExecute } = result;
 
     debouncedExecute();
 
@@ -135,7 +159,9 @@ describe('useDebouncedExecute', () => {
     const callback = vi.fn(() => {
       throw new Error('Test error');
     });
-    const { debouncedExecute } = useDebouncedExecute(callback, 300);
+    const result = useDebouncedExecute(callback, 300);
+    cleanup = result.cleanup;
+    const { debouncedExecute } = result;
 
     debouncedExecute();
 

@@ -5,6 +5,7 @@ describe('useEditorResize', () => {
   let textarea: HTMLTextAreaElement;
   let wrapper: HTMLDivElement;
   let highlight: HTMLPreElement;
+  let cleanup: (() => void) | null = null;
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -27,6 +28,10 @@ describe('useEditorResize', () => {
   });
 
   afterEach(() => {
+    if (cleanup) {
+      cleanup();
+      cleanup = null;
+    }
     vi.restoreAllMocks();
     vi.useRealTimers();
     document.body.removeChild(wrapper);
@@ -34,7 +39,9 @@ describe('useEditorResize', () => {
 
   describe('autoResize', () => {
     it('should resize wrapper based on highlight scrollHeight', () => {
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       autoResize(textarea);
 
@@ -50,7 +57,9 @@ describe('useEditorResize', () => {
         get: () => 50,
       });
 
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       autoResize(textarea);
       vi.runAllTimers();
@@ -64,7 +73,9 @@ describe('useEditorResize', () => {
         get: () => 2000,
       });
 
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       autoResize(textarea);
       vi.runAllTimers();
@@ -74,7 +85,9 @@ describe('useEditorResize', () => {
 
     it('should not crash if wrapper is missing', () => {
       const orphanTextarea = document.createElement('textarea');
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       expect(() => {
         autoResize(orphanTextarea);
@@ -88,7 +101,9 @@ describe('useEditorResize', () => {
       newWrapper.appendChild(newTextarea);
       document.body.appendChild(newWrapper);
 
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       expect(() => {
         autoResize(newTextarea);
@@ -99,7 +114,9 @@ describe('useEditorResize', () => {
     });
 
     it('should set wrapper height to auto initially', () => {
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       wrapper.style.height = '1000px';
       autoResize(textarea);
@@ -108,7 +125,9 @@ describe('useEditorResize', () => {
     });
 
     it('should debounce resize operations', () => {
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       autoResize(textarea);
       autoResize(textarea);
@@ -123,7 +142,9 @@ describe('useEditorResize', () => {
 
   describe('syncScroll', () => {
     it('should sync scroll position from textarea to highlight', () => {
-      const { syncScroll } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { syncScroll } = result;
 
       textarea.scrollTop = 100;
       textarea.scrollLeft = 50;
@@ -138,7 +159,9 @@ describe('useEditorResize', () => {
     });
 
     it('should trigger autoResize on scroll', () => {
-      const { syncScroll } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { syncScroll } = result;
 
       const event = new Event('scroll');
       Object.defineProperty(event, 'target', { value: textarea });
@@ -155,7 +178,9 @@ describe('useEditorResize', () => {
       newWrapper.appendChild(newTextarea);
       document.body.appendChild(newWrapper);
 
-      const { syncScroll } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { syncScroll } = result;
 
       const event = new Event('scroll');
       Object.defineProperty(event, 'target', { value: newTextarea });
@@ -168,7 +193,9 @@ describe('useEditorResize', () => {
     });
 
     it('should handle rapid scroll events', () => {
-      const { syncScroll } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { syncScroll } = result;
 
       const event = new Event('scroll');
       Object.defineProperty(event, 'target', { value: textarea });
@@ -186,7 +213,9 @@ describe('useEditorResize', () => {
     });
 
     it('should sync horizontal and vertical scroll independently', () => {
-      const { syncScroll } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { syncScroll } = result;
 
       const event = new Event('scroll');
       Object.defineProperty(event, 'target', { value: textarea });
@@ -209,7 +238,9 @@ describe('useEditorResize', () => {
 
   describe('cleanup', () => {
     it('should clear timeout on component unmount', () => {
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       autoResize(textarea);
 
@@ -223,7 +254,9 @@ describe('useEditorResize', () => {
     });
 
     it('should not crash when accessing after unmount', () => {
-      const { autoResize, syncScroll } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize, syncScroll } = result;
 
       autoResize(textarea);
 
@@ -246,7 +279,9 @@ describe('useEditorResize', () => {
         get: () => 0,
       });
 
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       autoResize(textarea);
       vi.runAllTimers();
@@ -260,7 +295,9 @@ describe('useEditorResize', () => {
         get: () => -100,
       });
 
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       autoResize(textarea);
       vi.runAllTimers();
@@ -274,7 +311,9 @@ describe('useEditorResize', () => {
         get: () => 250.5,
       });
 
-      const { autoResize } = useEditorResize();
+      const result = useEditorResize();
+      cleanup = result.cleanup;
+      const { autoResize } = result;
 
       autoResize(textarea);
       vi.runAllTimers();

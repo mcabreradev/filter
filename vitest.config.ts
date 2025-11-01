@@ -5,6 +5,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['src/**/*.test.ts', 'docs/.vitepress/theme/__tests__/**/*.test.ts'],
+    environmentMatchGlobs: [['docs/.vitepress/theme/__tests__/**/*.test.ts', 'jsdom']],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
