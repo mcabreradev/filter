@@ -1,6 +1,6 @@
 {
   "name": "@mcabreradev/filter",
-  "version": "5.5.3",
+  "version": "5.6.0",
   "type": "module",
   "description": "A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies",
   "scripts": {
