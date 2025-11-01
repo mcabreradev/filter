@@ -151,6 +151,20 @@ describe('geospatial operators', () => {
         expect(evaluateNear(acrossDateLine, query)).toBe(true);
       });
 
+      it('correctly handles points across the date line with varied latitudes', () => {
+        const center: GeoPoint = { lat: 35.6762, lng: 179.8 };
+        const query: NearQuery = { center, maxDistanceMeters: 50000 };
+        const acrossDateLine: GeoPoint = { lat: 35.6762, lng: -179.8 };
+        expect(evaluateNear(acrossDateLine, query)).toBe(true);
+      });
+
+      it('correctly handles antipodal points across the date line', () => {
+        const center: GeoPoint = { lat: 60, lng: 179 };
+        const query: NearQuery = { center, maxDistanceMeters: 150000 };
+        const nearPoint: GeoPoint = { lat: 60, lng: -179 };
+        expect(evaluateNear(nearPoint, query)).toBe(true);
+      });
+
       it('excludes points just beyond date line threshold', () => {
         const center: GeoPoint = { lat: 0, lng: 179.5 };
         const query: NearQuery = { center, maxDistanceMeters: 110000 };
@@ -353,6 +367,21 @@ describe('geospatial operators', () => {
         expect(evaluateGeoBox({ lat: 0, lng: 179.5 }, dateLineBox)).toBe(true);
         expect(evaluateGeoBox({ lat: 0, lng: 180 }, dateLineBox)).toBe(true);
         expect(evaluateGeoBox({ lat: 0, lng: 178.9 }, dateLineBox)).toBe(false);
+      });
+
+      it('correctly handles boxes spanning the entire longitude range', () => {
+        const fullLongitudeBox: BoundingBox = {
+          southwest: { lat: -45, lng: -180 },
+          northeast: { lat: 45, lng: 180 },
+        };
+
+        expect(evaluateGeoBox({ lat: 0, lng: 0 }, fullLongitudeBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 30, lng: -170 }, fullLongitudeBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: -30, lng: 170 }, fullLongitudeBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: 180 }, fullLongitudeBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: -180 }, fullLongitudeBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 50, lng: 0 }, fullLongitudeBox)).toBe(false);
+        expect(evaluateGeoBox({ lat: -50, lng: 0 }, fullLongitudeBox)).toBe(false);
       });
     });
 
@@ -679,6 +708,28 @@ describe('geospatial operators', () => {
         expect(evaluateGeoPolygon({ lat: 52.5, lng: 13.3 }, starPolygon)).toBe(false);
       });
 
+      it('correctly handles star-shaped polygons with multiple concave sections', () => {
+        const complexStarPolygon: PolygonQuery = {
+          points: [
+            { lat: 52.55, lng: 13.4 },
+            { lat: 52.53, lng: 13.38 },
+            { lat: 52.5, lng: 13.35 },
+            { lat: 52.51, lng: 13.4 },
+            { lat: 52.5, lng: 13.45 },
+            { lat: 52.53, lng: 13.42 },
+          ],
+        };
+
+        // Point inside center of star
+        expect(evaluateGeoPolygon({ lat: 52.52, lng: 13.4 }, complexStarPolygon)).toBe(true);
+        // Point inside one of the arms
+        expect(evaluateGeoPolygon({ lat: 52.51, lng: 13.39 }, complexStarPolygon)).toBe(true);
+        // Point clearly outside all arms
+        expect(evaluateGeoPolygon({ lat: 52.48, lng: 13.35 }, complexStarPolygon)).toBe(false);
+        // Point outside near the edge
+        expect(evaluateGeoPolygon({ lat: 52.56, lng: 13.4 }, complexStarPolygon)).toBe(false);
+      });
+
       it('handles polygon with duplicate consecutive points', () => {
         const duplicatePolygon: PolygonQuery = {
           points: [
@@ -861,6 +912,39 @@ describe('Filter with Geospatial Operators', () => {
       expect(nearby.map((r) => r.name)).toContain('Restaurant C');
     });
 
+    it('correctly applies $near operator with minDistanceMeters to filter data', () => {
+      const centerPoint: GeoPoint = { lat: 52.52, lng: 13.405 };
+
+      const result = filter(restaurants, {
+        location: {
+          $near: {
+            center: centerPoint,
+            maxDistanceMeters: 3000,
+            minDistanceMeters: 200,
+          },
+        },
+      });
+
+      // Verify that all returned restaurants are within the distance range
+      result.forEach((restaurant) => {
+        const distance = calculateDistance(restaurant.location, centerPoint);
+        expect(distance).toBeGreaterThanOrEqual(200);
+        expect(distance).toBeLessThanOrEqual(3000);
+      });
+
+      // Verify that Restaurant A (at exact center) is excluded
+      expect(result.map((r) => r.name)).not.toContain('Restaurant A');
+
+      // Verify that Restaurant B (very close) might be excluded if within minDistance
+      const restaurantBDistance = calculateDistance(
+        restaurants.find((r) => r.name === 'Restaurant B')!.location,
+        centerPoint,
+      );
+      if (restaurantBDistance < 200) {
+        expect(result.map((r) => r.name)).not.toContain('Restaurant B');
+      }
+    });
+
     it('combines with other filters', () => {
       const userLocation: GeoPoint = { lat: 52.52, lng: 13.405 };
 
@@ -948,6 +1032,63 @@ describe('Filter with Geospatial Operators', () => {
       });
 
       expect(result.every((r) => r.rating >= 4.0)).toBe(true);
+    });
+
+    it('correctly applies $geoPolygon operator for complex polygon shapes', () => {
+      // Create a star-shaped polygon that should only include specific restaurants
+      const starPolygon: PolygonQuery = {
+        points: [
+          { lat: 52.525, lng: 13.4 },
+          { lat: 52.515, lng: 13.41 },
+          { lat: 52.51, lng: 13.42 },
+          { lat: 52.515, lng: 13.43 },
+          { lat: 52.525, lng: 13.44 },
+          { lat: 52.535, lng: 13.43 },
+          { lat: 52.54, lng: 13.42 },
+          { lat: 52.535, lng: 13.41 },
+        ],
+      };
+
+      const result = filter(restaurants, {
+        location: {
+          $geoPolygon: starPolygon,
+        },
+      });
+
+      // Verify that all returned restaurants are actually inside the polygon
+      result.forEach((restaurant) => {
+        expect(evaluateGeoPolygon(restaurant.location, starPolygon)).toBe(true);
+      });
+
+      // Verify that excluded restaurants are outside the polygon
+      const excluded = restaurants.filter((r) => !result.includes(r));
+      excluded.forEach((restaurant) => {
+        expect(evaluateGeoPolygon(restaurant.location, starPolygon)).toBe(false);
+      });
+    });
+
+    it('correctly handles L-shaped polygon with filter function', () => {
+      const lShapedPolygon: PolygonQuery = {
+        points: [
+          { lat: 52.515, lng: 13.4 },
+          { lat: 52.535, lng: 13.4 },
+          { lat: 52.535, lng: 13.42 },
+          { lat: 52.525, lng: 13.42 },
+          { lat: 52.525, lng: 13.45 },
+          { lat: 52.515, lng: 13.45 },
+        ],
+      };
+
+      const result = filter(restaurants, {
+        location: {
+          $geoPolygon: lShapedPolygon,
+        },
+      });
+
+      // All results should be inside the L-shaped polygon
+      result.forEach((restaurant) => {
+        expect(evaluateGeoPolygon(restaurant.location, lShapedPolygon)).toBe(true);
+      });
     });
   });
 
