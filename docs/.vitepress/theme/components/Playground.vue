@@ -104,16 +104,6 @@
             @scroll="syncScroll"
           ></textarea>
         </div>
-        <div class="editor-wrapper">
-          <pre class="code-highlight" v-html="highlightedCode"></pre>
-          <textarea
-            v-model="code"
-            class="code-editor"
-            spellcheck="false"
-            @input="handleCodeInput"
-            @scroll="syncScroll"
-          ></textarea>
-        </div>
       </div>
       <div class="output-section">
         <div class="output-header">Output</div>
