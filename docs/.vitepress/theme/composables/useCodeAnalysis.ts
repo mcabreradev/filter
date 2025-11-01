@@ -5,7 +5,7 @@ export interface OperatorOption {
   label: string;
 }
 
-type FieldType = 'string' | 'number' | 'boolean' | 'object';
+type FieldType = 'string' | 'number' | 'boolean' | 'object' | 'date';
 
 const operatorsByType: Record<FieldType | 'array', OperatorOption[]> = {
   string: [
@@ -37,6 +37,23 @@ const operatorsByType: Record<FieldType | 'array', OperatorOption[]> = {
     { value: '$near', label: 'near location' },
     { value: '$geoBox', label: 'within bounding box' },
     { value: '$geoPolygon', label: 'within polygon' },
+  ],
+  date: [
+    { value: '$recent', label: 'recent (within last X time)' },
+    { value: '$upcoming', label: 'upcoming (within next X time)' },
+    { value: '$dayOfWeek', label: 'day of week' },
+    { value: '$timeOfDay', label: 'time of day' },
+    { value: '$age', label: 'age (calculate from date)' },
+    { value: '$isWeekday', label: 'is weekday' },
+    { value: '$isWeekend', label: 'is weekend' },
+    { value: '$isBefore', label: 'is before date' },
+    { value: '$isAfter', label: 'is after date' },
+    { value: '$eq', label: 'equals' },
+    { value: '$ne', label: 'not equals' },
+    { value: '$gt', label: 'greater than' },
+    { value: '$gte', label: 'greater or equal' },
+    { value: '$lt', label: 'less than' },
+    { value: '$lte', label: 'less or equal' },
   ],
   array: [
     { value: '$in', label: 'in array' },
@@ -106,6 +123,8 @@ export function useCodeAnalysis(
 
         if (trimmedValue === 'true' || trimmedValue === 'false') {
           types[fieldName] = 'boolean';
+        } else if (trimmedValue.startsWith('new Date(')) {
+          types[fieldName] = 'date';
         } else if (trimmedValue.startsWith('{')) {
           types[fieldName] = 'object';
         } else if (trimmedValue.startsWith("'") || trimmedValue.startsWith('"')) {
@@ -143,6 +162,13 @@ export function useCodeAnalysis(
       return '{ southwest: { lat: 0, lng: 0 }, northeast: { lat: 0, lng: 0 } }';
     if (operator === '$geoPolygon') return '{ points: [{ lat: 0, lng: 0 }] }';
     if (operator === '$size') return '3';
+    if (operator === '$recent') return '{ days: 7 } or { hours: 24 }';
+    if (operator === '$upcoming') return '{ days: 7 } or { hours: 24 }';
+    if (operator === '$dayOfWeek') return '[1, 2, 3, 4, 5] (Mon-Fri)';
+    if (operator === '$timeOfDay') return '{ start: 9, end: 17 }';
+    if (operator === '$age') return '{ min: 18 } or { min: 18, max: 65 }';
+    if (operator === '$isWeekday' || operator === '$isWeekend') return 'true or false';
+    if (operator === '$isBefore' || operator === '$isAfter') return 'new Date(2025, 0, 1)';
     return 'Enter value...';
   };
 

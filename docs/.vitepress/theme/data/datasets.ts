@@ -72,6 +72,39 @@ export const datasets: Dataset[] = [
 ];`,
     fields: ['name', 'location', 'rating', 'cuisine', 'priceLevel'],
   },
+  {
+    id: 'events',
+    name: 'Events',
+    code: `const events = [
+  { name: 'Team Meeting', date: new Date(2025, 10, 5), startTime: new Date(2025, 10, 5, 9, 0), duration: 60, location: 'Office' },
+  { name: 'Product Launch', date: new Date(2025, 10, 15), startTime: new Date(2025, 10, 15, 14, 0), duration: 120, location: 'Conference Center' },
+  { name: 'Weekend Workshop', date: new Date(2025, 10, 8), startTime: new Date(2025, 10, 8, 10, 0), duration: 480, location: 'Remote' },
+  { name: 'Client Call', date: new Date(2025, 10, 3), startTime: new Date(2025, 10, 3, 15, 0), duration: 30, location: 'Video Call' }
+];`,
+    fields: ['name', 'date', 'startTime', 'duration', 'location'],
+  },
+  {
+    id: 'usersWithDates',
+    name: 'Users with Dates',
+    code: `const usersWithDates = [
+  { name: 'Alice', birthDate: new Date(2000, 0, 1), lastLogin: new Date(2025, 10, 1, 10, 30), premium: true },
+  { name: 'Bob', birthDate: new Date(2005, 4, 15), lastLogin: new Date(2025, 9, 25, 8, 0), premium: false },
+  { name: 'Charlie', birthDate: new Date(1990, 7, 22), lastLogin: new Date(2025, 9, 15, 14, 15), premium: true },
+  { name: 'Diana', birthDate: new Date(2010, 11, 5), lastLogin: new Date(2025, 10, 1, 16, 45), premium: false }
+];`,
+    fields: ['name', 'birthDate', 'lastLogin', 'premium'],
+  },
+  {
+    id: 'appointments',
+    name: 'Appointments',
+    code: `const appointments = [
+  { client: 'Alice', time: new Date(2025, 10, 1, 9, 0), duration: 60, type: 'consultation' },
+  { client: 'Bob', time: new Date(2025, 10, 1, 14, 30), duration: 30, type: 'follow-up' },
+  { client: 'Charlie', time: new Date(2025, 10, 1, 18, 0), duration: 45, type: 'initial' },
+  { client: 'Diana', time: new Date(2025, 10, 2, 10, 0), duration: 90, type: 'consultation' }
+];`,
+    fields: ['client', 'time', 'duration', 'type'],
+  },
 ];
 
 export function getDatasetSampleFilter(datasetId: string): string {
@@ -98,6 +131,16 @@ export function getDatasetSampleFilter(datasetId: string): string {
     }
   },
   rating: { $gte: 4.5 }
+}`,
+    events: `{
+  date: { $upcoming: { days: 7 } }
+}`,
+    usersWithDates: `{
+  birthDate: { $age: { min: 18 } },
+  lastLogin: { $recent: { days: 7 } }
+}`,
+    appointments: `{
+  time: { $timeOfDay: { start: 9, end: 17 } }
 }`,
   };
 
