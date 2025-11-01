@@ -22,3 +22,13 @@ export type {
   AsyncLazyFilterResult,
   ChunkedFilterOptions,
 } from './lazy.types';
+
+export type {
+  GeoPoint,
+  NearQuery,
+  BoundingBox,
+  PolygonQuery,
+  GeospatialOperators,
+} from './geospatial';
+
+export type { RelativeTimeQuery, TimeOfDayQuery, AgeQuery, DateTimeOperators } from './datetime';

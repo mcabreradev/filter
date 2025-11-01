@@ -1,7 +1,8 @@
-import { ref, type Ref, onUnmounted } from 'vue';
+import { ref, type Ref, onUnmounted, getCurrentInstance } from 'vue';
 
 interface UseDebouncedExecuteReturn {
   debouncedExecute: () => void;
+  cleanup: () => void;
 }
 
 /**
@@ -15,18 +16,25 @@ export function useDebouncedExecute(callback: () => void, delay = 300): UseDebou
       clearTimeout(debounceTimer.value);
     }
 
-    debounceTimer.value = window.setTimeout(() => {
+    debounceTimer.value = setTimeout(() => {
       callback();
-    }, delay);
+    }, delay) as unknown as number;
   };
 
-  onUnmounted(() => {
+  const cleanup = (): void => {
     if (debounceTimer.value) {
       clearTimeout(debounceTimer.value);
+      debounceTimer.value = null;
     }
-  });
+  };
+
+  // Only register onUnmounted if we're in a Vue component context
+  if (getCurrentInstance()) {
+    onUnmounted(cleanup);
+  }
 
   return {
     debouncedExecute,
+    cleanup,
   };
 }

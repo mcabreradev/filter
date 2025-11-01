@@ -45,10 +45,43 @@ export type {
   LazyFilterResult,
   AsyncLazyFilterResult,
   ChunkedFilterOptions,
+  GeoPoint,
+  NearQuery,
+  BoundingBox,
+  PolygonQuery,
+  GeospatialOperators,
+  RelativeTimeQuery,
+  TimeOfDayQuery,
+  AgeQuery,
+  DateTimeOperators,
 } from './types/index.js';
 
 export { validateExpression, validateOptions } from './validation/index.js';
 export { mergeConfig, createFilterConfig } from './config/index.js';
+export { calculateDistance, isValidGeoPoint } from './utils/index.js';
+export { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './operators/index.js';
+export {
+  isValidDate,
+  isValidTimeOfDay,
+  isValidDayOfWeek,
+  isValidRelativeTime,
+  isValidAgeQuery,
+  calculateTimeDifference,
+  calculateAge,
+  isWeekday,
+  isWeekend,
+} from './utils/index.js';
+export {
+  evaluateRecent,
+  evaluateUpcoming,
+  evaluateDayOfWeek,
+  evaluateTimeOfDay,
+  evaluateAge,
+  evaluateIsWeekday,
+  evaluateIsWeekend,
+  evaluateIsBefore,
+  evaluateIsAfter,
+} from './operators/index.js';
 
 export {
   useFilter as useFilterReact,

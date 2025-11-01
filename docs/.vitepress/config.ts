@@ -68,6 +68,8 @@ export default defineConfig({
             { text: 'Regex Operators', link: '/guide/regex-operators' },
             { text: 'Logical Operators', link: '/guide/logical-operators' },
             { text: 'Nested Objects', link: '/guide/nested-objects' },
+            { text: 'Geospatial Operators ⭐', link: '/guide/geospatial-operators' },
+            { text: 'Datetime Operators ⭐', link: '/guide/datetime-operators' },
             { text: 'Wildcards', link: '/guide/wildcards' },
             { text: 'Lazy Evaluation', link: '/guide/lazy-evaluation' },
             { text: 'Memoization', link: '/guide/memoization' },

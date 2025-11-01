@@ -6,11 +6,25 @@ import type {
   StringOperators,
   LogicalOperators,
 } from '../types';
+import type { GeospatialOperators, GeoPoint } from '../types/geospatial';
+import type { DateTimeOperators } from '../types/datetime';
 import { OPERATORS } from '../constants';
 import { applyComparisonOperators } from './comparison.operators';
 import { applyArrayOperators } from './array.operators';
 import { applyStringOperators } from './string.operators';
 import { applyLogicalOperators } from './logical.operators';
+import { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './geospatial.operators';
+import {
+  evaluateRecent,
+  evaluateUpcoming,
+  evaluateDayOfWeek,
+  evaluateTimeOfDay,
+  evaluateAge,
+  evaluateIsWeekday,
+  evaluateIsWeekend,
+  evaluateIsBefore,
+  evaluateIsAfter,
+} from './datetime.operators';
 
 const hasComparisonOps = (ops: unknown): ops is ComparisonOperators => {
   return (
@@ -51,6 +65,28 @@ const hasLogicalOps = <T>(ops: unknown): ops is LogicalOperators<T> => {
   );
 };
 
+const hasGeospatialOps = (ops: unknown): ops is GeospatialOperators => {
+  return (
+    (ops as GeospatialOperators)[OPERATORS.NEAR] !== undefined ||
+    (ops as GeospatialOperators)[OPERATORS.GEO_BOX] !== undefined ||
+    (ops as GeospatialOperators)[OPERATORS.GEO_POLYGON] !== undefined
+  );
+};
+
+const hasDateTimeOps = (ops: unknown): ops is DateTimeOperators => {
+  return (
+    (ops as DateTimeOperators)[OPERATORS.RECENT] !== undefined ||
+    (ops as DateTimeOperators)[OPERATORS.UPCOMING] !== undefined ||
+    (ops as DateTimeOperators)[OPERATORS.DAY_OF_WEEK] !== undefined ||
+    (ops as DateTimeOperators)[OPERATORS.TIME_OF_DAY] !== undefined ||
+    (ops as DateTimeOperators)[OPERATORS.AGE] !== undefined ||
+    (ops as DateTimeOperators)[OPERATORS.IS_WEEKDAY] !== undefined ||
+    (ops as DateTimeOperators)[OPERATORS.IS_WEEKEND] !== undefined ||
+    (ops as DateTimeOperators)[OPERATORS.IS_BEFORE] !== undefined ||
+    (ops as DateTimeOperators)[OPERATORS.IS_AFTER] !== undefined
+  );
+};
+
 export const processOperators = <T>(
   value: unknown,
   operators: OperatorExpression | LogicalOperators<T>,
@@ -88,6 +124,46 @@ export const processOperators = <T>(
 
   if (hasStringOps(operators)) {
     if (!applyStringOperators(value, operators, config.caseSensitive)) return false;
+  }
+
+  if (hasGeospatialOps(operators)) {
+    const nearOp = operators[OPERATORS.NEAR];
+    if (nearOp && !evaluateNear(value as GeoPoint, nearOp)) return false;
+
+    const geoBoxOp = operators[OPERATORS.GEO_BOX];
+    if (geoBoxOp && !evaluateGeoBox(value as GeoPoint, geoBoxOp)) return false;
+
+    const geoPolygonOp = operators[OPERATORS.GEO_POLYGON];
+    if (geoPolygonOp && !evaluateGeoPolygon(value as GeoPoint, geoPolygonOp)) return false;
+  }
+
+  if (hasDateTimeOps(operators)) {
+    const recentOp = operators[OPERATORS.RECENT];
+    if (recentOp && !evaluateRecent(value, recentOp)) return false;
+
+    const upcomingOp = operators[OPERATORS.UPCOMING];
+    if (upcomingOp && !evaluateUpcoming(value, upcomingOp)) return false;
+
+    const dayOfWeekOp = operators[OPERATORS.DAY_OF_WEEK];
+    if (dayOfWeekOp && !evaluateDayOfWeek(value, dayOfWeekOp)) return false;
+
+    const timeOfDayOp = operators[OPERATORS.TIME_OF_DAY];
+    if (timeOfDayOp && !evaluateTimeOfDay(value, timeOfDayOp)) return false;
+
+    const ageOp = operators[OPERATORS.AGE];
+    if (ageOp && !evaluateAge(value, ageOp)) return false;
+
+    const isWeekdayOp = operators[OPERATORS.IS_WEEKDAY];
+    if (isWeekdayOp !== undefined && !evaluateIsWeekday(value, isWeekdayOp)) return false;
+
+    const isWeekendOp = operators[OPERATORS.IS_WEEKEND];
+    if (isWeekendOp !== undefined && !evaluateIsWeekend(value, isWeekendOp)) return false;
+
+    const isBeforeOp = operators[OPERATORS.IS_BEFORE];
+    if (isBeforeOp && !evaluateIsBefore(value, isBeforeOp)) return false;
+
+    const isAfterOp = operators[OPERATORS.IS_AFTER];
+    if (isAfterOp && !evaluateIsAfter(value, isAfterOp)) return false;
   }
 
   return true;

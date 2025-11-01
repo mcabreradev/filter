@@ -1,14 +1,12 @@
-import { type Ref, onUnmounted } from 'vue';
+import { onUnmounted, getCurrentInstance } from 'vue';
 
 interface UseEditorResizeReturn {
   autoResize: (textarea: HTMLTextAreaElement) => void;
   syncScroll: (event: Event) => void;
+  cleanup: () => void;
 }
 
-/**
- * Composable for editor auto-resize and scroll synchronization
- */
-export function useEditorResize(isVerticalLayout: Ref<boolean>): UseEditorResizeReturn {
+export function useEditorResize(): UseEditorResizeReturn {
   let resizeTimeout: number | null = null;
 
   const autoResize = (textarea: HTMLTextAreaElement): void => {
@@ -39,19 +37,24 @@ export function useEditorResize(isVerticalLayout: Ref<boolean>): UseEditorResize
       highlight.scrollLeft = textarea.scrollLeft;
     }
 
-    if (isVerticalLayout.value) {
-      autoResize(textarea);
+    autoResize(textarea);
+  };
+
+  const cleanup = (): void => {
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = null;
     }
   };
 
-  onUnmounted(() => {
-    if (resizeTimeout) {
-      clearTimeout(resizeTimeout);
-    }
-  });
+  // Only register onUnmounted if we're in a Vue component context
+  if (getCurrentInstance()) {
+    onUnmounted(cleanup);
+  }
 
   return {
     autoResize,
     syncScroll,
+    cleanup,
   };
 }

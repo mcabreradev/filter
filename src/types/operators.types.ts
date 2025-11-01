@@ -50,60 +50,82 @@ type Decrement<N extends number> = N extends 4
         ? 0
         : never;
 
-type OperatorsForType<T> = T extends string
-  ? {
-      $startsWith?: string;
-      $endsWith?: string;
-      $contains?: string;
-      $regex?: string | RegExp;
-      $match?: string | RegExp;
-      $eq?: string;
-      $ne?: string;
-      $in?: string[];
-      $nin?: string[];
-    }
-  : T extends number
+type IsGeoPoint<T> = T extends { lat: number; lng: number } ? true : false;
+
+type OperatorsForType<T> =
+  IsGeoPoint<T> extends true
     ? {
-        $gt?: number;
-        $gte?: number;
-        $lt?: number;
-        $lte?: number;
-        $eq?: number;
-        $ne?: number;
-        $in?: number[];
-        $nin?: number[];
+        $near?: import('./geospatial').NearQuery;
+        $geoBox?: import('./geospatial').BoundingBox;
+        $geoPolygon?: import('./geospatial').PolygonQuery;
+        $eq?: T;
+        $ne?: T;
+        $in?: T[];
+        $nin?: T[];
       }
-    : T extends Date
+    : T extends string
       ? {
-          $gt?: Date;
-          $gte?: Date;
-          $lt?: Date;
-          $lte?: Date;
-          $eq?: Date;
-          $ne?: Date;
-          $in?: Date[];
-          $nin?: Date[];
+          $startsWith?: string;
+          $endsWith?: string;
+          $contains?: string;
+          $regex?: string | RegExp;
+          $match?: string | RegExp;
+          $eq?: string;
+          $ne?: string;
+          $in?: string[];
+          $nin?: string[];
         }
-      : T extends (infer U)[]
+      : T extends number
         ? {
-            $in?: U[];
-            $nin?: U[];
-            $contains?: U;
-            $size?: number;
+            $gt?: number;
+            $gte?: number;
+            $lt?: number;
+            $lte?: number;
+            $eq?: number;
+            $ne?: number;
+            $in?: number[];
+            $nin?: number[];
           }
-        : T extends boolean
+        : T extends Date
           ? {
-              $eq?: boolean;
-              $ne?: boolean;
-              $in?: boolean[];
-              $nin?: boolean[];
+              $gt?: Date;
+              $gte?: Date;
+              $lt?: Date;
+              $lte?: Date;
+              $eq?: Date;
+              $ne?: Date;
+              $in?: Date[];
+              $nin?: Date[];
+              $recent?: import('./datetime').RelativeTimeQuery;
+              $upcoming?: import('./datetime').RelativeTimeQuery;
+              $dayOfWeek?: number[];
+              $timeOfDay?: import('./datetime').TimeOfDayQuery;
+              $age?: import('./datetime').AgeQuery;
+              $isWeekday?: boolean;
+              $isWeekend?: boolean;
+              $isBefore?: Date;
+              $isAfter?: Date;
             }
-          : {
-              $eq?: T;
-              $ne?: T;
-              $in?: T[];
-              $nin?: T[];
-            };
+          : T extends (infer U)[]
+            ? {
+                $in?: U[];
+                $nin?: U[];
+                $contains?: U;
+                $size?: number;
+              }
+            : T extends boolean
+              ? {
+                  $eq?: boolean;
+                  $ne?: boolean;
+                  $in?: boolean[];
+                  $nin?: boolean[];
+                }
+              : {
+                  $eq?: T;
+                  $ne?: T;
+                  $in?: T[];
+                  $nin?: T[];
+                };
 
 type NestedObjectExpression<T, Depth extends number = 4> = [Depth] extends [0]
   ? never

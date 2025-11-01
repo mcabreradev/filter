@@ -15,7 +15,7 @@ interface UseFilterBuilderReturn {
   addRule: () => void;
   removeRule: (index: number) => void;
   clearBuilder: () => void;
-  buildRuleExpression: (rule: BuilderRule) => string;
+  buildRuleExpression: (rule: BuilderRule) => Record<string, any>;
 }
 
 /**
@@ -26,7 +26,7 @@ export function useFilterBuilder(): UseFilterBuilderReturn {
   const builderRules = ref<BuilderRule[]>([{ field: '', operator: '$eq', value: '' }]);
   const logicalOperator = ref<LogicalOperator>('$and');
 
-  const buildRuleExpression = (rule: BuilderRule): string => {
+  const buildRuleExpression = (rule: BuilderRule): Record<string, any> => {
     const { field, operator, value } = rule;
 
     // Handle array operators
@@ -34,29 +34,29 @@ export function useFilterBuilder(): UseFilterBuilderReturn {
       const values = value.split(',').map((v) => {
         const trimmed = v.trim();
         const num = Number(trimmed);
-        return isNaN(num) ? `"${trimmed}"` : num;
+        return isNaN(num) ? trimmed : num;
       });
-      return `{ "${field}": { "${operator}": [${values.join(', ')}] } }`;
+      return { [field]: { [operator]: values } };
     }
 
     // Handle regex
-    if (operator === '$regex') {
-      return `{ "${field}": { "${operator}": "${value}" } }`;
+    if (operator === '$regex' || operator === '$match') {
+      return { [field]: { [operator]: value } };
     }
 
     // Handle boolean values
     if (value === 'true' || value === 'false') {
-      return `{ "${field}": { "${operator}": ${value} } }`;
+      return { [field]: { [operator]: value === 'true' } };
     }
 
     // Handle numeric values
     const numValue = Number(value);
     if (!isNaN(numValue) && value !== '') {
-      return `{ "${field}": { "${operator}": ${numValue} } }`;
+      return { [field]: { [operator]: numValue } };
     }
 
     // Handle string values
-    return `{ "${field}": { "${operator}": "${value}" } }`;
+    return { [field]: { [operator]: value } };
   };
 
   const generatedExpression = computed(() => {
@@ -67,18 +67,12 @@ export function useFilterBuilder(): UseFilterBuilderReturn {
     }
 
     if (validRules.length === 1) {
-      return buildRuleExpression(validRules[0]);
+      const ruleObj = buildRuleExpression(validRules[0]);
+      return JSON.stringify(ruleObj, null, 2);
     }
 
     // Multiple rules with logical operator
-    const ruleExpressions = validRules.map((rule) => {
-      const expr = buildRuleExpression(rule);
-      try {
-        return JSON.parse(expr);
-      } catch {
-        return expr;
-      }
-    });
+    const ruleExpressions = validRules.map((rule) => buildRuleExpression(rule));
 
     const result = {
       [logicalOperator.value]: ruleExpressions,

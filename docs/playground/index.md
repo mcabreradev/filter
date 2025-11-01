@@ -56,6 +56,51 @@ filter(products, {
 });
 ```
 
+### Datetime Operators
+
+```typescript
+// Events in next 7 days
+filter(events, {
+  date: { $upcoming: { days: 7 } }
+});
+
+// Recent activity (last 24 hours)
+filter(users, {
+  lastLogin: { $recent: { hours: 24 } }
+});
+
+// Weekday events only
+filter(events, {
+  date: { $dayOfWeek: [1, 2, 3, 4, 5] }
+});
+
+// Business hours (9 AM - 5 PM)
+filter(appointments, {
+  startTime: { $timeOfDay: { start: 9, end: 17 } }
+});
+
+// Adults (18+)
+filter(users, {
+  birthDate: { $age: { min: 18 } }
+});
+
+// Weekend events
+filter(events, {
+  date: { $isWeekend: true }
+});
+
+// Combine multiple datetime conditions
+filter(events, {
+  date: {
+    $upcoming: { days: 7 },
+    $dayOfWeek: [1, 2, 3, 4, 5]
+  },
+  startTime: {
+    $timeOfDay: { start: 9, end: 17 }
+  }
+});
+```
+
 ### Advanced Examples
 
 ```typescript
@@ -76,6 +121,24 @@ filter(products, (p) =>
 filter(users, 'ALICE', { 
   caseSensitive: true,
   debug: true 
+});
+
+// Datetime filtering - upcoming weekday events
+filter(events, {
+  date: {
+    $upcoming: { days: 30 },
+    $dayOfWeek: [1, 2, 3, 4, 5]
+  },
+  startTime: {
+    $timeOfDay: { start: 9, end: 17 }
+  }
+});
+
+// Active adult users
+filter(users, {
+  birthDate: { $age: { min: 18, max: 65 } },
+  lastLogin: { $recent: { days: 30 } },
+  premium: true
 });
 ```
 
@@ -150,6 +213,92 @@ The playground includes pre-populated datasets:
     rating: 4.7,
     inStock: false,
     tags: ['premium']
+  }
+]
+```
+
+### Events Dataset
+
+```typescript
+[
+  {
+    id: 1,
+    name: 'Team Meeting',
+    date: new Date('2025-01-20'),
+    startTime: new Date('2025-01-20T09:00:00'),
+    duration: 60,
+    attendees: 5,
+    location: 'Office'
+  },
+  {
+    id: 2,
+    name: 'Product Launch',
+    date: new Date('2025-01-25'),
+    startTime: new Date('2025-01-25T14:00:00'),
+    duration: 120,
+    attendees: 50,
+    location: 'Conference Center'
+  },
+  {
+    id: 3,
+    name: 'Weekend Workshop',
+    date: new Date('2025-02-01'),
+    startTime: new Date('2025-02-01T10:00:00'),
+    duration: 480,
+    attendees: 20,
+    location: 'Remote'
+  },
+  {
+    id: 4,
+    name: 'Client Call',
+    date: new Date('2025-01-18'),
+    startTime: new Date('2025-01-18T15:00:00'),
+    duration: 30,
+    attendees: 3,
+    location: 'Video Call'
+  }
+]
+```
+
+### Users with Dates Dataset
+
+```typescript
+[
+  {
+    id: 1,
+    name: 'Alice',
+    email: 'alice@example.com',
+    birthDate: new Date('2000-01-01'),
+    lastLogin: new Date('2025-01-14T10:30:00'),
+    joinedAt: new Date('2023-06-15'),
+    premium: true
+  },
+  {
+    id: 2,
+    name: 'Bob',
+    email: 'bob@example.com',
+    birthDate: new Date('2005-05-15'),
+    lastLogin: new Date('2025-01-10T08:00:00'),
+    joinedAt: new Date('2024-01-20'),
+    premium: false
+  },
+  {
+    id: 3,
+    name: 'Charlie',
+    email: 'charlie@example.com',
+    birthDate: new Date('1990-08-22'),
+    lastLogin: new Date('2025-01-01T14:15:00'),
+    joinedAt: new Date('2022-03-10'),
+    premium: true
+  },
+  {
+    id: 4,
+    name: 'Diana',
+    email: 'diana@example.com',
+    birthDate: new Date('2010-12-05'),
+    lastLogin: new Date('2025-01-15T16:45:00'),
+    joinedAt: new Date('2024-11-01'),
+    premium: false
   }
 ]
 ```
@@ -257,6 +406,38 @@ filter(users, { nonExistent: 'value' });
 
 // Type mismatches
 filter(products, { price: 'not a number' });
+```
+
+### 5. Explore Date/Time Operators
+
+Test temporal filtering with datetime operators:
+
+```typescript
+// Upcoming events in next week
+filter(events, {
+  date: { $upcoming: { days: 7 } }
+});
+
+// Recent user activity
+filter(users, {
+  lastLogin: { $recent: { hours: 24 } }
+});
+
+// Business hours appointments
+filter(appointments, {
+  startTime: { $timeOfDay: { start: 9, end: 17 } },
+  date: { $isWeekday: true }
+});
+
+// Age-based filtering
+filter(users, {
+  birthDate: { $age: { min: 18, max: 65 } }
+});
+
+// Weekend events
+filter(events, {
+  date: { $isWeekend: true }
+});
 ```
 
 ## Sharing Examples
