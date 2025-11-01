@@ -7,11 +7,20 @@ export function calculateDistance(p1: GeoPoint, p2: GeoPoint): number {
 
   const lat1 = toRad(p1.lat);
   const lat2 = toRad(p2.lat);
-  const deltaLng = toRad(p2.lng - p1.lng);
+  const deltaLat = toRad(p2.lat - p1.lat);
 
-  const centralAngle = Math.acos(
-    Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(deltaLng),
-  );
+  // Normalize longitude difference to handle date line crossing
+  let lngDiff = p2.lng - p1.lng;
+  if (lngDiff > 180) lngDiff -= 360;
+  if (lngDiff < -180) lngDiff += 360;
+  const deltaLng = toRad(lngDiff);
+
+  // Haversine formula for better numerical stability
+  const a =
+    Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+
+  const centralAngle = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return EARTH_RADIUS_METERS * centralAngle;
 }

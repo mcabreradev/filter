@@ -31,8 +31,16 @@ export function evaluateGeoPolygon(point: GeoPoint, query: PolygonQuery): boolea
     return false;
   }
 
-  let inside = false;
   const vertices = query.points;
+
+  // Check if point is exactly on a vertex
+  for (const vertex of vertices) {
+    if (point.lat === vertex.lat && point.lng === vertex.lng) {
+      return false;
+    }
+  }
+
+  let inside = false;
 
   for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
     const vi = vertices[i];
