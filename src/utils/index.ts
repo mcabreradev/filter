@@ -40,3 +40,5 @@ export {
 } from './lazy-iterators';
 
 export { memoization, MemoizationManager } from './memoization';
+
+export { calculateDistance, isValidGeoPoint } from './geo-distance';

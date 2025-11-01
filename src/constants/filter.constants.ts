@@ -33,6 +33,9 @@ export const OPERATORS = {
   NOT: '$not',
   REGEX: '$regex',
   MATCH: '$match',
+  NEAR: '$near',
+  GEO_BOX: '$geoBox',
+  GEO_POLYGON: '$geoPolygon',
 } as const;
 
 export const OPERATOR_KEYS = Object.values(OPERATORS);

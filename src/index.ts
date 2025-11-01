@@ -45,10 +45,17 @@ export type {
   LazyFilterResult,
   AsyncLazyFilterResult,
   ChunkedFilterOptions,
+  GeoPoint,
+  NearQuery,
+  BoundingBox,
+  PolygonQuery,
+  GeospatialOperators,
 } from './types/index.js';
 
 export { validateExpression, validateOptions } from './validation/index.js';
 export { mergeConfig, createFilterConfig } from './config/index.js';
+export { calculateDistance, isValidGeoPoint } from './utils/index.js';
+export { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './operators/index.js';
 
 export {
   useFilter as useFilterReact,

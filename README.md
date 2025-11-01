@@ -28,10 +28,11 @@ Go beyond JavaScript's native `Array.filter()` with a library that understands y
 - **✨ Smart Autocomplete** - IntelliSense suggests only valid operators for each property type
 - **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
 - **🚀 Performance Optimized** - Optional caching and regex compilation optimization
-- **📦 MongoDB-Style Operators** - 18+ operators for advanced filtering (v5.0.0+)
+- **📦 MongoDB-Style Operators** - 21+ operators for advanced filtering (v5.0.0+)
+- **🌍 Geospatial Operators** - Location-based filtering with $near, $geoBox, $geoPolygon (v5.6.0+)
 - **💨 Lazy Evaluation** - Process large datasets efficiently with generators (v5.1.0+)
 - **🎨 Framework Integrations** - React, Vue, and Svelte support (v5.3.0+)
-- **🧪 Battle-Tested** - 270+ tests ensuring reliability
+- **🧪 Battle-Tested** - 523+ tests ensuring reliability
 
 ---
 
@@ -94,7 +95,7 @@ filter(users, { name: { $startsWith: 'A' } });
 // → Returns Alice
 ```
 
-> 🎮 **[Try it live in the Interactive Playground!](https://filter-docs.vercel.app/playground/)**
+> 🎮 **[Try it live in the Interactive Playground!](https://mcabreradev-filter.vercel.app/playground/)**
 
 ---
 
@@ -473,6 +474,79 @@ filter(products, { category: [] });
 - 🔄 100% backward compatible
 - 🎯 Works with strings, numbers, booleans
 - 🌟 Supports wildcard patterns
+
+#### Geospatial Operators (v5.6.0+)
+
+**New in v5.6.0**: Filter by geographic location with powerful spatial operators!
+
+```typescript
+import { filter, type GeoPoint } from '@mcabreradev/filter';
+
+interface Restaurant {
+  name: string;
+  location: GeoPoint;
+  rating: number;
+}
+
+const userLocation: GeoPoint = { lat: 52.52, lng: 13.405 };
+
+// $near - Find points within radius
+filter(restaurants, {
+  location: {
+    $near: {
+      center: userLocation,
+      maxDistanceMeters: 5000
+    }
+  }
+});
+
+// $geoBox - Bounding box queries
+filter(stores, {
+  location: {
+    $geoBox: {
+      southwest: { lat: 52.5, lng: 13.3 },
+      northeast: { lat: 52.6, lng: 13.5 }
+    }
+  }
+});
+
+// $geoPolygon - Polygon containment
+filter(properties, {
+  location: {
+    $geoPolygon: {
+      points: [
+        { lat: 51.5074, lng: -0.1278 },
+        { lat: 51.5100, lng: -0.1200 },
+        { lat: 51.5050, lng: -0.1150 },
+        { lat: 51.5020, lng: -0.1250 }
+      ]
+    }
+  }
+});
+
+// Combine with other filters
+filter(restaurants, {
+  location: {
+    $near: {
+      center: userLocation,
+      maxDistanceMeters: 3000
+    }
+  },
+  rating: { $gte: 4.5 },
+  isOpen: true
+});
+```
+
+**Available:** `$near`, `$geoBox`, `$geoPolygon`
+
+**Features:**
+- 🌍 Location-based filtering
+- 📏 Accurate distance calculation
+- 🗺️ Bounding box and polygon support
+- ⚡ Fast spherical law of cosines
+- 🔒 Automatic coordinate validation
+
+See [Geospatial Operators Guide](./docs/guide/geospatial-operators.md) for complete documentation.
 
 ### Predicate Functions
 
@@ -963,7 +1037,8 @@ For performance optimization tips, see [Performance Guide](./docs/advanced/wiki.
 
 - **[Complete Wiki](./docs/advanced/wiki.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
 - **[Framework Integrations](./docs/frameworks/overview.md)** - Complete guide for React, Vue, and Svelte integrations
-- **[Operators Guide](./docs/guide/operators.md)** - Detailed guide for all 18+ MongoDB-style operators with examples and advanced regex patterns
+- **[Operators Guide](./docs/guide/operators.md)** - Detailed guide for all 21+ MongoDB-style operators with examples and advanced regex patterns
+- **[Geospatial Operators](./docs/guide/geospatial-operators.md)** - Complete guide for location-based filtering with $near, $geoBox, $geoPolygon
 - **[Lazy Evaluation](./docs/guide/lazy-evaluation.md)** - Comprehensive guide to lazy evaluation for efficient large dataset processing
 - **[Logical Operators](./docs/guide/logical-operators.md)** - Advanced patterns and complex queries with $and, $or, $not
 - **[Performance Benchmarks](./docs/advanced/performance-benchmarks.md)** - Detailed performance metrics and optimization strategies
@@ -975,6 +1050,7 @@ For performance optimization tips, see [Performance Guide](./docs/advanced/wiki.
 - [Installation & Setup](./docs/guide/installation.md)
 - [Interactive Playground](https://mcabreradev-filter.vercel.app/playground/) 🎮 NEW
 - [Framework Integrations](./docs/frameworks/overview.md) ⭐ NEW
+- [Geospatial Operators](./docs/guide/geospatial-operators.md) 🌍 NEW
 - [All Operators Reference](./docs/guide/operators.md)
 - [Regex Patterns Guide](./docs/guide/operators.md#string-operators)
 - [Logical Operators Guide](./docs/guide/logical-operators.md)
@@ -1043,6 +1119,13 @@ getFilterCacheStats(): { hits: number; misses: number; size: number; hitRate: nu
 mergeConfig(options?: FilterOptions): FilterConfig
 createFilterConfig(options?: FilterOptions): FilterConfig
 
+// Geospatial utilities
+calculateDistance(p1: GeoPoint, p2: GeoPoint): number
+isValidGeoPoint(point: unknown): point is GeoPoint
+evaluateNear(point: GeoPoint, query: NearQuery): boolean
+evaluateGeoBox(point: GeoPoint, box: BoundingBox): boolean
+evaluateGeoPolygon(point: GeoPoint, query: PolygonQuery): boolean
+
 // Framework integrations
 useFilter<T>(data: T[], expression: Expression<T>, options?: FilterOptions) // React
 useFilter<T>(data: Ref<T[]>, expression: Ref<Expression<T>>, options?: FilterOptions) // Vue
@@ -1105,7 +1188,16 @@ The library has 270+ tests with comprehensive coverage of all features.
 
 ## Changelog
 
-### v5.5.1 (Current)
+### v5.6.0 (Current)
+- 🌍 **Geospatial Operators**: Location-based filtering with $near, $geoBox, $geoPolygon
+- 📏 **Distance Calculation**: Spherical law of cosines for accurate distance measurement
+- 🗺️ **Spatial Queries**: Proximity search, bounding box, and polygon containment
+- 🔒 **Coordinate Validation**: Automatic validation of lat/lng coordinates
+- ⚡ **Performance Optimized**: Fast algorithms for all geospatial operations
+- 📚 Complete geospatial documentation and examples
+- ✅ 26 new tests (549 total tests)
+
+### v5.5.1
 - 🐛 Bug fixes and stability improvements
 - 📚 Documentation updates
 - 🔧 Build optimizations

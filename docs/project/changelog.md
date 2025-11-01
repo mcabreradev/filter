@@ -5,6 +5,53 @@ All notable changes to @mcabreradev/filter are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.6.0] - 2025-11-01
+
+### Added
+- **Geospatial Operators**: Location-based filtering with three powerful spatial operators
+  - `$near`: Find points within radius with optional min/max distance
+  - `$geoBox`: Bounding box queries for rectangular areas
+  - `$geoPolygon`: Polygon containment using ray casting algorithm
+- **Distance Calculation**: Spherical law of cosines for accurate distance measurement
+  - `calculateDistance(p1, p2)` function for manual distance calculation
+  - Earth radius: 6,371,000 meters
+  - Returns distance in meters
+- **Coordinate Validation**: Automatic validation of geographic coordinates
+  - `isValidGeoPoint(point)` function for coordinate validation
+  - Latitude range: -90 to 90
+  - Longitude range: -180 to 180
+- **Geospatial Utilities**: Direct access to geospatial evaluation functions
+  - `evaluateNear(point, query)` for proximity checks
+  - `evaluateGeoBox(point, box)` for bounding box checks
+  - `evaluateGeoPolygon(point, query)` for polygon containment checks
+- **TypeScript Support**: Full type definitions for geospatial types
+  - `GeoPoint` interface for coordinates
+  - `NearQuery`, `BoundingBox`, `PolygonQuery` interfaces
+  - `GeospatialOperators` type for operator support
+- **Documentation**: Complete geospatial operators guide with examples
+  - Restaurant finder examples
+  - Delivery zone validation
+  - Property search use cases
+  - IoT device monitoring patterns
+
+### Changed
+- Updated operator count from 18+ to 21+ operators
+- Enhanced type system to recognize GeoPoint types
+- Improved autocomplete for geospatial operators on GeoPoint properties
+- Extended constants to include geospatial operator keys
+
+### Performance
+- Fast distance calculation using spherical law of cosines
+- Efficient ray casting algorithm for polygon containment
+- Optimized bounding box checks
+- Compatible with lazy evaluation for large datasets
+
+### Testing
+- Added 26 new comprehensive tests
+- Total test count: 523 tests (previously 497)
+- 100% code coverage for geospatial features
+- Edge case testing for invalid coordinates and missing data
+
 ## [5.5.1] - 2025-10-30
 
 ### Fixed

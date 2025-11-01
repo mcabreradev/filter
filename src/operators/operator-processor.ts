@@ -6,11 +6,13 @@ import type {
   StringOperators,
   LogicalOperators,
 } from '../types';
+import type { GeospatialOperators, GeoPoint } from '../types/geospatial';
 import { OPERATORS } from '../constants';
 import { applyComparisonOperators } from './comparison.operators';
 import { applyArrayOperators } from './array.operators';
 import { applyStringOperators } from './string.operators';
 import { applyLogicalOperators } from './logical.operators';
+import { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './geospatial.operators';
 
 const hasComparisonOps = (ops: unknown): ops is ComparisonOperators => {
   return (
@@ -51,6 +53,14 @@ const hasLogicalOps = <T>(ops: unknown): ops is LogicalOperators<T> => {
   );
 };
 
+const hasGeospatialOps = (ops: unknown): ops is GeospatialOperators => {
+  return (
+    (ops as GeospatialOperators)[OPERATORS.NEAR] !== undefined ||
+    (ops as GeospatialOperators)[OPERATORS.GEO_BOX] !== undefined ||
+    (ops as GeospatialOperators)[OPERATORS.GEO_POLYGON] !== undefined
+  );
+};
+
 export const processOperators = <T>(
   value: unknown,
   operators: OperatorExpression | LogicalOperators<T>,
@@ -88,6 +98,17 @@ export const processOperators = <T>(
 
   if (hasStringOps(operators)) {
     if (!applyStringOperators(value, operators, config.caseSensitive)) return false;
+  }
+
+  if (hasGeospatialOps(operators)) {
+    const nearOp = operators[OPERATORS.NEAR];
+    if (nearOp && !evaluateNear(value as GeoPoint, nearOp)) return false;
+
+    const geoBoxOp = operators[OPERATORS.GEO_BOX];
+    if (geoBoxOp && !evaluateGeoBox(value as GeoPoint, geoBoxOp)) return false;
+
+    const geoPolygonOp = operators[OPERATORS.GEO_POLYGON];
+    if (geoPolygonOp && !evaluateGeoPolygon(value as GeoPoint, geoPolygonOp)) return false;
   }
 
   return true;

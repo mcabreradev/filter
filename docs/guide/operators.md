@@ -1,11 +1,11 @@
 ---
 title: Operators Guide
-description: Complete guide to all 18 MongoDB-style operators in @mcabreradev/filter
+description: Complete guide to all 21+ MongoDB-style operators in @mcabreradev/filter
 ---
 
-# Operators Guide (v5.0.0)
+# Operators Guide (v5.6.0)
 
-This guide covers all the MongoDB-style operators available in `@mcabreradev/filter` v5.0.0.
+This guide covers all the MongoDB-style operators available in `@mcabreradev/filter` v5.6.0.
 
 ## Table of Contents
 
@@ -13,6 +13,7 @@ This guide covers all the MongoDB-style operators available in `@mcabreradev/fil
 - [Array Operators](#array-operators)
 - [String Operators](#string-operators)
 - [Logical Operators](#logical-operators)
+- [Geospatial Operators](#geospatial-operators) ⭐ NEW
 - [Combining Operators](#combining-operators)
 - [Real-World Examples](#real-world-examples)
 
@@ -895,6 +896,308 @@ filter(users, {
 ```
 
 **Available:** `$and`, `$or`, `$not`
+
+## Geospatial Operators
+
+**New in v5.6.0:** Filter data by geographic location with powerful spatial operators.
+
+### `$near` - Proximity Search
+
+Find points within a specified radius of a center point. Uses the spherical law of cosines for distance calculation.
+
+```typescript
+import { filter, type GeoPoint } from '@mcabreradev/filter';
+
+interface Restaurant {
+  name: string;
+  location: GeoPoint;
+  rating: number;
+}
+
+const restaurants: Restaurant[] = [
+  { name: 'Berlin Bistro', location: { lat: 52.52, lng: 13.405 }, rating: 4.5 },
+  { name: 'Pasta Paradise', location: { lat: 52.521, lng: 13.406 }, rating: 4.8 },
+  { name: 'Sushi Spot', location: { lat: 52.53, lng: 13.42 }, rating: 4.6 },
+  { name: 'Taco Time', location: { lat: 52.55, lng: 13.45 }, rating: 4.2 }
+];
+
+const userLocation: GeoPoint = { lat: 52.52, lng: 13.405 };
+
+filter(restaurants, {
+  location: {
+    $near: {
+      center: userLocation,
+      maxDistanceMeters: 2000
+    }
+  }
+});
+// → Returns: Berlin Bistro, Pasta Paradise, Sushi Spot (within 2km)
+```
+
+**With minimum distance:**
+
+```typescript
+filter(restaurants, {
+  location: {
+    $near: {
+      center: userLocation,
+      maxDistanceMeters: 5000,
+      minDistanceMeters: 1000
+    }
+  }
+});
+// → Excludes restaurants too close (< 1km) or too far (> 5km)
+```
+
+**Combined with other filters:**
+
+```typescript
+filter(restaurants, {
+  location: {
+    $near: {
+      center: userLocation,
+      maxDistanceMeters: 3000
+    }
+  },
+  rating: { $gte: 4.5 }
+});
+// → High-rated restaurants within 3km
+```
+
+### `$geoBox` - Bounding Box
+
+Find points within a rectangular area defined by southwest and northeast corners.
+
+```typescript
+interface Store {
+  name: string;
+  location: GeoPoint;
+  inStock: boolean;
+}
+
+const stores: Store[] = [
+  { name: 'Store A', location: { lat: 52.52, lng: 13.405 }, inStock: true },
+  { name: 'Store B', location: { lat: 52.525, lng: 13.415 }, inStock: true },
+  { name: 'Store C', location: { lat: 52.55, lng: 13.45 }, inStock: false }
+];
+
+filter(stores, {
+  location: {
+    $geoBox: {
+      southwest: { lat: 52.51, lng: 13.4 },
+      northeast: { lat: 52.54, lng: 13.43 }
+    }
+  }
+});
+// → Returns: Store A, Store B (within delivery area)
+```
+
+**Use case - Delivery zone validation:**
+
+```typescript
+filter(stores, {
+  location: {
+    $geoBox: {
+      southwest: { lat: 52.5, lng: 13.3 },
+      northeast: { lat: 52.6, lng: 13.5 }
+    }
+  },
+  inStock: true
+});
+// → Available stores in delivery zone
+```
+
+### `$geoPolygon` - Polygon Containment
+
+Find points inside a custom polygon area. Uses ray casting algorithm for point-in-polygon detection.
+
+```typescript
+interface Property {
+  address: string;
+  location: GeoPoint;
+  price: number;
+}
+
+const properties: Property[] = [
+  { address: '123 Main St', location: { lat: 52.52, lng: 13.405 }, price: 500000 },
+  { address: '456 Oak Ave', location: { lat: 52.525, lng: 13.415 }, price: 450000 },
+  { address: '789 Elm Rd', location: { lat: 52.55, lng: 13.45 }, price: 600000 }
+];
+
+filter(properties, {
+  location: {
+    $geoPolygon: {
+      points: [
+        { lat: 52.51, lng: 13.4 },
+        { lat: 52.54, lng: 13.4 },
+        { lat: 52.54, lng: 13.43 },
+        { lat: 52.51, lng: 13.43 }
+      ]
+    }
+  }
+});
+// → Properties within neighborhood boundary
+```
+
+**Use case - School district search:**
+
+```typescript
+const schoolDistrict = {
+  points: [
+    { lat: 52.5, lng: 13.3 },
+    { lat: 52.55, lng: 13.35 },
+    { lat: 52.6, lng: 13.3 },
+    { lat: 52.6, lng: 13.5 },
+    { lat: 52.5, lng: 13.5 }
+  ]
+};
+
+filter(properties, {
+  location: {
+    $geoPolygon: schoolDistrict
+  },
+  price: { $lte: 500000 }
+});
+// → Affordable properties in school district
+```
+
+### Combining Geospatial Operators
+
+You can combine geospatial operators with all other operators:
+
+```typescript
+filter(restaurants, {
+  $and: [
+    {
+      location: {
+        $near: {
+          center: userLocation,
+          maxDistanceMeters: 3000
+        }
+      }
+    },
+    {
+      $or: [
+        { cuisine: 'Italian' },
+        { cuisine: 'Japanese' }
+      ]
+    },
+    {
+      rating: { $gte: 4.5 },
+      isOpen: true
+    }
+  ]
+});
+// → Nearby, open, highly-rated Italian or Japanese restaurants
+```
+
+### Distance Utilities
+
+You can also use the distance calculation utilities directly:
+
+```typescript
+import { calculateDistance, isValidGeoPoint } from '@mcabreradev/filter';
+
+const berlin: GeoPoint = { lat: 52.52, lng: 13.405 };
+const paris: GeoPoint = { lat: 48.8566, lng: 2.3522 };
+
+const distance = calculateDistance(berlin, paris);
+console.log(distance);
+// → ~878000 (meters)
+
+if (isValidGeoPoint({ lat: 91, lng: 0 })) {
+  // Invalid - latitude must be -90 to 90
+}
+
+if (isValidGeoPoint({ lat: 52.52, lng: 13.405 })) {
+  // Valid coordinates
+}
+```
+
+### Coordinate Validation
+
+All geospatial operators automatically validate coordinates:
+
+- **Latitude:** Must be between -90 and 90
+- **Longitude:** Must be between -180 and 180
+- Invalid coordinates are automatically excluded from results
+
+### Performance Considerations
+
+- **Distance calculation:** Uses spherical law of cosines (fast approximation)
+- **Bounding box:** Fastest for rectangular areas
+- **Polygon:** Efficient ray casting algorithm
+- **Lazy evaluation:** Works with `filterLazy` for large datasets
+
+```typescript
+import { filterLazy } from '@mcabreradev/filter';
+
+const nearbyLazy = filterLazy(millionRestaurants, {
+  location: {
+    $near: {
+      center: userLocation,
+      maxDistanceMeters: 5000
+    }
+  }
+});
+
+for (const restaurant of nearbyLazy) {
+  if (shouldStop) break;
+}
+```
+
+### Real-World Examples
+
+**Restaurant finder:**
+
+```typescript
+const findNearbyRestaurants = (userLoc: GeoPoint, cuisine?: string) => {
+  return filter(restaurants, {
+    location: {
+      $near: {
+        center: userLoc,
+        maxDistanceMeters: 5000
+      }
+    },
+    ...(cuisine && { cuisine }),
+    isOpen: true,
+    rating: { $gte: 4.0 }
+  });
+};
+```
+
+**Delivery zone check:**
+
+```typescript
+const isInDeliveryZone = (address: GeoPoint, restaurantLoc: GeoPoint): boolean => {
+  const nearby = filter([{ location: address }], {
+    location: {
+      $near: {
+        center: restaurantLoc,
+        maxDistanceMeters: 8000
+      }
+    }
+  });
+  
+  return nearby.length > 0;
+};
+```
+
+**Property search by neighborhood:**
+
+```typescript
+const findPropertiesInNeighborhood = (boundary: GeoPoint[], maxPrice: number) => {
+  return filter(properties, {
+    location: {
+      $geoPolygon: { points: boundary }
+    },
+    price: { $lte: maxPrice },
+    status: 'available'
+  });
+};
+```
+
+**Available:** `$near`, `$geoBox`, `$geoPolygon`
 
 ## Combining Operators
 

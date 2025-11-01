@@ -13,20 +13,6 @@
             <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
           </svg>
         </button>
-        <button 
-          @click="isVerticalLayout = !isVerticalLayout" 
-          class="layout-toggle"
-          :title="isVerticalLayout ? 'Switch to side-by-side' : 'Switch to stacked'"
-        >
-          <svg v-if="isVerticalLayout" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="18" rx="1"></rect>
-            <rect x="14" y="3" width="7" height="18" rx="1"></rect>
-          </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="7" rx="1"></rect>
-            <rect x="3" y="14" width="18" height="7" rx="1"></rect>
-          </svg>
-        </button>
         <select v-model="selectedExample" @change="handleLoadExample" class="example-selector">
           <option v-for="example in examples" :key="example.id" :value="example.id">
             {{ example.name }}
@@ -105,7 +91,7 @@
     </div>
 
     <!-- Code Editor and Output -->
-    <div class="playground-content" :class="{ 'layout-horizontal': !isVerticalLayout }">
+    <div class="playground-content">
       <div class="editor-section">
         <div class="editor-header">Code</div>
         <div class="editor-wrapper">
@@ -121,7 +107,7 @@
       </div>
       <div class="output-section">
         <div class="output-header">Output</div>
-        <pre v-if="!error" class="output-content">{{ output }}</pre>
+        <pre v-if="!error" class="output-content" v-html="highlightedOutput"></pre>
         <pre v-else class="error-content">{{ error }}</pre>
       </div>
     </div>
@@ -141,12 +127,12 @@ import { useDebouncedExecute } from '../composables/useDebounce';
 import { examples } from '../data/examples';
 import { datasets, getDatasetSampleFilter } from '../data/datasets';
 
-const isVerticalLayout = ref(true);
 const showBuilder = ref(false);
 const selectedExample = ref('basic');
 const selectedDataset = ref('users');
+const savedCode = ref('');
 
-const { code, highlightedCode, output, error, highlightCode, executeCode, setCode } = useCodeEditor();
+const { code, highlightedCode, highlightedOutput, output, error, highlightCode, executeCode, setCode } = useCodeEditor();
 
 const {
   builderRules,
@@ -168,7 +154,7 @@ const {
   getPlaceholderForOperator,
 } = useCodeAnalysis(code, datasetFields);
 
-const { autoResize, syncScroll } = useEditorResize(isVerticalLayout);
+const { autoResize, syncScroll } = useEditorResize();
 
 const executeAndHighlight = (): void => {
   highlightCode();
@@ -178,10 +164,8 @@ const executeAndHighlight = (): void => {
 const { debouncedExecute } = useDebouncedExecute(executeAndHighlight, 300);
 
 const handleCodeInput = (): void => {
-  if (isVerticalLayout.value) {
-    const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
-    if (textarea) autoResize(textarea);
-  }
+  const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
+  if (textarea) autoResize(textarea);
   debouncedExecute();
 };
 
@@ -202,10 +186,8 @@ const handleLoadExample = (): void => {
   }
 
   nextTick(() => {
-    if (isVerticalLayout.value) {
-      const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
-      if (textarea) autoResize(textarea);
-    }
+    const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
+    if (textarea) autoResize(textarea);
   });
 };
 
@@ -222,6 +204,7 @@ const handleDatasetChange = (): void => {
 ${dataset.code}
 
 const result = filter(${datasetVarName}, ${sampleFilter});
+
 console.log(result);`;
 
   setCode(newCode);
@@ -229,10 +212,8 @@ console.log(result);`;
   clearBuilder();
 
   nextTick(() => {
-    if (isVerticalLayout.value) {
-      const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
-      if (textarea) autoResize(textarea);
-    }
+    const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
+    if (textarea) autoResize(textarea);
   });
 };
 
@@ -266,26 +247,10 @@ const handleApplyFilter = (): void => {
   executeCode(filter);
 
   nextTick(() => {
-    if (isVerticalLayout.value) {
-      const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
-      if (textarea) autoResize(textarea);
-    }
+    const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
+    if (textarea) autoResize(textarea);
   });
 };
-
-watch(isVerticalLayout, () => {
-  nextTick(() => {
-    const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
-    if (!textarea) return;
-
-    if (isVerticalLayout.value) {
-      autoResize(textarea);
-    } else {
-      const wrapper = textarea.parentElement;
-      if (wrapper) wrapper.style.height = '';
-    }
-  });
-});
 
 watch(availableFields, (currentFields) => {
   builderRules.value = builderRules.value.map((rule) =>
@@ -295,7 +260,49 @@ watch(availableFields, (currentFields) => {
   );
 });
 
-// Lifecycle
+watch(showBuilder, (isBuilderOpen) => {
+  if (isBuilderOpen) {
+    savedCode.value = code.value;
+    clearBuilder();
+    
+    const dataset = currentDataset.value;
+    if (!dataset) return;
+
+    const datasetVarMatch = dataset.code.match(/const\s+(\w+)\s*=/);
+    const datasetVarName = datasetVarMatch?.[1] || 'data';
+
+    const emptyFilterCode = `import { filter } from '@mcabreradev/filter';
+
+${dataset.code}
+
+const result = filter(${datasetVarName}, {});
+
+console.log(result);`;
+
+    setCode(emptyFilterCode);
+    output.value = '[]';
+    highlightedOutput.value = '[]';
+    error.value = '';
+    
+    nextTick(() => {
+      const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
+      if (textarea) autoResize(textarea);
+    });
+  } else {
+    clearBuilder();
+    
+    if (savedCode.value) {
+      setCode(savedCode.value);
+      executeCode(filter);
+      
+      nextTick(() => {
+        const textarea = document.querySelector('.code-editor') as HTMLTextAreaElement;
+        if (textarea) autoResize(textarea);
+      });
+    }
+  }
+});
+
 onMounted(() => {
   handleLoadExample();
 });
@@ -328,8 +335,7 @@ onMounted(() => {
   gap: 0.75rem;
 }
 
-.builder-toggle,
-.layout-toggle {
+.builder-toggle {
   padding: 0.5rem;
   background: var(--vp-code-bg);
   border: 1px solid var(--vp-c-divider);
@@ -342,19 +348,16 @@ onMounted(() => {
 }
 
 .builder-toggle:hover,
-.layout-toggle:hover,
 .builder-toggle.active {
   background: var(--vp-c-brand-1);
   border-color: var(--vp-c-brand-1);
 }
 
-.builder-toggle svg,
-.layout-toggle svg {
+.builder-toggle svg {
   stroke: var(--vp-code-color);
 }
 
 .builder-toggle:hover svg,
-.layout-toggle:hover svg,
 .builder-toggle.active svg {
   stroke: white;
 }
@@ -587,40 +590,9 @@ onMounted(() => {
   min-height: 400px;
 }
 
-.playground-content.layout-horizontal {
-  flex-direction: row;
-  max-height: 600px;
-}
-
-.playground-content.layout-horizontal .editor-section {
-  flex: 1;
-  border-right: 1px solid var(--vp-c-divider);
-  border-bottom: none;
-  min-height: 400px;
-  max-height: 600px;
-}
-
-.playground-content.layout-horizontal .output-section {
-  flex: 1;
-  min-height: 400px;
-  max-height: 600px;
-}
-
 .editor-section,
 .output-section {
-  display: flex;
-  flex-direction: column;
   min-height: 300px;
-}
-
-.playground-content:not(.layout-horizontal) .editor-section,
-.playground-content:not(.layout-horizontal) .output-section {
-  flex: 0 0 auto;
-}
-
-.playground-content.layout-horizontal .editor-section,
-.playground-content.layout-horizontal .output-section {
-  flex: 1;
 }
 
 .editor-section {
@@ -834,6 +806,23 @@ onMounted(() => {
 }
 
 .code-highlight :deep(.token-property) {
+  color: #89ddff;
+}
+
+.output-content :deep(.token-keyword) {
+  color: #c792ea;
+  font-weight: 600;
+}
+
+.output-content :deep(.token-string) {
+  color: #c3e88d;
+}
+
+.output-content :deep(.token-number) {
+  color: #f78c6c;
+}
+
+.output-content :deep(.token-property) {
   color: #89ddff;
 }
 </style>

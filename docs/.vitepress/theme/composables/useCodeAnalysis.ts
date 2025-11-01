@@ -5,7 +5,7 @@ export interface OperatorOption {
   label: string;
 }
 
-type FieldType = 'string' | 'number' | 'boolean';
+type FieldType = 'string' | 'number' | 'boolean' | 'object';
 
 const operatorsByType: Record<FieldType | 'array', OperatorOption[]> = {
   string: [
@@ -15,6 +15,9 @@ const operatorsByType: Record<FieldType | 'array', OperatorOption[]> = {
     { value: '$startsWith', label: 'starts with' },
     { value: '$endsWith', label: 'ends with' },
     { value: '$regex', label: 'matches regex' },
+    { value: '$match', label: 'matches pattern' },
+    { value: '$in', label: 'in array' },
+    { value: '$nin', label: 'not in array' },
   ],
   number: [
     { value: '$eq', label: 'equals' },
@@ -23,14 +26,23 @@ const operatorsByType: Record<FieldType | 'array', OperatorOption[]> = {
     { value: '$gte', label: 'greater or equal' },
     { value: '$lt', label: 'less than' },
     { value: '$lte', label: 'less or equal' },
+    { value: '$in', label: 'in array' },
+    { value: '$nin', label: 'not in array' },
   ],
   boolean: [
     { value: '$eq', label: 'equals' },
     { value: '$ne', label: 'not equals' },
   ],
+  object: [
+    { value: '$near', label: 'near location' },
+    { value: '$geoBox', label: 'within bounding box' },
+    { value: '$geoPolygon', label: 'within polygon' },
+  ],
   array: [
     { value: '$in', label: 'in array' },
     { value: '$nin', label: 'not in array' },
+    { value: '$contains', label: 'contains' },
+    { value: '$size', label: 'array size' },
   ],
 };
 
@@ -94,6 +106,8 @@ export function useCodeAnalysis(
 
         if (trimmedValue === 'true' || trimmedValue === 'false') {
           types[fieldName] = 'boolean';
+        } else if (trimmedValue.startsWith('{')) {
+          types[fieldName] = 'object';
         } else if (trimmedValue.startsWith("'") || trimmedValue.startsWith('"')) {
           types[fieldName] = 'string';
         } else if (!isNaN(Number(trimmedValue))) {
@@ -123,7 +137,12 @@ export function useCodeAnalysis(
 
   const getPlaceholderForOperator = (operator: string): string => {
     if (operator === '$in' || operator === '$nin') return 'value1, value2, value3';
-    if (operator === '$regex') return '^pattern$';
+    if (operator === '$regex' || operator === '$match') return '^pattern$';
+    if (operator === '$near') return '{ center: { lat: 0, lng: 0 }, maxDistanceMeters: 1000 }';
+    if (operator === '$geoBox')
+      return '{ southwest: { lat: 0, lng: 0 }, northeast: { lat: 0, lng: 0 } }';
+    if (operator === '$geoPolygon') return '{ points: [{ lat: 0, lng: 0 }] }';
+    if (operator === '$size') return '3';
     return 'Enter value...';
   };
 

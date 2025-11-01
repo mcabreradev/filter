@@ -60,6 +60,18 @@ export const datasets: Dataset[] = [
 ];`,
     fields: ['name', 'department', 'salary', 'level'],
   },
+  {
+    id: 'restaurants',
+    name: 'Restaurants',
+    code: `const restaurants = [
+  { name: 'Berlin Bistro', location: { lat: 52.52, lng: 13.405 }, rating: 4.5, cuisine: 'German', priceLevel: 2 },
+  { name: 'Pasta Paradise', location: { lat: 52.521, lng: 13.406 }, rating: 4.8, cuisine: 'Italian', priceLevel: 3 },
+  { name: 'Sushi Spot', location: { lat: 52.53, lng: 13.42 }, rating: 4.6, cuisine: 'Japanese', priceLevel: 4 },
+  { name: 'Burger House', location: { lat: 52.525, lng: 13.415 }, rating: 3.9, cuisine: 'American', priceLevel: 1 },
+  { name: 'Taco Time', location: { lat: 52.55, lng: 13.45 }, rating: 4.2, cuisine: 'Mexican', priceLevel: 2 }
+];`,
+    fields: ['name', 'location', 'rating', 'cuisine', 'priceLevel'],
+  },
 ];
 
 export function getDatasetSampleFilter(datasetId: string): string {
@@ -77,6 +89,15 @@ export function getDatasetSampleFilter(datasetId: string): string {
     employees: `{
   department: 'Engineering',
   salary: { $gte: 80000 }
+}`,
+    restaurants: `{
+  location: {
+    $near: {
+      center: { lat: 52.52, lng: 13.405 },
+      maxDistanceMeters: 2000
+    }
+  },
+  rating: { $gte: 4.5 }
 }`,
   };
 

@@ -16,8 +16,7 @@ const users = [
   { name: 'Charlie', age: 35, city: 'Berlin' }
 ];
 
-const result = filter(users, { city: 'Berlin' });
-console.log(result);`,
+filter(users, { city: 'Berlin' });`,
   },
   {
     id: 'operators',
@@ -30,11 +29,10 @@ const products = [
   { name: 'Monitor', price: 450, rating: 4.8 }
 ];
 
-const result = filter(products, {
+filter(products, {
   price: { $gte: 100, $lte: 500 },
   rating: { $gte: 4.5 }
-});
-console.log(result);`,
+});`,
   },
   {
     id: 'wildcards',
@@ -47,8 +45,7 @@ const emails = [
   { email: 'charlie@example.com', verified: true }
 ];
 
-const result = filter(emails, '%@example.com%');
-console.log(result);`,
+filter(emails, '%@example.com%');`,
   },
   {
     id: 'logical',
@@ -61,7 +58,7 @@ const products = [
   { name: 'Mouse', category: 'Electronics', price: 25, inStock: true }
 ];
 
-const result = filter(products, {
+filter(products, {
   $and: [
     { inStock: true },
     { $or: [
@@ -69,7 +66,30 @@ const result = filter(products, {
       { price: { $lt: 50 } }
     ]}
   ]
-});
-console.log(result);`,
+});`,
+  },
+  {
+    id: 'geospatial',
+    name: 'Geospatial Operators',
+    code: `import { filter } from '@mcabreradev/filter';
+
+const restaurants = [
+  { name: 'Berlin Bistro', location: { lat: 52.52, lng: 13.405 }, rating: 4.5 },
+  { name: 'Pasta Paradise', location: { lat: 52.521, lng: 13.406 }, rating: 4.8 },
+  { name: 'Sushi Spot', location: { lat: 52.53, lng: 13.42 }, rating: 4.6 },
+  { name: 'Taco Time', location: { lat: 52.55, lng: 13.45 }, rating: 4.2 }
+];
+
+const userLocation = { lat: 52.52, lng: 13.405 };
+
+// Find restaurants within 2km radius
+filter(restaurants, {
+  location: {
+    $near: {
+      center: userLocation,
+      maxDistanceMeters: 2000
+    }
+  }
+});`,
   },
 ];
