@@ -73,13 +73,17 @@ describe('geospatial operators', () => {
         expect(evaluateNear(farPoint, query)).toBe(false);
       });
 
-      it('handles minDistanceMeters of 0', () => {
+      it('handles minDistanceMeters of 0 explicitly', () => {
         const query: NearQuery = {
           center: centerBerlin,
           maxDistanceMeters: 1000,
           minDistanceMeters: 0,
         };
+        // With minDistanceMeters = 0, center point should be included
         expect(evaluateNear(centerBerlin, query)).toBe(true);
+        // Very close point should also be included
+        const veryClose: GeoPoint = { lat: 52.52000001, lng: 13.40500001 };
+        expect(evaluateNear(veryClose, query)).toBe(true);
       });
     });
 
@@ -382,6 +386,64 @@ describe('geospatial operators', () => {
         expect(evaluateGeoBox({ lat: 0, lng: -180 }, fullLongitudeBox)).toBe(true);
         expect(evaluateGeoBox({ lat: 50, lng: 0 }, fullLongitudeBox)).toBe(false);
         expect(evaluateGeoBox({ lat: -50, lng: 0 }, fullLongitudeBox)).toBe(false);
+      });
+
+      it('correctly handles boxes crossing the International Date Line', () => {
+        // Box from 170°E to -170°W (crosses date line)
+        const dateLineCrossingBox: BoundingBox = {
+          southwest: { lat: -10, lng: 170 },
+          northeast: { lat: 10, lng: -170 },
+        };
+
+        // Points inside the box (on the date line side)
+        expect(evaluateGeoBox({ lat: 0, lng: 175 }, dateLineCrossingBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: 180 }, dateLineCrossingBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: -180 }, dateLineCrossingBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: -175 }, dateLineCrossingBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 5, lng: 170 }, dateLineCrossingBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: -5, lng: -170 }, dateLineCrossingBox)).toBe(true);
+
+        // Points outside the box (in the middle of the Pacific)
+        expect(evaluateGeoBox({ lat: 0, lng: 0 }, dateLineCrossingBox)).toBe(false);
+        expect(evaluateGeoBox({ lat: 0, lng: 100 }, dateLineCrossingBox)).toBe(false);
+        expect(evaluateGeoBox({ lat: 0, lng: -100 }, dateLineCrossingBox)).toBe(false);
+
+        // Points outside due to latitude
+        expect(evaluateGeoBox({ lat: 15, lng: 175 }, dateLineCrossingBox)).toBe(false);
+        expect(evaluateGeoBox({ lat: -15, lng: -175 }, dateLineCrossingBox)).toBe(false);
+      });
+
+      it('handles narrow box crossing date line', () => {
+        // Narrow box from 179°E to -179°W
+        const narrowDateLineBox: BoundingBox = {
+          southwest: { lat: 0, lng: 179 },
+          northeast: { lat: 10, lng: -179 },
+        };
+
+        expect(evaluateGeoBox({ lat: 5, lng: 179.5 }, narrowDateLineBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 5, lng: 180 }, narrowDateLineBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 5, lng: -179.5 }, narrowDateLineBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 5, lng: 178 }, narrowDateLineBox)).toBe(false);
+        expect(evaluateGeoBox({ lat: 5, lng: -178 }, narrowDateLineBox)).toBe(false);
+      });
+
+      it('handles edge case: box from -180 to 180 crossing date line', () => {
+        // This represents the entire globe longitudinally
+        const entireGlobeBox: BoundingBox = {
+          southwest: { lat: -45, lng: -180 },
+          northeast: { lat: 45, lng: 180 },
+        };
+
+        // All longitudes should be included
+        expect(evaluateGeoBox({ lat: 0, lng: 0 }, entireGlobeBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: 90 }, entireGlobeBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: -90 }, entireGlobeBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: 179.99 }, entireGlobeBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: -179.99 }, entireGlobeBox)).toBe(true);
+
+        // But not outside latitude range
+        expect(evaluateGeoBox({ lat: 50, lng: 0 }, entireGlobeBox)).toBe(false);
+        expect(evaluateGeoBox({ lat: -50, lng: 0 }, entireGlobeBox)).toBe(false);
       });
     });
 
