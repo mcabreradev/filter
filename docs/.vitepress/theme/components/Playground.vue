@@ -31,7 +31,6 @@
               Dataset: {{ dataset.name }}
             </option>
           </select>
-          <button @click="handleApplyFilter" class="btn-apply">Apply to Code</button>
         </div>
       </div>
       <div class="builder-content">
@@ -81,6 +80,7 @@
           </select>
           
           <button @click="clearBuilder" class="btn-clear">Clear All</button>
+          <button @click="handleApplyFilter" class="btn-apply">Apply to Code</button>
         </div>
         
         <div class="builder-preview">
@@ -219,6 +219,8 @@ console.log(result);`;
 
 const handleApplyFilter = (): void => {
   const expression = generatedExpression.value;
+  
+  // Find data array declaration
   const dataMatch = code.value.match(/const\s+(\w+)\s*=\s*\[[\s\S]*?\];/);
   
   if (!dataMatch) {
@@ -229,20 +231,27 @@ const handleApplyFilter = (): void => {
   const dataName = dataMatch[1];
   const newFilterCode = `const result = filter(${dataName}, ${expression});`;
 
-  if (code.value.includes('filter(')) {
-    code.value = code.value.replace(
-      /const result = filter\([^)]+(?:,\s*[\s\S]*?)?\);/,
-      newFilterCode
-    );
+  // Check if filter() call already exists
+  const filterCallPattern = /const\s+result\s*=\s*filter\([^;]*\);/s;
+  
+  if (filterCallPattern.test(code.value)) {
+    // Replace existing filter call
+    code.value = code.value.replace(filterCallPattern, newFilterCode);
   } else {
+    // Insert new filter call before console.log
     const lines = code.value.split('\n');
-    const consoleIndex = lines.findIndex((l) => l.includes('console.log'));
+    const consoleIndex = lines.findIndex((l) => l.trim().startsWith('console.log'));
+    
     if (consoleIndex > 0) {
       lines.splice(consoleIndex, 0, '', newFilterCode);
       code.value = lines.join('\n');
+    } else {
+      // If no console.log found, append at the end
+      code.value += `\n\n${newFilterCode}\n\nconsole.log(result);`;
     }
   }
 
+  // Update the editor
   highlightCode();
   executeCode(filter);
 
