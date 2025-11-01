@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
+import { filter } from '../core/filter';
 import { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './geospatial.operators';
+import { calculateDistance, isValidGeoPoint } from '../utils/geo-distance';
 import type { GeoPoint, NearQuery, BoundingBox, PolygonQuery } from '../types/geospatial';
 
 describe('geospatial operators', () => {
@@ -128,16 +130,58 @@ describe('geospatial operators', () => {
       });
 
       it('handles very large maxDistanceMeters', () => {
+        // Antipode distance is ~20,015 km, adjusted to account for actual distance
         const query: NearQuery = { center: centerBerlin, maxDistanceMeters: 20020000 };
         const antipode: GeoPoint = { lat: -52.52, lng: -166.595 };
         expect(evaluateNear(antipode, query)).toBe(true);
       });
 
       it('handles points across the date line', () => {
+        // Date line crossing: 179.5 to -179.5 is ~111 km after normalization
         const center: GeoPoint = { lat: 0, lng: 179.5 };
         const query: NearQuery = { center, maxDistanceMeters: 112000 };
         const acrossDateLine: GeoPoint = { lat: 0, lng: -179.5 };
         expect(evaluateNear(acrossDateLine, query)).toBe(true);
+      });
+
+      it('handles date line crossing from east to west', () => {
+        const center: GeoPoint = { lat: 0, lng: -179.5 };
+        const query: NearQuery = { center, maxDistanceMeters: 112000 };
+        const acrossDateLine: GeoPoint = { lat: 0, lng: 179.5 };
+        expect(evaluateNear(acrossDateLine, query)).toBe(true);
+      });
+
+      it('excludes points just beyond date line threshold', () => {
+        const center: GeoPoint = { lat: 0, lng: 179.5 };
+        const query: NearQuery = { center, maxDistanceMeters: 110000 };
+        const acrossDateLine: GeoPoint = { lat: 0, lng: -179.5 };
+        expect(evaluateNear(acrossDateLine, query)).toBe(false);
+      });
+
+      it('handles points at exact poles', () => {
+        const northPole: GeoPoint = { lat: 90, lng: 0 };
+        const nearNorthPole: GeoPoint = { lat: 89.999, lng: 0 };
+        const query: NearQuery = { center: northPole, maxDistanceMeters: 200 };
+        expect(evaluateNear(nearNorthPole, query)).toBe(true);
+      });
+
+      it('handles equatorial points with maximum longitude difference', () => {
+        const p1: GeoPoint = { lat: 0, lng: 0 };
+        const p2: GeoPoint = { lat: 0, lng: 180 };
+        const query: NearQuery = { center: p1, maxDistanceMeters: 20040000 };
+        expect(evaluateNear(p2, query)).toBe(true);
+      });
+
+      it('handles points with identical coordinates', () => {
+        const query: NearQuery = { center: centerBerlin, maxDistanceMeters: 0 };
+        expect(evaluateNear(centerBerlin, query)).toBe(true);
+      });
+
+      it('excludes points with floating point precision differences', () => {
+        const point: GeoPoint = { lat: 52.52, lng: 13.405 };
+        const veryClose: GeoPoint = { lat: 52.52 + 1e-10, lng: 13.405 + 1e-10 };
+        const query: NearQuery = { center: point, maxDistanceMeters: 0 };
+        expect(evaluateNear(veryClose, query)).toBe(false);
       });
     });
   });
@@ -267,6 +311,48 @@ describe('geospatial operators', () => {
 
         expect(evaluateGeoBox({ lat: 87.5, lng: 0 }, polarBox)).toBe(true);
         expect(evaluateGeoBox({ lat: 84, lng: 0 }, polarBox)).toBe(false);
+      });
+
+      it('handles box spanning entire longitude range', () => {
+        const globalBox: BoundingBox = {
+          southwest: { lat: -90, lng: -180 },
+          northeast: { lat: 90, lng: 180 },
+        };
+
+        expect(evaluateGeoBox({ lat: 0, lng: 0 }, globalBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 90, lng: 180 }, globalBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: -90, lng: -180 }, globalBox)).toBe(true);
+      });
+
+      it('handles zero-area box (point)', () => {
+        const pointBox: BoundingBox = {
+          southwest: { lat: 52.52, lng: 13.405 },
+          northeast: { lat: 52.52, lng: 13.405 },
+        };
+
+        expect(evaluateGeoBox({ lat: 52.52, lng: 13.405 }, pointBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 52.521, lng: 13.405 }, pointBox)).toBe(false);
+      });
+
+      it('handles box with minimal width', () => {
+        const thinBox: BoundingBox = {
+          southwest: { lat: 52.5, lng: 13.405 },
+          northeast: { lat: 52.6, lng: 13.405 },
+        };
+
+        expect(evaluateGeoBox({ lat: 52.55, lng: 13.405 }, thinBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 52.55, lng: 13.406 }, thinBox)).toBe(false);
+      });
+
+      it('handles box at date line boundary', () => {
+        const dateLineBox: BoundingBox = {
+          southwest: { lat: -10, lng: 179 },
+          northeast: { lat: 10, lng: 180 },
+        };
+
+        expect(evaluateGeoBox({ lat: 0, lng: 179.5 }, dateLineBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: 180 }, dateLineBox)).toBe(true);
+        expect(evaluateGeoBox({ lat: 0, lng: 178.9 }, dateLineBox)).toBe(false);
       });
     });
 
@@ -530,6 +616,106 @@ describe('geospatial operators', () => {
         const result = evaluateGeoPolygon({ lat: 52.55, lng: 13.35 }, degeneratePolygon);
         expect(typeof result).toBe('boolean');
       });
+
+      it('excludes multiple vertices correctly', () => {
+        const polygon: PolygonQuery = {
+          points: [
+            { lat: 52.5, lng: 13.3 },
+            { lat: 52.6, lng: 13.3 },
+            { lat: 52.6, lng: 13.5 },
+            { lat: 52.5, lng: 13.5 },
+          ],
+        };
+
+        expect(evaluateGeoPolygon({ lat: 52.5, lng: 13.3 }, polygon)).toBe(false);
+        expect(evaluateGeoPolygon({ lat: 52.6, lng: 13.3 }, polygon)).toBe(false);
+        expect(evaluateGeoPolygon({ lat: 52.6, lng: 13.5 }, polygon)).toBe(false);
+        expect(evaluateGeoPolygon({ lat: 52.5, lng: 13.5 }, polygon)).toBe(false);
+      });
+
+      it('handles polygon at extreme latitudes', () => {
+        const polarPolygon: PolygonQuery = {
+          points: [
+            { lat: 89, lng: -180 },
+            { lat: 89, lng: 0 },
+            { lat: 89, lng: 180 },
+            { lat: 85, lng: 0 },
+          ],
+        };
+
+        expect(evaluateGeoPolygon({ lat: 87, lng: 0 }, polarPolygon)).toBe(true);
+        expect(evaluateGeoPolygon({ lat: 84, lng: 0 }, polarPolygon)).toBe(false);
+      });
+
+      it('handles narrow polygon (high aspect ratio)', () => {
+        const narrowPolygon: PolygonQuery = {
+          points: [
+            { lat: 52.5, lng: 13.405 },
+            { lat: 52.6, lng: 13.405 },
+            { lat: 52.6, lng: 13.406 },
+            { lat: 52.5, lng: 13.406 },
+          ],
+        };
+
+        expect(evaluateGeoPolygon({ lat: 52.55, lng: 13.4055 }, narrowPolygon)).toBe(true);
+        expect(evaluateGeoPolygon({ lat: 52.55, lng: 13.407 }, narrowPolygon)).toBe(false);
+      });
+
+      it('handles star-shaped polygon', () => {
+        const starPolygon: PolygonQuery = {
+          points: [
+            { lat: 52.55, lng: 13.3 },
+            { lat: 52.52, lng: 13.35 },
+            { lat: 52.5, lng: 13.4 },
+            { lat: 52.52, lng: 13.45 },
+            { lat: 52.55, lng: 13.5 },
+            { lat: 52.58, lng: 13.45 },
+            { lat: 52.6, lng: 13.4 },
+            { lat: 52.58, lng: 13.35 },
+          ],
+        };
+
+        expect(evaluateGeoPolygon({ lat: 52.55, lng: 13.4 }, starPolygon)).toBe(true);
+        expect(evaluateGeoPolygon({ lat: 52.5, lng: 13.3 }, starPolygon)).toBe(false);
+      });
+
+      it('handles polygon with duplicate consecutive points', () => {
+        const duplicatePolygon: PolygonQuery = {
+          points: [
+            { lat: 52.5, lng: 13.3 },
+            { lat: 52.6, lng: 13.3 },
+            { lat: 52.6, lng: 13.3 },
+            { lat: 52.6, lng: 13.5 },
+            { lat: 52.5, lng: 13.5 },
+          ],
+        };
+
+        expect(evaluateGeoPolygon({ lat: 52.55, lng: 13.4 }, duplicatePolygon)).toBe(true);
+      });
+
+      it('handles clockwise vs counter-clockwise winding', () => {
+        const cwPolygon: PolygonQuery = {
+          points: [
+            { lat: 52.5, lng: 13.3 },
+            { lat: 52.5, lng: 13.5 },
+            { lat: 52.6, lng: 13.5 },
+            { lat: 52.6, lng: 13.3 },
+          ],
+        };
+
+        const ccwPolygon: PolygonQuery = {
+          points: [
+            { lat: 52.5, lng: 13.3 },
+            { lat: 52.6, lng: 13.3 },
+            { lat: 52.6, lng: 13.5 },
+            { lat: 52.5, lng: 13.5 },
+          ],
+        };
+
+        const testPoint: GeoPoint = { lat: 52.55, lng: 13.4 };
+        expect(evaluateGeoPolygon(testPoint, cwPolygon)).toBe(true);
+        expect(evaluateGeoPolygon(testPoint, ccwPolygon)).toBe(true);
+      });
     });
 
     describe('ray casting algorithm verification', () => {
@@ -572,6 +758,230 @@ describe('geospatial operators', () => {
         const insidePoint: GeoPoint = { lat: 3, lng: 5 };
         expect(evaluateGeoPolygon(insidePoint, polygon)).toBe(true);
       });
+    });
+  });
+});
+
+describe('Geospatial Utils', () => {
+  describe('isValidGeoPoint', () => {
+    it('validates correct coordinates', () => {
+      expect(isValidGeoPoint({ lat: 0, lng: 0 })).toBe(true);
+      expect(isValidGeoPoint({ lat: 52.52, lng: 13.4 })).toBe(true);
+      expect(isValidGeoPoint({ lat: -90, lng: -180 })).toBe(true);
+      expect(isValidGeoPoint({ lat: 90, lng: 180 })).toBe(true);
+    });
+
+    it('rejects invalid coordinates', () => {
+      expect(isValidGeoPoint({ lat: 91, lng: 0 })).toBe(false);
+      expect(isValidGeoPoint({ lat: 0, lng: 181 })).toBe(false);
+      expect(isValidGeoPoint({ lat: -91, lng: 0 })).toBe(false);
+      expect(isValidGeoPoint({ lat: 0, lng: -181 })).toBe(false);
+      expect(isValidGeoPoint(null)).toBe(false);
+      expect(isValidGeoPoint(undefined)).toBe(false);
+      expect(isValidGeoPoint({})).toBe(false);
+      expect(isValidGeoPoint({ lat: 'invalid', lng: 0 })).toBe(false);
+    });
+  });
+
+  describe('calculateDistance', () => {
+    it('calculates distance between two points', () => {
+      const berlin: GeoPoint = { lat: 52.52, lng: 13.405 };
+      const paris: GeoPoint = { lat: 48.8566, lng: 2.3522 };
+
+      const distance = calculateDistance(berlin, paris);
+      expect(distance).toBeGreaterThan(877000);
+      expect(distance).toBeLessThan(880000);
+    });
+
+    it('returns 0 for same point', () => {
+      const point: GeoPoint = { lat: 52.52, lng: 13.405 };
+      const distance = calculateDistance(point, point);
+      expect(distance).toBe(0);
+    });
+
+    it('calculates short distances accurately', () => {
+      const p1: GeoPoint = { lat: 52.52, lng: 13.405 };
+      const p2: GeoPoint = { lat: 52.521, lng: 13.406 };
+
+      const distance = calculateDistance(p1, p2);
+      expect(distance).toBeGreaterThan(100);
+      expect(distance).toBeLessThan(200);
+    });
+  });
+});
+
+describe('Filter with Geospatial Operators', () => {
+  interface Restaurant {
+    name: string;
+    location: GeoPoint;
+    rating: number;
+  }
+
+  const restaurants: Restaurant[] = [
+    { name: 'Restaurant A', location: { lat: 52.52, lng: 13.405 }, rating: 4.5 },
+    { name: 'Restaurant B', location: { lat: 52.521, lng: 13.406 }, rating: 4.0 },
+    { name: 'Restaurant C', location: { lat: 52.53, lng: 13.42 }, rating: 4.8 },
+    { name: 'Restaurant D', location: { lat: 48.8566, lng: 2.3522 }, rating: 4.2 },
+    { name: 'Restaurant E', location: { lat: 52.55, lng: 13.45 }, rating: 3.9 },
+  ];
+
+  describe('$near filter', () => {
+    it('filters restaurants by proximity', () => {
+      const userLocation: GeoPoint = { lat: 52.52, lng: 13.405 };
+
+      const nearby = filter(restaurants, {
+        location: {
+          $near: {
+            center: userLocation,
+            maxDistanceMeters: 2000,
+          },
+        },
+      });
+
+      expect(nearby).toHaveLength(3);
+      expect(nearby.map((r) => r.name)).toContain('Restaurant A');
+      expect(nearby.map((r) => r.name)).toContain('Restaurant B');
+      expect(nearby.map((r) => r.name)).toContain('Restaurant C');
+    });
+
+    it('filters with minimum distance', () => {
+      const userLocation: GeoPoint = { lat: 52.52, lng: 13.405 };
+
+      const nearby = filter(restaurants, {
+        location: {
+          $near: {
+            center: userLocation,
+            maxDistanceMeters: 5000,
+            minDistanceMeters: 500,
+          },
+        },
+      });
+
+      expect(nearby.map((r) => r.name)).not.toContain('Restaurant A');
+      expect(nearby.map((r) => r.name)).toContain('Restaurant C');
+    });
+
+    it('combines with other filters', () => {
+      const userLocation: GeoPoint = { lat: 52.52, lng: 13.405 };
+
+      const nearbyHighRated = filter(restaurants, {
+        location: {
+          $near: {
+            center: userLocation,
+            maxDistanceMeters: 5000,
+          },
+        },
+        rating: { $gte: 4.5 },
+      });
+
+      expect(nearbyHighRated).toHaveLength(2);
+      expect(nearbyHighRated.map((r) => r.name)).toContain('Restaurant A');
+      expect(nearbyHighRated.map((r) => r.name)).toContain('Restaurant C');
+    });
+  });
+
+  describe('$geoBox filter', () => {
+    it('filters restaurants within bounding box', () => {
+      const withinBox = filter(restaurants, {
+        location: {
+          $geoBox: {
+            southwest: { lat: 52.51, lng: 13.4 },
+            northeast: { lat: 52.54, lng: 13.43 },
+          },
+        },
+      });
+
+      expect(withinBox).toHaveLength(3);
+      expect(withinBox.map((r) => r.name)).toContain('Restaurant A');
+      expect(withinBox.map((r) => r.name)).toContain('Restaurant B');
+      expect(withinBox.map((r) => r.name)).toContain('Restaurant C');
+    });
+
+    it('combines with rating filter', () => {
+      const withinBox = filter(restaurants, {
+        location: {
+          $geoBox: {
+            southwest: { lat: 52.51, lng: 13.4 },
+            northeast: { lat: 52.54, lng: 13.43 },
+          },
+        },
+        rating: { $gte: 4.5 },
+      });
+
+      expect(withinBox).toHaveLength(2);
+      expect(withinBox.map((r) => r.name)).toContain('Restaurant A');
+      expect(withinBox.map((r) => r.name)).toContain('Restaurant C');
+    });
+  });
+
+  describe('$geoPolygon filter', () => {
+    it('filters restaurants within polygon', () => {
+      const withinPolygon = filter(restaurants, {
+        location: {
+          $geoPolygon: {
+            points: [
+              { lat: 52.51, lng: 13.4 },
+              { lat: 52.54, lng: 13.4 },
+              { lat: 52.54, lng: 13.43 },
+              { lat: 52.51, lng: 13.43 },
+            ],
+          },
+        },
+      });
+
+      expect(withinPolygon.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('combines with multiple filters', () => {
+      const result = filter(restaurants, {
+        location: {
+          $geoPolygon: {
+            points: [
+              { lat: 52.51, lng: 13.4 },
+              { lat: 52.56, lng: 13.4 },
+              { lat: 52.56, lng: 13.46 },
+              { lat: 52.51, lng: 13.46 },
+            ],
+          },
+        },
+        rating: { $gte: 4.0 },
+      });
+
+      expect(result.every((r) => r.rating >= 4.0)).toBe(true);
+    });
+  });
+
+  describe('edge cases', () => {
+    it('handles empty arrays', () => {
+      const result = filter<Restaurant>([], {
+        location: {
+          $near: {
+            center: { lat: 52.52, lng: 13.405 },
+            maxDistanceMeters: 1000,
+          },
+        },
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it('handles items without location', () => {
+      const items = [
+        { name: 'A', location: { lat: 52.52, lng: 13.405 } },
+        { name: 'B' },
+        { name: 'C', location: { lat: 52.521, lng: 13.406 } },
+      ];
+
+      const result = filter(items, {
+        location: {
+          $near: {
+            center: { lat: 52.52, lng: 13.405 },
+            maxDistanceMeters: 1000,
+          },
+        },
+      });
+
+      expect(result.every((item) => item.location !== undefined)).toBe(true);
     });
   });
 });
