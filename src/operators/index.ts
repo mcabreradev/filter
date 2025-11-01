@@ -4,3 +4,14 @@ export { applyStringOperators } from './string.operators';
 export { applyLogicalOperators } from './logical.operators';
 export { processOperators } from './operator-processor';
 export { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './geospatial.operators';
+export {
+  evaluateRecent,
+  evaluateUpcoming,
+  evaluateDayOfWeek,
+  evaluateTimeOfDay,
+  evaluateAge,
+  evaluateIsWeekday,
+  evaluateIsWeekend,
+  evaluateIsBefore,
+  evaluateIsAfter,
+} from './datetime.operators';

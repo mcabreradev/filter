@@ -96,6 +96,15 @@ type OperatorsForType<T> =
               $ne?: Date;
               $in?: Date[];
               $nin?: Date[];
+              $recent?: import('./datetime').RelativeTimeQuery;
+              $upcoming?: import('./datetime').RelativeTimeQuery;
+              $dayOfWeek?: number[];
+              $timeOfDay?: import('./datetime').TimeOfDayQuery;
+              $age?: import('./datetime').AgeQuery;
+              $isWeekday?: boolean;
+              $isWeekend?: boolean;
+              $isBefore?: Date;
+              $isAfter?: Date;
             }
           : T extends (infer U)[]
             ? {

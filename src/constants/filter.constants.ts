@@ -36,6 +36,15 @@ export const OPERATORS = {
   NEAR: '$near',
   GEO_BOX: '$geoBox',
   GEO_POLYGON: '$geoPolygon',
+  RECENT: '$recent',
+  UPCOMING: '$upcoming',
+  DAY_OF_WEEK: '$dayOfWeek',
+  TIME_OF_DAY: '$timeOfDay',
+  AGE: '$age',
+  IS_WEEKDAY: '$isWeekday',
+  IS_WEEKEND: '$isWeekend',
+  IS_BEFORE: '$isBefore',
+  IS_AFTER: '$isAfter',
 } as const;
 
 export const OPERATOR_KEYS = Object.values(OPERATORS);

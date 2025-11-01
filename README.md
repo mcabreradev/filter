@@ -28,11 +28,12 @@ Go beyond JavaScript's native `Array.filter()` with a library that understands y
 - **✨ Smart Autocomplete** - IntelliSense suggests only valid operators for each property type
 - **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
 - **🚀 Performance Optimized** - Optional caching and regex compilation optimization
-- **📦 MongoDB-Style Operators** - 21+ operators for advanced filtering (v5.0.0+)
+- **📦 MongoDB-Style Operators** - 30+ operators for advanced filtering (v5.0.0+)
 - **🌍 Geospatial Operators** - Location-based filtering with $near, $geoBox, $geoPolygon (v5.6.0+)
+- **📅 Date/Time Operators** - Temporal filtering with $recent, $upcoming, $dayOfWeek, $age (v5.6.0+)
 - **💨 Lazy Evaluation** - Process large datasets efficiently with generators (v5.1.0+)
 - **🎨 Framework Integrations** - React, Vue, and Svelte support (v5.3.0+)
-- **🧪 Battle-Tested** - 523+ tests ensuring reliability
+- **🧪 Battle-Tested** - 613+ tests ensuring reliability
 
 ---
 
@@ -548,6 +549,75 @@ filter(restaurants, {
 
 See [Geospatial Operators Guide](./docs/guide/geospatial-operators.md) for complete documentation.
 
+#### Date/Time Operators (v5.6.0+)
+
+**New in v5.6.0**: Filter by relative time, days of week, time of day, and age calculations!
+
+```typescript
+import { filter } from '@mcabreradev/filter';
+
+interface Event {
+  name: string;
+  date: Date;
+  startTime: Date;
+}
+
+const events: Event[] = [...];
+
+// Events in next 7 days
+filter(events, {
+  date: { $upcoming: { days: 7 } }
+});
+
+// Recent events (last 24 hours)
+filter(events, {
+  date: { $recent: { hours: 24 } }
+});
+
+// Weekday events only
+filter(events, {
+  date: { $dayOfWeek: [1, 2, 3, 4, 5] }
+});
+
+// Business hours events (9 AM - 5 PM)
+filter(events, {
+  startTime: { $timeOfDay: { start: 9, end: 17 } }
+});
+
+// Adult users (18+)
+filter(users, {
+  birthDate: { $age: { min: 18 } }
+});
+
+// Weekend events
+filter(events, {
+  date: { $isWeekend: true }
+});
+
+// Combine multiple datetime conditions
+filter(events, {
+  date: {
+    $upcoming: { days: 7 },
+    $dayOfWeek: [1, 2, 3, 4, 5]
+  },
+  startTime: {
+    $timeOfDay: { start: 9, end: 17 }
+  }
+});
+```
+
+**Available:** `$recent`, `$upcoming`, `$dayOfWeek`, `$timeOfDay`, `$age`, `$isWeekday`, `$isWeekend`, `$isBefore`, `$isAfter`
+
+**Features:**
+- 📅 Relative time filtering (last/next N days/hours/minutes)
+- 🗓️ Day of week filtering (0-6)
+- ⏰ Time of day filtering (0-23 hours)
+- 🎂 Age calculation (years/months/days)
+- 📊 Weekday/weekend filtering
+- 🔒 Full TypeScript support with autocomplete
+
+See [Date/Time Operators Guide](./docs/guide/datetime-operators.md) for complete documentation.
+
 ### Predicate Functions
 
 For complex custom logic:
@@ -1037,8 +1107,9 @@ For performance optimization tips, see [Performance Guide](./docs/advanced/wiki.
 
 - **[Complete Wiki](./docs/advanced/wiki.md)** - Complete documentation with 150+ examples, API reference, TypeScript guide, real-world use cases, FAQ, and troubleshooting
 - **[Framework Integrations](./docs/frameworks/overview.md)** - Complete guide for React, Vue, and Svelte integrations
-- **[Operators Guide](./docs/guide/operators.md)** - Detailed guide for all 21+ MongoDB-style operators with examples and advanced regex patterns
+- **[Operators Guide](./docs/guide/operators.md)** - Detailed guide for all 30+ MongoDB-style operators with examples and advanced regex patterns
 - **[Geospatial Operators](./docs/guide/geospatial-operators.md)** - Complete guide for location-based filtering with $near, $geoBox, $geoPolygon
+- **[Date/Time Operators](./docs/guide/datetime-operators.md)** - Complete guide for temporal filtering with $recent, $upcoming, $dayOfWeek, $age
 - **[Lazy Evaluation](./docs/guide/lazy-evaluation.md)** - Comprehensive guide to lazy evaluation for efficient large dataset processing
 - **[Logical Operators](./docs/guide/logical-operators.md)** - Advanced patterns and complex queries with $and, $or, $not
 - **[Performance Benchmarks](./docs/advanced/performance-benchmarks.md)** - Detailed performance metrics and optimization strategies
@@ -1051,6 +1122,7 @@ For performance optimization tips, see [Performance Guide](./docs/advanced/wiki.
 - [Interactive Playground](https://mcabreradev-filter.vercel.app/playground/) 🎮 NEW
 - [Framework Integrations](./docs/frameworks/overview.md) ⭐ NEW
 - [Geospatial Operators](./docs/guide/geospatial-operators.md) 🌍 NEW
+- [Date/Time Operators](./docs/guide/datetime-operators.md) 📅 NEW
 - [All Operators Reference](./docs/guide/operators.md)
 - [Regex Patterns Guide](./docs/guide/operators.md#string-operators)
 - [Logical Operators Guide](./docs/guide/logical-operators.md)
@@ -1195,7 +1267,16 @@ The library has 270+ tests with comprehensive coverage of all features.
 - 🔒 **Coordinate Validation**: Automatic validation of lat/lng coordinates
 - ⚡ **Performance Optimized**: Fast algorithms for all geospatial operations
 - 📚 Complete geospatial documentation and examples
-- ✅ 26 new tests (549 total tests)
+- 📅 **Date/Time Operators**: Temporal filtering with $recent, $upcoming, $dayOfWeek, $timeOfDay, $age
+- ⏰ **Relative Time Filtering**: Filter by last/next N days/hours/minutes
+- 🗓️ **Day-of-Week Filtering**: Filter by specific days (Monday-Sunday)
+- 🕐 **Time-of-Day Filtering**: Filter by hour ranges (0-23)
+- 🎂 **Age Calculation**: Calculate age in years/months/days with min/max ranges
+- 📊 **Weekday/Weekend Support**: $isWeekday and $isWeekend operators
+- 🔒 **Full TypeScript Support**: Context-aware autocomplete for Date properties
+- 🚀 **Zero Dependencies**: Uses native Date API
+- 📚 Complete datetime operators documentation and examples
+- ✅ 90 new tests (613 total tests)
 
 ### v5.5.1
 - 🐛 Bug fixes and stability improvements

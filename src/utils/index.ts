@@ -42,3 +42,15 @@ export {
 export { memoization, MemoizationManager } from './memoization';
 
 export { calculateDistance, isValidGeoPoint } from './geo-distance';
+
+export {
+  isValidDate,
+  isValidTimeOfDay,
+  isValidDayOfWeek,
+  isValidRelativeTime,
+  isValidAgeQuery,
+  calculateTimeDifference,
+  calculateAge,
+  isWeekday,
+  isWeekend,
+} from './date-time';
