@@ -50,14 +50,8 @@ jobs:
             pnpm install --no-frozen-lockfile
           fi
 
-      - name: 🔍 Type check
-        run: pnpm run typecheck
-
-      - name: 🧹 Lint
-        run: pnpm run lint
-
-      - name: 🃏 Run tests
-        run: pnpm run test
+      - name: 🔍 Running Check/Test Suite
+        run: pnpm run check
 
       - name: 🏗️ Build
         run: pnpm run build
