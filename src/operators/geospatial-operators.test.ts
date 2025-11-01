@@ -936,12 +936,12 @@ describe('Filter with Geospatial Operators', () => {
       expect(result.map((r) => r.name)).not.toContain('Restaurant A');
 
       // Verify that Restaurant B (very close) might be excluded if within minDistance
-      const restaurantBDistance = calculateDistance(
-        restaurants.find((r) => r.name === 'Restaurant B')!.location,
-        centerPoint,
-      );
-      if (restaurantBDistance < 200) {
-        expect(result.map((r) => r.name)).not.toContain('Restaurant B');
+      const restaurantB = restaurants.find((r) => r.name === 'Restaurant B');
+      if (restaurantB) {
+        const restaurantBDistance = calculateDistance(restaurantB.location, centerPoint);
+        if (restaurantBDistance < 200) {
+          expect(result.map((r) => r.name)).not.toContain('Restaurant B');
+        }
       }
     });
 
