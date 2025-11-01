@@ -1054,12 +1054,8 @@ onMounted(() => {
   .playground-content,
   .playground-content.layout-horizontal {
     flex-direction: column;
-  .playground-content,
-  .playground-content.layout-horizontal {
-    flex-direction: column;
   }
 
-  .playground-content.layout-horizontal .editor-section {
   .playground-content.layout-horizontal .editor-section {
     border-right: none;
     border-bottom: 1px solid var(--vp-c-divider);
