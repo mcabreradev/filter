@@ -61,6 +61,11 @@ onMounted(async () => {
       emit('click', { lat: e.latlng.lat, lng: e.latlng.lng });
     });
     
+    // Store zoom level when it changes
+    map.on('zoomend', () => {
+      zoom.value = map.getZoom();
+    });
+    
     updateMap();
   } catch (error) {
     console.error('Failed to initialize map:', error);

@@ -256,7 +256,7 @@ const removePolygonPoint = (index: number) => {
         :key="field.name"
         class="control-group"
       >
-        <label>{{ field.label }}</label>
+        <label v-if="field.type !== 'boolean'">{{ field.label }}</label>
         
         <!-- Number input -->
         <input
@@ -296,7 +296,8 @@ const removePolygonPoint = (index: number) => {
             :checked="additionalFilters[field.name]"
             @change="updateAdditionalFilter(field.name, ($event.target as HTMLInputElement).checked || null)"
           />
-          <span>{{ field.label }}</span>
+
+          <span style="margin-left: 0.5rem;">{{ field.label }}</span>
         </label>
       </div>
     </div>
