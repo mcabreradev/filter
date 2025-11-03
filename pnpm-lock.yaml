@@ -32,7 +32,7 @@ importers:
         version: 1.9.21
       '@types/node':
         specifier: ^24.9.1
-        version: 24.9.1
+        version: 24.10.0
       '@types/react':
         specifier: ^18.3.18
         version: 18.3.26
@@ -44,7 +44,7 @@ importers:
         version: 8.46.2(eslint@9.38.0)(typescript@5.9.3)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
-        version: 6.0.1(vite@5.4.20(@types/node@24.9.1))(vue@3.5.22(typescript@5.9.3))
+        version: 6.0.1(vite@5.4.20(@types/node@24.10.0))(vue@3.5.22(typescript@5.9.3))
       '@vitest/coverage-v8':
         specifier: ^2.1.0
         version: 2.1.9(vitest@2.1.9)
@@ -95,10 +95,10 @@ importers:
         version: 5.9.3
       vitepress:
         specifier: ^1.6.4
-        version: 1.6.4(@algolia/client-search@5.41.0)(@types/node@24.9.1)(@types/react@18.3.26)(postcss@8.5.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(search-insights@2.17.3)(typescript@5.9.3)
+        version: 1.6.4(@algolia/client-search@5.41.0)(@types/node@24.10.0)(@types/react@18.3.26)(postcss@8.5.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(search-insights@2.17.3)(typescript@5.9.3)
       vitest:
         specifier: ^2.1.0
-        version: 2.1.9(@types/node@24.9.1)(@vitest/ui@2.1.9)(happy-dom@20.0.10)(jsdom@27.1.0)
+        version: 2.1.9(@types/node@24.10.0)(@vitest/ui@2.1.9)(happy-dom@20.0.10)(jsdom@27.1.0)
       vue:
         specifier: ^3.5.13
         version: 3.5.22(typescript@5.9.3)
@@ -759,8 +759,8 @@ packages:
   '@types/node@20.19.24':
     resolution: {integrity: sha512-FE5u0ezmi6y9OZEzlJfg37mqqf6ZDSF2V/NLjUyGrR9uTZ7Sb9F7bLNZ03S4XVUNRWGA7Ck4c1kK+YnuWjl+DA==}
 
-  '@types/node@24.9.1':
-    resolution: {integrity: sha512-QoiaXANRkSXK6p0Duvt56W208du4P9Uye9hWLWgGMDTEoKPhuenzNcC4vGUmrNkiOKTlIrBoyNQYNpSwfEZXSg==}
+  '@types/node@24.10.0':
+    resolution: {integrity: sha512-qzQZRBqkFsYyaSWXuEHc2WR9c0a0CXwiE5FWUvn7ZM+vdy1uZLfCunD38UzhuB7YN/J11ndbDBcTmOdxJo9Q7A==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -3745,7 +3745,7 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/node@24.9.1':
+  '@types/node@24.10.0':
     dependencies:
       undici-types: 7.16.0
 
@@ -3908,15 +3908,15 @@ snapshots:
       svelte: 5.42.1
       vue: 3.5.22(typescript@5.9.3)
 
-  '@vitejs/plugin-vue@5.2.4(vite@5.4.20(@types/node@24.9.1))(vue@3.5.22(typescript@5.9.3))':
+  '@vitejs/plugin-vue@5.2.4(vite@5.4.20(@types/node@24.10.0))(vue@3.5.22(typescript@5.9.3))':
     dependencies:
-      vite: 5.4.20(@types/node@24.9.1)
+      vite: 5.4.20(@types/node@24.10.0)
       vue: 3.5.22(typescript@5.9.3)
 
-  '@vitejs/plugin-vue@6.0.1(vite@5.4.20(@types/node@24.9.1))(vue@3.5.22(typescript@5.9.3))':
+  '@vitejs/plugin-vue@6.0.1(vite@5.4.20(@types/node@24.10.0))(vue@3.5.22(typescript@5.9.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.29
-      vite: 5.4.20(@types/node@24.9.1)
+      vite: 5.4.20(@types/node@24.10.0)
       vue: 3.5.22(typescript@5.9.3)
 
   '@vitest/coverage-v8@2.1.9(vitest@2.1.9)':
@@ -3933,7 +3933,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.1.9(@types/node@24.9.1)(@vitest/ui@2.1.9)(happy-dom@20.0.10)(jsdom@27.1.0)
+      vitest: 2.1.9(@types/node@24.10.0)(@vitest/ui@2.1.9)(happy-dom@20.0.10)(jsdom@27.1.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -3944,13 +3944,13 @@ snapshots:
       chai: 5.3.3
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.9(vite@5.4.20(@types/node@24.9.1))':
+  '@vitest/mocker@2.1.9(vite@5.4.20(@types/node@24.10.0))':
     dependencies:
       '@vitest/spy': 2.1.9
       estree-walker: 3.0.3
       magic-string: 0.30.19
     optionalDependencies:
-      vite: 5.4.20(@types/node@24.9.1)
+      vite: 5.4.20(@types/node@24.10.0)
 
   '@vitest/pretty-format@2.1.9':
     dependencies:
@@ -3980,7 +3980,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 1.2.0
-      vitest: 2.1.9(@types/node@24.9.1)(@vitest/ui@2.1.9)(happy-dom@20.0.10)(jsdom@27.1.0)
+      vitest: 2.1.9(@types/node@24.10.0)(@vitest/ui@2.1.9)(happy-dom@20.0.10)(jsdom@27.1.0)
 
   '@vitest/utils@2.1.9':
     dependencies:
@@ -6287,13 +6287,13 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite-node@2.1.9(@types/node@24.9.1):
+  vite-node@2.1.9(@types/node@24.10.0):
     dependencies:
       cac: 6.7.14
       debug: 4.4.3
       es-module-lexer: 1.7.0
       pathe: 1.1.2
-      vite: 5.4.20(@types/node@24.9.1)
+      vite: 5.4.20(@types/node@24.10.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -6305,16 +6305,16 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.4.20(@types/node@24.9.1):
+  vite@5.4.20(@types/node@24.10.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.6
       rollup: 4.52.5
     optionalDependencies:
-      '@types/node': 24.9.1
+      '@types/node': 24.10.0
       fsevents: 2.3.3
 
-  vitepress@1.6.4(@algolia/client-search@5.41.0)(@types/node@24.9.1)(@types/react@18.3.26)(postcss@8.5.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(search-insights@2.17.3)(typescript@5.9.3):
+  vitepress@1.6.4(@algolia/client-search@5.41.0)(@types/node@24.10.0)(@types/react@18.3.26)(postcss@8.5.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(search-insights@2.17.3)(typescript@5.9.3):
     dependencies:
       '@docsearch/css': 3.8.2
       '@docsearch/js': 3.8.2(@algolia/client-search@5.41.0)(@types/react@18.3.26)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(search-insights@2.17.3)
@@ -6323,7 +6323,7 @@ snapshots:
       '@shikijs/transformers': 2.5.0
       '@shikijs/types': 2.5.0
       '@types/markdown-it': 14.1.2
-      '@vitejs/plugin-vue': 5.2.4(vite@5.4.20(@types/node@24.9.1))(vue@3.5.22(typescript@5.9.3))
+      '@vitejs/plugin-vue': 5.2.4(vite@5.4.20(@types/node@24.10.0))(vue@3.5.22(typescript@5.9.3))
       '@vue/devtools-api': 7.7.7
       '@vue/shared': 3.5.22
       '@vueuse/core': 12.8.2(typescript@5.9.3)
@@ -6332,7 +6332,7 @@ snapshots:
       mark.js: 8.11.1
       minisearch: 7.2.0
       shiki: 2.5.0
-      vite: 5.4.20(@types/node@24.9.1)
+      vite: 5.4.20(@types/node@24.10.0)
       vue: 3.5.22(typescript@5.9.3)
     optionalDependencies:
       postcss: 8.5.6
@@ -6363,10 +6363,10 @@ snapshots:
       - typescript
       - universal-cookie
 
-  vitest@2.1.9(@types/node@24.9.1)(@vitest/ui@2.1.9)(happy-dom@20.0.10)(jsdom@27.1.0):
+  vitest@2.1.9(@types/node@24.10.0)(@vitest/ui@2.1.9)(happy-dom@20.0.10)(jsdom@27.1.0):
     dependencies:
       '@vitest/expect': 2.1.9
-      '@vitest/mocker': 2.1.9(vite@5.4.20(@types/node@24.9.1))
+      '@vitest/mocker': 2.1.9(vite@5.4.20(@types/node@24.10.0))
       '@vitest/pretty-format': 2.1.9
       '@vitest/runner': 2.1.9
       '@vitest/snapshot': 2.1.9
@@ -6382,11 +6382,11 @@ snapshots:
       tinyexec: 0.3.2
       tinypool: 1.1.1
       tinyrainbow: 1.2.0
-      vite: 5.4.20(@types/node@24.9.1)
-      vite-node: 2.1.9(@types/node@24.9.1)
+      vite: 5.4.20(@types/node@24.10.0)
+      vite-node: 2.1.9(@types/node@24.10.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 24.9.1
+      '@types/node': 24.10.0
       '@vitest/ui': 2.1.9(vitest@2.1.9)
       happy-dom: 20.0.10
       jsdom: 27.1.0
