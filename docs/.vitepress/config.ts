@@ -21,10 +21,11 @@ export default defineConfig({
     logo: '/logo.svg',
 
     nav: [
-      { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
+      { text: 'Guide', link: '/guide/quick-start', activeMatch: '/guide/' },
+      { text: 'Operators', link: '/operators/', activeMatch: '/operators/' },
+      { text: 'Recipes', link: '/recipes/', activeMatch: '/recipes/' },
       { text: 'Playground', link: '/playground/', activeMatch: '/playground/' },
-      { text: 'Frontend', link: '/frontend/overview', activeMatch: '/frontend/' },
-      { text: 'Backend', link: '/backend/express', activeMatch: '/backend/' },
+      { text: 'Frameworks', link: '/frameworks/', activeMatch: '/frameworks/' },
       { text: 'API', link: '/api/reference', activeMatch: '/api/' },
       { text: 'Examples', link: '/examples/basic', activeMatch: '/examples/' },
       {
@@ -53,11 +54,8 @@ export default defineConfig({
           text: 'Getting Started',
           collapsed: false,
           items: [
-            { text: 'Introduction', link: '/guide/getting-started' },
-            { text: 'Installation', link: '/guide/installation' },
             { text: 'Quick Start', link: '/guide/quick-start' },
             { text: 'Basic Filtering', link: '/guide/basic-filtering' },
-            { text: 'Migration Guide v5.4', link: '/guide/migration-v2' },
           ],
         },
         {
@@ -106,41 +104,60 @@ export default defineConfig({
             { text: 'Type System', link: '/advanced/type-system' },
             { text: 'Performance Benchmarks', link: '/advanced/performance-benchmarks' },
             { text: 'Migration Guide', link: '/advanced/migration' },
-            { text: 'Complete Documentation', link: '/advanced/complete-documentation' },
           ],
         },
       ],
-      '/frontend/': [
+      '/frameworks/': [
         {
           text: 'Framework Integrations',
           collapsed: false,
           items: [
-            { text: 'Overview', link: '/frontend/overview' },
-            { text: 'React', link: '/frontend/react' },
-            { text: 'Vue', link: '/frontend/vue' },
-            { text: 'Svelte', link: '/frontend/svelte' },
+            { text: 'Overview', link: '/frameworks/' },
+            { text: 'React', link: '/frameworks/react' },
+            { text: 'Vue', link: '/frameworks/vue' },
+            { text: 'Svelte', link: '/frameworks/svelte' },
           ],
         },
         {
           text: 'SSR Frameworks',
           collapsed: false,
           items: [
-            { text: 'Next.js', link: '/frontend/nextjs' },
-            { text: 'Nuxt', link: '/frontend/nuxt' },
-            { text: 'SvelteKit', link: '/frontend/sveltekit' },
+            { text: 'Next.js', link: '/frameworks/nextjs' },
+            { text: 'Nuxt', link: '/frameworks/nuxt' },
+            { text: 'SvelteKit', link: '/frameworks/sveltekit' },
+          ],
+        },
+        {
+          text: 'Backend Frameworks',
+          collapsed: false,
+          items: [
+            { text: 'Node.js', link: '/frameworks/nodejs' },
+            { text: 'Express.js', link: '/frameworks/express' },
+            { text: 'NestJS', link: '/frameworks/nestjs' },
+            { text: 'Deno', link: '/frameworks/deno' },
           ],
         },
       ],
-      '/backend/': [
+      '/operators/': [
         {
-          text: 'Backend Integration',
+          text: 'Operator Reference',
           collapsed: false,
           items: [
-            { text: 'Node.js', link: '/backend/nodejs' },
-            { text: 'Express.js', link: '/backend/express' },
-            { text: 'NestJS', link: '/backend/nestjs' },
-            { text: 'Deno', link: '/backend/deno' },
+            { text: 'All Operators', link: '/operators/' },
+            { text: 'Comparison', link: '/operators/comparison' },
+            { text: 'Array', link: '/operators/array' },
+            { text: 'String', link: '/guide/operators#string-operators' },
+            { text: 'Logical', link: '/guide/logical-operators' },
+            { text: 'Geospatial', link: '/guide/geospatial-operators' },
+            { text: 'DateTime', link: '/guide/datetime-operators' },
           ],
+        },
+      ],
+      '/recipes/': [
+        {
+          text: 'Recipes',
+          collapsed: false,
+          items: [{ text: 'All Recipes', link: '/recipes/' }],
         },
       ],
       '/api/': [

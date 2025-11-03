@@ -1,11 +1,20 @@
 ---
 title: Geospatial Operators
 description: Location-based filtering with powerful spatial operators
+aside: false
 ---
 
 # Geospatial Operators
 
 > Location-based filtering with powerful spatial operators for proximity search, bounding boxes, and polygon containment.
+
+## Interactive Playground 🎮
+
+Try geospatial operators live with real Buenos Aires data! Click the map, adjust controls, and see real-time filtering.
+
+<GeospatialPlayground />
+
+---
 
 ## Overview
 
