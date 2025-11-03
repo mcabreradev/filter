@@ -1,5 +1,5 @@
-import type { GeoPoint } from '../../../../src/types';
-import type { DatasetConfig } from '../components/geospatial/types';
+import type { GeoPoint } from '../../../../../src/types';
+import type { DatasetConfig } from './types';
 
 // Buenos Aires center coordinates
 const BUENOS_AIRES_CENTER: GeoPoint = { lat: -34.577645, lng: -58.42672 };

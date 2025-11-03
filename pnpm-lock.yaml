@@ -42,6 +42,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^8.17.0
         version: 8.46.2(eslint@9.38.0)(typescript@5.9.3)
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.1
+        version: 6.0.1(vite@5.4.20(@types/node@24.9.1))(vue@3.5.22(typescript@5.9.3))
       '@vitest/coverage-v8':
         specifier: ^2.1.0
         version: 2.1.9(vitest@2.1.9)
@@ -528,6 +531,9 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
+  '@rolldown/pluginutils@1.0.0-beta.29':
+    resolution: {integrity: sha512-NIJgOsMjbxAXvoGq/X0gD7VPMQ8j9g0BiDaNjVNVjvl+iKXxL3Jre0v31RmBYeLEmkbj2s02v8vFTbUXi5XS2Q==}
+
   '@rollup/rollup-android-arm-eabi@4.52.5':
     resolution: {integrity: sha512-8c1vW4ocv3UOMp9K+gToY5zL2XiiVw3k7f1ksf4yO1FlDFQ1C2u72iACFnSOceJFsWskc2WZNqeRhFRPzv+wtQ==}
     cpu: [arm]
@@ -900,6 +906,13 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       vite: ^5.0.0 || ^6.0.0
+      vue: ^3.2.25
+
+  '@vitejs/plugin-vue@6.0.1':
+    resolution: {integrity: sha512-+MaE752hU0wfPFJEUAIxqw18+20euHHdxVtMvbFcOEpjEyfqXH/5DCoTHiVJ0J29EhTJdoTkjEv5YBKU9dnoTw==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    peerDependencies:
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0
       vue: ^3.2.25
 
   '@vitest/coverage-v8@2.1.9':
@@ -3518,6 +3531,8 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
+  '@rolldown/pluginutils@1.0.0-beta.29': {}
+
   '@rollup/rollup-android-arm-eabi@4.52.5':
     optional: true
 
@@ -3895,6 +3910,12 @@ snapshots:
 
   '@vitejs/plugin-vue@5.2.4(vite@5.4.20(@types/node@24.9.1))(vue@3.5.22(typescript@5.9.3))':
     dependencies:
+      vite: 5.4.20(@types/node@24.9.1)
+      vue: 3.5.22(typescript@5.9.3)
+
+  '@vitejs/plugin-vue@6.0.1(vite@5.4.20(@types/node@24.9.1))(vue@3.5.22(typescript@5.9.3))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.0-beta.29
       vite: 5.4.20(@types/node@24.9.1)
       vue: 3.5.22(typescript@5.9.3)
 

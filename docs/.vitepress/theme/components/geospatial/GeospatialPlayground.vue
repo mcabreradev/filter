@@ -8,7 +8,7 @@ import FilterCodeDisplay from './FilterCodeDisplay.vue';
 import ResultsPanel from './ResultsPanel.vue';
 import DatasetSelector from './DatasetSelector.vue';
 import type { GeospatialOperator, PlaygroundState } from './types';
-import { datasets } from '../../data/geospatialDatasets';
+import { datasets } from './geospatialDatasets';
 
 // State management
 const state = ref<PlaygroundState>({

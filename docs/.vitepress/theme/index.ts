@@ -1,9 +1,10 @@
 import type { Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
-import './style.css';
-import Playground from './components/Playground.vue';
+import Playground from './components/playground/PlaygroundWrapper.vue';
 import GeospatialPlayground from './components/geospatial/GeospatialPlayground.vue';
 import { inject } from '@vercel/analytics';
+
+import './style.css';
 
 export default {
   extends: DefaultTheme,
