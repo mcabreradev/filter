@@ -32,8 +32,8 @@ describe('config-builder', () => {
         caseSensitive: true,
         maxDepth: 5,
         enableCache: true,
+        enablePerformanceMonitoring: false,
         debug: false,
-        customComparator: undefined,
       });
     });
 

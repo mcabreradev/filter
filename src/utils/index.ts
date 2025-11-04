@@ -54,3 +54,12 @@ export {
   isWeekday,
   isWeekend,
 } from './date-time';
+
+export {
+  PerformanceMonitor,
+  getPerformanceMonitor,
+  resetPerformanceMonitor,
+  trackPerformance,
+} from './performance-monitor';
+
+export type { PerformanceMetrics, PerformanceMonitorOptions } from './performance-monitor';

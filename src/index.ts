@@ -65,6 +65,43 @@ export type {
 export { validateExpression, validateOptions } from './validation/index.js';
 export { mergeConfig, createFilterConfig } from './config/index.js';
 export { calculateDistance, isValidGeoPoint } from './utils/index.js';
+
+// Error handling
+export {
+  FilterError,
+  InvalidExpressionError,
+  OperatorError,
+  ValidationError,
+  TypeMismatchError,
+  GeospatialError,
+  ConfigurationError,
+  PerformanceLimitError,
+} from './errors/filter-errors.js';
+
+export {
+  isFilterError,
+  formatErrorMessage,
+  createValidationError,
+  createOperatorError,
+  createTypeMismatchError,
+  createGeospatialError,
+  createConfigurationError,
+  wrapError,
+  extractErrorDetails,
+  getUserFriendlyMessage,
+  ErrorCodes,
+} from './errors/error-helpers.js';
+
+// Performance monitoring
+export {
+  PerformanceMonitor,
+  getPerformanceMonitor,
+  resetPerformanceMonitor,
+  trackPerformance,
+} from './utils/performance-monitor.js';
+
+export type { PerformanceMetrics, PerformanceMonitorOptions } from './utils/performance-monitor.js';
+
 export {
   isPrimitive,
   isPlainObject,

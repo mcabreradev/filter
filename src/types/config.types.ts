@@ -3,6 +3,7 @@ export interface FilterConfig {
   maxDepth: number;
   customComparator?: Comparator;
   enableCache: boolean;
+  enablePerformanceMonitoring?: boolean;
   debug?: boolean;
   verbose?: boolean;
   showTimings?: boolean;
