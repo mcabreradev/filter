@@ -192,9 +192,12 @@ const expression = {
 ```
 
 Available operators:
-- `$eq`, `$ne`, `$gt`, `$gte`, `$lt`, `$lte`
-- `$in`, `$nin`, `$contains`, `$startsWith`, `$endsWith`
-- `$regex`, `$and`, `$or`, `$not`
+- **Comparison**: `$eq`, `$ne`, `$gt`, `$gte`, `$lt`, `$lte`
+- **Array**: `$in`, `$nin`, `$contains`, `$size`
+- **String**: `$startsWith`, `$endsWith`, `$regex`, `$match`
+- **Logical**: `$and`, `$or`, `$not`
+- **Geospatial**: `$near`, `$geoBox`, `$geoPolygon`
+- **DateTime**: `$recent`, `$upcoming`, `$dayOfWeek`, `$timeOfDay`, `$age`, `$isWeekday`, `$isWeekend`, `$isBefore`, `$isAfter`
 
 ### Nested Property Access Fails
 
@@ -224,6 +227,102 @@ const expression = {
 ```typescript
 const expression = {
   name: { $regex: /john/i }
+};
+```
+
+### Geospatial Queries Not Working
+
+**Problem**: `$near` operator returns no results.
+
+**Cause 1**: Invalid coordinates (latitude must be -90 to 90, longitude -180 to 180)
+
+**Solution**:
+```typescript
+// Correct coordinate format
+const expression = {
+  location: {
+    $near: {
+      center: { lat: 52.52, lng: 13.405 },
+      maxDistanceMeters: 5000
+    }
+  }
+};
+```
+
+**Cause 2**: Distance unit mismatch (all distances are in meters)
+
+**Solution**:
+```typescript
+// Convert kilometers to meters
+const distanceKm = 5;
+const expression = {
+  location: {
+    $near: {
+      center: userLocation,
+      maxDistanceMeters: distanceKm * 1000
+    }
+  }
+};
+```
+
+### DateTime Filters Not Matching
+
+**Problem**: `$recent` or `$upcoming` returns unexpected results.
+
+**Cause**: Date property is stored as string instead of Date object.
+
+**Solution**: Convert strings to Date objects
+```typescript
+const data = rawData.map(item => ({
+  ...item,
+  date: new Date(item.date)
+}));
+
+const expression = {
+  date: { $recent: { days: 7 } }
+};
+```
+
+### $dayOfWeek Not Filtering Correctly
+
+**Problem**: `$dayOfWeek` doesn't match expected days.
+
+**Cause**: Day numbering starts at 0 (Sunday) through 6 (Saturday).
+
+**Solution**:
+```typescript
+// Weekdays: Monday (1) to Friday (5)
+const expression = {
+  date: { $dayOfWeek: [1, 2, 3, 4, 5] }
+};
+
+// Weekends: Saturday (6) and Sunday (0)
+const expression = {
+  date: { $dayOfWeek: [0, 6] }
+};
+
+// Or use convenience operators
+const expression = {
+  date: { $isWeekday: true }  // Monday-Friday
+};
+```
+
+### $age Calculation Issues
+
+**Problem**: `$age` returns incorrect age.
+
+**Cause**: Birth date property not in Date format.
+
+**Solution**:
+```typescript
+// Ensure birthDate is a Date object
+const users = rawUsers.map(user => ({
+  ...user,
+  birthDate: new Date(user.birthDate)
+}));
+
+const expression = {
+  birthDate: { $age: { min: 18, max: 65 } }
 };
 ```
 
@@ -315,6 +414,61 @@ const config = createFilterConfig<User>()
   .where('age', { $gte: 18 })
   .where('status', { $eq: 'active' })
   .build();
+```
+
+### Geospatial Performance Issues
+
+**Problem**: Filtering large datasets with geospatial queries is slow.
+
+**Solution 1**: Use bounding box for initial filtering
+```typescript
+// First filter by bounding box (fast)
+const nearbyItems = filter(items, {
+  location: {
+    $geoBox: {
+      southwest: { lat: 52.5, lng: 13.3 },
+      northeast: { lat: 52.6, lng: 13.5 }
+    }
+  }
+});
+
+// Then apply precise distance filter
+const results = filter(nearbyItems, {
+  location: {
+    $near: {
+      center: userLocation,
+      maxDistanceMeters: 2000
+    }
+  }
+});
+```
+
+**Solution 2**: Enable memoization for repeated queries
+```typescript
+const { filtered } = useFilter(restaurants, expression, { memoize: true });
+```
+
+### DateTime Timezone Issues
+
+**Problem**: DateTime filters not working across timezones.
+
+**Solution**: Normalize all dates to UTC
+```typescript
+const normalizeToUTC = (date: Date) => {
+  return new Date(Date.UTC(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds()
+  ));
+};
+
+const data = rawData.map(item => ({
+  ...item,
+  date: normalizeToUTC(new Date(item.date))
+}));
 ```
 
 ## Getting Help

@@ -316,6 +316,88 @@ Statistics:
 └── Conditions Evaluated: 7
 ```
 
+### Geospatial Filtering
+
+```typescript
+interface Restaurant {
+  name: string;
+  location: { lat: number; lng: number };
+  rating: number;
+}
+
+const restaurants: Restaurant[] = [...];
+const userLocation = { lat: 52.52, lng: 13.405 };
+
+const result = filterDebug(restaurants, {
+  $and: [
+    {
+      location: {
+        $near: {
+          center: userLocation,
+          maxDistanceMeters: 2000
+        }
+      }
+    },
+    { rating: { $gte: 4.0 } }
+  ]
+});
+
+result.print();
+```
+
+**Output:**
+
+```
+Filter Debug Tree
+└── AND (8/50 matched, 16.0%)
+   ├── location NEAR (lat: 52.52, lng: 13.405, max: 2000m) (15/50 matched, 30.0%)
+   └── rating >= 4.0 (8/15 matched, 53.3%)
+
+Statistics:
+├── Matched: 8 / 50 items (16.0%)
+├── Execution Time: 1.23ms
+├── Cache Hit: No
+└── Conditions Evaluated: 3
+```
+
+### DateTime Filtering
+
+```typescript
+interface Event {
+  name: string;
+  date: Date;
+  startTime: Date;
+}
+
+const events: Event[] = [...];
+
+const result = filterDebug(events, {
+  $and: [
+    { date: { $upcoming: { days: 7 } } },
+    { date: { $dayOfWeek: [1, 2, 3, 4, 5] } },
+    { startTime: { $timeOfDay: { start: 9, end: 17 } } }
+  ]
+});
+
+result.print();
+```
+
+**Output:**
+
+```
+Filter Debug Tree
+└── AND (5/30 matched, 16.7%)
+   ├── date UPCOMING (7 days) (12/30 matched, 40.0%)
+   ├── date DAY OF WEEK [Mon, Tue, Wed, Thu, Fri] (8/12 matched, 66.7%)
+   └── startTime TIME OF DAY (9:00-17:00) (5/8 matched, 62.5%)
+
+Statistics:
+├── Matched: 5 / 30 items (16.7%)
+├── Execution Time: 0.95ms
+├── Cache Hit: No
+└── Conditions Evaluated: 4
+```
+
 ## Understanding Match Statistics
 
 Each node in the tree shows:
@@ -386,6 +468,8 @@ result.print();
 
 Debug mode uses human-readable operator names:
 
+### Comparison Operators
+
 | Operator | Display |
 |----------|---------|
 | `$gt` | `>` |
@@ -394,17 +478,54 @@ Debug mode uses human-readable operator names:
 | `$lte` | `<=` |
 | `$eq` | `=` |
 | `$ne` | `!=` |
+
+### Array Operators
+
+| Operator | Display |
+|----------|---------|
 | `$in` | `IN` |
 | `$nin` | `NOT IN` |
 | `$contains` | `CONTAINS` |
 | `$size` | `SIZE` |
+
+### String Operators
+
+| Operator | Display |
+|----------|---------|
 | `$startsWith` | `STARTS WITH` |
 | `$endsWith` | `ENDS WITH` |
 | `$regex` | `REGEX` |
 | `$match` | `MATCH` |
+
+### Logical Operators
+
+| Operator | Display |
+|----------|---------|
 | `$and` | `AND` |
 | `$or` | `OR` |
 | `$not` | `NOT` |
+
+### Geospatial Operators
+
+| Operator | Display |
+|----------|---------|
+| `$near` | `NEAR` |
+| `$geoBox` | `GEO BOX` |
+| `$geoPolygon` | `GEO POLYGON` |
+
+### DateTime Operators
+
+| Operator | Display |
+|----------|---------|
+| `$recent` | `RECENT` |
+| `$upcoming` | `UPCOMING` |
+| `$dayOfWeek` | `DAY OF WEEK` |
+| `$timeOfDay` | `TIME OF DAY` |
+| `$age` | `AGE` |
+| `$isWeekday` | `IS WEEKDAY` |
+| `$isWeekend` | `IS WEEKEND` |
+| `$isBefore` | `BEFORE` |
+| `$isAfter` | `AFTER` |
 
 ## Best Practices
 

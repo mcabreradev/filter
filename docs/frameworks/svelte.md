@@ -10,8 +10,14 @@ Complete guide for using `@mcabreradev/filter` with Svelte.
 ## Installation
 
 ```bash
-npm install @mcabreradev/filter svelte
-```
+# Using npm
+npm install @mcabreradev/filter
+
+# Using yarn
+yarn add @mcabreradev/filter
+
+# Using pnpm
+pnpm add @mcabreradev/filter
 
 ## Available Stores
 

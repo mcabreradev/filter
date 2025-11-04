@@ -1254,7 +1254,7 @@ pnpm test:coverage
 pnpm typecheck
 ```
 
-The library has 270+ tests with comprehensive coverage of all features.
+The library has 613+ tests with comprehensive coverage of all features.
 
 ---
 

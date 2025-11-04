@@ -78,8 +78,14 @@ features:
 Install the package:
 
 ```bash
+# Using npm
 npm install @mcabreradev/filter
-```
+
+# Using yarn
+yarn add @mcabreradev/filter
+
+# Using pnpm
+pnpm add @mcabreradev/filter
 
 Start filtering:
 
