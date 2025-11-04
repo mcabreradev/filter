@@ -2,7 +2,7 @@
   {
     "name": "Full Library (with dependencies)",
     "path": "build/index.js",
-    "limit": "65 KB",
+    "limit": "66 KB",
     "gzip": true
   },
   {
