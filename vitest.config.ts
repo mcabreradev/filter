@@ -4,7 +4,11 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['src/**/*.test.ts', 'docs/.vitepress/theme/__tests__/**/*.test.ts'],
+    include: [
+      'src/**/*.test.ts',
+      '__test__/**/*.test.ts',
+      'docs/.vitepress/theme/__tests__/**/*.test.ts',
+    ],
     environmentMatchGlobs: [['docs/.vitepress/theme/__tests__/**/*.test.ts', 'jsdom']],
     coverage: {
       provider: 'v8',

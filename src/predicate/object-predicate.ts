@@ -81,7 +81,13 @@ export function createObjectPredicate<T>(
           return false;
         }
       } else {
-        const matches = itemValue === expr;
+        // Handle case-insensitive string comparison when caseSensitive is false
+        let matches: boolean;
+        if (!config.caseSensitive && typeof itemValue === 'string' && typeof expr === 'string') {
+          matches = itemValue.toLowerCase() === expr.toLowerCase();
+        } else {
+          matches = itemValue === expr;
+        }
         if (shouldNegate ? matches : !matches) {
           return false;
         }

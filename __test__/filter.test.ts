@@ -205,10 +205,13 @@ describe('Array values with OR logic (syntactic sugar for $in)', () => {
       age: [30, 35],
     });
 
-    expect(result).toHaveLength(2);
+    // Should match: Alice (Berlin, 30), Charlie (Berlin, 35), David (Paris, 30)
+    // Logic: (city IN ['Berlin', 'Paris']) AND (age IN [30, 35])
+    expect(result).toHaveLength(3);
     expect(result).toEqual([
       { name: 'Alice', email: 'alice@example.com', age: 30, city: 'Berlin' },
       { name: 'Charlie', email: 'charlie@example.com', age: 35, city: 'Berlin' },
+      { name: 'David', email: 'david@example.com', age: 30, city: 'Paris' },
     ]);
   });
 
@@ -251,10 +254,12 @@ describe('Array values with OR logic (syntactic sugar for $in)', () => {
   it('works with number arrays', () => {
     const result = filter(users, { age: [25, 30] });
 
-    expect(result).toHaveLength(2);
+    // Should match: Alice (30), Bob (25), David (30)
+    expect(result).toHaveLength(3);
     expect(result).toEqual([
       { name: 'Alice', email: 'alice@example.com', age: 30, city: 'Berlin' },
       { name: 'Bob', email: 'bob@example.com', age: 25, city: 'London' },
+      { name: 'David', email: 'david@example.com', age: 30, city: 'Paris' },
     ]);
   });
 
@@ -272,9 +277,12 @@ describe('Array values with OR logic (syntactic sugar for $in)', () => {
       name: ['Alice', 'David'],
     });
 
-    expect(result).toHaveLength(1);
+    // Should match: Alice (Berlin, 30, Alice) and David (Paris, 30, David)
+    // Logic: (city IN ['Berlin', 'Paris']) AND (age === 30) AND (name IN ['Alice', 'David'])
+    expect(result).toHaveLength(2);
     expect(result).toEqual([
       { name: 'Alice', email: 'alice@example.com', age: 30, city: 'Berlin' },
+      { name: 'David', email: 'david@example.com', age: 30, city: 'Paris' },
     ]);
   });
 

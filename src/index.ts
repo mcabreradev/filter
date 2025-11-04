@@ -54,11 +54,27 @@ export type {
   TimeOfDayQuery,
   AgeQuery,
   DateTimeOperators,
+  NestedKeyOf,
+  PathValue,
+  DeepPartial,
+  PrimitiveKeys,
+  ObjectKeys,
+  NestedPaths,
 } from './types/index.js';
 
 export { validateExpression, validateOptions } from './validation/index.js';
 export { mergeConfig, createFilterConfig } from './config/index.js';
 export { calculateDistance, isValidGeoPoint } from './utils/index.js';
+export {
+  isPrimitive,
+  isPlainObject,
+  getNestedValue,
+  setNestedValue,
+  hasNestedPath,
+  isValidPath,
+  getAllNestedKeys,
+} from './types/type-helpers.js';
+export { typedFilter, createTypedFilter, TypedFilterBuilder } from './utils/typed-filter.js';
 export { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './operators/index.js';
 export {
   isValidDate,
