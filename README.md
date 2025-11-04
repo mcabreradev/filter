@@ -12,8 +12,14 @@
   <a aria-label="Bundle Size" href="https://bundlephobia.com/package/@mcabreradev/filter">
     <img alt="" src="https://img.shields.io/bundlephobia/minzip/@mcabreradev/filter?style=for-the-badge&labelColor=orange">
   </a>
+  <a aria-label="Tree Shaking" href="https://bundlephobia.com/package/@mcabreradev/filter">
+    <img alt="" src="https://img.shields.io/badge/tree--shaking-friendly-success?style=for-the-badge&labelColor=green">
+  </a>
   <a aria-label="TypeScript" href="#">
     <img alt="" src="https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=for-the-badge&labelColor=blue">
+  </a>
+  <a aria-label="Zero Dependencies" href="https://bundlephobia.com/package/@mcabreradev/filter">
+    <img alt="" src="https://img.shields.io/badge/dependencies-1-purple?style=for-the-badge&labelColor=purple">
   </a>
 </p>
 
@@ -51,6 +57,45 @@ pnpm add @mcabreradev/filter
 ```
 
 **Requirements:** Node.js >= 20, TypeScript 5.0+ (optional)
+
+---
+
+## Bundle Size 📦
+
+@mcabreradev/filter is optimized for minimal bundle impact with tree-shaking support:
+
+| Import Strategy | Size (gzipped) | Use Case |
+|----------------|----------------|----------|
+| Full library | ~10 KB | All features needed |
+| Core only | ~3 KB | Basic filtering |
+| Operators (granular) | ~5 KB | Specific operators |
+| React integration | ~3 KB | React hooks |
+| Vue integration | ~3 KB | Vue composables |
+| Svelte integration | ~3 KB | Svelte stores |
+| Lazy evaluation | ~2 KB | Large datasets |
+
+### Import Examples
+
+```typescript
+// Full import (includes all features)
+import { filter } from '@mcabreradev/filter';
+// Bundle: ~10 KB (gzipped)
+
+// Granular imports (Recommended for production)
+import { filter } from '@mcabreradev/filter/core';
+import { evaluateGt, evaluateLt } from '@mcabreradev/filter/operators/comparison';
+// Bundle: ~5 KB (gzipped) - 50% reduction
+
+// Framework-specific imports
+import { useFilter } from '@mcabreradev/filter/react';
+// Bundle: ~3 KB (gzipped) - 70% reduction
+
+// Lazy evaluation only
+import { filterLazy } from '@mcabreradev/filter/lazy';
+// Bundle: ~2 KB (gzipped) - 80% reduction
+```
+
+> 📖 See [Bundle Size Optimization Guide](./docs/advanced/bundle-size.md) for detailed strategies.
 
 ---
 

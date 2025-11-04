@@ -8,6 +8,8 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 10
+    reviewers:
+      - "mcabreradev"
     assignees:
       - "mcabreradev"
     commit-message:
@@ -15,7 +17,24 @@ updates:
       include: "scope"
     labels:
       - "dependencies"
-      - "security"
+      - "automated"
+    groups:
+      # Group all production dependencies
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      # Group all development dependencies
+      development-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    # Ignore specific packages if needed
+    ignore:
+      - dependency-name: "zod"
+        update-types: ["version-update:semver-major"]
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
@@ -23,13 +42,12 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
-    open-pull-requests-limit: 5
+    reviewers:
+      - "mcabreradev"
     assignees:
       - "mcabreradev"
     commit-message:
-      prefix: "chore(ci)"
-      include: "scope"
+      prefix: "ci"
     labels:
-      - "dependencies"
-      - "ci"
+      - "github-actions"
+      - "automated"
