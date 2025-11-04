@@ -2,6 +2,10 @@
 
 This guide provides comprehensive strategies for minimizing bundle size when using @mcabreradev/filter in your projects.
 
+::: tip See Also
+For detailed import syntax and examples, see the [Modular Imports Guide](/guide/modular-imports).
+:::
+
 ## Overview
 
 @mcabreradev/filter is designed with tree-shaking support and granular imports to minimize bundle impact. With the right import strategy, you can reduce bundle size by up to 80%.
@@ -48,6 +52,10 @@ import { filter } from '@mcabreradev/filter/core';
 - Basic filtering is sufficient
 - No advanced operators needed
 - Minimal bundle size is priority
+
+::: tip
+See [Modular Imports](/guide/modular-imports) for complete documentation on all available import paths.
+:::
 
 **Features included:**
 - Basic filter function

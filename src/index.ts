@@ -184,4 +184,11 @@ export type {
   UsePaginatedFilterResult as UsePaginatedFilterResultSvelte,
 } from './integrations/svelte/index.js';
 
+export {
+  useFilter,
+  useFilteredState,
+  useDebouncedFilter,
+  usePaginatedFilter,
+} from './integrations/react/index.js';
+
 export default filter;

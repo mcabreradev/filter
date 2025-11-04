@@ -10,14 +10,22 @@ Complete guide for using `@mcabreradev/filter` with React.
 ## Installation
 
 ```bash
-# Using npm
 npm install @mcabreradev/filter
+```
 
-# Using yarn
-yarn add @mcabreradev/filter
+## Import
 
-# Using pnpm
-pnpm add @mcabreradev/filter
+```typescript
+// Classic import (all features)
+import { useFilter } from '@mcabreradev/filter';
+
+// Modular import (recommended for production)
+import { useFilter } from '@mcabreradev/filter/react';
+```
+
+::: tip Bundle Size
+Using modular imports reduces bundle size by **70%**. See [Modular Imports](/guide/modular-imports) for details.
+:::
 
 ## Available Hooks
 

@@ -46,11 +46,15 @@ features:
 
   - icon: 📦
     title: MongoDB-Style Operators
-    details: 18 operators for advanced filtering including $and, $or, $not, $regex, and more.
+    details: 30+ operators for advanced filtering including $and, $or, $not, $regex, geospatial, and datetime operators.
 
   - icon: 💨
     title: Lazy Evaluation
     details: Process large datasets efficiently with generators. 500x faster for early exits.
+
+  - icon: 🎁
+    title: Modular Imports
+    details: Tree-shakeable exports for optimal bundle size. 50-70% smaller with granular imports.
 
   - icon: 🐛
     title: Debug Mode
@@ -86,11 +90,20 @@ yarn add @mcabreradev/filter
 
 # Using pnpm
 pnpm add @mcabreradev/filter
+```
+
+::: tip Import Styles
+Choose between classic imports (all features) or modular imports (50-70% smaller bundle). [Learn more](/guide/modular-imports)
+:::
 
 Start filtering:
 
 ```typescript
+// Classic import
 import { filter } from '@mcabreradev/filter';
+
+// Or modular import (recommended for production)
+import { filter } from '@mcabreradev/filter/core';
 
 const users = [
   { name: 'Alice', email: 'alice@example.com', age: 30, city: 'Berlin' },

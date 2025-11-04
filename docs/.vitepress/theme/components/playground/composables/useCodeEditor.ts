@@ -229,7 +229,8 @@ export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
         `;
       }
 
-      const fn = eval(wrappedCode);
+      // Use Function constructor instead of eval for safer code execution
+      const fn = new Function('return ' + wrappedCode)();
       const result = fn(mockConsole, filterFn);
 
       if (logs.length > 0) {
