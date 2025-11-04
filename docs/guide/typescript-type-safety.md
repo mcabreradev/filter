@@ -12,6 +12,10 @@ Complete guide to TypeScript type safety in @mcabreradev/filter, including dot n
 - **Generic Support** - Works with any TypeScript interface
 - **Zero Configuration** - Works out of the box
 
+::: tip Version Compatibility
+TypeScript type safety features require TypeScript `>= 5.0` and @mcabreradev/filter `>= 5.0.0`
+:::
+
 ## Basic Type Safety
 
 ### Simple Type Inference
@@ -25,7 +29,11 @@ interface User {
   active: boolean;
 }
 
-const users: User[] = [...];
+const users: User[] = [
+  { name: 'Alice', age: 25, active: true },
+  { name: 'Bob', age: 17, active: false },
+  { name: 'Charlie', age: 30, active: true }
+];
 
 // TypeScript infers return type as User[]
 const adults = filter(users, { age: { $gte: 18 } });
@@ -222,12 +230,17 @@ filter(users, {
 ### Operator Type Definitions
 
 ```typescript
+// Import all type utilities at once
 import type {
+  NestedKeyOf,
+  Expression,
   ComparisonOperators,
   StringOperators,
   ArrayOperators,
   DateTimeOperators,
-  GeospatialOperators
+  GeospatialOperators,
+  PathValue,
+  DeepPartial
 } from '@mcabreradev/filter';
 
 // Use specific operator types
@@ -328,27 +341,30 @@ const nearby = filterByLocation(users, { lat: 52.52, lng: 13.405 }, 5000);
 ### Type-Safe Filter Builder
 
 ```typescript
+import { filter } from '@mcabreradev/filter';
+import type { Expression, NestedKeyOf } from '@mcabreradev/filter';
+
 class FilterBuilder<T> {
-  private expression: Partial<Expression<T>> = {};
+  private expression: Partial<Record<string, unknown>> = {};
 
   where<K extends keyof T>(
     key: K,
-    value: T[K] | Expression<T>[K]
+    value: T[K] | Partial<Record<string, unknown>>
   ): this {
-    this.expression[key] = value as any;
+    this.expression[key as string] = value;
     return this;
   }
 
   whereNested<P extends NestedKeyOf<T>>(
     path: P,
-    value: any
+    value: unknown
   ): this {
-    (this.expression as any)[path] = value;
+    this.expression[path] = value;
     return this;
   }
 
-  build(): Expression<T> {
-    return this.expression as Expression<T>;
+  build(): Partial<Record<string, unknown>> {
+    return this.expression;
   }
 
   execute(data: T[]): T[] {
@@ -424,28 +440,58 @@ type CityType = PathValue<User, 'profile.address.city'>;
 // Deep partial for optional properties
 type PartialUser = DeepPartial<User>;
 // { profile?: { address?: { city?: string } } }
+
+// Practical usage of PathValue
+function getValueAtPath<T, P extends NestedKeyOf<T>>(
+  obj: T,
+  path: P
+): PathValue<T, P> | undefined {
+  const keys = (path as string).split('.');
+  let value: any = obj;
+  for (const key of keys) {
+    value = value?.[key];
+  }
+  return value;
+}
+
+// Usage with DeepPartial for updates
+function updateUser(user: User, updates: DeepPartial<User>): User {
+  return { ...user, ...updates };
+}
 ```
 
-### Operator Type Guards
+### Operator Type Checking
 
 ```typescript
-import {
-  isComparisonOperator,
-  isStringOperator,
-  isArrayOperator,
-  isGeospatialOperator,
-  isDateTimeOperator
+import type {
+  ComparisonOperators,
+  StringOperators,
+  GeospatialOperators
 } from '@mcabreradev/filter';
 
+// Type guard helpers
+function hasComparisonOperator(op: unknown): op is ComparisonOperators<any> {
+  return typeof op === 'object' && op !== null &&
+    ('$gte' in op || '$lte' in op || '$gt' in op || '$lt' in op);
+}
+
+function hasStringOperator(op: unknown): op is StringOperators {
+  return typeof op === 'object' && op !== null &&
+    ('$startsWith' in op || '$endsWith' in op || '$contains' in op);
+}
+
+function hasGeospatialOperator(op: unknown): op is GeospatialOperators {
+  return typeof op === 'object' && op !== null &&
+    ('$near' in op || '$geoBox' in op || '$geoPolygon' in op);
+}
+
+// Usage
 function processOperator(op: unknown) {
-  if (isComparisonOperator(op)) {
-    // op is ComparisonOperators
+  if (hasComparisonOperator(op)) {
     console.log('Comparison:', op.$gte, op.$lte);
-  } else if (isStringOperator(op)) {
-    // op is StringOperators
+  } else if (hasStringOperator(op)) {
     console.log('String:', op.$startsWith);
-  } else if (isGeospatialOperator(op)) {
-    // op is GeospatialOperators
+  } else if (hasGeospatialOperator(op)) {
     console.log('Geo:', op.$near);
   }
 }
@@ -643,7 +689,7 @@ const expression: any = { 'profile.age': { $gte: 18 } };
 
 // Don't skip type annotations
 filter(users, {
-  'invalid.path': true // No type checking
+  'invalid.path': true
 });
 
 // Don't ignore TypeScript errors
@@ -651,13 +697,16 @@ filter(users, {
 typedFilter(users, { 'invalid': true });
 
 // Don't use overly complex types
-type OverlyComplex = {
+type OverlyComplex<T> = {
   [K in keyof T]: T[K] extends infer U
     ? U extends object
       ? // ... 10 more levels
       : never
     : never;
 };
+
+// Don't use type assertions unnecessarily
+const expr = { age: { $gte: 18 } } as Expression<User>;
 ```
 
 ## IDE Configuration
@@ -722,6 +771,14 @@ type CommonPaths =
   | 'user.address.city';
 ```
 
+::: warning TypeScript Recursion Limits
+TypeScript has a recursion depth limit (typically 50 levels). For deeply nested objects (&gt; 10 levels), consider:
+
+- Flattening your data structure
+- Using explicit path unions for commonly accessed paths
+- Breaking down types into smaller, composable pieces
+:::
+
 ### Circular Type References
 
 **Problem**: TypeScript complains about circular references.
@@ -733,21 +790,116 @@ type UserPath = NestedKeyOf<User>;
 type UserExpr = Partial<Record<UserPath, any>>;
 ```
 
+### Deep Nesting Performance
+
+**Problem**: Type checking is slow with deeply nested objects.
+
+**Solution**: Limit nesting depth and use type caching
+
+```typescript
+// ❌ Slow: 15+ levels of nesting
+interface DeepType {
+  level1: {
+    level2: {
+      // ... 15 more levels
+    };
+  };
+}
+
+// ✅ Better: Flatten or limit depth
+interface OptimizedType {
+  'level1.level2.level3': string;
+  'level1.level2.level4': number;
+}
+
+// Cache commonly used types
+type UserPaths = NestedKeyOf<User>; // Compute once
+type UserFilter = Partial<Record<UserPaths, any>>;
+```
+
+## Common Pitfalls
+
+### Optional Properties
+
+```typescript
+interface User {
+  name: string;
+  email?: string; // Optional
+}
+
+// ✅ Handle optional properties
+const filtered = typedFilter(users, {
+  email: { $ne: undefined } // Filter users with email
+});
+```
+
+### Union Types
+
+```typescript
+interface Product {
+  price: number | string; // Union type
+}
+
+// ✅ Use type guards or specific operators
+const expensive = filter(products, {
+  price: { $gte: 100 } // Works with number
+});
+```
+
+### Arrays of Objects
+
+```typescript
+interface User {
+  tags: Array<{ id: number; name: string }>;
+}
+
+// Use array operators
+const filtered = filter(users, {
+  tags: { $size: { $gte: 1 } }
+});
+```
+
+## Migration Guide
+
+### From filter() to typedFilter()
+
+```typescript
+// Before: Basic filter
+import { filter } from '@mcabreradev/filter';
+
+const results = filter(users, {
+  'profile.age': { $gte: 18 }
+});
+
+// After: Type-safe filter
+import { typedFilter } from '@mcabreradev/filter';
+
+const results = typedFilter(users, {
+  'profile.age': { $gte: 18 } // Full autocomplete and type checking
+});
+```
+
+**Benefits**:
+- ✅ Compile-time path validation
+- ✅ IDE autocomplete for nested paths
+- ✅ Catch typos before runtime
+- ✅ No performance overhead
+
 ## Summary
 
-| Feature | Type Safety Level | Performance | Ease of Use |
-|---------|------------------|-------------|-------------|
-| Basic filter() | Medium | Fast | Easy |
-| Expression<T> | High | Fast | Easy |
-| typedFilter() | Maximum | Fast | Easy |
-| NestedKeyOf<T> | Maximum | Medium | Medium |
-| Custom Types | Variable | Variable | Complex |
+| Feature | Type Safety Level | Type Check Time | Bundle Impact | Ease of Use |
+|---------|------------------|-----------------|---------------|-------------|
+| Basic filter() | Medium | Fast | Minimal | Easy |
+| Expression&lt;T&gt; | High | Fast | Minimal | Easy |
+| typedFilter() | Maximum | Fast | Minimal | Easy |
+| NestedKeyOf&lt;T&gt; | Maximum | Medium | None (type-only) | Medium |
+| Custom Types | Variable | Variable | None (type-only) | Complex |
 
 **Recommended Approach**:
-- **Small Projects**: Use `filter()` with `Expression<T>`
-- **Medium Projects**: Add `NestedKeyOf<T>` for dot notation
-- **Large Projects**: Use `typedFilter()` and type utilities
-- **Libraries**: Export type helpers for consumers
+- **Small Projects** (&lt;100 types): Use `filter()` with `Expression<T>`
+- **Medium Projects** (100-1000 types): Add `NestedKeyOf<T>` for dot notation
+- **Large Projects** (&gt;1000 types): Use `typedFilter()` + explicit path types
+- **Libraries**: Export `NestedKeyOf<T>` and type utilities for consumers
 
 ## See Also
 
