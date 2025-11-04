@@ -4,6 +4,21 @@ import type { DatasetConfig } from './types';
 // Buenos Aires center coordinates
 const BUENOS_AIRES_CENTER: GeoPoint = { lat: -34.577645, lng: -58.42672 };
 
+// Helper function to generate random location within Buenos Aires bounds
+function randomLocation(basePoint: GeoPoint, radiusKm: number): GeoPoint {
+  const radiusInDegrees = radiusKm / 111.0;
+  const u = Math.random();
+  const v = Math.random();
+  const w = radiusInDegrees * Math.sqrt(u);
+  const t = 2 * Math.PI * v;
+  const x = w * Math.cos(t);
+  const y = w * Math.sin(t);
+  return {
+    lat: parseFloat((basePoint.lat + y).toFixed(6)),
+    lng: parseFloat((basePoint.lng + x).toFixed(6)),
+  };
+}
+
 export const datasets: Record<string, DatasetConfig> = {
   restaurants: {
     name: 'Restaurants (Buenos Aires)',
@@ -42,7 +57,18 @@ export const datasets: Record<string, DatasetConfig> = {
         name: 'cuisine',
         label: 'Cuisine',
         type: 'select',
-        options: ['Argentinian', 'Italian', 'Japanese', 'American', 'Mexican'],
+        options: [
+          'Argentinian',
+          'Italian',
+          'Japanese',
+          'American',
+          'Mexican',
+          'Chinese',
+          'French',
+          'Spanish',
+          'Thai',
+          'Indian',
+        ],
       },
       {
         name: 'isOpen',
@@ -303,6 +329,57 @@ export const datasets: Record<string, DatasetConfig> = {
         priceLevel: 1,
         isOpen: true,
       },
+      // Additional 100 items
+      ...Array.from({ length: 100 }, (_, i) => {
+        const cuisines = [
+          'Argentinian',
+          'Italian',
+          'Japanese',
+          'American',
+          'Mexican',
+          'Chinese',
+          'French',
+          'Spanish',
+          'Thai',
+          'Indian',
+        ];
+        const id = 29 + i;
+        const argNames = [
+          'Parrilla',
+          'La Estancia',
+          'El Viejo',
+          'Casa de',
+          'Rincón',
+          'El Buen',
+          'La Cabaña',
+          'El Novillo',
+          'Don',
+          'El Palacio',
+        ];
+        const suffixes = [
+          'de Palermo',
+          'del Centro',
+          'Porteño',
+          'Argentino',
+          'de la Plaza',
+          'del Barrio',
+          'Colonial',
+          'Tradicional',
+          'Gourmet',
+          'Premium',
+        ];
+        const prefix = argNames[Math.floor(Math.random() * argNames.length)];
+        const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+        return {
+          id,
+          name: `${prefix} ${suffix}`,
+          location: randomLocation(BUENOS_AIRES_CENTER, 3),
+          rating: parseFloat((3.5 + Math.random() * 1.5).toFixed(1)),
+          cuisine: cuisines[Math.floor(Math.random() * cuisines.length)],
+          priceLevel: Math.floor(Math.random() * 4) + 1,
+          isOpen: Math.random() > 0.3,
+        };
+      }),
     ],
   },
 
@@ -546,6 +623,50 @@ export const datasets: Record<string, DatasetConfig> = {
         hasWifi: true,
         averagePrice: 1500,
       },
+      // Additional 100 items
+      ...Array.from({ length: 100 }, (_, i) => {
+        const id = 26 + i;
+        const cafeNames = ['Café', 'Bar', 'Confitería', 'Cafetería', 'Tostadores', 'Bakery'];
+        const locations = [
+          'Palermo',
+          'Recoleta',
+          'San Telmo',
+          'Belgrano',
+          'Caballito',
+          'Almagro',
+          'Flores',
+          'Barracas',
+        ];
+        const descriptors = ['del', 'de los', 'de la', 'El', 'La', 'Los'];
+        const themes = [
+          'Artistas',
+          'Poetas',
+          'Viajeros',
+          'Amigos',
+          'Vecinos',
+          'Literatos',
+          'Músicos',
+        ];
+
+        const nameStyle = Math.random();
+        let name;
+        if (nameStyle < 0.3) {
+          name = `${cafeNames[Math.floor(Math.random() * cafeNames.length)]} ${locations[Math.floor(Math.random() * locations.length)]}`;
+        } else if (nameStyle < 0.6) {
+          name = `${cafeNames[Math.floor(Math.random() * cafeNames.length)]} ${descriptors[Math.floor(Math.random() * descriptors.length)]} ${themes[Math.floor(Math.random() * themes.length)]}`;
+        } else {
+          name = `${cafeNames[Math.floor(Math.random() * cafeNames.length)]} ${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${Math.floor(Math.random() * 100)}`;
+        }
+
+        return {
+          id,
+          name,
+          location: randomLocation(BUENOS_AIRES_CENTER, 2.5),
+          rating: parseFloat((3.8 + Math.random() * 1.2).toFixed(1)),
+          hasWifi: Math.random() > 0.2,
+          averagePrice: Math.floor(1200 + Math.random() * 1000),
+        };
+      }),
     ],
   },
 
@@ -782,6 +903,57 @@ export const datasets: Record<string, DatasetConfig> = {
         hasPlayground: true,
         openHours: '7:00 - 21:00',
       },
+      // Additional 100 items
+      ...Array.from({ length: 100 }, (_, i) => {
+        const id = 26 + i;
+        const openHoursOptions = [
+          '24 hours',
+          '6:00 - 20:00',
+          '6:00 - 22:00',
+          '7:00 - 21:00',
+          '8:00 - 19:00',
+        ];
+        const parkTypes = ['Plaza', 'Parque', 'Jardín', 'Paseo'];
+        const names = [
+          'San Martín',
+          'Belgrano',
+          'Mitre',
+          'Sarmiento',
+          'Rivadavia',
+          'Moreno',
+          'Alvear',
+          'Güemes',
+          'Libertad',
+          'Independencia',
+        ];
+        const neighborhoods = [
+          'Palermo',
+          'Recoleta',
+          'Belgrano',
+          'Caballito',
+          'Flores',
+          'Almagro',
+          'Villa Urquiza',
+          'Núñez',
+          'Saavedra',
+          'Coghlan',
+        ];
+
+        const parkType = parkTypes[Math.floor(Math.random() * parkTypes.length)];
+        const parkName =
+          Math.random() > 0.5
+            ? `${parkType} ${names[Math.floor(Math.random() * names.length)]}`
+            : `${parkType} de ${neighborhoods[Math.floor(Math.random() * neighborhoods.length)]}`;
+
+        return {
+          id,
+          name: parkName,
+          location: randomLocation(BUENOS_AIRES_CENTER, 4),
+          area: parseFloat((0.5 + Math.random() * 30).toFixed(1)),
+          hasPlayground: Math.random() > 0.4,
+          openHours: openHoursOptions[Math.floor(Math.random() * openHoursOptions.length)],
+        };
+      }),
     ],
   },
 
@@ -1025,6 +1197,43 @@ export const datasets: Record<string, DatasetConfig> = {
         pricePerNight: 85,
         hasPool: false,
       },
+      // Additional 100 items
+      ...Array.from({ length: 100 }, (_, i) => {
+        const id = 26 + i;
+        const hotelTypes = ['Hotel', 'Apart Hotel', 'Boutique Hotel', 'Hostel', 'Posada'];
+        const styles = [
+          'Plaza',
+          'Tango',
+          'Madero',
+          'Soho',
+          'Colonial',
+          'Imperial',
+          'Real',
+          'Grand',
+          'Recoleta',
+          'Palermo',
+        ];
+        const suffixes = ['Suites', 'Inn', 'Palace', 'Residence', 'Tower', 'House'];
+
+        const nameStyle = Math.random();
+        let name;
+        if (nameStyle < 0.4) {
+          name = `${hotelTypes[Math.floor(Math.random() * hotelTypes.length)]} ${styles[Math.floor(Math.random() * styles.length)]}`;
+        } else if (nameStyle < 0.7) {
+          name = `${styles[Math.floor(Math.random() * styles.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
+        } else {
+          name = `${hotelTypes[Math.floor(Math.random() * hotelTypes.length)]} Buenos Aires ${Math.floor(Math.random() * 50) + 1}`;
+        }
+
+        return {
+          id,
+          name,
+          location: randomLocation(BUENOS_AIRES_CENTER, 3.5),
+          stars: Math.floor(Math.random() * 3) + 3, // 3-5 stars
+          pricePerNight: Math.floor(80 + Math.random() * 320), // $80-$400
+          hasPool: Math.random() > 0.5,
+        };
+      }),
     ],
   },
 };
