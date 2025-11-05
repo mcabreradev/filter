@@ -7,7 +7,7 @@ interface UseCodeEditorReturn {
   output: Ref<string>;
   error: Ref<string>;
   highlightCode: () => void;
-  executeCode: (filterFn: any) => void;
+  executeCode: (filterFn?: any) => Promise<void>;
   setCode: (newCode: string) => void;
 }
 
@@ -178,7 +178,7 @@ export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
     return html;
   };
 
-  const executeCode = (filterFn: any): void => {
+  const executeCode = async (filterFn?: any): Promise<void> => {
     try {
       error.value = '';
       const logs: string[] = [];
@@ -192,6 +192,16 @@ export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
           );
         },
       };
+
+      // Use the provided filterFn or throw error if not provided
+      const filter = filterFn;
+
+      // Validate that filter is a function
+      if (typeof filter !== 'function') {
+        throw new Error(
+          'filter is not a function. Make sure the filter function is passed to executeCode.',
+        );
+      }
 
       const codeWithoutImport = code.value.replace(/import.*from.*['"];?\n?/g, '');
 
@@ -211,27 +221,27 @@ export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
         !lastLine.startsWith('var ')
       ) {
         wrappedCode = `
-          (function() {
+          return (function() {
             const console = arguments[0];
             const filter = arguments[1];
             let __result__;
             ${codeWithoutImport.replace(/filter\(/g, '__result__ = filter(')}
             return __result__;
-          })
+          });
         `;
       } else {
         wrappedCode = `
-          (function() {
+          return (function() {
             const console = arguments[0];
             const filter = arguments[1];
             ${codeWithoutImport}
-          })
+          });
         `;
       }
 
       // Use Function constructor instead of eval for safer code execution
-      const fn = new Function('return ' + wrappedCode)();
-      const result = fn(mockConsole, filterFn);
+      const fn = new Function(wrappedCode)();
+      const result = fn(mockConsole, filter);
 
       if (logs.length > 0) {
         output.value = logs.join('\n');
