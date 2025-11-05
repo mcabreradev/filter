@@ -8,21 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@vercel/analytics':
-        specifier: ^1.5.0
-        version: 1.5.0(react@19.2.0)(svelte@5.43.3)(vue@3.5.22(typescript@5.9.3))
-      '@vue-leaflet/vue-leaflet':
-        specifier: ^0.10.1
-        version: 0.10.1(@types/leaflet@1.9.21)(leaflet@1.9.4)(typescript@5.9.3)
-      leaflet:
-        specifier: ^1.9.4
-        version: 1.9.4
       react:
         specifier: '>=18.0.0'
         version: 19.2.0
-      zod:
-        specifier: ^4.1.12
-        version: 4.1.12
     devDependencies:
       '@size-limit/preset-small-lib':
         specifier: ^11.2.0
@@ -45,6 +33,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^8.17.0
         version: 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      '@vercel/analytics':
+        specifier: ^1.5.0
+        version: 1.5.0(react@19.2.0)(svelte@5.43.3)(vue@3.5.22(typescript@5.9.3))
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.1(vite@5.4.21(@types/node@24.10.0))(vue@3.5.22(typescript@5.9.3))
@@ -54,6 +45,9 @@ importers:
       '@vitest/ui':
         specifier: ^2.1.0
         version: 2.1.9(vitest@2.1.9)
+      '@vue-leaflet/vue-leaflet':
+        specifier: ^0.10.1
+        version: 0.10.1(@types/leaflet@1.9.21)(leaflet@1.9.4)(typescript@5.9.3)
       '@vue/repl':
         specifier: ^4.7.0
         version: 4.7.0
@@ -75,6 +69,9 @@ importers:
       jsdom:
         specifier: ^27.1.0
         version: 27.1.0
+      leaflet:
+        specifier: ^1.9.4
+        version: 1.9.4
       lint-staged:
         specifier: ^16.2.4
         version: 16.2.6
@@ -108,6 +105,9 @@ importers:
       vue:
         specifier: ^3.5.13
         version: 3.5.22(typescript@5.9.3)
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
 
 packages:
 
