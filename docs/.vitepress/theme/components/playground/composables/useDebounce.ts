@@ -8,7 +8,10 @@ interface UseDebouncedExecuteReturn {
 /**
  * Composable for debounced function execution
  */
-export function useDebouncedExecute(callback: () => void, delay = 300): UseDebouncedExecuteReturn {
+export function useDebouncedExecute(
+  callback: () => void | Promise<void>,
+  delay = 300,
+): UseDebouncedExecuteReturn {
   const debounceTimer = ref<number | null>(null);
 
   const debouncedExecute = (): void => {
@@ -16,8 +19,8 @@ export function useDebouncedExecute(callback: () => void, delay = 300): UseDebou
       clearTimeout(debounceTimer.value);
     }
 
-    debounceTimer.value = setTimeout(() => {
-      callback();
+    debounceTimer.value = setTimeout(async () => {
+      await callback();
     }, delay) as unknown as number;
   };
 

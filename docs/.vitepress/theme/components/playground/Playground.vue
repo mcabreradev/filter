@@ -86,9 +86,9 @@ const {
   getPlaceholderForOperator,
 } = useCodeAnalysis(code, datasetFields);
 
-const executeAndHighlight = (): void => {
+const executeAndHighlight = async (): Promise<void> => {
   highlightCode();
-  executeCode(filter);
+  await executeCode(filter);
 };
 
 const { debouncedExecute } = useDebouncedExecute(executeAndHighlight, 300);
@@ -105,13 +105,13 @@ const handleToggleBuilder = (): void => {
   showBuilder.value = !showBuilder.value;
 };
 
-const handleExampleChanged = (exampleId: string): void => {
+const handleExampleChanged = async (exampleId: string): Promise<void> => {
   selectedExample.value = exampleId;
   const example = examples.find((e) => e.id === exampleId);
   if (!example) return;
 
   setCode(example.code);
-  executeCode(filter);
+  await executeCode(filter);
 
   const datasetMatch = example.code.match(/const\s+(\w+)\s*=/);
   if (datasetMatch) {
@@ -123,7 +123,7 @@ const handleExampleChanged = (exampleId: string): void => {
   }
 };
 
-const handleDatasetChange = (datasetId: string): void => {
+const handleDatasetChange = async (datasetId: string): Promise<void> => {
   selectedDataset.value = datasetId;
   const dataset = currentDataset.value;
   if (!dataset) return;
@@ -141,11 +141,11 @@ const result = filter(${datasetVarName}, ${sampleFilter});
 console.log(result);`;
 
   setCode(newCode);
-  executeCode(filter);
+  await executeCode(filter);
   clearBuilder();
 };
 
-const handleApplyFilter = (): void => {
+const handleApplyFilter = async (): Promise<void> => {
   const expression = generatedExpression.value;
   
   const dataMatch = code.value.match(/const\s+(\w+)\s*=\s*\[[\s\S]*?\];/);
@@ -175,7 +175,7 @@ const handleApplyFilter = (): void => {
   }
 
   highlightCode();
-  executeCode(filter);
+  await executeCode(filter);
 };
 
 watch(availableFields, (currentFields) => {
@@ -186,7 +186,7 @@ watch(availableFields, (currentFields) => {
   );
 });
 
-watch(showBuilder, (isBuilderOpen) => {
+watch(showBuilder, async (isBuilderOpen) => {
   if (isBuilderOpen) {
     savedCode.value = code.value;
     clearBuilder();
@@ -212,7 +212,7 @@ console.log(result);`;
     
     if (savedCode.value) {
       setCode(savedCode.value);
-      executeCode(filter);
+      await executeCode(filter);
     }
   }
 });

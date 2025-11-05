@@ -1,5 +1,7 @@
 import { ref, type Ref } from 'vue';
 
+type FilterFunction = (data: unknown[], condition: Record<string, unknown>) => unknown[];
+
 interface UseCodeEditorReturn {
   code: Ref<string>;
   highlightedCode: Ref<string>;
@@ -7,9 +9,14 @@ interface UseCodeEditorReturn {
   output: Ref<string>;
   error: Ref<string>;
   highlightCode: () => void;
-  executeCode: (filterFn: any) => void;
+  executeCode: (filterFn?: FilterFunction) => Promise<void>;
   setCode: (newCode: string) => void;
 }
+
+// Shared utility for HTML escaping
+const escapeHtml = (text: string): string => {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+};
 
 export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
   const code = ref(initialCode);
@@ -19,13 +26,9 @@ export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
   const error = ref('');
 
   const highlightCode = (): void => {
-    let html = '';
+    const parts: string[] = [];
     const codeText = code.value;
     let lastIndex = 0;
-
-    const escapeHtml = (text: string): string => {
-      return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    };
 
     const patterns = [
       { regex: /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)/g, className: 'token-comment' },
@@ -67,13 +70,13 @@ export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
 
     tokens.sort((a, b) => a.start - b.start || b.end - b.start - (a.end - a.start));
 
-    const usedRanges = new Set<string>();
+    const usedRanges = new Set<number>();
     const finalTokens = tokens.filter((token) => {
       for (let i = token.start; i < token.end; i++) {
-        if (usedRanges.has(String(i))) return false;
+        if (usedRanges.has(i)) return false;
       }
       for (let i = token.start; i < token.end; i++) {
-        usedRanges.add(String(i));
+        usedRanges.add(i);
       }
       return true;
     });
@@ -82,36 +85,32 @@ export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
 
     finalTokens.forEach((token) => {
       if (token.start > lastIndex) {
-        html += escapeHtml(codeText.substring(lastIndex, token.start));
+        parts.push(escapeHtml(codeText.substring(lastIndex, token.start)));
       }
 
       if (token.hasDot) {
         const dotIndex = codeText.lastIndexOf('.', token.start + 1);
         if (dotIndex >= lastIndex && dotIndex < token.start) {
-          html += '.';
+          parts.push('.');
           lastIndex = dotIndex + 1;
         }
-        html += `<span class="${token.className}">${escapeHtml(token.text)}</span>`;
+        parts.push(`<span class="${token.className}">${escapeHtml(token.text)}</span>`);
       } else {
-        html += `<span class="${token.className}">${escapeHtml(token.text)}</span>`;
+        parts.push(`<span class="${token.className}">${escapeHtml(token.text)}</span>`);
       }
 
       lastIndex = token.end;
     });
 
     if (lastIndex < codeText.length) {
-      html += escapeHtml(codeText.substring(lastIndex));
+      parts.push(escapeHtml(codeText.substring(lastIndex)));
     }
 
-    highlightedCode.value = html;
+    highlightedCode.value = parts.join('');
   };
 
   const highlightJson = (text: string): string => {
-    const escapeHtml = (str: string): string => {
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    };
-
-    let html = '';
+    const parts: string[] = [];
     let lastIndex = 0;
     const tokens: Array<{ start: number; end: number; type: string; value: string }> = [];
 
@@ -152,33 +151,35 @@ export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
 
     finalTokens.forEach((token) => {
       if (token.start > lastIndex) {
-        html += escapeHtml(text.substring(lastIndex, token.start));
+        parts.push(escapeHtml(text.substring(lastIndex, token.start)));
       }
 
       if (token.type === 'property-key') {
         const colonIndex = token.value.lastIndexOf(':');
         const keyPart = token.value.substring(0, colonIndex);
         const colonPart = token.value.substring(colonIndex);
-        html += `<span class="token-property">${escapeHtml(keyPart)}</span>${escapeHtml(colonPart)}`;
+        parts.push(
+          `<span class="token-property">${escapeHtml(keyPart)}</span>${escapeHtml(colonPart)}`,
+        );
       } else if (token.type === 'string') {
-        html += `<span class="token-string">${escapeHtml(token.value)}</span>`;
+        parts.push(`<span class="token-string">${escapeHtml(token.value)}</span>`);
       } else if (token.type === 'keyword') {
-        html += `<span class="token-keyword">${escapeHtml(token.value)}</span>`;
+        parts.push(`<span class="token-keyword">${escapeHtml(token.value)}</span>`);
       } else if (token.type === 'number') {
-        html += `<span class="token-number">${escapeHtml(token.value)}</span>`;
+        parts.push(`<span class="token-number">${escapeHtml(token.value)}</span>`);
       }
 
       lastIndex = token.end;
     });
 
     if (lastIndex < text.length) {
-      html += escapeHtml(text.substring(lastIndex));
+      parts.push(escapeHtml(text.substring(lastIndex)));
     }
 
-    return html;
+    return parts.join('');
   };
 
-  const executeCode = (filterFn: any): void => {
+  const executeCode = async (filterFn?: FilterFunction): Promise<void> => {
     try {
       error.value = '';
       const logs: string[] = [];
@@ -192,6 +193,16 @@ export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
           );
         },
       };
+
+      // Use the provided filterFn or throw error if not provided
+      const filter = filterFn;
+
+      // Validate that filter is a function
+      if (typeof filter !== 'function') {
+        throw new Error(
+          'filter is not a function. Make sure the filter function is passed to executeCode.',
+        );
+      }
 
       const codeWithoutImport = code.value.replace(/import.*from.*['"];?\n?/g, '');
 
@@ -211,27 +222,27 @@ export function useCodeEditor(initialCode = ''): UseCodeEditorReturn {
         !lastLine.startsWith('var ')
       ) {
         wrappedCode = `
-          (function() {
+          return (function() {
             const console = arguments[0];
             const filter = arguments[1];
             let __result__;
             ${codeWithoutImport.replace(/filter\(/g, '__result__ = filter(')}
             return __result__;
-          })
+          });
         `;
       } else {
         wrappedCode = `
-          (function() {
+          return (function() {
             const console = arguments[0];
             const filter = arguments[1];
             ${codeWithoutImport}
-          })
+          });
         `;
       }
 
-      // Use Function constructor instead of eval for safer code execution
-      const fn = new Function('return ' + wrappedCode)();
-      const result = fn(mockConsole, filterFn);
+      // Use Function constructor to create sandboxed code execution environment
+      const fn = new Function(wrappedCode)();
+      const result = fn(mockConsole, filter);
 
       if (logs.length > 0) {
         output.value = logs.join('\n');
