@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "@mcabreradev/filter"
   text: "SQL-like Array Filtering"
-  tagline: "A powerful TypeScript/JavaScript library with MongoDB-style operators, lazy evaluation, and zero dependencies"
+  tagline: "A powerful TypeScript/JavaScript library with MongoDB-style operators, lazy evaluation, and truly zero dependencies"
   image:
     src: /logo.svg
     alt: Filter Library
@@ -30,7 +30,7 @@ features:
 
   - icon: ⚡
     title: Zero Dependencies
-    details: Lightweight and production-ready. Only Zod for runtime validation, nothing else.
+    details: Truly zero dependencies! Lightweight and production-ready. Optional Zod for validation features.
 
   - icon: 🔒
     title: Type-Safe
@@ -226,7 +226,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
     <div class="feature-icon">🪶</div>
     <div class="feature-title">Ultra Lightweight</div>
     <div class="feature-description">
-      Zero dependencies (except Zod). Tiny bundle size. No bloat, just pure filtering power.
+      Truly zero dependencies! Tiny 12 KB bundle. Optional Zod for validation. No bloat, just pure filtering power.
     </div>
   </div>
 
@@ -258,7 +258,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
     <div class="feature-icon">🛡️</div>
     <div class="feature-title">Runtime Validation</div>
     <div class="feature-description">
-      Zod-powered schema validation. Catch invalid queries before they run. Safe and predictable behavior.
+      Optional Zod-powered schema validation. Catch invalid queries before they run. Safe and predictable behavior.
     </div>
   </div>
 

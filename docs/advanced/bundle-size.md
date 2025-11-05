@@ -14,13 +14,13 @@ For detailed import syntax and examples, see the [Modular Imports Guide](/guide/
 
 | Import Strategy | Size (gzipped) | Reduction | Use Case |
 |----------------|----------------|-----------|----------|
-| Full library | ~10 KB | Baseline | All features needed |
-| Core only | ~3 KB | 70% | Basic filtering |
-| Operators (granular) | ~5 KB | 50% | Specific operators |
-| React integration | ~3 KB | 70% | React hooks only |
-| Vue integration | ~3 KB | 70% | Vue composables only |
-| Svelte integration | ~3 KB | 70% | Svelte stores only |
-| Lazy evaluation | ~2 KB | 80% | Large dataset processing |
+| Full library | ~12 KB | Baseline | All features needed |
+| Core only | ~3 KB | 75% | Basic filtering |
+| Operators (granular) | ~5 KB | 58% | Specific operators |
+| React integration | ~3 KB | 75% | React hooks only |
+| Vue integration | ~3 KB | 75% | Vue composables only |
+| Svelte integration | ~3 KB | 75% | Svelte stores only |
+| Lazy evaluation | ~2 KB | 83% | Large dataset processing |
 
 ## Import Strategies
 
@@ -28,7 +28,7 @@ For detailed import syntax and examples, see the [Modular Imports Guide](/guide/
 
 ```typescript
 import { filter } from '@mcabreradev/filter';
-// Bundle: ~10 KB (gzipped)
+// Bundle: ~12 KB (gzipped)
 ```
 
 **Use when:**
@@ -45,7 +45,7 @@ import { filter } from '@mcabreradev/filter';
 
 ```typescript
 import { filter } from '@mcabreradev/filter/core';
-// Bundle: ~3 KB (gzipped) - 70% reduction
+// Bundle: ~3 KB (gzipped) - 75% reduction
 ```
 
 **Use when:**

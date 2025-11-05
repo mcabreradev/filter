@@ -35,7 +35,17 @@ bun add @mcabreradev/filter
 
 - **Node.js:** >= 20
 - **TypeScript:** >= 5.0 (optional)
-- **Zero dependencies** (except Zod for runtime validation)
+- **Zero dependencies** - Truly dependency-free!
+
+::: tip Optional Validation
+If you need runtime validation features (like `validateExpression` or `validateOptions`), install Zod as a peer dependency:
+
+```bash
+npm install zod
+```
+
+The core filtering functionality works without any dependencies.
+:::
 
 ## Import Styles
 
@@ -51,7 +61,7 @@ import { filter, useFilter, filterLazy } from '@mcabreradev/filter';
 const results = filter(users, { active: true });
 ```
 
-**Bundle size:** ~10 KB (gzipped)
+**Bundle size:** ~12 KB (gzipped)
 
 **Best for:**
 - Getting started quickly
@@ -200,7 +210,7 @@ Works in all modern browsers:
 
 | Import Strategy | Size (gzipped) | Use Case |
 |----------------|----------------|----------|
-| `import { ... } from '@mcabreradev/filter'` | ~10 KB | Quick start, prototypes |
+| `import { ... } from '@mcabreradev/filter'` | ~12 KB | Quick start, prototypes |
 | `import { filter } from '@mcabreradev/filter/core'` | ~3 KB | Production apps |
 | `import { useFilter } from '@mcabreradev/filter/react'` | ~3 KB | React apps |
 | `import { filterLazy } from '@mcabreradev/filter/lazy'` | ~2 KB | Large datasets |

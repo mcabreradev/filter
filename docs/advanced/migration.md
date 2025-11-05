@@ -3,7 +3,68 @@ title: Migration Guide
 description: Migrate from v3.x to v5.x or from native Array.filter()
 ---
 
-# Migration Guide: v3.x → v5.0.0
+# Migration Guide
+
+## v5.6.1 → Latest (Breaking Change)
+
+### Zero Dependencies Achievement
+
+**v5.6.1** introduces a breaking change to achieve truly zero production dependencies.
+
+#### What Changed
+
+- **Zod** moved from `dependencies` to `peerDependencies` (optional)
+- **@vercel/analytics**, **@vue-leaflet**, **leaflet** moved to `devDependencies`
+- Bundle size reduced by **81%**: 65.63 KB → 12.02 KB
+
+#### Migration Steps
+
+**If you use validation features:**
+
+```bash
+# Install zod as a peer dependency
+npm install zod
+# or
+pnpm add zod
+# or
+yarn add zod
+```
+
+**If you DON'T use validation features:**
+
+No action required! The library works without any dependencies.
+
+#### Which Features Require Zod?
+
+Zod is only needed if you use these functions:
+
+```typescript
+import { validateExpression, validateOptions } from '@mcabreradev/filter';
+
+// These require zod to be installed
+validateExpression(expression);
+validateOptions(options);
+```
+
+**Core filtering works without zod:**
+
+```typescript
+import { filter } from '@mcabreradev/filter';
+
+// This works without any dependencies ✅
+filter(users, { age: { $gte: 18 } });
+```
+
+#### Benefits
+
+- ✅ **81% smaller bundle** (12.02 KB vs 65.63 KB)
+- ✅ **Truly zero dependencies** for core functionality
+- ✅ **Optional validation** - install only if needed
+- ✅ **Better tree-shaking** in production builds
+
+---
+
+## v3.x → v5.0.0
 
 ## Overview
 
@@ -33,20 +94,30 @@ import { filter } from '@mcabreradev/filter';
 const result = filter<MyType>(data, expression);
 ```
 
-### 3. Runtime Validation
+### 3. Runtime Validation (Optional)
 
-v5.0.0+ includes runtime validation using Zod v4. Invalid expressions now throw descriptive errors.
+v5.0.0+ includes optional runtime validation using Zod. Invalid expressions throw descriptive errors when validation is used.
+
+::: tip Optional Feature
+Runtime validation requires Zod to be installed as a peer dependency:
+```bash
+npm install zod
+```
+Core filtering works without Zod!
+:::
 
 **Before (v3.x)**:
 ```typescript
 filter(data, undefined);
 ```
 
-**After (v5.0.0)**:
+**After (v5.0.0)** with validation:
 ```typescript
-filter(data, undefined);
+import { validateExpression } from '@mcabreradev/filter';
+
+validateExpression(undefined);
 ```
-**This will now throw**: `Error: Invalid filter expression: Expected string | number | boolean | null | function | object, received undefined`
+**This will throw**: `Error: Invalid filter expression: Expected string | number | boolean | null | function | object, received undefined`
 
 ### 4. Package Manager
 
