@@ -1,9 +1,10 @@
 [
   {
-    "name": "Full Library (with dependencies)",
+    "name": "Full Library (no dependencies)",
     "path": "build/index.js",
-    "limit": "66 KB",
-    "gzip": true
+    "limit": "15 KB",
+    "gzip": true,
+    "ignore": ["zod", "@vercel/analytics", "@vue-leaflet/vue-leaflet", "leaflet"]
   },
   {
     "name": "Operators - All",
