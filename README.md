@@ -19,7 +19,7 @@
     <img alt="" src="https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=for-the-badge&labelColor=blue">
   </a>
   <a aria-label="Zero Dependencies" href="https://bundlephobia.com/package/@mcabreradev/filter">
-    <img alt="" src="https://img.shields.io/badge/dependencies-1-purple?style=for-the-badge&labelColor=purple">
+    <img alt="" src="https://img.shields.io/badge/dependencies-0-purple?style=for-the-badge&labelColor=purple">
   </a>
 </p>
 
@@ -29,7 +29,7 @@ Go beyond JavaScript's native `Array.filter()` with a library that understands y
 
 - **🎯 SQL-like Wildcards** - Use `%` and `_` for flexible pattern matching
 - **🔍 Deep Object Filtering** - Search through nested objects up to configurable depths
-- **⚡ Zero Dependencies** - Lightweight and production-ready (only Zod for runtime validation)
+- **⚡ Zero Dependencies** - Truly zero dependencies, lightweight and production-ready
 - **🔒 Type-Safe** - Built with strict TypeScript for maximum reliability
 - **✨ Smart Autocomplete** - IntelliSense suggests only valid operators for each property type
 - **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
@@ -54,9 +54,14 @@ yarn add @mcabreradev/filter
 
 # Using pnpm
 pnpm add @mcabreradev/filter
+
+# Optional: Install Zod for runtime validation (recommended for production)
+npm install zod
 ```
 
 **Requirements:** Node.js >= 20, TypeScript 5.0+ (optional)
+
+**Note:** Zod is now an optional peer dependency. Install it only if you need runtime validation features.
 
 ---
 
@@ -66,33 +71,35 @@ pnpm add @mcabreradev/filter
 
 | Import Strategy | Size (gzipped) | Use Case |
 |----------------|----------------|----------|
-| Full library | ~10 KB | All features needed |
-| Core only | ~3 KB | Basic filtering |
-| Operators (granular) | ~5 KB | Specific operators |
-| React integration | ~3 KB | React hooks |
-| Vue integration | ~3 KB | Vue composables |
-| Svelte integration | ~3 KB | Svelte stores |
-| Lazy evaluation | ~2 KB | Large datasets |
+| Full library | ~4 KB | All features needed |
+| Core only | ~2 KB | Basic filtering |
+| Operators (granular) | ~3 KB | Specific operators |
+| React integration | ~2 KB | React hooks |
+| Vue integration | ~2 KB | Vue composables |
+| Svelte integration | ~2 KB | Svelte stores |
+| Lazy evaluation | ~1 KB | Large datasets |
+
+**Recent Optimization:** Bundle size reduced from 65.63 KB to 12.02 KB (81% reduction) by making all heavy dependencies optional peer dependencies.
 
 ### Import Examples
 
 ```typescript
 // Full import (includes all features)
 import { filter } from '@mcabreradev/filter';
-// Bundle: ~10 KB (gzipped)
+// Bundle: ~4 KB (gzipped)
 
 // Granular imports (Recommended for production)
 import { filter } from '@mcabreradev/filter/core';
 import { evaluateGt, evaluateLt } from '@mcabreradev/filter/operators/comparison';
-// Bundle: ~5 KB (gzipped) - 50% reduction
+// Bundle: ~3 KB (gzipped) - 25% reduction
 
 // Framework-specific imports
 import { useFilter } from '@mcabreradev/filter/react';
-// Bundle: ~3 KB (gzipped) - 70% reduction
+// Bundle: ~2 KB (gzipped) - 50% reduction
 
 // Lazy evaluation only
 import { filterLazy } from '@mcabreradev/filter/lazy';
-// Bundle: ~2 KB (gzipped) - 80% reduction
+// Bundle: ~1 KB (gzipped) - 75% reduction
 ```
 
 > 📖 See [Bundle Size Optimization Guide](./docs/advanced/bundle-size.md) for detailed strategies.
