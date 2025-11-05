@@ -40,6 +40,7 @@ export default defineConfig({
       {
         text: 'Resources',
         items: [
+          { text: 'Cheatsheet', link: '/project/cheatsheet' },
           { text: 'Changelog', link: '/project/changelog' },
           { text: 'Contributing', link: '/project/contributing' },
           { text: 'Roadmap', link: '/project/roadmap' },
