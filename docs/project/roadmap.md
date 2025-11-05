@@ -1,7 +1,7 @@
 # 🗺️ Product Roadmap
 
-> **Last Updated**: October 30, 2025
-> **Current Version**: v5.5.1
+> **Last Updated**: November 4, 2025
+> **Current Version**: v5.6.0
 > **Status**: Active Development
 
 ---
@@ -35,6 +35,9 @@ Build a **thriving ecosystem** with community contributions, extensions, and ent
 
 ## 📅 Release Timeline
 
+### v5.6.0 - Geospatial & DateTime (Released: November 1, 2025) ✅
+**Theme**: Location & Time-Based Filtering
+
 ### v5.5.1 - Stability & Polish (Released: October 30, 2025) ✅
 **Theme**: Bug Fixes & Refinements
 
@@ -52,6 +55,63 @@ Build a **thriving ecosystem** with community contributions, extensions, and ent
 
 ### v6.0.0 - Major Evolution (Target: Q4 2026)
 **Theme**: Enterprise-Ready
+
+---
+
+## ✅ v5.6.0 - Geospatial & DateTime
+
+**Status**: ✅ Completed
+**Release Date**: November 1, 2025
+**Focus**: Location-based and time-based filtering
+
+### 🔴 Critical Priority - Completed
+
+#### Geospatial Operators ✅
+**Epic**: Location-Based Filtering
+**Effort**: 3-4 days
+**Impact**: 🔥 High
+**Status**: ✅ Completed
+
+**Deliverables**:
+- ✅ `$near` operator for proximity search
+- ✅ `$geoBox` operator for bounding box queries
+- ✅ `$geoPolygon` operator for polygon containment
+- ✅ Distance calculation utilities
+- ✅ Coordinate validation
+- ✅ TypeScript support with GeoPoint types
+- ✅ Comprehensive tests (26 tests)
+- ✅ Documentation and examples
+
+**Success Metrics**:
+- ✅ All geospatial operators implemented
+- ✅ 100% test coverage
+- ✅ Documentation complete
+
+---
+
+#### DateTime Operators ✅
+**Epic**: Time-Based Filtering
+**Effort**: 4-5 days
+**Impact**: 🔥 High
+**Status**: ✅ Completed
+
+**Deliverables**:
+- ✅ `$recent` operator for past time ranges
+- ✅ `$upcoming` operator for future time ranges
+- ✅ `$dayOfWeek` operator for day filtering
+- ✅ `$timeOfDay` operator for hour filtering
+- ✅ `$age` operator for age calculation
+- ✅ `$isWeekday` and `$isWeekend` operators
+- ✅ `$isBefore` and `$isAfter` operators
+- ✅ TypeScript support with DateTime types
+- ✅ Comprehensive tests (90 tests)
+- ✅ Documentation and examples
+
+**Success Metrics**:
+- ✅ All datetime operators implemented
+- ✅ 100% test coverage
+- ✅ Documentation complete
+- ✅ Total test count: 613+ tests
 
 ---
 
@@ -565,7 +625,7 @@ docs/
 
 ---
 
-## 🌍 v5.6.0 - Extended Ecosystem
+## 🌍 v5.7.0 - Extended Ecosystem
 
 **Status**: 🔵 Future
 **Target Release**: Q3 2026

@@ -35,10 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - IoT device monitoring patterns
 
 ### Changed
-- Updated operator count from 18+ to 21+ operators
-- Enhanced type system to recognize GeoPoint types
-- Improved autocomplete for geospatial operators on GeoPoint properties
-- Extended constants to include geospatial operator keys
+- Updated operator count from 18+ to 30+ operators
+- Enhanced type system to recognize GeoPoint and Date types
+- Improved autocomplete for geospatial and datetime operators
+- Extended constants to include all operator keys
 
 ### Performance
 - Fast distance calculation using spherical law of cosines
@@ -51,6 +51,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Total test count: 523 tests (previously 497)
 - 100% code coverage for geospatial features
 - Edge case testing for invalid coordinates and missing data
+
+### Date/Time Operators
+- **Relative Time Filtering**: Filter by last/next N days/hours/minutes
+  - `$recent`: Find events in the last N days/hours/minutes
+  - `$upcoming`: Find events in the next N days/hours/minutes
+- **Day-of-Week Filtering**: Filter by specific days (Monday-Sunday)
+  - `$dayOfWeek`: Filter by day of week (0-6, Sunday-Saturday)
+  - `$isWeekday`: Filter for Monday-Friday
+  - `$isWeekend`: Filter for Saturday-Sunday
+- **Time-of-Day Filtering**: Filter by hour ranges (0-23)
+  - `$timeOfDay`: Filter by hour range (e.g., business hours 9-17)
+- **Age Calculation**: Calculate age in years/months/days
+  - `$age`: Calculate age from birth date with min/max ranges
+- **Date Comparison**: Before/after filtering
+  - `$isBefore`: Check if date is before specified date
+  - `$isAfter`: Check if date is after specified date
+- **TypeScript Support**: Context-aware autocomplete for Date properties
+  - Full type definitions for all datetime operators
+  - Intelligent operator suggestions based on property types
+  - Type-safe query building with DateTimeOperators
+- **Zero Dependencies**: Uses native Date API
+  - No external libraries required
+  - Lightweight implementation
+  - Cross-platform compatibility
+- **Documentation**: Complete datetime operators guide
+  - Event scheduling examples
+  - User filtering by age
+  - Business hours filtering
+  - Weekend/weekday filtering patterns
+
+### Testing (Enhanced)
+- Added 90 new comprehensive tests for datetime operators
+- Total test count: 613+ tests (previously 523)
+- 100% code coverage for all datetime features
+- Edge case testing for timezones, leap years, and invalid dates
 
 ## [5.5.1] - 2025-10-30
 

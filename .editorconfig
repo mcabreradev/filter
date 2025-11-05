@@ -1,0 +1,27 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+[*.{json,yml,yaml}]
+indent_size = 2
+
+[*.ts]
+indent_size = 2
+max_line_length = 120
+
+[*.tsx]
+indent_size = 2
+max_line_length = 120
+
+[{package.json,*.yml,*.yaml}]
+indent_size = 2

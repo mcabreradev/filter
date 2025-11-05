@@ -55,6 +55,8 @@ export default defineConfig({
           collapsed: false,
           items: [
             { text: 'Quick Start', link: '/guide/quick-start' },
+            { text: 'Installation', link: '/guide/installation' },
+            { text: 'Modular Imports ⭐', link: '/guide/modular-imports' },
             { text: 'Basic Filtering', link: '/guide/basic-filtering' },
           ],
         },

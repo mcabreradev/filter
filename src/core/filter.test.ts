@@ -175,9 +175,7 @@ describe('filter', () => {
     });
 
     it('throws error for non-array input', () => {
-      expect(() => filter('not an array' as unknown as unknown[], 'test')).toThrow(
-        'Expected array but received:',
-      );
+      expect(() => filter('not an array' as unknown as unknown[], 'test')).toThrow('Type mismatch');
     });
 
     it('handles arrays with null values', () => {

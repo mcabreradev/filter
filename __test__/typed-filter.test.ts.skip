@@ -1,0 +1,411 @@
+import { describe, it, expect } from 'vitest';
+import { typedFilter, createTypedFilter, TypedFilterBuilder } from '../src/utils/typed-filter';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+  active: boolean;
+  address: {
+    city: string;
+    country: string;
+    zipCode: string;
+  };
+  profile: {
+    bio: string;
+    website: string;
+    settings: {
+      theme: string;
+      notifications: boolean;
+    };
+  };
+  tags: string[];
+  createdAt: Date;
+}
+
+const users: User[] = [
+  {
+    id: 1,
+    name: 'Alice Johnson',
+    email: 'alice@example.com',
+    age: 30,
+    active: true,
+    address: {
+      city: 'Berlin',
+      country: 'Germany',
+      zipCode: '10115',
+    },
+    profile: {
+      bio: 'Software developer',
+      website: 'https://alice.dev',
+      settings: {
+        theme: 'dark',
+        notifications: true,
+      },
+    },
+    tags: ['developer', 'typescript', 'react'],
+    createdAt: new Date('2023-01-15'),
+  },
+  {
+    id: 2,
+    name: 'Bob Smith',
+    email: 'bob@example.com',
+    age: 25,
+    active: true,
+    address: {
+      city: 'London',
+      country: 'UK',
+      zipCode: 'SW1A 1AA',
+    },
+    profile: {
+      bio: 'Designer',
+      website: 'https://bob.design',
+      settings: {
+        theme: 'light',
+        notifications: false,
+      },
+    },
+    tags: ['designer', 'ui', 'ux'],
+    createdAt: new Date('2023-06-20'),
+  },
+  {
+    id: 3,
+    name: 'Charlie Brown',
+    email: 'charlie@example.com',
+    age: 35,
+    active: false,
+    address: {
+      city: 'Berlin',
+      country: 'Germany',
+      zipCode: '10178',
+    },
+    profile: {
+      bio: 'Product manager',
+      website: 'https://charlie.pm',
+      settings: {
+        theme: 'dark',
+        notifications: true,
+      },
+    },
+    tags: ['manager', 'agile'],
+    createdAt: new Date('2022-11-10'),
+  },
+];
+
+describe('Typed Filter', () => {
+  describe('typedFilter', () => {
+    it('should filter by top-level properties', () => {
+      const result = typedFilter(users, {
+        active: true,
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.active)).toBe(true);
+    });
+
+    it('should filter by nested properties using object syntax', () => {
+      const result = typedFilter(users, {
+        address: {
+          city: 'Berlin',
+        },
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.address.city === 'Berlin')).toBe(true);
+    });
+
+    it('should filter by dot notation paths', () => {
+      const result = typedFilter(users, {
+        'address.city': 'Berlin',
+      } as any);
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.address.city === 'Berlin')).toBe(true);
+    });
+
+    it('should filter by deeply nested properties', () => {
+      const result = typedFilter(users, {
+        'profile.settings.theme': 'dark',
+      } as any);
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.profile.settings.theme === 'dark')).toBe(true);
+    });
+
+    it('should support comparison operators', () => {
+      const result = typedFilter(users, {
+        age: { $gte: 30 },
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.age >= 30)).toBe(true);
+    });
+
+    it('should support string operators', () => {
+      const result = typedFilter(users, {
+        email: { $endsWith: '@example.com' },
+      });
+
+      expect(result).toHaveLength(3);
+      expect(result.every(u => u.email.endsWith('@example.com'))).toBe(true);
+    });
+
+    it('should support array operators', () => {
+      const result = typedFilter(users, {
+        tags: { $contains: 'typescript' },
+      });
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Alice Johnson');
+    });
+
+    it('should combine multiple conditions', () => {
+      const result = typedFilter(users, {
+        active: true,
+        'address.city': 'Berlin',
+      } as any);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Alice Johnson');
+    });
+
+    it('should work with custom options', () => {
+      const result = typedFilter(
+        users,
+        {
+          name: 'alice',
+        },
+        {
+          caseSensitive: false,
+        }
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Alice Johnson');
+    });
+  });
+
+  describe('createTypedFilter', () => {
+    it('should create a typed filter function', () => {
+      const filterUsers = createTypedFilter<User>();
+
+      const result = filterUsers(users, {
+        active: true,
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.active)).toBe(true);
+    });
+
+    it('should work with nested properties', () => {
+      const filterUsers = createTypedFilter<User>();
+
+      const result = filterUsers(users, {
+        'address.country': 'Germany',
+      } as any);
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.address.country === 'Germany')).toBe(true);
+    });
+
+    it('should work with default options', () => {
+      const filterUsers = createTypedFilter<User>({
+        caseSensitive: false,
+      });
+
+      const result = filterUsers(users, {
+        name: 'BOB',
+      });
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Bob Smith');
+    });
+  });
+
+  describe('TypedFilterBuilder', () => {
+    it('should build and execute filter with where()', () => {
+      const result = new TypedFilterBuilder<User>()
+        .where('active', true)
+        .execute(users);
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.active)).toBe(true);
+    });
+
+    it('should build and execute filter with whereNested()', () => {
+      const result = new TypedFilterBuilder<User>()
+        .whereNested('address.city', 'Berlin')
+        .execute(users);
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.address.city === 'Berlin')).toBe(true);
+    });
+
+    it('should chain multiple where() calls', () => {
+      const result = new TypedFilterBuilder<User>()
+        .where('active', true)
+        .whereNested('address.city', 'Berlin')
+        .execute(users);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Alice Johnson');
+    });
+
+    it('should chain where() and whereNested()', () => {
+      const result = new TypedFilterBuilder<User>()
+        .where('active', true)
+        .whereNested('address.city', 'Berlin')
+        .execute(users);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Alice Johnson');
+    });
+
+    it('should accept options with withOptions()', () => {
+      const result = new TypedFilterBuilder<User>()
+        .where('name', 'charlie')
+        .withOptions({ caseSensitive: false })
+        .execute(users);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Charlie Brown');
+    });
+
+    it('should support operators in where()', () => {
+      const result = new TypedFilterBuilder<User>()
+        .where('age', { $gte: 30 })
+        .execute(users);
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.age >= 30)).toBe(true);
+    });
+
+    it('should support operators in whereNested()', () => {
+      const result = new TypedFilterBuilder<User>()
+        .whereNested('age', { $lt: 30 })
+        .execute(users);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Bob Smith');
+    });
+
+    it('should build expression without executing', () => {
+      const expression = new TypedFilterBuilder<User>()
+        .where('active', true)
+        .whereNested('address.city', 'Berlin')
+        .build();
+
+      expect(expression).toHaveProperty('active', true);
+      expect(expression).toHaveProperty('address.city', 'Berlin');
+    });
+
+    it('should reset the builder', () => {
+      const builder = new TypedFilterBuilder<User>();
+
+      builder.where('active', true);
+      expect(builder.build()).toHaveProperty('active');
+
+      builder.reset();
+      expect(builder.build()).toEqual({});
+    });
+
+    it('should allow reuse after reset', () => {
+      const builder = new TypedFilterBuilder<User>();
+
+      const result1 = builder.where('active', true).execute(users);
+      expect(result1).toHaveLength(2);
+
+      builder.reset();
+      const result2 = builder.where('active', false).execute(users);
+      expect(result2).toHaveLength(1);
+    });
+
+    it('should handle complex nested queries', () => {
+      const result = new TypedFilterBuilder<User>()
+        .where('active', true)
+        .whereNested('profile.settings.theme', 'dark')
+        .whereNested('address.country', 'Germany')
+        .execute(users);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Alice Johnson');
+    });
+
+    it('should work with array conditions', () => {
+      const result = new TypedFilterBuilder<User>()
+        .where('tags', { $contains: 'developer' })
+        .execute(users);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Alice Johnson');
+    });
+
+    it('should work with multiple operators', () => {
+      const result = new TypedFilterBuilder<User>()
+        .where('age', { $gte: 25, $lte: 30 })
+        .execute(users);
+
+      expect(result).toHaveLength(2);
+      expect(result.map(u => u.name).sort()).toEqual(['Alice Johnson', 'Bob Smith']);
+    });
+
+    it('should handle empty expression', () => {
+      const result = new TypedFilterBuilder<User>().execute(users);
+
+      expect(result).toHaveLength(3);
+      expect(result).toEqual(users);
+    });
+
+    it('should handle string operators in whereNested', () => {
+      const result = new TypedFilterBuilder<User>()
+        .whereNested('email', { $endsWith: '@example.com' })
+        .execute(users);
+
+      expect(result).toHaveLength(3);
+    });
+
+    it('should chain multiple whereNested calls', () => {
+      const result = new TypedFilterBuilder<User>()
+        .whereNested('address.city', 'Berlin')
+        .whereNested('profile.settings.theme', 'dark')
+        .execute(users);
+
+      expect(result).toHaveLength(2);
+      expect(result.every(u => u.address.city === 'Berlin')).toBe(true);
+      expect(result.every(u => u.profile.settings.theme === 'dark')).toBe(true);
+    });
+  });
+
+  describe('Integration tests', () => {
+    it('should work with all three APIs equivalently', () => {
+      const expression = {
+        active: true,
+        'address.city': 'Berlin',
+      } as any;
+
+      const result1 = typedFilter(users, expression);
+      const result2 = createTypedFilter<User>()(users, expression);
+      const result3 = new TypedFilterBuilder<User>()
+        .where('active', true)
+        .whereNested('address.city', 'Berlin')
+        .execute(users);
+
+      expect(result1).toEqual(result2);
+      expect(result2).toEqual(result3);
+    });
+
+    it('should work with complex real-world queries', () => {
+      const result = new TypedFilterBuilder<User>()
+        .where('active', true)
+        .where('age', { $gte: 25 })
+        .whereNested('address.country', 'Germany')
+        .whereNested('profile.settings.notifications', true)
+        .withOptions({ caseSensitive: false })
+        .execute(users);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Alice Johnson');
+    });
+  });
+});

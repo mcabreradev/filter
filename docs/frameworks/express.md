@@ -9,13 +9,13 @@ Guide for using @mcabreradev/filter with Express.js and Node.js.
 ## Installation
 
 ```bash
-npm install @mcabreradev/filter express
+npm install @mcabreradev/filter
 npm install --save-dev @types/express typescript
 
-pnpm add @mcabreradev/filter express
+pnpm add @mcabreradev/filter
 pnpm add -D @types/express typescript
 
-yarn add @mcabreradev/filter express
+yarn add @mcabreradev/filter
 yarn add -D @types/express typescript
 ```
 

@@ -9,10 +9,14 @@ Guide for using @mcabreradev/filter with Nuxt 3.
 ## Installation
 
 ```bash
+# Using npm
 npm install @mcabreradev/filter
-pnpm add @mcabreradev/filter
+
+# Using yarn
 yarn add @mcabreradev/filter
-```
+
+# Using pnpm
+pnpm add @mcabreradev/filter
 
 ## Basic Usage
 

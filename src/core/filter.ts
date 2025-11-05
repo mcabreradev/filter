@@ -5,39 +5,75 @@ import { mergeConfig } from '../config';
 import { FilterCache } from '../utils';
 import { memoization } from '../utils/memoization';
 import { filterDebug } from '../debug';
+import { getPerformanceMonitor } from '../utils/performance-monitor.js';
+import { TypeMismatchError } from '../errors/filter-errors.js';
 
 const globalFilterCache = new FilterCache<unknown>();
 
 export function filter<T>(array: T[], expression: Expression<T>, options?: FilterOptions): T[] {
-  if (!Array.isArray(array)) {
-    throw new Error(`Expected array but received: ${typeof array}`);
-  }
+  const performanceMonitor = getPerformanceMonitor({
+    enabled: options?.enablePerformanceMonitoring ?? false,
+  });
+  const endTotalTime = performanceMonitor.start('filter:total');
 
-  const config = mergeConfig(options);
-  const validatedExpression = validateExpression<T>(expression);
-
-  if (config.debug) {
-    const result = filterDebug(array, validatedExpression, options);
-    result.print();
-    return result.items;
-  }
-
-  if (config.enableCache) {
-    const cacheKey = memoization.createExpressionHash(validatedExpression, config);
-    const cached = globalFilterCache.get(array as unknown[], cacheKey);
-    if (cached !== undefined) {
-      return cached as T[];
+  try {
+    if (!Array.isArray(array)) {
+      throw new TypeMismatchError('array', typeof array);
     }
 
+    const endValidation = performanceMonitor.start('filter:validation');
+    const config = mergeConfig(options);
+    const validatedExpression = validateExpression<T>(expression);
+    endValidation();
+
+    if (config.debug) {
+      const result = filterDebug(array, validatedExpression, options);
+      result.print();
+      endTotalTime();
+      return result.items;
+    }
+
+    if (config.enableCache) {
+      const endCacheLookup = performanceMonitor.start('filter:cache-lookup');
+      const cacheKey = memoization.createExpressionHash(validatedExpression, config);
+      const cached = globalFilterCache.get(array as unknown[], cacheKey);
+      endCacheLookup();
+
+      if (cached !== undefined) {
+        endTotalTime();
+        return cached as T[];
+      }
+
+      const endPredicateCreation = performanceMonitor.start('filter:predicate-creation');
+      const predicate = createPredicateFn<T>(validatedExpression, config);
+      endPredicateCreation();
+
+      const endFiltering = performanceMonitor.start('filter:filtering');
+      const result = array.filter(predicate);
+      endFiltering();
+
+      const endCacheSet = performanceMonitor.start('filter:cache-set');
+      globalFilterCache.set(array as unknown[], cacheKey, result as unknown[]);
+      endCacheSet();
+
+      endTotalTime();
+      return result;
+    }
+
+    const endPredicateCreation = performanceMonitor.start('filter:predicate-creation');
     const predicate = createPredicateFn<T>(validatedExpression, config);
+    endPredicateCreation();
+
+    const endFiltering = performanceMonitor.start('filter:filtering');
     const result = array.filter(predicate);
+    endFiltering();
 
-    globalFilterCache.set(array as unknown[], cacheKey, result as unknown[]);
+    endTotalTime();
     return result;
+  } catch (error) {
+    endTotalTime();
+    throw error;
   }
-
-  const predicate = createPredicateFn<T>(validatedExpression, config);
-  return array.filter(predicate);
 }
 
 export function clearFilterCache(): void {

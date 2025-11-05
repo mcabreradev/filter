@@ -54,11 +54,64 @@ export type {
   TimeOfDayQuery,
   AgeQuery,
   DateTimeOperators,
+  NestedKeyOf,
+  PathValue,
+  DeepPartial,
+  PrimitiveKeys,
+  ObjectKeys,
+  NestedPaths,
 } from './types/index.js';
 
 export { validateExpression, validateOptions } from './validation/index.js';
 export { mergeConfig, createFilterConfig } from './config/index.js';
 export { calculateDistance, isValidGeoPoint } from './utils/index.js';
+
+// Error handling
+export {
+  FilterError,
+  InvalidExpressionError,
+  OperatorError,
+  ValidationError,
+  TypeMismatchError,
+  GeospatialError,
+  ConfigurationError,
+  PerformanceLimitError,
+} from './errors/filter-errors.js';
+
+export {
+  isFilterError,
+  formatErrorMessage,
+  createValidationError,
+  createOperatorError,
+  createTypeMismatchError,
+  createGeospatialError,
+  createConfigurationError,
+  wrapError,
+  extractErrorDetails,
+  getUserFriendlyMessage,
+  ErrorCodes,
+} from './errors/error-helpers.js';
+
+// Performance monitoring
+export {
+  PerformanceMonitor,
+  getPerformanceMonitor,
+  resetPerformanceMonitor,
+  trackPerformance,
+} from './utils/performance-monitor.js';
+
+export type { PerformanceMetrics, PerformanceMonitorOptions } from './utils/performance-monitor.js';
+
+export {
+  isPrimitive,
+  isPlainObject,
+  getNestedValue,
+  setNestedValue,
+  hasNestedPath,
+  isValidPath,
+  getAllNestedKeys,
+} from './types/type-helpers.js';
+export { typedFilter, createTypedFilter, TypedFilterBuilder } from './utils/typed-filter.js';
 export { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './operators/index.js';
 export {
   isValidDate,
@@ -130,5 +183,12 @@ export type {
   UseDebouncedFilterResult as UseDebouncedFilterResultSvelte,
   UsePaginatedFilterResult as UsePaginatedFilterResultSvelte,
 } from './integrations/svelte/index.js';
+
+export {
+  useFilter,
+  useFilteredState,
+  useDebouncedFilter,
+  usePaginatedFilter,
+} from './integrations/react/index.js';
 
 export default filter;

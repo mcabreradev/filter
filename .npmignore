@@ -1,0 +1,56 @@
+# Source files
+src/
+__test__/
+__tests__/
+
+# Documentation
+docs/
+examples/
+.vitepress/
+
+# Config files
+tsconfig.json
+tsconfig.tsd.json
+tsd.json
+vitest.config.ts
+vitest.docs.config.ts
+eslint.config.js
+typedoc.json
+.prettierrc
+.editorconfig
+
+# CI/CD
+.github/
+.husky/
+
+# Development files
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+test-d/
+
+# Misc
+.DS_Store
+*.log
+.env
+.env.local
+coverage/
+.nyc_output/
+
+# Documentation files
+CONTRIBUTING.md
+CLAUDE.md
+FIXED_ISSUES.md
+GEOSPATIAL_EXAMPLES_UPDATE.md
+PLAYGROUND_FIX.md
+techstack.md
+techstack.yml
+TYPESCRIPT_IMPLEMENTATION_SUMMARY.md
+RESTRUCTURING.md
+
+# Keep only build output and essential files
+!build/
+!package.json
+!README.md
+!LICENSE.md

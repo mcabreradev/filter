@@ -60,11 +60,11 @@ describe('validation', () => {
     });
 
     it('throws for invalid maxDepth below minimum', () => {
-      expect(() => validateOptions({ maxDepth: 0 })).toThrow('Invalid filter options');
+      expect(() => validateOptions({ maxDepth: 0 })).toThrow('Configuration error');
     });
 
     it('throws for invalid maxDepth above maximum', () => {
-      expect(() => validateOptions({ maxDepth: 11 })).toThrow('Invalid filter options');
+      expect(() => validateOptions({ maxDepth: 11 })).toThrow('Configuration error');
     });
 
     it('validates enableCache option', () => {

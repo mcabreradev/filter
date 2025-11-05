@@ -32,3 +32,12 @@ export type {
 } from './geospatial';
 
 export type { RelativeTimeQuery, TimeOfDayQuery, AgeQuery, DateTimeOperators } from './datetime';
+
+export type {
+  NestedKeyOf,
+  PathValue,
+  DeepPartial,
+  PrimitiveKeys,
+  ObjectKeys,
+  NestedPaths,
+} from './type-helpers';

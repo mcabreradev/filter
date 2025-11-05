@@ -12,18 +12,20 @@ A TypeScript-first filtering library that provides powerful, type-safe filtering
 
 **Advantages**:
 - Type-safe expressions with TypeScript
-- Advanced operators ($regex, $in, $contains, etc.)
+- Advanced operators (30+ including comparison, array, string, logical, geospatial, datetime)
 - Built-in memoization for performance
 - Framework-specific hooks/composables
 - Lazy evaluation support
 - Pagination and debouncing utilities
 - Nested object filtering
 - Complex logical operations
+- Geospatial queries ($near, $geoBox, $geoPolygon)
+- DateTime filtering ($recent, $upcoming, $dayOfWeek, $age)
 
 ### Is it production-ready?
 
 Yes. The library is:
-- Fully tested (100% coverage)
+- Fully tested (613+ tests, 100% coverage)
 - Type-safe with TypeScript
 - Used in production applications
 - Actively maintained
@@ -148,6 +150,286 @@ const expression = {
 
 const expression = {
   'items.0.name': { $eq: 'Product A' }
+};
+```
+
+### How do I filter by location/proximity?
+
+Use geospatial operators (v5.6.0+):
+
+```typescript
+// Find items within 5km radius
+const expression = {
+  location: {
+    $near: {
+      center: { lat: 52.52, lng: 13.405 },
+      maxDistanceMeters: 5000
+    }
+  }
+};
+
+// Find items in bounding box
+const expression = {
+  location: {
+    $geoBox: {
+      southwest: { lat: 52.5, lng: 13.3 },
+      northeast: { lat: 52.6, lng: 13.5 }
+    }
+  }
+};
+```
+
+### How do I filter by date/time ranges?
+
+Use datetime operators (v5.6.0+):
+
+```typescript
+// Events in next 7 days
+const expression = {
+  date: { $upcoming: { days: 7 } }
+};
+
+// Recent events (last 24 hours)
+const expression = {
+  date: { $recent: { hours: 24 } }
+};
+
+// Weekday events only
+const expression = {
+  date: { $dayOfWeek: [1, 2, 3, 4, 5] }
+};
+
+// Business hours (9 AM - 5 PM)
+const expression = {
+  startTime: { $timeOfDay: { start: 9, end: 17 } }
+};
+
+// Users 18 years or older
+const expression = {
+  birthDate: { $age: { min: 18 } }
+};
+```
+
+## Performance Questions
+
+### When should I enable memoization?
+
+Enable memoization when:
+- Dataset has 1,000+ items
+- Same expression used repeatedly
+- Filter operations are expensive
+
+```typescript
+const { filtered } = useFilter(data, expression, {
+  memoize: true
+});
+```
+
+### How do I optimize for large datasets?
+
+**Strategies**:
+
+1. Enable memoization
+2. Use pagination
+3. Use lazy evaluation
+4. Debounce user input
+
+```typescript
+const { filtered } = usePaginatedFilter(data, expression, 50, {
+  memoize: true
+});
+```
+
+### Does it cause re-renders in React?
+
+Only when dependencies change. Use `useMemo` for expressions:
+
+```typescript
+const expression = useMemo(() => ({
+  status: { $eq: 'active' }
+}), []);
+
+const { filtered } = useFilter(data, expression);
+```
+
+### How do I clear the memoization cache?
+
+```typescript
+import { clearMemoizationCache } from '@mcabreradev/filter';
+
+clearMemoizationCache();
+```
+
+Or disable memoization:
+
+```typescript
+const { filtered } = useFilter(data, expression, {
+  memoize: false
+});
+```
+
+## Geospatial & DateTime Questions
+
+### What coordinate format does $near use?
+
+Standard WGS84 coordinates (latitude/longitude):
+
+```typescript
+const location = {
+  lat: 52.52,   // Latitude: -90 to 90
+  lng: 13.405   // Longitude: -180 to 180
+};
+
+const expression = {
+  location: {
+    $near: {
+      center: location,
+      maxDistanceMeters: 5000  // Always in meters
+    }
+  }
+};
+```
+
+### How accurate is the distance calculation?
+
+Uses the spherical law of cosines with Earth radius = 6,371,000 meters. Accuracy:
+- **< 100km**: ~99.9% accurate
+- **100-1000km**: ~99.5% accurate
+- **> 1000km**: ~99% accurate
+
+For most use cases (restaurant finders, delivery zones, store locators), this is highly accurate.
+
+### Can I use miles instead of meters?
+
+Convert to meters:
+
+```typescript
+const milestoMeters = (miles: number) => miles * 1609.34;
+
+const expression = {
+  location: {
+    $near: {
+      center: userLocation,
+      maxDistanceMeters: milestoMeters(5)  // 5 miles
+    }
+  }
+};
+```
+
+### How do I filter by polygon/custom area?
+
+Use `$geoPolygon`:
+
+```typescript
+const expression = {
+  location: {
+    $geoPolygon: {
+      points: [
+        { lat: 51.5074, lng: -0.1278 },
+        { lat: 51.5100, lng: -0.1200 },
+        { lat: 51.5050, lng: -0.1150 },
+        { lat: 51.5020, lng: -0.1250 }
+      ]
+    }
+  }
+};
+```
+
+### What timezone are datetime operators using?
+
+All datetime operators use the **local timezone** of the Date objects. For UTC:
+
+```typescript
+// Convert to UTC
+const data = rawData.map(item => ({
+  ...item,
+  date: new Date(Date.UTC(
+    item.date.getFullYear(),
+    item.date.getMonth(),
+    item.date.getDate()
+  ))
+}));
+```
+
+### How does $dayOfWeek numbering work?
+
+Days are numbered 0-6:
+- **0** = Sunday
+- **1** = Monday
+- **2** = Tuesday
+- **3** = Wednesday
+- **4** = Thursday
+- **5** = Friday
+- **6** = Saturday
+
+```typescript
+// Weekdays (Monday-Friday)
+const expression = {
+  date: { $dayOfWeek: [1, 2, 3, 4, 5] }
+};
+
+// Or use convenience operators
+const expression = {
+  date: { $isWeekday: true }
+};
+```
+
+### Can I combine geospatial and datetime filters?
+
+Yes, use `$and`:
+
+```typescript
+const expression = {
+  $and: [
+    {
+      location: {
+        $near: {
+          center: userLocation,
+          maxDistanceMeters: 5000
+        }
+      }
+    },
+    {
+      eventDate: { $upcoming: { days: 7 } }
+    },
+    {
+      eventDate: { $dayOfWeek: [1, 2, 3, 4, 5] }  // Weekdays only
+    }
+  ]
+};
+```
+
+### How do I calculate age from birthdate?
+
+Use `$age`:
+
+```typescript
+// Users 18-65 years old
+const expression = {
+  birthDate: {
+    $age: {
+      min: 18,
+      max: 65,
+      unit: 'years'  // 'years', 'months', or 'days'
+    }
+  }
+};
+```
+
+### What's the difference between $recent and $isBefore?
+
+- **`$recent`**: Relative to current time (e.g., "last 7 days")
+- **`$isBefore`**: Absolute comparison to specific date
+
+```typescript
+// Relative: Events in last 7 days
+const expression = {
+  date: { $recent: { days: 7 } }
+};
+
+// Absolute: Events before Jan 1, 2025
+const expression = {
+  date: { $isBefore: new Date('2025-01-01') }
 };
 ```
 
@@ -322,20 +604,37 @@ function FilteredList<T>({ data, expression }: Props<T>) {
 
 ### How do I migrate from v4 to v5?
 
-See the [Migration Guide](/guide/migration-v2).
+The library is **100% backward compatible** - no breaking changes! All v3.x and v4.x code continues to work.
 
-**Key changes**:
-- `data` → `filtered`
-- Removed `isError` and `error`
-- Added `isFiltering`
+See the [Migration Guide](/guide/migration-v2) for details on new features.
+
+**What's New in v5.x** (all optional):
+- v5.6.0: Geospatial and datetime operators
+- v5.5.0: Array OR syntax, visual debugging
+- v5.4.0: Framework integrations
+- v5.2.0: Logical operators, memoization
+- v5.1.0: Lazy evaluation
+- v5.0.0: MongoDB-style operators
 
 ### Can I migrate incrementally?
 
-Yes, both versions can coexist:
+No migration needed! Just upgrade and all existing code works:
 
+```bash
+npm install @mcabreradev/filter@latest
+```
+
+All v3.x/v4.x syntax remains valid:
 ```typescript
-import { useFilter as useFilterV5 } from '@mcabreradev/filter/react';
-import { useFilter as useFilterV4 } from '@mcabreradev/filter-v4/react';
+// All these still work in v5.x
+filter(data, 'string');
+filter(data, { prop: 'value' });
+filter(data, (item) => true);
+filter(data, '%pattern%');
+
+// Plus new v5.x features (optional)
+filter(data, { age: { $gte: 18 } });
+filter(data, { location: { $near: { center, maxDistanceMeters: 5000 } } });
 ```
 
 ### How do I migrate from Array.filter()?
@@ -416,10 +715,24 @@ const { filtered } = useFilter(data, expression, {
 ### Why is filtering slow?
 
 **Solutions**:
-1. Enable memoization
-2. Use pagination
-3. Reduce dataset size
-4. Use lazy evaluation
+1. Enable memoization for repeated queries
+2. Use pagination for large datasets
+3. Reduce dataset size with pre-filtering
+4. Use lazy evaluation for early exit scenarios
+5. For geospatial queries, use $geoBox before $near
+6. Optimize datetime queries by filtering date ranges first
+
+```typescript
+// Example: Optimize geospatial + other filters
+const nearbyFiltered = filter(data, {
+  location: { $geoBox: boundingBox }  // Fast pre-filter
+});
+
+const results = filter(nearbyFiltered, {
+  location: { $near: { center, maxDistanceMeters: 2000 } },
+  rating: { $gte: 4.5 }
+});
+```
 
 ### Why am I getting infinite re-renders?
 

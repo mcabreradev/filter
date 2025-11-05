@@ -1,0 +1,24 @@
+# Default owners for everything in the repo
+* @mcabreradev
+
+# Core library
+/src/core/ @mcabreradev
+/src/operators/ @mcabreradev
+/src/types/ @mcabreradev
+
+# Framework integrations
+/src/integrations/react/ @mcabreradev
+/src/integrations/vue/ @mcabreradev
+/src/integrations/svelte/ @mcabreradev
+
+# Documentation
+/docs/ @mcabreradev
+/README.md @mcabreradev
+
+# CI/CD
+/.github/ @mcabreradev
+
+# Build configuration
+/package.json @mcabreradev
+/tsconfig.json @mcabreradev
+/vitest.config.ts @mcabreradev

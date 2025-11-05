@@ -7,6 +7,33 @@ description: Get started with @mcabreradev/filter in minutes
 
 This guide will get you up and running with `@mcabreradev/filter` in just a few minutes.
 
+## Installation
+
+```bash
+npm install @mcabreradev/filter
+# or
+yarn add @mcabreradev/filter
+# or
+pnpm add @mcabreradev/filter
+```
+
+## Import Styles
+
+Choose between two import styles:
+
+```typescript
+// Classic import (all features)
+import { filter, useFilter } from '@mcabreradev/filter';
+
+// Modular import (smaller bundle, recommended for production)
+import { filter } from '@mcabreradev/filter/core';
+import { useFilter } from '@mcabreradev/filter/react';
+```
+
+::: tip Bundle Size
+Modular imports reduce bundle size by **50-70%**! See [Modular Imports](/guide/modular-imports) for details.
+:::
+
 ## Basic Usage
 
 Import the `filter` function and start filtering:
@@ -224,11 +251,12 @@ const first10 = filterFirst(users, { premium: true }, 10);
 
 Now that you know the basics, explore more advanced features:
 
-- [Operators Guide](/guide/operators) - Learn all 18 MongoDB-style operators
+- [Modular Imports](/guide/modular-imports) - Optimize bundle size with granular imports ⭐
+- [Operators Guide](/guide/operators) - Learn all 30+ MongoDB-style operators
 - [Logical Operators](/guide/logical-operators) - Complex queries with $and, $or, $not
 - [Lazy Evaluation](/guide/lazy-evaluation) - Efficient processing for large datasets
 - [Memoization](/guide/memoization) - 530x performance boost with caching
-- [Framework Integration](/frameworks/overview) - React, Vue, and Svelte support
+- [Framework Integration](/frameworks/) - React, Vue, and Svelte support
 
 ## Interactive Playground
 

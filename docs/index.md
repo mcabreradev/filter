@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "@mcabreradev/filter"
   text: "SQL-like Array Filtering"
-  tagline: "A powerful TypeScript/JavaScript library with MongoDB-style operators, lazy evaluation, and zero dependencies"
+  tagline: "A powerful TypeScript/JavaScript library with MongoDB-style operators, lazy evaluation, and truly zero dependencies"
   image:
     src: /logo.svg
     alt: Filter Library
@@ -30,7 +30,7 @@ features:
 
   - icon: ⚡
     title: Zero Dependencies
-    details: Lightweight and production-ready. Only Zod for runtime validation, nothing else.
+    details: Truly zero dependencies! Lightweight and production-ready. Optional Zod for validation features.
 
   - icon: 🔒
     title: Type-Safe
@@ -46,11 +46,15 @@ features:
 
   - icon: 📦
     title: MongoDB-Style Operators
-    details: 18 operators for advanced filtering including $and, $or, $not, $regex, and more.
+    details: 30+ operators for advanced filtering including $and, $or, $not, $regex, geospatial, and datetime operators.
 
   - icon: 💨
     title: Lazy Evaluation
     details: Process large datasets efficiently with generators. 500x faster for early exits.
+
+  - icon: 🎁
+    title: Modular Imports
+    details: Tree-shakeable exports for optimal bundle size. 50-70% smaller with granular imports.
 
   - icon: 🐛
     title: Debug Mode
@@ -78,13 +82,28 @@ features:
 Install the package:
 
 ```bash
+# Using npm
 npm install @mcabreradev/filter
+
+# Using yarn
+yarn add @mcabreradev/filter
+
+# Using pnpm
+pnpm add @mcabreradev/filter
 ```
+
+::: tip Import Styles
+Choose between classic imports (all features) or modular imports (50-70% smaller bundle). [Learn more](/guide/modular-imports)
+:::
 
 Start filtering:
 
 ```typescript
+// Classic import
 import { filter } from '@mcabreradev/filter';
+
+// Or modular import (recommended for production)
+import { filter } from '@mcabreradev/filter/core';
 
 const users = [
   { name: 'Alice', email: 'alice@example.com', age: 30, city: 'Berlin' },
@@ -207,7 +226,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
     <div class="feature-icon">🪶</div>
     <div class="feature-title">Ultra Lightweight</div>
     <div class="feature-description">
-      Zero dependencies (except Zod). Tiny bundle size. No bloat, just pure filtering power.
+      Truly zero dependencies! Tiny 12 KB bundle. Optional Zod for validation. No bloat, just pure filtering power.
     </div>
   </div>
 
@@ -239,7 +258,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
     <div class="feature-icon">🛡️</div>
     <div class="feature-title">Runtime Validation</div>
     <div class="feature-description">
-      Zod-powered schema validation. Catch invalid queries before they run. Safe and predictable behavior.
+      Optional Zod-powered schema validation. Catch invalid queries before they run. Safe and predictable behavior.
     </div>
   </div>
 
