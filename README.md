@@ -71,38 +71,44 @@ npm install zod
 
 | Import Strategy | Size (gzipped) | Use Case |
 |----------------|----------------|----------|
-| Full library | ~4 KB | All features needed |
-| Core only | ~2 KB | Basic filtering |
-| Operators (granular) | ~3 KB | Specific operators |
-| React integration | ~2 KB | React hooks |
-| Vue integration | ~2 KB | Vue composables |
-| Svelte integration | ~2 KB | Svelte stores |
-| Lazy evaluation | ~1 KB | Large datasets |
+| Full library | ~12 KB | All features needed |
+| Core only | ~8.4 KB | Basic filtering |
+| Operators (granular) | ~4.3 KB | Specific operators |
+| React integration | ~9.2 KB | React hooks |
+| Vue integration | ~8.9 KB | Vue composables |
+| Svelte integration | ~9 KB | Svelte stores |
+| Angular integration | ~9.3 KB | Angular services |
+| SolidJS integration | ~8.5 KB | SolidJS hooks |
+| Preact integration | ~8.5 KB | Preact hooks |
+| Lazy evaluation | ~5.4 KB | Large datasets |
 
 **Recent Optimization:** Bundle size reduced from 65.63 KB to 12.02 KB (81% reduction) by making all heavy dependencies optional peer dependencies.
+
+**Package Size:** 52.8 KB (gzipped tarball), 234 KB unpacked, 197 files
 
 ### Import Examples
 
 ```typescript
 // Full import (includes all features)
 import { filter } from '@mcabreradev/filter';
-// Bundle: ~4 KB (gzipped)
+// Bundle: ~12 KB (gzipped)
 
 // Granular imports (Recommended for production)
 import { filter } from '@mcabreradev/filter/core';
 import { evaluateGt, evaluateLt } from '@mcabreradev/filter/operators/comparison';
-// Bundle: ~3 KB (gzipped) - 25% reduction
+// Bundle: ~8.4 KB (gzipped) - 30% reduction
 
 // Framework-specific imports
 import { useFilter } from '@mcabreradev/filter/react';
-// Bundle: ~2 KB (gzipped) - 50% reduction
+// Bundle: ~9.2 KB (gzipped)
 
 // Lazy evaluation only
 import { filterLazy } from '@mcabreradev/filter/lazy';
-// Bundle: ~1 KB (gzipped) - 75% reduction
+// Bundle: ~5.4 KB (gzipped)
 ```
 
 > 📖 See [Bundle Size Optimization Guide](./docs/advanced/bundle-size.md) for detailed strategies.
+
 
 ---
 
