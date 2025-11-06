@@ -112,7 +112,9 @@
   },
   "homepage": "https://github.com/mcabreradev/filter#readme",
   "devDependencies": {
+    "@angular/core": "^19.1.5",
     "@size-limit/preset-small-lib": "^11.2.0",
+    "@testing-library/preact": "^3.2.4",
     "@testing-library/react": "^16.1.0",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^24.9.1",
@@ -133,8 +135,11 @@
     "jsdom": "^27.1.0",
     "leaflet": "^1.9.4",
     "lint-staged": "^16.2.4",
+    "preact": "^10.26.1",
     "prettier": "^3.4.0",
+    "rxjs": "^7.8.1",
     "size-limit": "^11.2.0",
+    "solid-js": "^1.9.4",
     "svelte": "^5.18.3",
     "tsd": "^0.33.0",
     "typedoc": "^0.28.14",
@@ -146,19 +151,31 @@
     "zod": "^4.1.12"
   },
   "peerDependencies": {
+    "@angular/core": ">=17.0.0",
+    "preact": ">=10.0.0",
     "react": ">=18.0.0",
+    "solid-js": ">=1.8.0",
     "svelte": ">=4.0.0 || >=5.0.0",
     "vue": ">=3.0.0",
     "zod": ">=3.0.0"
   },
   "peerDependenciesMeta": {
+    "@angular/core": {
+      "optional": true
+    },
+    "preact": {
+      "optional": true
+    },
     "react": {
       "optional": true
     },
-    "vue": {
+    "solid-js": {
       "optional": true
     },
     "svelte": {
+      "optional": true
+    },
+    "vue": {
       "optional": true
     },
     "zod": {
@@ -231,6 +248,21 @@
       "types": "./build/integrations/svelte/index.d.ts",
       "import": "./build/integrations/svelte/index.js",
       "default": "./build/integrations/svelte/index.js"
+    },
+    "./angular": {
+      "types": "./build/integrations/angular/index.d.ts",
+      "import": "./build/integrations/angular/index.js",
+      "default": "./build/integrations/angular/index.js"
+    },
+    "./solidjs": {
+      "types": "./build/integrations/solidjs/index.d.ts",
+      "import": "./build/integrations/solidjs/index.js",
+      "default": "./build/integrations/solidjs/index.js"
+    },
+    "./preact": {
+      "types": "./build/integrations/preact/index.d.ts",
+      "import": "./build/integrations/preact/index.js",
+      "default": "./build/integrations/preact/index.js"
     },
     "./lazy": {
       "types": "./build/core/filter-lazy.d.ts",

@@ -154,84 +154,99 @@ filter(users, { name: { $startsWith: 'A' } });
 
 ## Framework Integrations 🎨
 
-**New in v5.4.0**: Full framework integration support for React, Vue, and Svelte!
+**New in v5.6.0**: Full framework integration support for **6 major frameworks**!
 
-### React Hooks
+### Supported Frameworks
+
+- ⚛️ **React** - Hooks with automatic re-rendering
+- 🟢 **Vue** - Composition API with reactivity
+- 🔴 **Svelte** - Store-based reactive filtering
+- 🅰️ **Angular** - Services and Pipes with Signals ⭐ NEW
+- 🔷 **SolidJS** - Signal-based reactive hooks ⭐ NEW
+- ⚡ **Preact** - Lightweight hooks API ⭐ NEW
+
+### Quick Examples
+
+#### React
 
 ```typescript
-import { useFilter, useDebouncedFilter, usePaginatedFilter } from '@mcabreradev/filter';
+import { useFilter, useDebouncedFilter } from '@mcabreradev/filter/react';
 
 function UserList() {
   const { filtered, isFiltering } = useFilter(users, { active: true });
-
-  return (
-    <div>
-      {isFiltering && <span>Filtering...</span>}
-      {filtered.map(user => <User key={user.id} {...user} />)}
-    </div>
-  );
-}
-
-function SearchUsers() {
-  const [search, setSearch] = useState('');
-  const { filtered, isPending } = useDebouncedFilter(users, search, { delay: 300 });
-
-  return (
-    <div>
-      <input onChange={(e) => setSearch(e.target.value)} />
-      {isPending && <span>Loading...</span>}
-      {filtered.map(user => <User key={user.id} {...user} />)}
-    </div>
-  );
+  return <div>{filtered.map(u => <User key={u.id} {...u} />)}</div>;
 }
 ```
 
-### Vue Composables
+#### Vue
 
 ```vue
 <script setup>
-import { ref } from 'vue';
-import { useFilter, usePaginatedFilter } from '@mcabreradev/filter';
-
-const searchTerm = ref('');
-const { filtered, isFiltering } = useFilter(users, searchTerm);
+import { useFilter } from '@mcabreradev/filter/vue';
+const { filtered } = useFilter(users, { active: true });
 </script>
-
-<template>
-  <div>
-    <span v-if="isFiltering">Filtering...</span>
-    <div v-for="user in filtered" :key="user.id">{{ user.name }}</div>
-  </div>
-</template>
 ```
 
-### Svelte Stores
+#### Svelte
 
 ```svelte
 <script>
-import { writable } from 'svelte/store';
-import { useFilter } from '@mcabreradev/filter';
-
-const searchTerm = writable('');
-const { filtered, isFiltering } = useFilter(users, searchTerm);
+import { useFilter } from '@mcabreradev/filter/svelte';
+const { filtered } = useFilter(users, writable({ active: true }));
 </script>
+```
 
-{#if $isFiltering}
-  <span>Filtering...</span>
-{/if}
-{#each $filtered as user (user.id)}
-  <div>{user.name}</div>
-{/each}
+#### Angular ⭐ NEW
+
+```typescript
+import { FilterService } from '@mcabreradev/filter/angular';
+
+@Component({
+  providers: [FilterService],
+  template: `
+    @for (user of filterService.filtered(); track user.id) {
+      <div>{{ user.name }}</div>
+    }
+  `
+})
+export class UserListComponent {
+  filterService = inject(FilterService<User>);
+}
+```
+
+#### SolidJS ⭐ NEW
+
+```tsx
+import { useFilter } from '@mcabreradev/filter/solidjs';
+
+function UserList() {
+  const { filtered } = useFilter(
+    () => users,
+    () => ({ active: true })
+  );
+  return <For each={filtered()}>{(u) => <div>{u.name}</div>}</For>;
+}
+```
+
+#### Preact ⭐ NEW
+
+```tsx
+import { useFilter } from '@mcabreradev/filter/preact';
+
+function UserList() {
+  const { filtered } = useFilter(users, { active: true });
+  return <div>{filtered.map(u => <div key={u.id}>{u.name}</div>)}</div>;
+}
 ```
 
 **Features**:
-- ✅ React Hooks: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
-- ✅ Vue Composables: Full Composition API support with reactivity
-- ✅ Svelte Stores: Reactive stores with derived state
-- ✅ TypeScript: Full type safety with generics
-- ✅ SSR Compatible: Works with Next.js, Nuxt, and SvelteKit
+- ✅ Full TypeScript support with generics
+- ✅ Debounced search hooks/services
+- ✅ Pagination support
+- ✅ SSR compatible
+- ✅ 100% test coverage
 
-See Framework Integrations Guide for complete documentation.
+📖 **[Complete Framework Guide →](./docs/frameworks/index.md)**
 
 ---
 

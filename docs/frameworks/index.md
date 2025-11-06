@@ -1,14 +1,14 @@
 ---
 title: Framework Integrations
-description: Complete guide for React, Vue, and Svelte integrations
+description: Complete guide for React, Vue, Svelte, Angular, SolidJS, and Preact integrations
 ---
 
 # Framework Integrations
 
-> **Version**: 5.3.0+
+> **Version**: 5.6.0+
 > **Status**: Stable
 
-Complete guide for using `@mcabreradev/filter` with React, Vue, and Svelte frameworks.
+Complete guide for using `@mcabreradev/filter` with 6 major frameworks.
 
 ---
 
@@ -19,6 +19,9 @@ Complete guide for using `@mcabreradev/filter` with React, Vue, and Svelte frame
 - [React Integration](#react-integration)
 - [Vue Integration](#vue-integration)
 - [Svelte Integration](#svelte-integration)
+- [Angular Integration](#angular-integration) ⭐ NEW
+- [SolidJS Integration](#solidjs-integration) ⭐ NEW
+- [Preact Integration](#preact-integration) ⭐ NEW
 - [Shared Features](#shared-features)
 - [Performance Tips](#performance-tips)
 - [TypeScript Support](#typescript-support)
@@ -28,16 +31,28 @@ Complete guide for using `@mcabreradev/filter` with React, Vue, and Svelte frame
 
 ## Overview
 
-The framework integrations provide idiomatic hooks, composables, and stores for React, Vue, and Svelte, making it easy to integrate powerful filtering capabilities into your applications.
+The framework integrations provide idiomatic hooks, composables, services, and stores for all major frameworks, making it easy to integrate powerful filtering capabilities into your applications.
+
+### Supported Frameworks
+
+- ⚛️ **[React](/frameworks/react)** - Hooks with automatic re-rendering
+- 🟢 **[Vue](/frameworks/vue)** - Composition API with reactivity
+- 🔴 **[Svelte](/frameworks/svelte)** - Store-based reactive filtering
+- 🅰️ **[Angular](/frameworks/angular)** - Services and Pipes with Signals ⭐ NEW
+- 🔷 **[SolidJS](/frameworks/solidjs)** - Signal-based reactive hooks ⭐ NEW
+- ⚡ **[Preact](/frameworks/preact)** - Lightweight hooks API ⭐ NEW
 
 ### Features
 
 - **React Hooks**: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
 - **Vue Composables**: Composition API-first with full reactivity
 - **Svelte Stores**: Reactive stores with derived state
+- **Angular Services**: `FilterService`, `DebouncedFilterService`, `PaginatedFilterService`, `FilterPipe`
+- **SolidJS Hooks**: `useFilter`, `useDebouncedFilter`, `usePaginatedFilter`
+- **Preact Hooks**: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
 - **Shared Utilities**: Debouncing, pagination, and performance optimizations
 - **TypeScript**: Full type safety with generics
-- **SSR Compatible**: Works with Next.js, Nuxt, and SvelteKit
+- **SSR Compatible**: Works with Next.js, Nuxt, SvelteKit, and Angular Universal
 
 ---
 
@@ -50,6 +65,9 @@ npm install @mcabreradev/filter
 npm install react          # For React
 npm install vue            # For Vue
 npm install svelte         # For Svelte
+npm install @angular/core  # For Angular 17+
+npm install solid-js       # For SolidJS
+npm install preact         # For Preact
 ```
 
 ---
