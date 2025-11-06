@@ -97,7 +97,7 @@ describe('Modular Imports', () => {
 
   describe('Core', () => {
     it('should import lazy utilities', async () => {
-      const lazyModule = await import('../src/core/lazy.js');
+      const lazyModule = await import('../src/core/lazy/index.js');
 
       expect(lazyModule.filterLazy).toBeDefined();
       expect(lazyModule.filterFirst).toBeDefined();

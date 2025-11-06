@@ -1,4 +1,4 @@
-import { filter } from '../../core/filter';
+import { filter } from '../../core/filter/filter';
 
 interface TestItem {
   id: number;

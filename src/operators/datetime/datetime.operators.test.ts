@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { filter } from '../../core/filter';
+import { filter } from '../../core/filter/filter';
 import {
   isValidDate,
   isValidTimeOfDay,

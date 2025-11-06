@@ -268,9 +268,9 @@
       "default": "./build/integrations/preact/index.js"
     },
     "./lazy": {
-      "types": "./build/core/filter-lazy.d.ts",
-      "import": "./build/core/filter-lazy.js",
-      "default": "./build/core/filter-lazy.js"
+      "types": "./build/core/lazy/index.d.ts",
+      "import": "./build/core/lazy/index.js",
+      "default": "./build/core/lazy/index.js"
     },
     "./debug": {
       "types": "./build/debug/index.d.ts",

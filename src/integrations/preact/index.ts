@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'preact/hooks';
-import { filter } from '../../core/filter';
+import { filter } from '../../core/filter/filter';
 import type { Expression, FilterOptions } from '../../types';
 
 export function useFilter<T>(

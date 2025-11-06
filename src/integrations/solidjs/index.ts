@@ -1,5 +1,5 @@
 import { createMemo, createSignal, onCleanup, Accessor } from 'solid-js';
-import { filter } from '../../core/filter';
+import { filter } from '../../core/filter/filter';
 import type { Expression, FilterOptions } from '../../types';
 
 export function useFilter<T>(

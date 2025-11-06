@@ -7,7 +7,7 @@ export {
   isPredicateFunction,
   getTypeForFilter,
   hasCustomToString,
-} from './type-guards';
+} from './type-guards/index.js';
 
 export {
   hasWildcard,
@@ -15,13 +15,13 @@ export {
   getCachedRegex,
   hasNegation,
   removeNegation,
-} from './pattern-matching';
+} from './pattern-matching/index.js';
 
-export { lowercase, equals } from './string-helpers';
+export { lowercase, equals } from './string-helpers/index.js';
 
-export { FilterCache } from './cache';
+export { FilterCache } from './cache/index.js';
 
-export { isOperatorExpression, hasOperator } from './operator-detection';
+export { isOperatorExpression, hasOperator } from './operator-detection/index.js';
 
 export {
   take,
@@ -37,11 +37,11 @@ export {
   flatten,
   asyncMap,
   asyncFilter,
-} from './lazy-iterators';
+} from './lazy-iterators/index.js';
 
-export { memoization, MemoizationManager } from './memoization';
+export { memoization, MemoizationManager } from './memoization/index.js';
 
-export { calculateDistance, isValidGeoPoint } from './geo-distance';
+export { calculateDistance, isValidGeoPoint } from './geo-distance/index.js';
 
 export {
   isValidDate,
@@ -53,13 +53,13 @@ export {
   calculateAge,
   isWeekday,
   isWeekend,
-} from './date-time';
+} from './date-time/index.js';
 
 export {
   PerformanceMonitor,
   getPerformanceMonitor,
   resetPerformanceMonitor,
   trackPerformance,
-} from './performance-monitor';
+} from './performance-monitor/index.js';
 
-export type { PerformanceMetrics, PerformanceMonitorOptions } from './performance-monitor';
+export type { PerformanceMetrics, PerformanceMonitorOptions } from './performance-monitor/index.js';

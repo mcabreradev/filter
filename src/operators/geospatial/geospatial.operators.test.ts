@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { filter } from '../../core/filter';
+import { filter } from '../../core/filter/filter';
 import { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './geospatial.operators';
 import { calculateDistance, isValidGeoPoint } from '../../utils/geo-distance';
 import type { GeoPoint, NearQuery, BoundingBox, PolygonQuery } from '../../types/geospatial';

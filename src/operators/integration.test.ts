@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { filter } from '../core/filter';
+import { filter } from '../core/filter/filter';
 
 interface Product {
   id: number;

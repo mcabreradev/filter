@@ -1,4 +1,4 @@
-export { createPredicateFn } from './predicate-factory';
-export { createStringPredicate } from './string-predicate';
-export { createObjectPredicate } from './object-predicate';
-export { createFunctionPredicate } from './function-predicate';
+export { createPredicateFn } from './factory/index.js';
+export { createStringPredicate } from './string/index.js';
+export { createObjectPredicate } from './object/index.js';
+export { createFunctionPredicate } from './function/index.js';

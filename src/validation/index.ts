@@ -4,6 +4,6 @@ export {
   objectExpressionSchema,
   expressionSchema,
   filterOptionsSchema,
-} from './schemas';
+} from './schemas/index.js';
 
-export { validateExpression, validateOptions } from './validator';
+export { validateExpression, validateOptions } from './validator/index.js';

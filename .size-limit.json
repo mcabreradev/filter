@@ -91,7 +91,7 @@
   },
   {
     "name": "Lazy evaluation",
-    "path": "build/core/filter-lazy.js",
+    "path": "build/core/lazy/filter-lazy.js",
     "limit": "6 KB",
     "gzip": true
   }

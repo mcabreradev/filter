@@ -1,5 +1,5 @@
 import { Signal, computed, signal, Pipe, PipeTransform } from '@angular/core';
-import { filter } from '../../core/filter';
+import { filter } from '../../core/filter/filter';
 import type { Expression, FilterOptions } from '../../types';
 
 // Factory function for FilterService (no decorator overhead)
