@@ -38,7 +38,12 @@ export type {
   GeospatialOperators,
 } from './geospatial/index.js';
 
-export type { RelativeTimeQuery, TimeOfDayQuery, AgeQuery, DateTimeOperators } from './datetime/index.js';
+export type {
+  RelativeTimeQuery,
+  TimeOfDayQuery,
+  AgeQuery,
+  DateTimeOperators,
+} from './datetime/index.js';
 
 export type {
   NestedKeyOf,

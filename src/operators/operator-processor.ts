@@ -13,7 +13,11 @@ import { applyComparisonOperators } from './comparison/comparison.operators';
 import { applyArrayOperators } from './array/array.operators';
 import { applyStringOperators } from './string/string.operators';
 import { applyLogicalOperators } from './logical/logical.operators';
-import { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './geospatial/geospatial.operators';
+import {
+  evaluateNear,
+  evaluateGeoBox,
+  evaluateGeoPolygon,
+} from './geospatial/geospatial.operators';
 import {
   evaluateRecent,
   evaluateUpcoming,

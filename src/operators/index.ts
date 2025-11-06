@@ -18,7 +18,11 @@ export { applyStringOperators as evaluateString } from './string/string.operator
 export { applyLogicalOperators as evaluateLogical } from './logical/logical.operators';
 
 // Geospatial operators
-export { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './geospatial/geospatial.operators';
+export {
+  evaluateNear,
+  evaluateGeoBox,
+  evaluateGeoPolygon,
+} from './geospatial/geospatial.operators';
 
 // Date/Time operators
 export {
