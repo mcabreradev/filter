@@ -1,4 +1,4 @@
-import { createMemo, createSignal, Accessor } from 'solid-js';
+import { createMemo, createSignal, onCleanup, Accessor } from 'solid-js';
 import { filter } from '../../core/filter';
 import type { Expression, FilterOptions } from '../../types';
 
@@ -44,20 +44,29 @@ export function useDebouncedFilter<T>(
   const [debouncedExpr, setDebouncedExpr] = createSignal<Expression<T> | null>(null);
   const [isPending, setIsPending] = createSignal(false);
 
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   createMemo(() => {
     const expr = expression();
-    setIsPending(true);
 
-    if (timeoutId) {
+    if (timeoutId !== undefined) {
       clearTimeout(timeoutId);
     }
+
+    setIsPending(true);
 
     timeoutId = setTimeout(() => {
       setDebouncedExpr(() => expr);
       setIsPending(false);
+      timeoutId = undefined;
     }, delay);
+
+    onCleanup(() => {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+        timeoutId = undefined;
+      }
+    });
   });
 
   const filtered = createMemo(() => {

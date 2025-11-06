@@ -7,6 +7,7 @@ import { memoization } from '../utils/memoization';
 import { filterDebug } from '../debug';
 import { getPerformanceMonitor } from '../utils/performance-monitor.js';
 import { TypeMismatchError } from '../errors/filter-errors.js';
+import { normalizeOrderBy, sortByFields } from '../utils/sort';
 
 const globalFilterCache = new FilterCache<unknown>();
 
@@ -29,8 +30,15 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
     if (config.debug) {
       const result = filterDebug(array, validatedExpression, options);
       result.print();
+      let items = result.items;
+      if (config.orderBy) {
+        const endSorting = performanceMonitor.start('filter:sorting');
+        const orderByFields = normalizeOrderBy(config.orderBy);
+        items = sortByFields(items, orderByFields, config.caseSensitive);
+        endSorting();
+      }
       endTotalTime();
-      return result.items;
+      return items;
     }
 
     if (config.enableCache) {
@@ -40,8 +48,15 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
       endCacheLookup();
 
       if (cached !== undefined) {
+        let result = cached as T[];
+        if (config.orderBy) {
+          const endSorting = performanceMonitor.start('filter:sorting');
+          const orderByFields = normalizeOrderBy(config.orderBy);
+          result = sortByFields(result, orderByFields, config.caseSensitive);
+          endSorting();
+        }
         endTotalTime();
-        return cached as T[];
+        return result;
       }
 
       const endPredicateCreation = performanceMonitor.start('filter:predicate-creation');
@@ -49,8 +64,15 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
       endPredicateCreation();
 
       const endFiltering = performanceMonitor.start('filter:filtering');
-      const result = array.filter(predicate);
+      let result = array.filter(predicate);
       endFiltering();
+
+      if (config.orderBy) {
+        const endSorting = performanceMonitor.start('filter:sorting');
+        const orderByFields = normalizeOrderBy(config.orderBy);
+        result = sortByFields(result, orderByFields, config.caseSensitive);
+        endSorting();
+      }
 
       const endCacheSet = performanceMonitor.start('filter:cache-set');
       globalFilterCache.set(array as unknown[], cacheKey, result as unknown[]);
@@ -65,8 +87,15 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
     endPredicateCreation();
 
     const endFiltering = performanceMonitor.start('filter:filtering');
-    const result = array.filter(predicate);
+    let result = array.filter(predicate);
     endFiltering();
+
+    if (config.orderBy) {
+      const endSorting = performanceMonitor.start('filter:sorting');
+      const orderByFields = normalizeOrderBy(config.orderBy);
+      result = sortByFields(result, orderByFields, config.caseSensitive);
+      endSorting();
+    }
 
     endTotalTime();
     return result;

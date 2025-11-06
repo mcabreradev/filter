@@ -72,11 +72,25 @@ export const expressionSchema = z.union([
   operatorExpressionSchema,
 ]);
 
+export const sortDirectionSchema = z.enum(['asc', 'desc']);
+
+export const orderByFieldSchema = z.object({
+  field: z.string(),
+  direction: sortDirectionSchema,
+});
+
+export const orderBySchema = z.union([
+  z.string(),
+  orderByFieldSchema,
+  z.array(z.union([z.string(), orderByFieldSchema])),
+]);
+
 export const filterOptionsSchema = z
   .object({
     caseSensitive: z.boolean().optional(),
     maxDepth: z.number().min(1).max(10).optional(),
     customComparator: z.function().optional(),
     enableCache: z.boolean().optional(),
+    orderBy: orderBySchema.optional(),
   })
   .optional();

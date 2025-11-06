@@ -520,7 +520,7 @@ filter(products, {
   category: ['Electronics', 'Accessories'],
   price: [100, 200, 300]
 });
-// Logic: (category === 'Electronics' OR category === 'Accessories') 
+// Logic: (category === 'Electronics' OR category === 'Accessories')
 //    AND (price === 100 OR price === 200 OR price === 300)
 
 // Combining array OR with other conditions (AND logic)
@@ -529,8 +529,8 @@ filter(users, {
   age: 30,
   role: ['admin', 'moderator']
 });
-// Logic: (city === 'Berlin' OR city === 'Paris') 
-//    AND age === 30 
+// Logic: (city === 'Berlin' OR city === 'Paris')
+//    AND age === 30
 //    AND (role === 'admin' OR role === 'moderator')
 
 // Works with wildcards
@@ -927,32 +927,32 @@ filter(users, { city: 'Berlin' }, { debug: true });
 
 ```typescript
 // Verbose mode - detailed evaluation info
-filter(users, { age: { $gte: 25 } }, { 
-  debug: true, 
-  verbose: true 
+filter(users, { age: { $gte: 25 } }, {
+  debug: true,
+  verbose: true
 });
 
 // Show execution timings
-filter(products, { premium: true }, { 
-  debug: true, 
-  showTimings: true 
+filter(products, { premium: true }, {
+  debug: true,
+  showTimings: true
 });
 
 // Colorized output (ANSI colors)
-filter(users, { city: 'Berlin' }, { 
-  debug: true, 
-  colorize: true 
+filter(users, { city: 'Berlin' }, {
+  debug: true,
+  colorize: true
 });
 
 // All options combined
-filter(users, { 
-  age: { $gte: 25 }, 
-  city: 'Berlin' 
-}, { 
-  debug: true, 
-  verbose: true, 
-  showTimings: true, 
-  colorize: true 
+filter(users, {
+  age: { $gte: 25 },
+  city: 'Berlin'
+}, {
+  debug: true,
+  verbose: true,
+  showTimings: true,
+  colorize: true
 });
 ```
 
@@ -1044,6 +1044,15 @@ filter(largeDataset, expression, { enableCache: true });
 // Enable debug mode (v5.5.0+)
 filter(users, expression, { debug: true });
 
+// Sort results by field(s)
+filter(users, { age: { $gte: 18 } }, { orderBy: 'age' });
+filter(users, { active: true }, {
+  orderBy: [
+    { field: 'age', direction: 'desc' },
+    { field: 'name', direction: 'asc' }
+  ]
+});
+
 // Custom comparison logic
 filter(data, expression, {
   customComparator: (actual, expected) => actual === expected
@@ -1059,6 +1068,7 @@ filter(data, expression, {
 - `verbose` (boolean, default: `false`) - Show detailed evaluation info in debug mode (v5.5.0+)
 - `showTimings` (boolean, default: `false`) - Display execution timings in debug mode (v5.5.0+)
 - `colorize` (boolean, default: `false`) - Use ANSI colors in debug output (v5.5.0+)
+- `orderBy` (string | object | array, optional) - Sort filtered results by field(s) in ascending or descending order
 - `customComparator` (function, optional) - Custom comparison function
 
 ---
@@ -1141,6 +1151,17 @@ const recentHighValue = filter(orders, {
   createdAt: { $gte: thirtyDaysAgo },
   amount: { $gte: 1000 },
   status: { $in: ['completed', 'shipped'] }
+});
+
+// Sort results: Products sorted by price (ascending), then by rating (descending)
+const sortedProducts = filter(products, {
+  category: 'Electronics',
+  inStock: true
+}, {
+  orderBy: [
+    { field: 'price', direction: 'asc' },
+    { field: 'rating', direction: 'desc' }
+  ]
 });
 ```
 

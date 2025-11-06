@@ -212,6 +212,7 @@ interface FilterOptions {
   maxDepth?: number;
   enableCache?: boolean;
   customComparator?: (actual: unknown, expected: unknown) => boolean;
+  orderBy?: string | { field: string; direction: 'asc' | 'desc' } | Array<string | { field: string; direction: 'asc' | 'desc' }>;
 }
 ```
 
@@ -220,6 +221,7 @@ interface FilterOptions {
 - `maxDepth` - Maximum depth for nested object comparison (default: `3`, range: 1-10)
 - `enableCache` - Enable result caching (default: `false`)
 - `customComparator` - Custom comparison function (optional)
+- `orderBy` - Sort filtered results by field(s) in ascending or descending order (optional)
 
 ## Operators
 

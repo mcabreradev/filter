@@ -1,3 +1,12 @@
+export type SortDirection = 'asc' | 'desc';
+
+export interface OrderByField {
+  field: string;
+  direction: SortDirection;
+}
+
+export type OrderBy = string | OrderByField | Array<string | OrderByField>;
+
 export interface FilterConfig {
   caseSensitive: boolean;
   maxDepth: number;
@@ -8,6 +17,7 @@ export interface FilterConfig {
   verbose?: boolean;
   showTimings?: boolean;
   colorize?: boolean;
+  orderBy?: OrderBy;
 }
 
 export type Comparator = (actual: unknown, expected: unknown) => boolean;

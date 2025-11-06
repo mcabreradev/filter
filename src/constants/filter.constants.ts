@@ -49,6 +49,11 @@ export const OPERATORS = {
 
 export const OPERATOR_KEYS = Object.values(OPERATORS);
 
+export const SORT_DIRECTIONS = {
+  ASC: 'asc',
+  DESC: 'desc',
+} as const;
+
 export const DEFAULT_CONFIG: FilterConfig = {
   caseSensitive: false,
   maxDepth: 3,

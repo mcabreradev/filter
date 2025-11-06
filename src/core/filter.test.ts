@@ -204,4 +204,287 @@ describe('filter', () => {
       expect(input).toEqual(output);
     });
   });
+
+  describe('orderBy', () => {
+    const users = [
+      { name: 'Charlie', age: 35, city: 'Berlin' },
+      { name: 'Alice', age: 30, city: 'Berlin' },
+      { name: 'Bob', age: 25, city: 'London' },
+      { name: 'David', age: 30, city: 'Paris' },
+    ];
+
+    describe('basic sorting', () => {
+      it('sorts by single field ascending (string)', () => {
+        const input = filter(users, {}, { orderBy: 'name' });
+        const output = [
+          { name: 'Alice', age: 30, city: 'Berlin' },
+          { name: 'Bob', age: 25, city: 'London' },
+          { name: 'Charlie', age: 35, city: 'Berlin' },
+          { name: 'David', age: 30, city: 'Paris' },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('sorts by single field descending (string)', () => {
+        const input = filter(users, {}, { orderBy: { field: 'name', direction: 'desc' } });
+        const output = [
+          { name: 'David', age: 30, city: 'Paris' },
+          { name: 'Charlie', age: 35, city: 'Berlin' },
+          { name: 'Bob', age: 25, city: 'London' },
+          { name: 'Alice', age: 30, city: 'Berlin' },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('sorts by single field ascending (number)', () => {
+        const input = filter(users, {}, { orderBy: 'age' });
+        const output = [
+          { name: 'Bob', age: 25, city: 'London' },
+          { name: 'Alice', age: 30, city: 'Berlin' },
+          { name: 'David', age: 30, city: 'Paris' },
+          { name: 'Charlie', age: 35, city: 'Berlin' },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('sorts by single field descending (number)', () => {
+        const input = filter(users, {}, { orderBy: { field: 'age', direction: 'desc' } });
+        const output = [
+          { name: 'Charlie', age: 35, city: 'Berlin' },
+          { name: 'Alice', age: 30, city: 'Berlin' },
+          { name: 'David', age: 30, city: 'Paris' },
+          { name: 'Bob', age: 25, city: 'London' },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('sorts by single field ascending (Date)', () => {
+        const events = [
+          { name: 'Event C', date: new Date('2025-03-15') },
+          { name: 'Event A', date: new Date('2025-01-15') },
+          { name: 'Event B', date: new Date('2025-02-15') },
+        ];
+        const input = filter(events, {}, { orderBy: 'date' });
+        const output = [
+          { name: 'Event A', date: new Date('2025-01-15') },
+          { name: 'Event B', date: new Date('2025-02-15') },
+          { name: 'Event C', date: new Date('2025-03-15') },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('sorts by single field descending (Date)', () => {
+        const events = [
+          { name: 'Event C', date: new Date('2025-03-15') },
+          { name: 'Event A', date: new Date('2025-01-15') },
+          { name: 'Event B', date: new Date('2025-02-15') },
+        ];
+        const input = filter(events, {}, { orderBy: { field: 'date', direction: 'desc' } });
+        const output = [
+          { name: 'Event C', date: new Date('2025-03-15') },
+          { name: 'Event B', date: new Date('2025-02-15') },
+          { name: 'Event A', date: new Date('2025-01-15') },
+        ];
+
+        expect(input).toEqual(output);
+      });
+    });
+
+    describe('multiple fields', () => {
+      it('sorts by two fields (primary and secondary)', () => {
+        const input = filter(
+          users,
+          {},
+          {
+            orderBy: [
+              { field: 'age', direction: 'asc' },
+              { field: 'name', direction: 'asc' },
+            ],
+          },
+        );
+        const output = [
+          { name: 'Bob', age: 25, city: 'London' },
+          { name: 'Alice', age: 30, city: 'Berlin' },
+          { name: 'David', age: 30, city: 'Paris' },
+          { name: 'Charlie', age: 35, city: 'Berlin' },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('sorts by two fields with mixed directions', () => {
+        const input = filter(
+          users,
+          {},
+          {
+            orderBy: [
+              { field: 'age', direction: 'desc' },
+              { field: 'name', direction: 'asc' },
+            ],
+          },
+        );
+        const output = [
+          { name: 'Charlie', age: 35, city: 'Berlin' },
+          { name: 'Alice', age: 30, city: 'Berlin' },
+          { name: 'David', age: 30, city: 'Paris' },
+          { name: 'Bob', age: 25, city: 'London' },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('sorts by three fields', () => {
+        const input = filter(
+          users,
+          {},
+          {
+            orderBy: [
+              { field: 'city', direction: 'asc' },
+              { field: 'age', direction: 'desc' },
+              { field: 'name', direction: 'asc' },
+            ],
+          },
+        );
+        const output = [
+          { name: 'Charlie', age: 35, city: 'Berlin' },
+          { name: 'Alice', age: 30, city: 'Berlin' },
+          { name: 'Bob', age: 25, city: 'London' },
+          { name: 'David', age: 30, city: 'Paris' },
+        ];
+
+        expect(input).toEqual(output);
+      });
+    });
+
+    describe('nested paths', () => {
+      const usersWithNested = [
+        { name: 'Alice', profile: { age: 30, address: { city: 'Berlin' } } },
+        { name: 'Bob', profile: { age: 25, address: { city: 'London' } } },
+        { name: 'Charlie', profile: { age: 35, address: { city: 'Berlin' } } },
+      ];
+
+      it('sorts by single level nested path', () => {
+        const input = filter(usersWithNested, {}, { orderBy: 'profile.age' });
+        const output = [
+          { name: 'Bob', profile: { age: 25, address: { city: 'London' } } },
+          { name: 'Alice', profile: { age: 30, address: { city: 'Berlin' } } },
+          { name: 'Charlie', profile: { age: 35, address: { city: 'Berlin' } } },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('sorts by multi-level nested path', () => {
+        const input = filter(usersWithNested, {}, { orderBy: 'profile.address.city' });
+        const output = [
+          { name: 'Alice', profile: { age: 30, address: { city: 'Berlin' } } },
+          { name: 'Charlie', profile: { age: 35, address: { city: 'Berlin' } } },
+          { name: 'Bob', profile: { age: 25, address: { city: 'London' } } },
+        ];
+
+        expect(input).toEqual(output);
+      });
+    });
+
+    describe('edge cases', () => {
+      it('handles empty array input', () => {
+        const input = filter([], {}, { orderBy: 'name' });
+        expect(input).toEqual([]);
+      });
+
+      it('handles empty filtered results', () => {
+        const input = filter(users, { name: 'NonExistent' }, { orderBy: 'name' });
+        expect(input).toEqual([]);
+      });
+
+      it('handles all null/undefined values in sort field', () => {
+        const dataWithNulls = [
+          { name: 'A', age: null },
+          { name: 'B', age: null },
+          { name: 'C', age: undefined },
+        ];
+        const input = filter(dataWithNulls, {}, { orderBy: 'age' });
+        expect(input.length).toBe(3);
+      });
+
+      it('handles mixed null and non-null values', () => {
+        const dataWithMixed = [
+          { name: 'A', age: 30 },
+          { name: 'B', age: null },
+          { name: 'C', age: 20 },
+        ];
+        const input = filter(dataWithMixed, {}, { orderBy: 'age' });
+        const output = [
+          { name: 'C', age: 20 },
+          { name: 'A', age: 30 },
+          { name: 'B', age: null },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('handles single item in filtered results', () => {
+        const input = filter(users, { name: 'Alice' }, { orderBy: 'age' });
+        const output = [{ name: 'Alice', age: 30, city: 'Berlin' }];
+
+        expect(input).toEqual(output);
+      });
+    });
+
+    describe('integration with other features', () => {
+      it('works with filtering and sorting', () => {
+        const input = filter(users, { city: 'Berlin' }, { orderBy: 'age' });
+        const output = [
+          { name: 'Alice', age: 30, city: 'Berlin' },
+          { name: 'Charlie', age: 35, city: 'Berlin' },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('works with caching (different orderBy = different cache)', () => {
+        const result1 = filter(users, {}, { orderBy: 'name', enableCache: true });
+        const result2 = filter(
+          users,
+          {},
+          { orderBy: { field: 'name', direction: 'desc' }, enableCache: true },
+        );
+
+        expect(result1[0].name).toBe('Alice');
+        expect(result2[0].name).toBe('David');
+      });
+
+      it('works with caseSensitive option for string sorting', () => {
+        const testData = [
+          { name: 'BERLIN', value: 1 },
+          { name: 'berlin', value: 2 },
+          { name: 'Berlin', value: 3 },
+        ];
+        const input = filter(testData, {}, { orderBy: 'name', caseSensitive: true });
+        const output = [
+          { name: 'BERLIN', value: 1 },
+          { name: 'Berlin', value: 3 },
+          { name: 'berlin', value: 2 },
+        ];
+
+        expect(input).toEqual(output);
+      });
+
+      it('works with operators', () => {
+        const input = filter(users, { age: { $gte: 30 } }, { orderBy: 'name' });
+        const output = [
+          { name: 'Alice', age: 30, city: 'Berlin' },
+          { name: 'Charlie', age: 35, city: 'Berlin' },
+          { name: 'David', age: 30, city: 'Paris' },
+        ];
+
+        expect(input).toEqual(output);
+      });
+    });
+  });
 });

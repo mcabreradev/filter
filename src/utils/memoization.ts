@@ -93,31 +93,81 @@ export class MemoizationManager {
 
   private hashObject(obj: unknown, config: FilterConfig): string {
     const parts: string[] = [];
+    const record = obj as Record<string, unknown>;
 
-    const sortedKeys = Object.keys(obj as object).sort();
-    for (const key of sortedKeys) {
-      const value = (obj as Record<string, unknown>)[key];
+    if ('$and' in record || '$or' in record || '$not' in record) {
+      if ('$and' in record) {
+        const andArray = Array.isArray(record.$and) ? record.$and : [record.$and];
+        parts.push(`$and:[${andArray.map((v) => this.hashValue(v)).join(',')}]`);
+      }
 
-      if (value === null) {
-        parts.push(`${key}:null`);
-      } else if (value === undefined) {
-        parts.push(`${key}:undefined`);
-      } else if (typeof value === 'object') {
-        if (value instanceof Date) {
-          parts.push(`${key}:date:${value.getTime()}`);
-        } else if (value instanceof RegExp) {
-          parts.push(`${key}:regex:${value.source}:${value.flags}`);
-        } else if (Array.isArray(value)) {
-          parts.push(`${key}:arr:[${value.map((v) => this.hashValue(v)).join(',')}]`);
+      if ('$or' in record) {
+        const orArray = Array.isArray(record.$or) ? record.$or : [record.$or];
+        parts.push(`$or:[${orArray.map((v) => this.hashValue(v)).join(',')}]`);
+      }
+
+      if ('$not' in record) {
+        parts.push(`$not:${this.hashValue(record.$not)}`);
+      }
+
+      const otherKeys = Object.keys(record)
+        .filter((k) => !k.startsWith('$'))
+        .sort();
+      for (const key of otherKeys) {
+        const value = record[key];
+        parts.push(`${key}:${this.hashValue(value)}`);
+      }
+    } else {
+      const sortedKeys = Object.keys(record).sort();
+      for (const key of sortedKeys) {
+        const value = record[key];
+
+        if (value === null) {
+          parts.push(`${key}:null`);
+        } else if (value === undefined) {
+          parts.push(`${key}:undefined`);
+        } else if (typeof value === 'object') {
+          if (value instanceof Date) {
+            parts.push(`${key}:date:${value.getTime()}`);
+          } else if (value instanceof RegExp) {
+            parts.push(`${key}:regex:${value.source}:${value.flags}`);
+          } else if (Array.isArray(value)) {
+            parts.push(`${key}:arr:[${value.map((v) => this.hashValue(v)).join(',')}]`);
+          } else {
+            parts.push(`${key}:obj:{${this.hashObject(value, config)}}`);
+          }
         } else {
-          parts.push(`${key}:obj:{${this.hashObject(value, config)}}`);
+          parts.push(`${key}:${typeof value}:${String(value)}`);
         }
-      } else {
-        parts.push(`${key}:${typeof value}:${String(value)}`);
       }
     }
 
-    return `${parts.join('|')}:cs:${config.caseSensitive}:md:${config.maxDepth}`;
+    const orderByHash = config.orderBy ? this.hashOrderBy(config.orderBy) : '';
+    return `${parts.join('|')}:cs:${config.caseSensitive}:md:${config.maxDepth}${orderByHash ? `:ob:${orderByHash}` : ''}`;
+  }
+
+  private hashOrderBy(orderBy: unknown): string {
+    if (typeof orderBy === 'string') {
+      return `str:${orderBy}`;
+    }
+
+    if (Array.isArray(orderBy)) {
+      return `arr:[${orderBy
+        .map((item) => {
+          if (typeof item === 'string') {
+            return `str:${item}`;
+          }
+          return `obj:{field:${item.field}:dir:${item.direction}}`;
+        })
+        .join(',')}]`;
+    }
+
+    if (typeof orderBy === 'object' && orderBy !== null) {
+      const obj = orderBy as { field: string; direction: string };
+      return `obj:{field:${obj.field}:dir:${obj.direction}}`;
+    }
+
+    return String(orderBy);
   }
 
   private hashValue(value: unknown): string {

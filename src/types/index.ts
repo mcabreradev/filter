@@ -5,7 +5,14 @@ export type {
   Expression,
 } from './expression.types';
 
-export type { FilterConfig, Comparator, FilterOptions } from './config.types';
+export type {
+  FilterConfig,
+  Comparator,
+  FilterOptions,
+  SortDirection,
+  OrderByField,
+  OrderBy,
+} from './config.types';
 
 export type {
   ComparisonOperators,

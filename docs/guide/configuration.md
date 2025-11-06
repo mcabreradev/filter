@@ -188,6 +188,110 @@ filter(users, expression, {
 });
 ```
 
+### orderBy
+
+Sort filtered results by one or more fields in ascending or descending order.
+
+**Type**: `string | { field: string; direction: 'asc' | 'desc' } | Array<string | { field: string; direction: 'asc' | 'desc' }>`
+**Default**: `undefined` (no sorting)
+
+```typescript
+filter(users, { age: { $gte: 18 } }, { orderBy: 'age' });
+```
+
+**Use Cases:**
+- Sort results by a single field
+- Multi-field sorting (primary, secondary, tertiary)
+- Sort by nested paths using dot notation
+- Combine filtering with sorting in one operation
+
+**Single Field Sorting:**
+
+```typescript
+const users = [
+  { name: 'Charlie', age: 35 },
+  { name: 'Alice', age: 30 },
+  { name: 'Bob', age: 25 },
+];
+
+filter(users, {}, { orderBy: 'name' });
+filter(users, {}, { orderBy: { field: 'age', direction: 'desc' } });
+```
+
+**Multiple Fields Sorting:**
+
+Sort by multiple fields with different directions:
+
+```typescript
+filter(users, {}, {
+  orderBy: [
+    { field: 'age', direction: 'desc' },
+    { field: 'name', direction: 'asc' }
+  ]
+});
+```
+
+**Nested Paths:**
+
+Sort by nested object properties using dot notation:
+
+```typescript
+const users = [
+  { name: 'Alice', profile: { age: 30, address: { city: 'Berlin' } } },
+  { name: 'Bob', profile: { age: 25, address: { city: 'London' } } },
+];
+
+filter(users, {}, { orderBy: 'profile.age' });
+filter(users, {}, { orderBy: 'profile.address.city' });
+```
+
+**Combining with Filtering:**
+
+Filter and sort in a single operation:
+
+```typescript
+filter(users, { city: 'Berlin' }, { orderBy: 'age' });
+filter(products, { category: 'Electronics' }, {
+  orderBy: [
+    { field: 'price', direction: 'asc' },
+    { field: 'rating', direction: 'desc' }
+  ]
+});
+```
+
+**Type Support:**
+
+- **Strings**: Case-insensitive by default (respects `caseSensitive` option)
+- **Numbers**: Numeric comparison
+- **Dates**: Date comparison using `getTime()`
+- **Booleans**: Boolean comparison
+- **Null/undefined**: Placed at the end (nulls last)
+
+**Examples:**
+
+```typescript
+const products = [
+  { name: 'Laptop', price: 1200, rating: 4.5 },
+  { name: 'Mouse', price: 25, rating: 4.8 },
+  { name: 'Monitor', price: 450, rating: 4.2 },
+];
+
+filter(products, { price: { $lte: 1000 } }, { orderBy: 'price' });
+
+filter(products, {}, {
+  orderBy: [
+    { field: 'rating', direction: 'desc' },
+    { field: 'price', direction: 'asc' }
+  ]
+});
+```
+
+**Performance Impact:**
+- Sorting is O(n log n) operation
+- Applied only when `orderBy` is specified
+- No performance impact when `orderBy` is not used
+- Works efficiently with caching (different `orderBy` = different cache entry)
+
 See [Debug Mode Guide](/guide/debug) for complete documentation.
 
 ### verbose
