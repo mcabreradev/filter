@@ -41,6 +41,9 @@ export type {
   FilterConfig,
   FilterOptions,
   Comparator,
+  SortDirection,
+  OrderByField,
+  OrderBy,
   LazyFilterOptions,
   LazyFilterResult,
   AsyncLazyFilterResult,
@@ -98,9 +101,9 @@ export {
   getPerformanceMonitor,
   resetPerformanceMonitor,
   trackPerformance,
-} from './utils/performance-monitor.js';
+} from './utils/index.js';
 
-export type { PerformanceMetrics, PerformanceMonitorOptions } from './utils/performance-monitor.js';
+export type { PerformanceMetrics, PerformanceMonitorOptions } from './utils/index.js';
 
 export {
   isPrimitive,
@@ -110,8 +113,8 @@ export {
   hasNestedPath,
   isValidPath,
   getAllNestedKeys,
-} from './types/type-helpers.js';
-export { typedFilter, createTypedFilter, TypedFilterBuilder } from './utils/typed-filter.js';
+} from './types/helpers/index.js';
+export { typedFilter, createTypedFilter, TypedFilterBuilder } from './utils/typed-filter/index.js';
 export { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './operators/index.js';
 export {
   isValidDate,

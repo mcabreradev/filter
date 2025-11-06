@@ -39,7 +39,7 @@ Go beyond JavaScript's native `Array.filter()` with a library that understands y
 - **📅 Date/Time Operators** - Temporal filtering with $recent, $upcoming, $dayOfWeek, $age (v5.6.0+)
 - **💨 Lazy Evaluation** - Process large datasets efficiently with generators (v5.1.0+)
 - **🎨 Framework Integrations** - React, Vue, and Svelte support (v5.3.0+)
-- **🧪 Battle-Tested** - 613+ tests ensuring reliability
+- **🧪 Battle-Tested** - 994 tests ensuring reliability
 
 ---
 
@@ -71,38 +71,44 @@ npm install zod
 
 | Import Strategy | Size (gzipped) | Use Case |
 |----------------|----------------|----------|
-| Full library | ~4 KB | All features needed |
-| Core only | ~2 KB | Basic filtering |
-| Operators (granular) | ~3 KB | Specific operators |
-| React integration | ~2 KB | React hooks |
-| Vue integration | ~2 KB | Vue composables |
-| Svelte integration | ~2 KB | Svelte stores |
-| Lazy evaluation | ~1 KB | Large datasets |
+| Full library | ~12 KB | All features needed |
+| Core only | ~8.4 KB | Basic filtering |
+| Operators (granular) | ~4.3 KB | Specific operators |
+| React integration | ~9.2 KB | React hooks |
+| Vue integration | ~8.9 KB | Vue composables |
+| Svelte integration | ~9 KB | Svelte stores |
+| Angular integration | ~9.3 KB | Angular services |
+| SolidJS integration | ~8.5 KB | SolidJS hooks |
+| Preact integration | ~8.5 KB | Preact hooks |
+| Lazy evaluation | ~5.4 KB | Large datasets |
 
 **Recent Optimization:** Bundle size reduced from 65.63 KB to 12.02 KB (81% reduction) by making all heavy dependencies optional peer dependencies.
+
+**Package Size:** 52.8 KB (gzipped tarball), 234 KB unpacked, 197 files
 
 ### Import Examples
 
 ```typescript
 // Full import (includes all features)
 import { filter } from '@mcabreradev/filter';
-// Bundle: ~4 KB (gzipped)
+// Bundle: ~12 KB (gzipped)
 
 // Granular imports (Recommended for production)
 import { filter } from '@mcabreradev/filter/core';
 import { evaluateGt, evaluateLt } from '@mcabreradev/filter/operators/comparison';
-// Bundle: ~3 KB (gzipped) - 25% reduction
+// Bundle: ~8.4 KB (gzipped) - 30% reduction
 
 // Framework-specific imports
 import { useFilter } from '@mcabreradev/filter/react';
-// Bundle: ~2 KB (gzipped) - 50% reduction
+// Bundle: ~9.2 KB (gzipped)
 
 // Lazy evaluation only
 import { filterLazy } from '@mcabreradev/filter/lazy';
-// Bundle: ~1 KB (gzipped) - 75% reduction
+// Bundle: ~5.4 KB (gzipped)
 ```
 
 > 📖 See [Bundle Size Optimization Guide](./docs/advanced/bundle-size.md) for detailed strategies.
+
 
 ---
 
@@ -154,84 +160,99 @@ filter(users, { name: { $startsWith: 'A' } });
 
 ## Framework Integrations 🎨
 
-**New in v5.4.0**: Full framework integration support for React, Vue, and Svelte!
+**New in v5.7.0**: Full framework integration support for **6 major frameworks**!
 
-### React Hooks
+### Supported Frameworks
+
+- ⚛️ **React** - Hooks with automatic re-rendering
+- 🟢 **Vue** - Composition API with reactivity
+- 🔴 **Svelte** - Store-based reactive filtering
+- 🅰️ **Angular** - Services and Pipes with Signals ⭐ NEW
+- 🔷 **SolidJS** - Signal-based reactive hooks ⭐ NEW
+- ⚡ **Preact** - Lightweight hooks API ⭐ NEW
+
+### Quick Examples
+
+#### React
 
 ```typescript
-import { useFilter, useDebouncedFilter, usePaginatedFilter } from '@mcabreradev/filter';
+import { useFilter, useDebouncedFilter } from '@mcabreradev/filter/react';
 
 function UserList() {
   const { filtered, isFiltering } = useFilter(users, { active: true });
-
-  return (
-    <div>
-      {isFiltering && <span>Filtering...</span>}
-      {filtered.map(user => <User key={user.id} {...user} />)}
-    </div>
-  );
-}
-
-function SearchUsers() {
-  const [search, setSearch] = useState('');
-  const { filtered, isPending } = useDebouncedFilter(users, search, { delay: 300 });
-
-  return (
-    <div>
-      <input onChange={(e) => setSearch(e.target.value)} />
-      {isPending && <span>Loading...</span>}
-      {filtered.map(user => <User key={user.id} {...user} />)}
-    </div>
-  );
+  return <div>{filtered.map(u => <User key={u.id} {...u} />)}</div>;
 }
 ```
 
-### Vue Composables
+#### Vue
 
 ```vue
 <script setup>
-import { ref } from 'vue';
-import { useFilter, usePaginatedFilter } from '@mcabreradev/filter';
-
-const searchTerm = ref('');
-const { filtered, isFiltering } = useFilter(users, searchTerm);
+import { useFilter } from '@mcabreradev/filter/vue';
+const { filtered } = useFilter(users, { active: true });
 </script>
-
-<template>
-  <div>
-    <span v-if="isFiltering">Filtering...</span>
-    <div v-for="user in filtered" :key="user.id">{{ user.name }}</div>
-  </div>
-</template>
 ```
 
-### Svelte Stores
+#### Svelte
 
 ```svelte
 <script>
-import { writable } from 'svelte/store';
-import { useFilter } from '@mcabreradev/filter';
-
-const searchTerm = writable('');
-const { filtered, isFiltering } = useFilter(users, searchTerm);
+import { useFilter } from '@mcabreradev/filter/svelte';
+const { filtered } = useFilter(users, writable({ active: true }));
 </script>
+```
 
-{#if $isFiltering}
-  <span>Filtering...</span>
-{/if}
-{#each $filtered as user (user.id)}
-  <div>{user.name}</div>
-{/each}
+#### Angular ⭐ NEW
+
+```typescript
+import { FilterService } from '@mcabreradev/filter/angular';
+
+@Component({
+  providers: [FilterService],
+  template: `
+    @for (user of filterService.filtered(); track user.id) {
+      <div>{{ user.name }}</div>
+    }
+  `
+})
+export class UserListComponent {
+  filterService = inject(FilterService<User>);
+}
+```
+
+#### SolidJS ⭐ NEW
+
+```tsx
+import { useFilter } from '@mcabreradev/filter/solidjs';
+
+function UserList() {
+  const { filtered } = useFilter(
+    () => users,
+    () => ({ active: true })
+  );
+  return <For each={filtered()}>{(u) => <div>{u.name}</div>}</For>;
+}
+```
+
+#### Preact ⭐ NEW
+
+```tsx
+import { useFilter } from '@mcabreradev/filter/preact';
+
+function UserList() {
+  const { filtered } = useFilter(users, { active: true });
+  return <div>{filtered.map(u => <div key={u.id}>{u.name}</div>)}</div>;
+}
 ```
 
 **Features**:
-- ✅ React Hooks: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
-- ✅ Vue Composables: Full Composition API support with reactivity
-- ✅ Svelte Stores: Reactive stores with derived state
-- ✅ TypeScript: Full type safety with generics
-- ✅ SSR Compatible: Works with Next.js, Nuxt, and SvelteKit
+- ✅ Full TypeScript support with generics
+- ✅ Debounced search hooks/services
+- ✅ Pagination support
+- ✅ SSR compatible
+- ✅ 100% test coverage
 
-See Framework Integrations Guide for complete documentation.
+📖 **[Complete Framework Guide →](./docs/frameworks/index.md)**
 
 ---
 
@@ -499,7 +520,7 @@ filter(products, {
   category: ['Electronics', 'Accessories'],
   price: [100, 200, 300]
 });
-// Logic: (category === 'Electronics' OR category === 'Accessories') 
+// Logic: (category === 'Electronics' OR category === 'Accessories')
 //    AND (price === 100 OR price === 200 OR price === 300)
 
 // Combining array OR with other conditions (AND logic)
@@ -508,8 +529,8 @@ filter(users, {
   age: 30,
   role: ['admin', 'moderator']
 });
-// Logic: (city === 'Berlin' OR city === 'Paris') 
-//    AND age === 30 
+// Logic: (city === 'Berlin' OR city === 'Paris')
+//    AND age === 30
 //    AND (role === 'admin' OR role === 'moderator')
 
 // Works with wildcards
@@ -906,32 +927,32 @@ filter(users, { city: 'Berlin' }, { debug: true });
 
 ```typescript
 // Verbose mode - detailed evaluation info
-filter(users, { age: { $gte: 25 } }, { 
-  debug: true, 
-  verbose: true 
+filter(users, { age: { $gte: 25 } }, {
+  debug: true,
+  verbose: true
 });
 
 // Show execution timings
-filter(products, { premium: true }, { 
-  debug: true, 
-  showTimings: true 
+filter(products, { premium: true }, {
+  debug: true,
+  showTimings: true
 });
 
 // Colorized output (ANSI colors)
-filter(users, { city: 'Berlin' }, { 
-  debug: true, 
-  colorize: true 
+filter(users, { city: 'Berlin' }, {
+  debug: true,
+  colorize: true
 });
 
 // All options combined
-filter(users, { 
-  age: { $gte: 25 }, 
-  city: 'Berlin' 
-}, { 
-  debug: true, 
-  verbose: true, 
-  showTimings: true, 
-  colorize: true 
+filter(users, {
+  age: { $gte: 25 },
+  city: 'Berlin'
+}, {
+  debug: true,
+  verbose: true,
+  showTimings: true,
+  colorize: true
 });
 ```
 
@@ -1023,6 +1044,24 @@ filter(largeDataset, expression, { enableCache: true });
 // Enable debug mode (v5.5.0+)
 filter(users, expression, { debug: true });
 
+// Sort results by field(s)
+filter(users, { age: { $gte: 18 } }, { orderBy: 'age' });
+filter(users, { active: true }, {
+  orderBy: [
+    { field: 'age', direction: 'desc' },
+    { field: 'name', direction: 'asc' }
+  ]
+});
+
+// Limit number of results
+filter(users, { active: true }, { limit: 10 });
+
+// Combine limit with sorting (limit is applied AFTER sorting)
+filter(users, { active: true }, {
+  orderBy: { field: 'age', direction: 'desc' },
+  limit: 5
+});
+
 // Custom comparison logic
 filter(data, expression, {
   customComparator: (actual, expected) => actual === expected
@@ -1038,6 +1077,8 @@ filter(data, expression, {
 - `verbose` (boolean, default: `false`) - Show detailed evaluation info in debug mode (v5.5.0+)
 - `showTimings` (boolean, default: `false`) - Display execution timings in debug mode (v5.5.0+)
 - `colorize` (boolean, default: `false`) - Use ANSI colors in debug output (v5.5.0+)
+- `orderBy` (string | object | array, optional) - Sort filtered results by field(s) in ascending or descending order (v5.7.0+)
+- `limit` (number, optional) - Limit the number of results returned (applied after filtering and sorting) (v5.7.0+)
 - `customComparator` (function, optional) - Custom comparison function
 
 ---
@@ -1120,6 +1161,17 @@ const recentHighValue = filter(orders, {
   createdAt: { $gte: thirtyDaysAgo },
   amount: { $gte: 1000 },
   status: { $in: ['completed', 'shipped'] }
+});
+
+// Sort results: Products sorted by price (ascending), then by rating (descending)
+const sortedProducts = filter(products, {
+  category: 'Electronics',
+  inStock: true
+}, {
+  orderBy: [
+    { field: 'price', direction: 'asc' },
+    { field: 'rating', direction: 'desc' }
+  ]
 });
 ```
 
@@ -1306,13 +1358,24 @@ pnpm test:coverage
 pnpm typecheck
 ```
 
-The library has 613+ tests with comprehensive coverage of all features.
+The library has 994 tests with comprehensive coverage of all features.
 
 ---
 
 ## Changelog
 
-### v5.6.0 (Current)
+### v5.7.0 (Current)
+- 🎨 **New Framework Integrations**: Angular, SolidJS, and Preact support
+- 🅰️ **Angular**: Services and Pipes with Signals support
+- 🔷 **SolidJS**: Signal-based reactive hooks with proper cleanup
+- ⚡ **Preact**: Lightweight hooks API compatible with React
+- 🔢 **Limit Option**: New `limit` configuration option to restrict result count
+- 📊 **OrderBy Option**: Sort filtered results by field(s) in ascending or descending order
+- ✅ 33 new tests for limit functionality (994 total tests)
+- 🐛 **Bug Fixes**: Fixed `$contains` operator type detection for strings vs arrays
+- 📚 Complete documentation for all framework integrations
+
+### v5.6.0
 - 🌍 **Geospatial Operators**: Location-based filtering with $near, $geoBox, $geoPolygon
 - 📏 **Distance Calculation**: Spherical law of cosines for accurate distance measurement
 - 🗺️ **Spatial Queries**: Proximity search, bounding box, and polygon containment
@@ -1328,7 +1391,7 @@ The library has 613+ tests with comprehensive coverage of all features.
 - 🔒 **Full TypeScript Support**: Context-aware autocomplete for Date properties
 - 🚀 **Zero Dependencies**: Uses native Date API
 - 📚 Complete datetime operators documentation and examples
-- ✅ 90 new tests (613 total tests)
+- ✅ 90 new tests (994 total tests)
 
 ### v5.5.1
 - 🐛 Bug fixes and stability improvements

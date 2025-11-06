@@ -1,7 +1,7 @@
-import { useState, useMemo, useCallback } from 'react';
-import { filter } from '../../core';
+import { useState, useCallback } from 'react';
 import type { Expression, FilterOptions } from '../../types';
 import type { UseFilteredStateResult } from './react.types';
+import { useFilterCore, useIsFiltering } from './react.utils';
 
 export function useFilteredState<T>(
   initialData: T[] = [],
@@ -11,32 +11,10 @@ export function useFilteredState<T>(
   const [data, setData] = useState<T[]>(initialData);
   const [expression, setExpressionState] = useState<Expression<T>>(initialExpression);
 
-  const filtered = useMemo(() => {
-    if (!data || data.length === 0) {
-      return [];
-    }
+  const filtered = useFilterCore(data, expression, options);
+  const isFiltering = useIsFiltering(filtered, data);
 
-    try {
-      return filter(data, expression, options);
-    } catch {
-      return [];
-    }
-  }, [data, expression, options]);
+  const setExpression = useCallback((e: Expression<T>) => setExpressionState(e), []);
 
-  const isFiltering = useMemo(() => {
-    return filtered.length !== data.length;
-  }, [filtered.length, data.length]);
-
-  const setExpression = useCallback((newExpression: Expression<T>) => {
-    setExpressionState(newExpression);
-  }, []);
-
-  return {
-    data,
-    setData,
-    expression,
-    setExpression,
-    filtered,
-    isFiltering,
-  };
+  return { data, setData, expression, setExpression, filtered, isFiltering };
 }

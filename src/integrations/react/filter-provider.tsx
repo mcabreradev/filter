@@ -9,13 +9,11 @@ export interface FilterProviderProps {
 }
 
 export function FilterProvider({ children, value }: FilterProviderProps): React.JSX.Element {
-  const contextValue = useMemo(() => value || {}, [value]);
-
-  return React.createElement(FilterContext.Provider, { value: contextValue }, children);
+  const ctx = useMemo(() => value || {}, [value]);
+  return React.createElement(FilterContext.Provider, { value: ctx }, children);
 }
 
 export function useFilterContext(): FilterContextValue {
-  const context = useContext(FilterContext);
-  return context || {};
+  return useContext(FilterContext) || {};
 }
 

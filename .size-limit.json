@@ -1,58 +1,98 @@
 [
   {
-    "name": "Full Library (no dependencies)",
+    "name": "Full Library",
     "path": "build/index.js",
     "limit": "15 KB",
-    "gzip": true,
-    "ignore": ["zod", "@vercel/analytics", "@vue-leaflet/vue-leaflet", "leaflet"]
+    "gzip": true
+  },
+  {
+    "name": "Core only",
+    "path": "build/core/index.js",
+    "limit": "10 KB",
+    "gzip": true
   },
   {
     "name": "Operators - All",
     "path": "build/operators/index.js",
-    "limit": "5 KB",
-    "gzip": true,
-    "ignore": ["zod"]
+    "limit": "10 KB",
+    "gzip": true
   },
   {
     "name": "Operators - Comparison",
-    "path": "build/operators/comparison.operators.js",
+    "path": "build/operators/comparison/comparison.operators.js",
     "limit": "500 B",
-    "gzip": true,
-    "ignore": ["zod"]
+    "gzip": true
   },
   {
     "name": "Operators - String",
-    "path": "build/operators/string.operators.js",
-    "limit": "1.5 KB",
-    "gzip": true,
-    "ignore": ["zod"]
+    "path": "build/operators/string/string.operators.js",
+    "limit": "2 KB",
+    "gzip": true
   },
   {
     "name": "Operators - Array",
-    "path": "build/operators/array.operators.js",
-    "limit": "300 B",
-    "gzip": true,
-    "ignore": ["zod"]
+    "path": "build/operators/array/array.operators.js",
+    "limit": "500 B",
+    "gzip": true
   },
   {
     "name": "Operators - Logical",
-    "path": "build/operators/logical.operators.js",
+    "path": "build/operators/logical/logical.operators.js",
     "limit": "5 KB",
-    "gzip": true,
-    "ignore": ["zod"]
+    "gzip": true
   },
   {
     "name": "Operators - Geospatial",
-    "path": "build/operators/geospatial.operators.js",
-    "limit": "1 KB",
-    "gzip": true,
-    "ignore": ["zod"]
+    "path": "build/operators/geospatial/geospatial.operators.js",
+    "limit": "2 KB",
+    "gzip": true
   },
   {
     "name": "Operators - DateTime",
-    "path": "build/operators/datetime.operators.js",
-    "limit": "1 KB",
-    "gzip": true,
-    "ignore": ["zod"]
+    "path": "build/operators/datetime/datetime.operators.js",
+    "limit": "2 KB",
+    "gzip": true
+  },
+  {
+    "name": "React integration",
+    "path": "build/integrations/react/index.js",
+    "limit": "10 KB",
+    "gzip": true
+  },
+  {
+    "name": "Vue integration",
+    "path": "build/integrations/vue/index.js",
+    "limit": "10 KB",
+    "gzip": true
+  },
+  {
+    "name": "Svelte integration",
+    "path": "build/integrations/svelte/index.js",
+    "limit": "10 KB",
+    "gzip": true
+  },
+  {
+    "name": "Angular integration",
+    "path": "build/integrations/angular/index.js",
+    "limit": "10 KB",
+    "gzip": true
+  },
+  {
+    "name": "SolidJS integration",
+    "path": "build/integrations/solidjs/index.js",
+    "limit": "10 KB",
+    "gzip": true
+  },
+  {
+    "name": "Preact integration",
+    "path": "build/integrations/preact/index.js",
+    "limit": "10 KB",
+    "gzip": true
+  },
+  {
+    "name": "Lazy evaluation",
+    "path": "build/core/lazy/filter-lazy.js",
+    "limit": "6 KB",
+    "gzip": true
   }
 ]

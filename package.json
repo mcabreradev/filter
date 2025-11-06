@@ -4,7 +4,9 @@
   "type": "module",
   "description": "A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies",
   "scripts": {
-    "build": "tsc",
+    "prebuild": "rm -rf build",
+    "build": "tsc && tsx scripts/optimize-build.ts",
+    "postbuild": "pnpm run size",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
@@ -112,7 +114,9 @@
   },
   "homepage": "https://github.com/mcabreradev/filter#readme",
   "devDependencies": {
+    "@angular/core": "^19.1.5",
     "@size-limit/preset-small-lib": "^11.2.0",
+    "@testing-library/preact": "^3.2.4",
     "@testing-library/react": "^16.1.0",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^24.9.1",
@@ -133,10 +137,14 @@
     "jsdom": "^27.1.0",
     "leaflet": "^1.9.4",
     "lint-staged": "^16.2.4",
+    "preact": "^10.26.1",
     "prettier": "^3.4.0",
+    "rxjs": "^7.8.1",
     "size-limit": "^11.2.0",
+    "solid-js": "^1.9.4",
     "svelte": "^5.18.3",
     "tsd": "^0.33.0",
+    "tsx": "^4.20.6",
     "typedoc": "^0.28.14",
     "typedoc-plugin-markdown": "^4.9.0",
     "typescript": "^5.7.0",
@@ -146,19 +154,31 @@
     "zod": "^4.1.12"
   },
   "peerDependencies": {
+    "@angular/core": ">=17.0.0",
+    "preact": ">=10.0.0",
     "react": ">=18.0.0",
+    "solid-js": ">=1.8.0",
     "svelte": ">=4.0.0 || >=5.0.0",
     "vue": ">=3.0.0",
     "zod": ">=3.0.0"
   },
   "peerDependenciesMeta": {
+    "@angular/core": {
+      "optional": true
+    },
+    "preact": {
+      "optional": true
+    },
     "react": {
       "optional": true
     },
-    "vue": {
+    "solid-js": {
       "optional": true
     },
     "svelte": {
+      "optional": true
+    },
+    "vue": {
       "optional": true
     },
     "zod": {
@@ -188,34 +208,34 @@
       "default": "./build/operators/index.js"
     },
     "./operators/comparison": {
-      "types": "./build/operators/comparison.operators.d.ts",
-      "import": "./build/operators/comparison.operators.js",
-      "default": "./build/operators/comparison.operators.js"
+      "types": "./build/operators/comparison/index.d.ts",
+      "import": "./build/operators/comparison/index.js",
+      "default": "./build/operators/comparison/index.js"
     },
     "./operators/array": {
-      "types": "./build/operators/array.operators.d.ts",
-      "import": "./build/operators/array.operators.js",
-      "default": "./build/operators/array.operators.js"
+      "types": "./build/operators/array/index.d.ts",
+      "import": "./build/operators/array/index.js",
+      "default": "./build/operators/array/index.js"
     },
     "./operators/string": {
-      "types": "./build/operators/string.operators.d.ts",
-      "import": "./build/operators/string.operators.js",
-      "default": "./build/operators/string.operators.js"
+      "types": "./build/operators/string/index.d.ts",
+      "import": "./build/operators/string/index.js",
+      "default": "./build/operators/string/index.js"
     },
     "./operators/logical": {
-      "types": "./build/operators/logical.operators.d.ts",
-      "import": "./build/operators/logical.operators.js",
-      "default": "./build/operators/logical.operators.js"
+      "types": "./build/operators/logical/index.d.ts",
+      "import": "./build/operators/logical/index.js",
+      "default": "./build/operators/logical/index.js"
     },
     "./operators/geospatial": {
-      "types": "./build/operators/geospatial.operators.d.ts",
-      "import": "./build/operators/geospatial.operators.js",
-      "default": "./build/operators/geospatial.operators.js"
+      "types": "./build/operators/geospatial/index.d.ts",
+      "import": "./build/operators/geospatial/index.js",
+      "default": "./build/operators/geospatial/index.js"
     },
     "./operators/datetime": {
-      "types": "./build/operators/datetime.operators.d.ts",
-      "import": "./build/operators/datetime.operators.js",
-      "default": "./build/operators/datetime.operators.js"
+      "types": "./build/operators/datetime/index.d.ts",
+      "import": "./build/operators/datetime/index.js",
+      "default": "./build/operators/datetime/index.js"
     },
     "./react": {
       "types": "./build/integrations/react/index.d.ts",
@@ -232,10 +252,25 @@
       "import": "./build/integrations/svelte/index.js",
       "default": "./build/integrations/svelte/index.js"
     },
+    "./angular": {
+      "types": "./build/integrations/angular/index.d.ts",
+      "import": "./build/integrations/angular/index.js",
+      "default": "./build/integrations/angular/index.js"
+    },
+    "./solidjs": {
+      "types": "./build/integrations/solidjs/index.d.ts",
+      "import": "./build/integrations/solidjs/index.js",
+      "default": "./build/integrations/solidjs/index.js"
+    },
+    "./preact": {
+      "types": "./build/integrations/preact/index.d.ts",
+      "import": "./build/integrations/preact/index.js",
+      "default": "./build/integrations/preact/index.js"
+    },
     "./lazy": {
-      "types": "./build/core/filter-lazy.d.ts",
-      "import": "./build/core/filter-lazy.js",
-      "default": "./build/core/filter-lazy.js"
+      "types": "./build/core/lazy/index.d.ts",
+      "import": "./build/core/lazy/index.js",
+      "default": "./build/core/lazy/index.js"
     },
     "./debug": {
       "types": "./build/debug/index.d.ts",
@@ -255,8 +290,10 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "build/**/*",
-    "__test__/types/**/*.test-d.ts"
+    "build/**/*.js",
+    "build/**/*.d.ts",
+    "README.md",
+    "LICENSE.md"
   ],
   "publishConfig": {
     "access": "public",

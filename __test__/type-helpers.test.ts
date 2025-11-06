@@ -7,7 +7,7 @@ import {
   hasNestedPath,
   isValidPath,
   getAllNestedKeys,
-} from '../src/types/type-helpers';
+} from '../src/types/helpers';
 
 describe('Type Helpers', () => {
   describe('isPrimitive', () => {

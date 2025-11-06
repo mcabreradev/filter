@@ -1402,8 +1402,8 @@ export function filter<T>(
 
 ```typescript
 // Separate exports for optimal tree-shaking
-export { filter } from './core/filter';
-export { filterLazy, filterFirst, filterExists, filterCount } from './core/filter-lazy';
+export { filter } from './core/filter/filter';
+export { filterLazy, filterFirst, filterExists, filterCount } from './core/lazy/filter-lazy';
 export { filterDebug } from './debug/debug-filter';
 
 // Framework integrations in separate entry points

@@ -13,6 +13,8 @@ Available configuration options:
 - **`verbose`** - Show additional debug details (requires debug: true)
 - **`showTimings`** - Display execution timings (requires debug: true)
 - **`colorize`** - Use ANSI colors in debug output (requires debug: true)
+- **`orderBy`** - Sort filtered results by field(s) (v5.7.0+)
+- **`limit`** - Limit the number of results returned (v5.7.0+)
 
 ## Configuration Options
 
@@ -188,7 +190,287 @@ filter(users, expression, {
 });
 ```
 
+### orderBy
+
+Sort filtered results by one or more fields in ascending or descending order.
+
+**Type**: `string | { field: string; direction: 'asc' | 'desc' } | Array<string | { field: string; direction: 'asc' | 'desc' }>`
+**Default**: `undefined` (no sorting)
+
+```typescript
+filter(users, { age: { $gte: 18 } }, { orderBy: 'age' });
+```
+
+**Use Cases:**
+- Sort results by a single field
+- Multi-field sorting (primary, secondary, tertiary)
+- Sort by nested paths using dot notation
+- Combine filtering with sorting in one operation
+
+**Single Field Sorting:**
+
+```typescript
+const users = [
+  { name: 'Charlie', age: 35 },
+  { name: 'Alice', age: 30 },
+  { name: 'Bob', age: 25 },
+];
+
+filter(users, {}, { orderBy: 'name' });
+filter(users, {}, { orderBy: { field: 'age', direction: 'desc' } });
+```
+
+**Multiple Fields Sorting:**
+
+Sort by multiple fields with different directions:
+
+```typescript
+filter(users, {}, {
+  orderBy: [
+    { field: 'age', direction: 'desc' },
+    { field: 'name', direction: 'asc' }
+  ]
+});
+```
+
+**Nested Paths:**
+
+Sort by nested object properties using dot notation:
+
+```typescript
+const users = [
+  { name: 'Alice', profile: { age: 30, address: { city: 'Berlin' } } },
+  { name: 'Bob', profile: { age: 25, address: { city: 'London' } } },
+];
+
+filter(users, {}, { orderBy: 'profile.age' });
+filter(users, {}, { orderBy: 'profile.address.city' });
+```
+
+**Combining with Filtering:**
+
+Filter and sort in a single operation:
+
+```typescript
+filter(users, { city: 'Berlin' }, { orderBy: 'age' });
+filter(products, { category: 'Electronics' }, {
+  orderBy: [
+    { field: 'price', direction: 'asc' },
+    { field: 'rating', direction: 'desc' }
+  ]
+});
+```
+
+**Type Support:**
+
+- **Strings**: Case-insensitive by default (respects `caseSensitive` option)
+- **Numbers**: Numeric comparison
+- **Dates**: Date comparison using `getTime()`
+- **Booleans**: Boolean comparison
+- **Null/undefined**: Placed at the end (nulls last)
+
+**Examples:**
+
+```typescript
+const products = [
+  { name: 'Laptop', price: 1200, rating: 4.5 },
+  { name: 'Mouse', price: 25, rating: 4.8 },
+  { name: 'Monitor', price: 450, rating: 4.2 },
+];
+
+filter(products, { price: { $lte: 1000 } }, { orderBy: 'price' });
+
+filter(products, {}, {
+  orderBy: [
+    { field: 'rating', direction: 'desc' },
+    { field: 'price', direction: 'asc' }
+  ]
+});
+```
+
+**Performance Impact:**
+- Sorting is O(n log n) operation
+- Applied only when `orderBy` is specified
+- No performance impact when `orderBy` is not used
+- Works efficiently with caching (different `orderBy` = different cache entry)
+
 See [Debug Mode Guide](/guide/debug) for complete documentation.
+
+### limit
+
+Limit the number of results returned by the filter. The limit is applied **after filtering and sorting**, so you get the top N results after all processing.
+
+**Type**: `number`
+**Default**: `undefined` (no limit)
+
+```typescript
+filter(users, { active: true }, { limit: 10 });
+```
+
+**Use Cases:**
+- Pagination and result limiting
+- "Top N" queries (e.g., top 10 products)
+- Performance optimization for large datasets
+- Preview/sample data display
+- Rate limiting and quotas
+
+**Basic Usage:**
+
+```typescript
+const users = [
+  { name: 'Alice', age: 30 },
+  { name: 'Bob', age: 25 },
+  { name: 'Charlie', age: 35 },
+  { name: 'David', age: 28 },
+  { name: 'Eve', age: 32 },
+];
+
+filter(users, { age: { $gte: 25 } }, { limit: 3 });
+```
+
+**Combining with Sorting:**
+
+Get the top N results by combining `limit` with `orderBy`:
+
+```typescript
+filter(products, { category: 'Electronics' }, {
+  orderBy: { field: 'price', direction: 'desc' },
+  limit: 5
+});
+
+filter(users, { active: true }, {
+  orderBy: [
+    { field: 'score', direction: 'desc' },
+    { field: 'createdAt', direction: 'asc' }
+  ],
+  limit: 10
+});
+```
+
+**Special Values:**
+- `undefined` or omitted: No limit (returns all matching results)
+- `0`: No limit (returns all matching results)
+- Negative numbers: No limit (returns all matching results)
+- Positive numbers: Returns at most N results
+
+**Examples:**
+
+```typescript
+filter(users, { active: true }, { limit: 0 });
+
+filter(users, { active: true }, { limit: -5 });
+
+filter(users, { active: true });
+
+filter(users, { active: true }, { limit: 100 });
+```
+
+**Top N Queries:**
+
+Get top performers, highest scores, most recent items, etc.:
+
+```typescript
+filter(students, {}, {
+  orderBy: { field: 'grade', direction: 'desc' },
+  limit: 10
+});
+
+filter(posts, { published: true }, {
+  orderBy: { field: 'createdAt', direction: 'desc' },
+  limit: 20
+});
+
+filter(products, { category: 'Electronics', inStock: true }, {
+  orderBy: [
+    { field: 'rating', direction: 'desc' },
+    { field: 'price', direction: 'asc' }
+  ],
+  limit: 5
+});
+```
+
+**Pagination Pattern:**
+
+While `limit` doesn't support offset directly, you can implement pagination by filtering in chunks:
+
+```typescript
+const pageSize = 10;
+
+const allResults = filter(users, { active: true }, {
+  orderBy: 'createdAt'
+});
+
+const page1 = allResults.slice(0, pageSize);
+const page2 = allResults.slice(pageSize, pageSize * 2);
+const page3 = allResults.slice(pageSize * 2, pageSize * 3);
+```
+
+Or use lazy evaluation for memory efficiency:
+
+```typescript
+import { filterLazy, take, toArray } from '@mcabreradev/filter';
+
+const resultsIterator = filterLazy(users, { active: true });
+const limitedResults = toArray(take(resultsIterator, 10));
+```
+
+**Performance Impact:**
+- `limit` is applied **after** filtering and sorting
+- Reduces memory usage when only subset of results needed
+- No performance gain for filtering itself (all items still evaluated)
+- Fastest when combined with lazy evaluation for early exit
+
+**Combining with Caching:**
+
+Limit works with caching - different limits create different cache entries:
+
+```typescript
+filter(users, { active: true }, {
+  limit: 10,
+  enableCache: true
+});
+
+filter(users, { active: true }, {
+  limit: 20,
+  enableCache: true
+});
+```
+
+**Order of Operations:**
+
+Understanding how `limit` interacts with other options:
+
+1. **Filtering** - Apply expression to all items
+2. **Sorting** - Apply `orderBy` if specified
+3. **Limiting** - Apply `limit` to get top N results
+
+```typescript
+const result = filter(products, { category: 'Electronics' }, {
+  orderBy: { field: 'price', direction: 'desc' },
+  limit: 5
+});
+```
+
+**Best Practices:**
+
+```typescript
+filter(users, { active: true }, {
+  orderBy: 'name',
+  limit: 100
+});
+
+filter(users, { active: true }, { limit: 0 });
+
+import { filterLazy, take } from '@mcabreradev/filter';
+const result = take(filterLazy(hugeDataset, expression), 1000);
+
+const pageSize = 20;
+filter(users, expression, {
+  orderBy: 'createdAt',
+  limit: pageSize,
+  enableCache: true
+});
+```
 
 ### verbose
 

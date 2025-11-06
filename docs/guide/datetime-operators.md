@@ -1090,7 +1090,7 @@ A: Age calculation accounts for leap years:
 Complete working examples are available in the `examples/` directory:
 
 - [`examples/datetime-examples.ts`](../../examples/datetime-examples.ts) - All use cases
-- [`src/operators/datetime.operators.test.ts`](../../src/operators/datetime.operators.test.ts) - 90+ test cases
+- [`src/operators/datetime/datetime.operators.test.ts`](../../src/operators/datetime/datetime.operators.test.ts) - 90+ test cases
 
 ---
 

@@ -3,9 +3,16 @@ export type {
   PredicateFunction,
   ObjectExpression,
   Expression,
-} from './expression.types';
+} from './expression/index.js';
 
-export type { FilterConfig, Comparator, FilterOptions } from './config.types';
+export type {
+  FilterConfig,
+  Comparator,
+  FilterOptions,
+  SortDirection,
+  OrderByField,
+  OrderBy,
+} from './config/index.js';
 
 export type {
   ComparisonOperators,
@@ -14,14 +21,14 @@ export type {
   LogicalOperators,
   OperatorExpression,
   ExtendedObjectExpression,
-} from './operators.types';
+} from './operators/index.js';
 
 export type {
   LazyFilterOptions,
   LazyFilterResult,
   AsyncLazyFilterResult,
   ChunkedFilterOptions,
-} from './lazy.types';
+} from './lazy/index.js';
 
 export type {
   GeoPoint,
@@ -29,9 +36,9 @@ export type {
   BoundingBox,
   PolygonQuery,
   GeospatialOperators,
-} from './geospatial';
+} from './geospatial/index.js';
 
-export type { RelativeTimeQuery, TimeOfDayQuery, AgeQuery, DateTimeOperators } from './datetime';
+export type { RelativeTimeQuery, TimeOfDayQuery, AgeQuery, DateTimeOperators } from './datetime/index.js';
 
 export type {
   NestedKeyOf,
@@ -40,4 +47,4 @@ export type {
   PrimitiveKeys,
   ObjectKeys,
   NestedPaths,
-} from './type-helpers';
+} from './helpers/index.js';
