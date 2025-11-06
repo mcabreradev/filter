@@ -147,12 +147,12 @@ export const OPERATORS = {
 ### Operator Implementation
 
 **Files Created**:
-- `src/operators/comparison.operators.ts` - Comparison logic (v5.0.0)
-- `src/operators/array.operators.ts` - Array logic (v5.0.0)
-- `src/operators/string.operators.ts` - String logic (v5.0.0)
-- `src/operators/logical.operators.ts` - Logical logic (v5.2.0)
-- `src/operators/geospatial.operators.ts` - Geospatial logic (v5.6.0)
-- `src/operators/datetime.operators.ts` - Date/time logic (v5.6.0)
+- `src/operators/comparison/comparison.operators.ts` - Comparison logic (v5.0.0)
+- `src/operators/array/array.operators.ts` - Array logic (v5.0.0)
+- `src/operators/string/string.operators.ts` - String logic (v5.0.0)
+- `src/operators/logical/logical.operators.ts` - Logical logic (v5.2.0)
+- `src/operators/geospatial/geospatial.operators.ts` - Geospatial logic (v5.6.0)
+- `src/operators/datetime/datetime.operators.ts` - Date/time logic (v5.6.0)
 - `src/operators/operator-processor.ts` - Coordination (updated in each version)
 - `src/operators/index.ts` - Exports
 
@@ -279,19 +279,19 @@ export const datetimeOperatorSchema = z.object({
 **Test Files**:
 
 **v5.0.0**:
-1. `src/operators/comparison.operators.test.ts` (27 tests)
+1. `src/operators/comparison/comparison.operators.test.ts` (27 tests)
    - Individual operator tests
    - Date support tests
    - Range query tests
    - Edge cases
 
-2. `src/operators/array.operators.test.ts` (24 tests)
+2. `src/operators/array/array.operators.test.ts` (24 tests)
    - $in/$nin with various types
    - $contains array membership
    - $size array length
    - Combined operators
 
-3. `src/operators/string.operators.test.ts` (22 tests)
+3. `src/operators/string/string.operators.test.ts` (22 tests)
    - $startsWith/$endsWith/$contains
    - Case sensitivity
    - Unicode support
@@ -310,7 +310,7 @@ export const datetimeOperatorSchema = z.object({
    - Real-world validation scenarios
 
 **v5.2.0**:
-6. `src/operators/logical.operators.test.ts` (30 tests)
+6. `src/operators/logical/logical.operators.test.ts` (30 tests)
    - $and/$or/$not operators
    - Nested logical operators
    - Combined with field operators
@@ -323,7 +323,7 @@ export const datetimeOperatorSchema = z.object({
    - Performance tests
 
 **v5.6.0**:
-8. `src/operators/geospatial.operators.test.ts` (45 tests)
+8. `src/operators/geospatial/geospatial.operators.test.ts` (45 tests)
    - $near proximity search
    - $geoBox bounding box
    - $geoPolygon containment
@@ -331,7 +331,7 @@ export const datetimeOperatorSchema = z.object({
    - Coordinate validation
    - Edge cases (poles, date line)
 
-9. `src/operators/datetime.operators.test.ts` (45 tests)
+9. `src/operators/datetime/datetime.operators.test.ts` (45 tests)
    - $recent/$upcoming relative time
    - $dayOfWeek filtering
    - $timeOfDay hour ranges

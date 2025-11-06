@@ -208,34 +208,34 @@
       "default": "./build/operators/index.js"
     },
     "./operators/comparison": {
-      "types": "./build/operators/comparison.operators.d.ts",
-      "import": "./build/operators/comparison.operators.js",
-      "default": "./build/operators/comparison.operators.js"
+      "types": "./build/operators/comparison/index.d.ts",
+      "import": "./build/operators/comparison/index.js",
+      "default": "./build/operators/comparison/index.js"
     },
     "./operators/array": {
-      "types": "./build/operators/array.operators.d.ts",
-      "import": "./build/operators/array.operators.js",
-      "default": "./build/operators/array.operators.js"
+      "types": "./build/operators/array/index.d.ts",
+      "import": "./build/operators/array/index.js",
+      "default": "./build/operators/array/index.js"
     },
     "./operators/string": {
-      "types": "./build/operators/string.operators.d.ts",
-      "import": "./build/operators/string.operators.js",
-      "default": "./build/operators/string.operators.js"
+      "types": "./build/operators/string/index.d.ts",
+      "import": "./build/operators/string/index.js",
+      "default": "./build/operators/string/index.js"
     },
     "./operators/logical": {
-      "types": "./build/operators/logical.operators.d.ts",
-      "import": "./build/operators/logical.operators.js",
-      "default": "./build/operators/logical.operators.js"
+      "types": "./build/operators/logical/index.d.ts",
+      "import": "./build/operators/logical/index.js",
+      "default": "./build/operators/logical/index.js"
     },
     "./operators/geospatial": {
-      "types": "./build/operators/geospatial.operators.d.ts",
-      "import": "./build/operators/geospatial.operators.js",
-      "default": "./build/operators/geospatial.operators.js"
+      "types": "./build/operators/geospatial/index.d.ts",
+      "import": "./build/operators/geospatial/index.js",
+      "default": "./build/operators/geospatial/index.js"
     },
     "./operators/datetime": {
-      "types": "./build/operators/datetime.operators.d.ts",
-      "import": "./build/operators/datetime.operators.js",
-      "default": "./build/operators/datetime.operators.js"
+      "types": "./build/operators/datetime/index.d.ts",
+      "import": "./build/operators/datetime/index.js",
+      "default": "./build/operators/datetime/index.js"
     },
     "./react": {
       "types": "./build/integrations/react/index.d.ts",
