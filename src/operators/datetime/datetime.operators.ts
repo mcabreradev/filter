@@ -1,15 +1,15 @@
-import type { RelativeTimeQuery, TimeOfDayQuery, AgeQuery } from '../types/datetime';
+import type { RelativeTimeQuery, TimeOfDayQuery, AgeQuery } from '../../types/datetime';
 import {
   isValidDate,
-  isValidTimeOfDay,
-  isValidDayOfWeek,
   isValidRelativeTime,
+  isValidDayOfWeek,
+  isValidTimeOfDay,
   isValidAgeQuery,
   calculateTimeDifference,
   calculateAge,
   isWeekday,
   isWeekend,
-} from '../utils/date-time';
+} from '../../utils/date-time';
 
 export function evaluateRecent(date: unknown, query: RelativeTimeQuery): boolean {
   if (!isValidDate(date) || !isValidRelativeTime(query)) return false;

@@ -10,7 +10,7 @@ import {
   isOperatorExpression,
 } from '../utils';
 import { processOperators } from '../operators';
-import { applyLogicalOperators } from '../operators/logical.operators';
+import { applyLogicalOperators } from '../operators/logical/logical.operators';
 
 const isLogicalOperator = (key: string): key is '$and' | '$or' | '$not' => {
   return key === OPERATORS.AND || key === OPERATORS.OR || key === OPERATORS.NOT;

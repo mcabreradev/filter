@@ -9,11 +9,11 @@ import type {
 import type { GeospatialOperators, GeoPoint } from '../types/geospatial';
 import type { DateTimeOperators } from '../types/datetime';
 import { OPERATORS } from '../constants';
-import { applyComparisonOperators } from './comparison.operators';
-import { applyArrayOperators } from './array.operators';
-import { applyStringOperators } from './string.operators';
-import { applyLogicalOperators } from './logical.operators';
-import { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './geospatial.operators';
+import { applyComparisonOperators } from './comparison/comparison.operators';
+import { applyArrayOperators } from './array/array.operators';
+import { applyStringOperators } from './string/string.operators';
+import { applyLogicalOperators } from './logical/logical.operators';
+import { evaluateNear, evaluateGeoBox, evaluateGeoPolygon } from './geospatial/geospatial.operators';
 import {
   evaluateRecent,
   evaluateUpcoming,
@@ -24,7 +24,7 @@ import {
   evaluateIsWeekend,
   evaluateIsBefore,
   evaluateIsAfter,
-} from './datetime.operators';
+} from './datetime/datetime.operators';
 
 const hasComparisonOps = (ops: unknown): ops is ComparisonOperators => {
   return (

@@ -1,4 +1,4 @@
-import type { ArrayOperators } from '../types';
+import type { ArrayOperators } from '../../types';
 
 export const applyArrayOperators = (value: unknown, operators: ArrayOperators): boolean => {
   if (operators.$in !== undefined) {

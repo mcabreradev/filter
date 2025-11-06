@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { filter } from '../core/filter';
+import { filter } from '../../core/filter';
 import {
   isValidDate,
   isValidTimeOfDay,
@@ -10,7 +10,7 @@ import {
   calculateAge,
   isWeekday,
   isWeekend,
-} from '../utils/date-time';
+} from '../../utils/date-time';
 import {
   evaluateRecent,
   evaluateUpcoming,

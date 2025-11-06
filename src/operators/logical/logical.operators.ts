@@ -1,5 +1,5 @@
-import type { Expression, FilterConfig } from '../types';
-import { createPredicateFn } from '../predicate';
+import type { Expression, FilterConfig } from '../../types';
+import { createPredicateFn } from '../../predicate';
 
 export const applyLogicalOperators = <T>(
   item: T,

@@ -1,5 +1,5 @@
-import type { StringOperators } from '../types';
-import { memoization } from '../utils/memoization';
+import type { StringOperators } from '../../types';
+import { memoization } from '../../utils/memoization';
 
 export const applyStringOperators = (
   value: unknown,

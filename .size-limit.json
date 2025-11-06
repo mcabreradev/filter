@@ -19,37 +19,37 @@
   },
   {
     "name": "Operators - Comparison",
-    "path": "build/operators/comparison.operators.js",
+    "path": "build/operators/comparison/comparison.operators.js",
     "limit": "500 B",
     "gzip": true
   },
   {
     "name": "Operators - String",
-    "path": "build/operators/string.operators.js",
+    "path": "build/operators/string/string.operators.js",
     "limit": "2 KB",
     "gzip": true
   },
   {
     "name": "Operators - Array",
-    "path": "build/operators/array.operators.js",
+    "path": "build/operators/array/array.operators.js",
     "limit": "500 B",
     "gzip": true
   },
   {
     "name": "Operators - Logical",
-    "path": "build/operators/logical.operators.js",
+    "path": "build/operators/logical/logical.operators.js",
     "limit": "5 KB",
     "gzip": true
   },
   {
     "name": "Operators - Geospatial",
-    "path": "build/operators/geospatial.operators.js",
+    "path": "build/operators/geospatial/geospatial.operators.js",
     "limit": "2 KB",
     "gzip": true
   },
   {
     "name": "Operators - DateTime",
-    "path": "build/operators/datetime.operators.js",
+    "path": "build/operators/datetime/datetime.operators.js",
     "limit": "2 KB",
     "gzip": true
   },

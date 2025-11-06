@@ -1,5 +1,5 @@
-import type { GeoPoint, NearQuery, BoundingBox, PolygonQuery } from '../types/geospatial';
-import { calculateDistance, isValidGeoPoint } from '../utils/geo-distance';
+import type { GeoPoint, NearQuery, BoundingBox, PolygonQuery } from '../../types/geospatial';
+import { calculateDistance, isValidGeoPoint } from '../../utils/geo-distance';
 
 export function evaluateNear(point: GeoPoint, query: NearQuery): boolean {
   if (!isValidGeoPoint(point) || !isValidGeoPoint(query.center)) {

@@ -1,4 +1,4 @@
-import type { ComparisonOperators } from '../types';
+import type { ComparisonOperators } from '../../types';
 
 export const applyComparisonOperators = (
   value: unknown,

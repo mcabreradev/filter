@@ -49,31 +49,31 @@ describe('Modular Imports', () => {
 
   describe('Operators', () => {
     it('should import comparison operators', async () => {
-      const comparisonModule = await import('../src/operators/comparison.js');
+      const comparisonModule = await import('../src/operators/comparison/index.js');
 
       expect(comparisonModule.applyComparisonOperators).toBeDefined();
     });
 
     it('should import array operators', async () => {
-      const arrayModule = await import('../src/operators/array.js');
+      const arrayModule = await import('../src/operators/array/index.js');
 
       expect(arrayModule.applyArrayOperators).toBeDefined();
     });
 
     it('should import string operators', async () => {
-      const stringModule = await import('../src/operators/string.js');
+      const stringModule = await import('../src/operators/string/index.js');
 
       expect(stringModule.applyStringOperators).toBeDefined();
     });
 
     it('should import logical operators', async () => {
-      const logicalModule = await import('../src/operators/logical.js');
+      const logicalModule = await import('../src/operators/logical/index.js');
 
       expect(logicalModule.applyLogicalOperators).toBeDefined();
     });
 
     it('should import geospatial operators', async () => {
-      const geoModule = await import('../src/operators/geospatial.js');
+      const geoModule = await import('../src/operators/geospatial/index.js');
 
       expect(geoModule.evaluateNear).toBeDefined();
       expect(geoModule.evaluateGeoBox).toBeDefined();
@@ -81,7 +81,7 @@ describe('Modular Imports', () => {
     });
 
     it('should import datetime operators', async () => {
-      const datetimeModule = await import('../src/operators/datetime.js');
+      const datetimeModule = await import('../src/operators/datetime/index.js');
 
       expect(datetimeModule.evaluateRecent).toBeDefined();
       expect(datetimeModule.evaluateUpcoming).toBeDefined();
