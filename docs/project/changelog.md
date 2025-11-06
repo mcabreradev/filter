@@ -5,6 +5,69 @@ All notable changes to @mcabreradev/filter are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.7.0] - 2025-11-06
+
+### Added
+- **Framework Integrations**: Angular, SolidJS, and Preact support
+  - **Angular**: Services and Pipes with Signals support
+    - `FilterService`: Core filtering service with Signal-based state
+    - `DebouncedFilterService`: Debounced filtering with configurable delay
+    - `PaginatedFilterService`: Built-in pagination with reactive state
+    - `FilterPipe`: Declarative filtering in templates
+  - **SolidJS**: Signal-based reactive hooks
+    - `useFilter`: Signal-based reactive filtering
+    - `useDebouncedFilter`: Debounced filtering with pending state
+    - `usePaginatedFilter`: Pagination support with reactive signals
+  - **Preact**: Lightweight hooks API
+    - `useFilter`: Basic filtering with memoization
+    - `useFilteredState`: Stateful filtering
+    - `useDebouncedFilter`: Debounced search functionality
+    - `usePaginatedFilter`: Built-in pagination
+- **OrderBy Configuration**: New `orderBy` option to sort filtered results
+  - Single field sorting: `{ orderBy: 'age' }` (ascending by default)
+  - Descending sort: `{ orderBy: { field: 'age', direction: 'desc' } }`
+  - Multi-field sorting: `{ orderBy: [{ field: 'city', direction: 'asc' }, { field: 'age', direction: 'desc' }] }`
+  - Respects `caseSensitive` option for string comparisons
+  - Stable sort algorithm preserves original order for equal values
+  - Works with all expression types and operators
+- **Limit Configuration**: New `limit` option to restrict result count
+  - Applied after filtering and sorting for predictable results
+  - Works with all expression types and operators
+  - Compatible with caching and debug modes
+  - Full framework integration support (React, Vue, Svelte, Angular, SolidJS, Preact)
+- **Complete Documentation**:
+  - Angular integration guide with services, pipes, and SSR examples
+  - SolidJS integration guide with signal patterns and SolidStart SSR
+  - Preact integration guide with hooks and best practices
+  - OrderBy configuration documentation with examples
+  - Limit configuration documentation with examples
+  - Updated Quick Start guide with new features
+
+### Fixed
+- **$contains Operator**: Fixed type detection to distinguish between string and array contexts
+  - Enhanced `hasArrayOps` to check actual value types (not just operator presence)
+  - Enhanced `hasStringOps` to check actual value types
+  - Correctly handles `$contains` for both strings (`'hello'.includes('ell')`) and arrays (`[1,2,3].includes(2)`)
+  - Fixed edge case where undefined properties would incorrectly pass $contains checks
+
+### Changed
+- Updated framework integrations documentation to v5.7.0
+- Updated README with all new features (Angular, SolidJS, Preact, orderBy, limit)
+- Updated configuration guide with orderBy and limit sections
+- Improved Quick Start guide with sorting and limiting examples
+
+### Performance
+- OrderBy uses efficient comparison functions
+- Limit applies slice operation after filtering (minimal overhead)
+- Framework integrations use proper memoization strategies
+
+### Testing
+- Added 33 comprehensive tests for limit functionality
+- Added tests for orderBy with limit combinations
+- Fixed integration tests for $contains operator with proper type checking
+- **Total Tests**: 994 (985 passing, 9 skipped for browser-only SolidJS reactivity)
+- 100% code coverage for orderBy and limit features
+
 ## [5.6.0] - 2025-11-01
 
 ### Added

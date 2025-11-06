@@ -39,7 +39,7 @@ Go beyond JavaScript's native `Array.filter()` with a library that understands y
 - **📅 Date/Time Operators** - Temporal filtering with $recent, $upcoming, $dayOfWeek, $age (v5.6.0+)
 - **💨 Lazy Evaluation** - Process large datasets efficiently with generators (v5.1.0+)
 - **🎨 Framework Integrations** - React, Vue, and Svelte support (v5.3.0+)
-- **🧪 Battle-Tested** - 613+ tests ensuring reliability
+- **🧪 Battle-Tested** - 994 tests ensuring reliability
 
 ---
 
@@ -1358,7 +1358,7 @@ pnpm test:coverage
 pnpm typecheck
 ```
 
-The library has 613+ tests with comprehensive coverage of all features.
+The library has 994 tests with comprehensive coverage of all features.
 
 ---
 
@@ -1391,7 +1391,7 @@ The library has 613+ tests with comprehensive coverage of all features.
 - 🔒 **Full TypeScript Support**: Context-aware autocomplete for Date properties
 - 🚀 **Zero Dependencies**: Uses native Date API
 - 📚 Complete datetime operators documentation and examples
-- ✅ 90 new tests (613 total tests)
+- ✅ 90 new tests (994 total tests)
 
 ### v5.5.1
 - 🐛 Bug fixes and stability improvements

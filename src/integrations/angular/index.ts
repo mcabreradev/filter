@@ -1,142 +1,146 @@
-import { Injectable, Signal, computed, signal, Pipe, PipeTransform } from '@angular/core';
+import { Signal, computed, signal, Pipe, PipeTransform } from '@angular/core';
 import { filter } from '../../core/filter';
 import type { Expression, FilterOptions } from '../../types';
 
-@Injectable()
+// Factory function for FilterService (no decorator overhead)
 export class FilterService<T> {
   private dataSignal = signal<T[]>([]);
   private expressionSignal = signal<Expression<T> | null>(null);
   private optionsSignal = signal<FilterOptions>({});
 
-  filtered: Signal<T[]> = computed(() => {
-    const data = this.dataSignal();
-    const expression = this.expressionSignal();
-    const options = this.optionsSignal();
-
-    if (!expression || data.length === 0) {
-      return data;
-    }
-
-    return filter(data, expression, options);
+  readonly filtered: Signal<T[]> = computed(() => {
+    const d = this.dataSignal();
+    const e = this.expressionSignal();
+    const o = this.optionsSignal();
+    return !e || !d.length ? d : filter(d, e, o);
   });
 
-  isFiltering: Signal<boolean> = computed(() => {
-    return this.expressionSignal() !== null && this.dataSignal().length > 0;
-  });
+  readonly isFiltering: Signal<boolean> = computed(
+    () => !!this.expressionSignal() && !!this.dataSignal().length,
+  );
 
-  setData(data: T[]): void {
-    this.dataSignal.set(data);
-  }
-
-  setExpression(expression: Expression<T> | null): void {
-    this.expressionSignal.set(expression);
-  }
-
-  setOptions(options: FilterOptions): void {
-    this.optionsSignal.set(options);
-  }
-
-  reset(): void {
+  setData = (data: T[]): void => this.dataSignal.set(data);
+  setExpression = (expr: Expression<T> | null): void => this.expressionSignal.set(expr);
+  setOptions = (opts: FilterOptions): void => this.optionsSignal.set(opts);
+  reset = (): void => {
     this.expressionSignal.set(null);
     this.optionsSignal.set({});
-  }
+  };
 }
 
-@Pipe({
-  name: 'filterPipe',
-  standalone: true,
-  pure: true,
-})
+@Pipe({ name: 'filterPipe', standalone: true, pure: true })
 export class FilterPipe implements PipeTransform {
-  transform<T>(
-    data: T[] | null | undefined,
-    expression: Expression<T>,
-    options?: FilterOptions,
-  ): T[] {
-    if (!data || !expression) {
-      return data || [];
-    }
-    return filter(data, expression, options);
+  transform<T>(data: T[] | null | undefined, expr: Expression<T>, opts?: FilterOptions): T[] {
+    return data && expr ? filter(data, expr, opts) : data || [];
   }
 }
 
-@Injectable()
-export class DebouncedFilterService<T> extends FilterService<T> {
-  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
-  private pendingSignal = signal<boolean>(false);
+// Composition over inheritance - no extends
+export class DebouncedFilterService<T> {
+  private dataSignal = signal<T[]>([]);
+  private expressionSignal = signal<Expression<T> | null>(null);
+  private optionsSignal = signal<FilterOptions>({});
+  private timer: ReturnType<typeof setTimeout> | null = null;
+  private pendingSignal = signal(false);
 
-  isPending: Signal<boolean> = computed(() => this.pendingSignal());
+  readonly filtered: Signal<T[]> = computed(() => {
+    const d = this.dataSignal();
+    const e = this.expressionSignal();
+    const o = this.optionsSignal();
+    return !e || !d.length ? d : filter(d, e, o);
+  });
 
-  setExpressionDebounced(expression: Expression<T> | null, delay = 300): void {
+  readonly isFiltering: Signal<boolean> = computed(
+    () => !!this.expressionSignal() && !!this.dataSignal().length,
+  );
+
+  readonly isPending: Signal<boolean> = computed(() => this.pendingSignal());
+
+  setData = (data: T[]): void => this.dataSignal.set(data);
+  setOptions = (opts: FilterOptions): void => this.optionsSignal.set(opts);
+
+  setExpressionDebounced = (expr: Expression<T> | null, delay = 300): void => {
     this.pendingSignal.set(true);
-
-    if (this.debounceTimer) {
-      clearTimeout(this.debounceTimer);
-    }
-
-    this.debounceTimer = setTimeout(() => {
-      super.setExpression(expression);
+    if (this.timer) clearTimeout(this.timer);
+    this.timer = setTimeout(() => {
+      this.expressionSignal.set(expr);
       this.pendingSignal.set(false);
-      this.debounceTimer = null;
+      this.timer = null;
     }, delay);
-  }
+  };
 
-  override reset(): void {
-    if (this.debounceTimer) {
-      clearTimeout(this.debounceTimer);
-      this.debounceTimer = null;
+  reset = (): void => {
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
     }
     this.pendingSignal.set(false);
-    super.reset();
-  }
+    this.expressionSignal.set(null);
+    this.optionsSignal.set({});
+  };
 }
 
-@Injectable()
-export class PaginatedFilterService<T> extends FilterService<T> {
-  private pageSignal = signal<number>(1);
-  private pageSizeSignal = signal<number>(10);
+// Composition over inheritance - no extends
+export class PaginatedFilterService<T> {
+  private dataSignal = signal<T[]>([]);
+  private expressionSignal = signal<Expression<T> | null>(null);
+  private optionsSignal = signal<FilterOptions>({});
+  private pageSignal = signal(1);
+  private pageSizeSignal = signal(10);
 
-  currentPage: Signal<number> = computed(() => this.pageSignal());
-  pageSize: Signal<number> = computed(() => this.pageSizeSignal());
-
-  paginatedResults: Signal<T[]> = computed(() => {
-    const filtered = this.filtered();
-    const page = this.pageSignal();
-    const size = this.pageSizeSignal();
-    const start = (page - 1) * size;
-    return filtered.slice(start, start + size);
+  readonly filtered: Signal<T[]> = computed(() => {
+    const d = this.dataSignal();
+    const e = this.expressionSignal();
+    const o = this.optionsSignal();
+    return !e || !d.length ? d : filter(d, e, o);
   });
 
-  totalPages: Signal<number> = computed(() => {
-    const total = this.filtered().length;
-    const size = this.pageSizeSignal();
-    return Math.ceil(total / size);
+  readonly isFiltering: Signal<boolean> = computed(
+    () => !!this.expressionSignal() && !!this.dataSignal().length,
+  );
+
+  readonly currentPage: Signal<number> = computed(() => this.pageSignal());
+  readonly pageSize: Signal<number> = computed(() => this.pageSizeSignal());
+
+  readonly paginatedResults: Signal<T[]> = computed(() => {
+    const items = this.filtered();
+    const p = this.pageSignal();
+    const s = this.pageSizeSignal();
+    return items.slice((p - 1) * s, p * s);
   });
 
-  setPage(page: number): void {
-    const maxPage = this.totalPages();
-    this.pageSignal.set(Math.max(1, Math.min(page, maxPage)));
-  }
+  readonly totalPages: Signal<number> = computed(() =>
+    Math.ceil(this.filtered().length / this.pageSizeSignal()),
+  );
 
-  setPageSize(size: number): void {
+  setData = (data: T[]): void => this.dataSignal.set(data);
+  setExpression = (expr: Expression<T> | null): void => this.expressionSignal.set(expr);
+  setOptions = (opts: FilterOptions): void => this.optionsSignal.set(opts);
+
+  setPage = (page: number): void => {
+    this.pageSignal.set(Math.max(1, Math.min(page, this.totalPages())));
+  };
+
+  setPageSize = (size: number): void => {
     this.pageSizeSignal.set(Math.max(1, size));
     this.pageSignal.set(1);
-  }
+  };
 
-  nextPage(): void {
-    const current = this.pageSignal();
-    const total = this.totalPages();
-    if (current < total) {
-      this.pageSignal.set(current + 1);
-    }
-  }
+  nextPage = (): void => {
+    const c = this.pageSignal();
+    if (c < this.totalPages()) this.pageSignal.set(c + 1);
+  };
 
-  prevPage(): void {
-    const current = this.pageSignal();
-    if (current > 1) {
-      this.pageSignal.set(current - 1);
-    }
-  }
+  prevPage = (): void => {
+    const c = this.pageSignal();
+    if (c > 1) this.pageSignal.set(c - 1);
+  };
+
+  reset = (): void => {
+    this.expressionSignal.set(null);
+    this.optionsSignal.set({});
+    this.pageSignal.set(1);
+  };
 }
 
 export { filter };
