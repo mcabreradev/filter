@@ -18,6 +18,7 @@ export interface FilterConfig {
   showTimings?: boolean;
   colorize?: boolean;
   orderBy?: OrderBy;
+  limit?: number;
 }
 
 export type Comparator = (actual: unknown, expected: unknown) => boolean;

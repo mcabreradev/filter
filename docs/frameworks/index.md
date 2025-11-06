@@ -5,7 +5,7 @@ description: Complete guide for React, Vue, Svelte, Angular, SolidJS, and Preact
 
 # Framework Integrations
 
-> **Version**: 5.6.0+
+> **Version**: 5.7.0+
 > **Status**: Stable
 
 Complete guide for using `@mcabreradev/filter` with 6 major frameworks.
@@ -52,7 +52,7 @@ The framework integrations provide idiomatic hooks, composables, services, and s
 - **Preact Hooks**: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
 - **Shared Utilities**: Debouncing, pagination, and performance optimizations
 - **TypeScript**: Full type safety with generics
-- **SSR Compatible**: Works with Next.js, Nuxt, SvelteKit, and Angular Universal
+- **SSR Compatible**: Works with Next.js, Nuxt, SvelteKit, Angular Universal, and SolidStart
 
 ---
 
@@ -667,6 +667,605 @@ function usePaginatedFilter<T>(
 
 ---
 
+## Angular Integration
+
+⭐ **New in v5.7.0**: Full Angular support with Services, Pipes, and Signals!
+
+### FilterService
+
+Injectable service for component-based filtering with Angular Signals.
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { FilterService } from '@mcabreradev/filter/angular';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  active: boolean;
+}
+
+@Component({
+  selector: 'app-user-list',
+  standalone: true,
+  providers: [FilterService],
+  template: `
+    <div>
+      <p>Showing {{ filterService.filtered().length }} active users</p>
+      @for (user of filterService.filtered(); track user.id) {
+        <div>{{ user.name }}</div>
+      }
+    </div>
+  `
+})
+export class UserListComponent {
+  filterService = inject(FilterService<User>);
+
+  users: User[] = [
+    { id: 1, name: 'Alice', email: 'alice@example.com', active: true },
+    { id: 2, name: 'Bob', email: 'bob@example.com', active: false },
+  ];
+
+  constructor() {
+    this.filterService.setData(this.users);
+    this.filterService.setExpression({ active: true });
+  }
+}
+```
+
+**API**:
+```typescript
+class FilterService<T> {
+  data: Signal<T[]>;
+  expression: Signal<Expression<T>>;
+  filtered: Signal<T[]>;
+  isFiltering: Signal<boolean>;
+
+  setData(data: T[]): void;
+  setExpression(expression: Expression<T>): void;
+  setOptions(options: FilterOptions): void;
+}
+```
+
+### DebouncedFilterService
+
+Debounced filtering service for search inputs.
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { DebouncedFilterService } from '@mcabreradev/filter/angular';
+import { FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'app-search-users',
+  standalone: true,
+  providers: [DebouncedFilterService],
+  template: `
+    <div>
+      <input [formControl]="searchControl" placeholder="Search users..." />
+      @if (filterService.isPending()) {
+        <span>Searching...</span>
+      }
+      @for (user of filterService.filtered(); track user.id) {
+        <div>{{ user.name }}</div>
+      }
+    </div>
+  `
+})
+export class SearchUsersComponent {
+  filterService = inject(DebouncedFilterService<User>);
+  searchControl = new FormControl('');
+
+  constructor() {
+    this.filterService.setData(users);
+    this.filterService.setDelay(300);
+
+    this.searchControl.valueChanges.subscribe(term => {
+      this.filterService.setExpression({ name: { $contains: term || '' } });
+    });
+  }
+}
+```
+
+**API**:
+```typescript
+class DebouncedFilterService<T> extends FilterService<T> {
+  isPending: Signal<boolean>;
+  delay: Signal<number>;
+
+  setDelay(delay: number): void;
+}
+```
+
+### PaginatedFilterService
+
+Filtering with built-in pagination.
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { PaginatedFilterService } from '@mcabreradev/filter/angular';
+
+@Component({
+  selector: 'app-paginated-users',
+  standalone: true,
+  providers: [PaginatedFilterService],
+  template: `
+    <div>
+      @for (user of filterService.paginatedResults(); track user.id) {
+        <div>{{ user.name }}</div>
+      }
+      <div>
+        <button 
+          (click)="filterService.previousPage()" 
+          [disabled]="filterService.currentPage() === 1">
+          Previous
+        </button>
+        <span>
+          Page {{ filterService.currentPage() }} of {{ filterService.totalPages() }}
+        </span>
+        <button 
+          (click)="filterService.nextPage()" 
+          [disabled]="filterService.currentPage() === filterService.totalPages()">
+          Next
+        </button>
+      </div>
+    </div>
+  `
+})
+export class PaginatedUsersComponent {
+  filterService = inject(PaginatedFilterService<User>);
+
+  constructor() {
+    this.filterService.setData(users);
+    this.filterService.setExpression({ active: true });
+    this.filterService.setPageSize(10);
+  }
+}
+```
+
+**API**:
+```typescript
+class PaginatedFilterService<T> extends FilterService<T> {
+  paginatedResults: Signal<T[]>;
+  currentPage: Signal<number>;
+  totalPages: Signal<number>;
+  pageSize: Signal<number>;
+
+  setPageSize(size: number): void;
+  setPage(page: number): void;
+  nextPage(): void;
+  previousPage(): void;
+}
+```
+
+### FilterPipe
+
+Transform arrays in templates with filtering.
+
+```typescript
+import { Component } from '@angular/core';
+import { FilterPipe } from '@mcabreradev/filter/angular';
+
+@Component({
+  selector: 'app-users',
+  standalone: true,
+  imports: [FilterPipe],
+  template: `
+    <div>
+      @for (user of users | filter:{ active: true }; track user.id) {
+        <div>{{ user.name }}</div>
+      }
+      
+      @for (product of products | filter:{ price: { $gte: 100 } } : { orderBy: 'price', limit: 10 }; track product.id) {
+        <div>{{ product.name }} - ${{ product.price }}</div>
+      }
+    </div>
+  `
+})
+export class UsersComponent {
+  users: User[] = [...];
+  products: Product[] = [...];
+}
+```
+
+**API**:
+```typescript
+@Pipe({ name: 'filter', standalone: true })
+export class FilterPipe implements PipeTransform {
+  transform<T>(
+    array: T[],
+    expression: Expression<T>,
+    options?: FilterOptions
+  ): T[];
+}
+```
+
+---
+
+## SolidJS Integration
+
+⭐ **New in v5.7.0**: Full SolidJS support with signal-based reactive hooks!
+
+### useFilter
+
+Signal-based filtering with fine-grained reactivity.
+
+```tsx
+import { createSignal, For } from 'solid-js';
+import { useFilter } from '@mcabreradev/filter/solidjs';
+
+interface User {
+  id: number;
+  name: string;
+  active: boolean;
+}
+
+function UserList() {
+  const [users] = createSignal<User[]>([
+    { id: 1, name: 'Alice', active: true },
+    { id: 2, name: 'Bob', active: false },
+  ]);
+
+  const { filtered, isFiltering } = useFilter(
+    users,
+    () => ({ active: true })
+  );
+
+  return (
+    <div>
+      <p>Showing {filtered().length} active users</p>
+      <For each={filtered()}>
+        {(user) => <div>{user.name}</div>}
+      </For>
+    </div>
+  );
+}
+```
+
+**API**:
+```typescript
+function useFilter<T>(
+  data: Accessor<T[]>,
+  expression: Accessor<Expression<T> | null>,
+  options?: Accessor<FilterOptions>
+): {
+  filtered: Accessor<T[]>;
+  isFiltering: Accessor<boolean>;
+}
+```
+
+### useDebouncedFilter
+
+Debounced filtering with proper cleanup.
+
+```tsx
+import { createSignal, Show, For } from 'solid-js';
+import { useDebouncedFilter } from '@mcabreradev/filter/solidjs';
+
+function SearchUsers() {
+  const [users] = createSignal<User[]>([...]);
+  const [searchTerm, setSearchTerm] = createSignal('');
+
+  const { filtered, isPending } = useDebouncedFilter(
+    users,
+    () => ({ name: { $contains: searchTerm() } }),
+    { delay: 300 }
+  );
+
+  return (
+    <div>
+      <input 
+        value={searchTerm()} 
+        onInput={(e) => setSearchTerm(e.currentTarget.value)}
+        placeholder="Search users..." 
+      />
+      <Show when={isPending()}>
+        <span>Searching...</span>
+      </Show>
+      <For each={filtered()}>
+        {(user) => <div>{user.name}</div>}
+      </For>
+    </div>
+  );
+}
+```
+
+**API**:
+```typescript
+function useDebouncedFilter<T>(
+  data: Accessor<T[]>,
+  expression: Accessor<Expression<T>>,
+  options?: {
+    delay?: number;
+    filterOptions?: FilterOptions;
+  }
+): {
+  filtered: Accessor<T[]>;
+  isPending: Accessor<boolean>;
+}
+```
+
+### usePaginatedFilter
+
+Pagination with signal-based state management.
+
+```tsx
+import { createSignal, For } from 'solid-js';
+import { usePaginatedFilter } from '@mcabreradev/filter/solidjs';
+
+function PaginatedUserList() {
+  const [users] = createSignal<User[]>([...]);
+
+  const {
+    paginatedResults,
+    currentPage,
+    totalPages,
+    nextPage,
+    prevPage,
+  } = usePaginatedFilter(
+    users,
+    () => ({ active: true }),
+    {
+      pageSize: 10,
+      initialPage: 1
+    }
+  );
+
+  return (
+    <div>
+      <For each={paginatedResults()}>
+        {(user) => <div>{user.name}</div>}
+      </For>
+      <div>
+        <button onClick={prevPage} disabled={currentPage() === 1}>
+          Previous
+        </button>
+        <span>
+          Page {currentPage()} of {totalPages()}
+        </span>
+        <button onClick={nextPage} disabled={currentPage() === totalPages()}>
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+**API**:
+```typescript
+function usePaginatedFilter<T>(
+  data: Accessor<T[]>,
+  expression: Accessor<Expression<T> | null>,
+  options?: {
+    pageSize?: number;
+    initialPage?: number;
+    filterOptions?: FilterOptions;
+  }
+): {
+  paginatedResults: Accessor<T[]>;
+  currentPage: Accessor<number>;
+  totalPages: Accessor<number>;
+  pageSize: Accessor<number>;
+  setPage: (page: number) => void;
+  setPageSize: (size: number) => void;
+  nextPage: () => void;
+  prevPage: () => void;
+}
+```
+
+---
+
+## Preact Integration
+
+⭐ **New in v5.7.0**: Full Preact support with lightweight hooks API!
+
+### useFilter
+
+Basic filtering hook compatible with Preact.
+
+```tsx
+import { useFilter } from '@mcabreradev/filter/preact';
+
+interface User {
+  id: number;
+  name: string;
+  active: boolean;
+}
+
+function UserList() {
+  const users: User[] = [
+    { id: 1, name: 'Alice', active: true },
+    { id: 2, name: 'Bob', active: false },
+  ];
+
+  const { filtered, isFiltering } = useFilter(users, { active: true });
+
+  return (
+    <div>
+      <p>Showing {filtered.length} active users</p>
+      {filtered.map((user) => (
+        <div key={user.id}>{user.name}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+**API**:
+```typescript
+function useFilter<T>(
+  data: T[],
+  expression: Expression<T>,
+  options?: FilterOptions
+): {
+  filtered: T[];
+  isFiltering: boolean;
+}
+```
+
+### useFilteredState
+
+Stateful filtering with Preact hooks.
+
+```tsx
+import { useFilteredState } from '@mcabreradev/filter/preact';
+
+function UserManager() {
+  const {
+    data,
+    setData,
+    expression,
+    setExpression,
+    filtered,
+    isFiltering,
+  } = useFilteredState<User>(initialUsers, { active: true });
+
+  const addUser = (user: User) => {
+    setData([...data, user]);
+  };
+
+  const filterByName = (name: string) => {
+    setExpression({ name: { $contains: name } });
+  };
+
+  return (
+    <div>
+      <input onInput={(e) => filterByName(e.currentTarget.value)} />
+      <button onClick={() => addUser(newUser)}>Add User</button>
+      <UserList users={filtered} />
+    </div>
+  );
+}
+```
+
+**API**:
+```typescript
+function useFilteredState<T>(
+  initialData?: T[],
+  initialExpression?: Expression<T>,
+  options?: FilterOptions
+): {
+  data: T[];
+  setData: (data: T[]) => void;
+  expression: Expression<T>;
+  setExpression: (expression: Expression<T>) => void;
+  filtered: T[];
+  isFiltering: boolean;
+}
+```
+
+### useDebouncedFilter
+
+Debounced filtering for Preact.
+
+```tsx
+import { useState } from 'preact/hooks';
+import { useDebouncedFilter } from '@mcabreradev/filter/preact';
+
+function SearchUsers() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const { filtered, isFiltering, isPending } = useDebouncedFilter(
+    users,
+    { name: { $contains: searchTerm } },
+    { delay: 300 }
+  );
+
+  return (
+    <div>
+      <input
+        value={searchTerm}
+        onInput={(e) => setSearchTerm(e.currentTarget.value)}
+        placeholder="Search users..."
+      />
+      {isPending && <span>Searching...</span>}
+      <UserList users={filtered} />
+    </div>
+  );
+}
+```
+
+**API**:
+```typescript
+function useDebouncedFilter<T>(
+  data: T[],
+  expression: Expression<T>,
+  options?: UseDebouncedFilterOptions
+): {
+  filtered: T[];
+  isFiltering: boolean;
+  isPending: boolean;
+}
+```
+
+### usePaginatedFilter
+
+Pagination support for Preact.
+
+```tsx
+import { usePaginatedFilter } from '@mcabreradev/filter/preact';
+
+function PaginatedUserList() {
+  const {
+    data,
+    filtered,
+    isFiltering,
+    currentPage,
+    totalPages,
+    hasNextPage,
+    hasPreviousPage,
+    nextPage,
+    previousPage,
+    goToPage,
+    setPageSize,
+  } = usePaginatedFilter(users, { active: true }, 10);
+
+  return (
+    <div>
+      <UserList users={data} />
+      <div>
+        <button onClick={previousPage} disabled={!hasPreviousPage}>
+          Previous
+        </button>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button onClick={nextPage} disabled={!hasNextPage}>
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+**API**:
+```typescript
+function usePaginatedFilter<T>(
+  data: T[],
+  expression: Expression<T>,
+  initialPageSize?: number,
+  options?: FilterOptions
+): {
+  data: T[];
+  filtered: T[];
+  isFiltering: boolean;
+  currentPage: number;
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  nextPage: () => void;
+  previousPage: () => void;
+  goToPage: (page: number) => void;
+  setPageSize: (size: number) => void;
+}
+```
+
+---
+
 ## Shared Features
 
 ### Debouncing
@@ -714,7 +1313,7 @@ All hooks/composables/stores support standard filter options:
 
 ## Performance Tips
 
-### React
+### React / Preact
 
 1. **Memoize expressions**: Use `useMemo` for complex expressions
 ```typescript
@@ -731,7 +1330,7 @@ useFilter(data, expression, { enableCache: true });
 
 3. **Use debouncing**: For search inputs
 ```typescript
-useDebouncedFilter(data, searchTerm, { delay: 300 });
+useDebouncedFilter(data, { name: { $contains: searchTerm } }, { delay: 300 });
 ```
 
 ### Vue
@@ -769,6 +1368,46 @@ const filtered = derived([data, expression], ([$data, $expr]) => {
 useFilter(data, expression, { enableCache: true });
 ```
 
+### Angular
+
+1. **Use Signals**: Leverage Angular's fine-grained reactivity
+```typescript
+const filtered = computed(() => 
+  filter(this.data(), this.expression())
+);
+```
+
+2. **Enable caching**: In services for repeated queries
+```typescript
+this.filterService.setOptions({ enableCache: true });
+```
+
+3. **Use OnPush**: Change detection strategy
+```typescript
+@Component({
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+```
+
+### SolidJS
+
+1. **Fine-grained reactivity**: SolidJS automatically optimizes
+```typescript
+const { filtered } = useFilter(data, expression);
+```
+
+2. **Memoize expressions**: Use `createMemo` for computed values
+```typescript
+const expression = createMemo(() => ({
+  name: { $contains: searchTerm() }
+}));
+```
+
+3. **Enable caching**: For large datasets
+```typescript
+useFilter(data, expression, () => ({ enableCache: true }));
+```
+
 ---
 
 ## TypeScript Support
@@ -783,7 +1422,7 @@ interface User {
   active: boolean;
 }
 
-// React
+// React / Preact
 const { filtered } = useFilter<User>(users, { active: true });
 // filtered is User[]
 
@@ -794,6 +1433,14 @@ const { filtered } = useFilter<User>(users, expression);
 // Svelte
 const { filtered } = useFilter<User>(users, expression);
 // filtered is Readable<User[]>
+
+// Angular
+filterService.setData<User>(users);
+// filtered is Signal<User[]>
+
+// SolidJS
+const { filtered } = useFilter<User>(users, expression);
+// filtered is Accessor<User[]>
 ```
 
 ---
@@ -977,19 +1624,128 @@ All framework integrations are compatible with server-side rendering:
 - **Next.js**: Works with App Router and Pages Router
 - **Nuxt**: Compatible with Nuxt 3
 - **SvelteKit**: Full SSR support
+- **Angular Universal**: Server-side rendering support
+- **SolidStart**: SSR and streaming support
 
 ### Next.js Example
 
 ```typescript
 'use client';
 
-import { useFilter } from '@mcabreradev/filter';
+import { useFilter } from '@mcabreradev/filter/react';
 
 export default function UserList({ initialUsers }: { initialUsers: User[] }) {
   const { filtered } = useFilter(initialUsers, { active: true });
 
   return <div>{/* render filtered users */}</div>;
 }
+```
+
+### Nuxt Example
+
+```vue
+<script setup lang="ts">
+import { useFilter } from '@mcabreradev/filter/vue';
+
+const { data: users } = await useFetch('/api/users');
+const { filtered } = useFilter(users, { active: true });
+</script>
+```
+
+### SvelteKit Example
+
+```svelte
+<script lang="ts">
+import { useFilter } from '@mcabreradev/filter/svelte';
+import { writable } from 'svelte/store';
+
+export let data;
+const users = writable(data.users);
+const { filtered } = useFilter(users, { active: true });
+</script>
+```
+
+### Angular Universal Example
+
+```typescript
+import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { FilterService } from '@mcabreradev/filter/angular';
+
+@Component({
+  selector: 'app-users',
+  providers: [FilterService]
+})
+export class UsersComponent {
+  platformId = inject(PLATFORM_ID);
+  filterService = inject(FilterService<User>);
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.filterService.setData(this.users);
+    }
+  }
+}
+```
+
+### SolidStart Example
+
+```tsx
+import { createSignal } from 'solid-js';
+import { useFilter } from '@mcabreradev/filter/solidjs';
+
+export default function UserList(props: { users: User[] }) {
+  const [users] = createSignal(props.users);
+  const { filtered } = useFilter(users, () => ({ active: true }));
+
+  return <div>{/* render filtered users */}</div>;
+}
+```
+
+---
+
+## Migration Guide
+
+### From Array.filter()
+
+```typescript
+// Before
+const filtered = users.filter(user => user.active);
+
+// After (React / Preact)
+const { filtered } = useFilter(users, { active: true });
+
+// After (Vue)
+const { filtered } = useFilter(users, { active: true });
+
+// After (Svelte)
+const { filtered } = useFilter(users, { active: true });
+
+// After (Angular)
+this.filterService.setExpression({ active: true });
+
+// After (SolidJS)
+const { filtered } = useFilter(users, () => ({ active: true }));
+```
+
+### From Custom Hooks
+
+```typescript
+// Before (custom React hook)
+function useFilteredUsers(users: User[], searchTerm: string) {
+  return useMemo(() => {
+    return users.filter(user =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [users, searchTerm]);
+}
+
+// After
+const { filtered } = useDebouncedFilter(
+  users,
+  { name: { $contains: searchTerm } },
+  { delay: 300 }
+);
 ```
 
 ---

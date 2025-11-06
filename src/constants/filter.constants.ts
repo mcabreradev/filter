@@ -60,4 +60,5 @@ export const DEFAULT_CONFIG: FilterConfig = {
   enableCache: false,
   enablePerformanceMonitoring: false,
   debug: false,
+  limit: undefined,
 };

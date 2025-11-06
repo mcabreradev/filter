@@ -160,7 +160,7 @@ filter(users, { name: { $startsWith: 'A' } });
 
 ## Framework Integrations 🎨
 
-**New in v5.6.0**: Full framework integration support for **6 major frameworks**!
+**New in v5.7.0**: Full framework integration support for **6 major frameworks**!
 
 ### Supported Frameworks
 
@@ -1053,6 +1053,15 @@ filter(users, { active: true }, {
   ]
 });
 
+// Limit number of results
+filter(users, { active: true }, { limit: 10 });
+
+// Combine limit with sorting (limit is applied AFTER sorting)
+filter(users, { active: true }, {
+  orderBy: { field: 'age', direction: 'desc' },
+  limit: 5
+});
+
 // Custom comparison logic
 filter(data, expression, {
   customComparator: (actual, expected) => actual === expected
@@ -1068,7 +1077,8 @@ filter(data, expression, {
 - `verbose` (boolean, default: `false`) - Show detailed evaluation info in debug mode (v5.5.0+)
 - `showTimings` (boolean, default: `false`) - Display execution timings in debug mode (v5.5.0+)
 - `colorize` (boolean, default: `false`) - Use ANSI colors in debug output (v5.5.0+)
-- `orderBy` (string | object | array, optional) - Sort filtered results by field(s) in ascending or descending order
+- `orderBy` (string | object | array, optional) - Sort filtered results by field(s) in ascending or descending order (v5.7.0+)
+- `limit` (number, optional) - Limit the number of results returned (applied after filtering and sorting) (v5.7.0+)
 - `customComparator` (function, optional) - Custom comparison function
 
 ---
@@ -1354,7 +1364,18 @@ The library has 613+ tests with comprehensive coverage of all features.
 
 ## Changelog
 
-### v5.6.0 (Current)
+### v5.7.0 (Current)
+- 🎨 **New Framework Integrations**: Angular, SolidJS, and Preact support
+- 🅰️ **Angular**: Services and Pipes with Signals support
+- 🔷 **SolidJS**: Signal-based reactive hooks with proper cleanup
+- ⚡ **Preact**: Lightweight hooks API compatible with React
+- 🔢 **Limit Option**: New `limit` configuration option to restrict result count
+- 📊 **OrderBy Option**: Sort filtered results by field(s) in ascending or descending order
+- ✅ 33 new tests for limit functionality (994 total tests)
+- 🐛 **Bug Fixes**: Fixed `$contains` operator type detection for strings vs arrays
+- 📚 Complete documentation for all framework integrations
+
+### v5.6.0
 - 🌍 **Geospatial Operators**: Location-based filtering with $near, $geoBox, $geoPolygon
 - 📏 **Distance Calculation**: Spherical law of cosines for accurate distance measurement
 - 🗺️ **Spatial Queries**: Proximity search, bounding box, and polygon containment

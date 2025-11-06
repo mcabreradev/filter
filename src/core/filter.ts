@@ -37,6 +37,9 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
         items = sortByFields(items, orderByFields, config.caseSensitive);
         endSorting();
       }
+      if (config.limit !== undefined && config.limit > 0) {
+        items = items.slice(0, config.limit);
+      }
       endTotalTime();
       return items;
     }
@@ -55,6 +58,9 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
           result = sortByFields(result, orderByFields, config.caseSensitive);
           endSorting();
         }
+        if (config.limit !== undefined && config.limit > 0) {
+          result = result.slice(0, config.limit);
+        }
         endTotalTime();
         return result;
       }
@@ -72,6 +78,10 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
         const orderByFields = normalizeOrderBy(config.orderBy);
         result = sortByFields(result, orderByFields, config.caseSensitive);
         endSorting();
+      }
+
+      if (config.limit !== undefined && config.limit > 0) {
+        result = result.slice(0, config.limit);
       }
 
       const endCacheSet = performanceMonitor.start('filter:cache-set');
@@ -95,6 +105,10 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
       const orderByFields = normalizeOrderBy(config.orderBy);
       result = sortByFields(result, orderByFields, config.caseSensitive);
       endSorting();
+    }
+
+    if (config.limit !== undefined && config.limit > 0) {
+      result = result.slice(0, config.limit);
     }
 
     endTotalTime();

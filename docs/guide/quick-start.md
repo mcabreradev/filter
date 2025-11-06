@@ -154,6 +154,26 @@ filter(data, expression, { maxDepth: 5 });
 
 // Enable caching for repeated queries
 filter(largeDataset, expression, { enableCache: true });
+
+// Sort results by field (v5.7.0+)
+filter(users, { active: true }, { orderBy: 'age' });
+
+// Sort by multiple fields (v5.7.0+)
+filter(users, { active: true }, {
+  orderBy: [
+    { field: 'age', direction: 'desc' },
+    { field: 'name', direction: 'asc' }
+  ]
+});
+
+// Limit number of results (v5.7.0+)
+filter(users, { active: true }, { limit: 10 });
+
+// Combine sorting and limiting (v5.7.0+)
+filter(users, { active: true }, {
+  orderBy: { field: 'age', direction: 'desc' },
+  limit: 5
+});
 ```
 
 ## TypeScript Support
@@ -245,6 +265,17 @@ import { filterFirst } from '@mcabreradev/filter';
 
 const first10 = filterFirst(users, { premium: true }, 10);
 // Stops processing after finding 10 matches
+
+// Combine with limit for top N queries (v5.7.0+)
+const topUsers = filter(
+  users,
+  { active: true },
+  {
+    orderBy: { field: 'score', direction: 'desc' },
+    limit: 10,
+    enableCache: true
+  }
+);
 ```
 
 ## Next Steps
@@ -254,9 +285,12 @@ Now that you know the basics, explore more advanced features:
 - [Modular Imports](/guide/modular-imports) - Optimize bundle size with granular imports ⭐
 - [Operators Guide](/guide/operators) - Learn all 30+ MongoDB-style operators
 - [Logical Operators](/guide/logical-operators) - Complex queries with $and, $or, $not
+- [Geospatial Operators](/guide/geospatial-operators) - Location-based filtering 🌍
+- [Date/Time Operators](/guide/datetime-operators) - Temporal filtering 📅
 - [Lazy Evaluation](/guide/lazy-evaluation) - Efficient processing for large datasets
 - [Memoization](/guide/memoization) - 530x performance boost with caching
-- [Framework Integration](/frameworks/) - React, Vue, and Svelte support
+- [Configuration](/guide/configuration) - All options including orderBy and limit
+- [Framework Integration](/frameworks/) - React, Vue, Svelte, Angular, SolidJS, Preact support ⭐
 
 ## Interactive Playground
 

@@ -37,13 +37,17 @@ const hasComparisonOps = (ops: unknown): ops is ComparisonOperators => {
   );
 };
 
-const hasArrayOps = (ops: unknown): ops is ArrayOperators => {
-  return (
-    (ops as ArrayOperators)[OPERATORS.IN] !== undefined ||
-    (ops as ArrayOperators)[OPERATORS.NIN] !== undefined ||
-    (ops as ArrayOperators)[OPERATORS.CONTAINS] !== undefined ||
-    (ops as ArrayOperators)[OPERATORS.SIZE] !== undefined
-  );
+const hasArrayOps = (ops: unknown, value: unknown): ops is ArrayOperators => {
+  const hasIn = (ops as ArrayOperators)[OPERATORS.IN] !== undefined;
+  const hasNin = (ops as ArrayOperators)[OPERATORS.NIN] !== undefined;
+  const hasSize = (ops as ArrayOperators)[OPERATORS.SIZE] !== undefined;
+  const hasContains = (ops as ArrayOperators)[OPERATORS.CONTAINS] !== undefined;
+
+  if (hasContains && !hasIn && !hasNin && !hasSize) {
+    return Array.isArray(value);
+  }
+
+  return hasIn || hasNin || hasSize || (hasContains && Array.isArray(value));
 };
 
 const hasStringOps = (ops: unknown): ops is StringOperators => {
@@ -52,8 +56,7 @@ const hasStringOps = (ops: unknown): ops is StringOperators => {
     (ops as StringOperators)[OPERATORS.ENDS_WITH] !== undefined ||
     (ops as StringOperators)[OPERATORS.REGEX] !== undefined ||
     (ops as StringOperators)[OPERATORS.MATCH] !== undefined ||
-    (typeof (ops as StringOperators)[OPERATORS.CONTAINS] === 'string' &&
-      (ops as StringOperators)[OPERATORS.CONTAINS] !== undefined)
+    (ops as StringOperators)[OPERATORS.CONTAINS] !== undefined
   );
 };
 
@@ -118,7 +121,7 @@ export const processOperators = <T>(
     if (!applyComparisonOperators(value, operators)) return false;
   }
 
-  if (hasArrayOps(operators)) {
+  if (hasArrayOps(operators, value)) {
     if (!applyArrayOperators(value, operators)) return false;
   }
 
