@@ -3,19 +3,32 @@ import { createPredicateFn } from '../predicate';
 import { validateExpression } from '../validation';
 import { mergeConfig } from '../config';
 
+const validateArray = (arr: unknown, fnName: string): void => {
+  if (!Array.isArray(arr)) {
+    throw new Error(`${fnName}: Expected array but received: ${typeof arr}`);
+  }
+};
+
+const validatePositive = (val: number, name: string, fnName: string): void => {
+  if (val <= 0) {
+    throw new Error(`${fnName}: ${name} must be positive, received: ${val}`);
+  }
+};
+
+const createPred = <T>(expr: Expression<T>, opts?: FilterOptions): ((item: T) => boolean) => {
+  const cfg = mergeConfig(opts);
+  const validated = validateExpression<T>(expr);
+  return createPredicateFn<T>(validated, cfg);
+};
+
 export function* filterLazy<T>(
   iterable: Iterable<T>,
   expression: Expression<T>,
   options?: FilterOptions,
 ): Generator<T, void, undefined> {
-  const config = mergeConfig(options);
-  const validatedExpression = validateExpression<T>(expression);
-  const predicate = createPredicateFn<T>(validatedExpression, config);
-
+  const pred = createPred(expression, options);
   for (const item of iterable) {
-    if (predicate(item)) {
-      yield item;
-    }
+    if (pred(item)) yield item;
   }
 }
 
@@ -24,15 +37,10 @@ export function filterLazyAsync<T>(
   expression: Expression<T>,
   options?: FilterOptions,
 ): AsyncGenerator<T, void, undefined> {
-  const config = mergeConfig(options);
-  const validatedExpression = validateExpression<T>(expression);
-  const predicate = createPredicateFn<T>(validatedExpression, config);
-
+  const pred = createPred(expression, options);
   return (async function* (): AsyncGenerator<T, void, undefined> {
     for await (const item of iterable) {
-      if (predicate(item)) {
-        yield item;
-      }
+      if (pred(item)) yield item;
     }
   })();
 }
@@ -43,36 +51,24 @@ export function filterChunked<T>(
   chunkSize: number = 1000,
   options?: FilterOptions,
 ): T[][] {
-  if (!Array.isArray(array)) {
-    throw new Error(`Expected array but received: ${typeof array}`);
-  }
+  validateArray(array, 'filterChunked');
+  validatePositive(chunkSize, 'Chunk size', 'filterChunked');
 
-  if (chunkSize <= 0) {
-    throw new Error(`Chunk size must be positive, received: ${chunkSize}`);
-  }
-
-  const config = mergeConfig(options);
-  const validatedExpression = validateExpression<T>(expression);
-  const predicate = createPredicateFn<T>(validatedExpression, config);
-
+  const pred = createPred(expression, options);
   const chunks: T[][] = [];
-  let currentChunk: T[] = [];
+  let chunk: T[] = [];
 
   for (const item of array) {
-    if (predicate(item)) {
-      currentChunk.push(item);
-
-      if (currentChunk.length >= chunkSize) {
-        chunks.push(currentChunk);
-        currentChunk = [];
+    if (pred(item)) {
+      chunk.push(item);
+      if (chunk.length >= chunkSize) {
+        chunks.push(chunk);
+        chunk = [];
       }
     }
   }
 
-  if (currentChunk.length > 0) {
-    chunks.push(currentChunk);
-  }
-
+  if (chunk.length > 0) chunks.push(chunk);
   return chunks;
 }
 
@@ -82,34 +78,23 @@ export function* filterLazyChunked<T>(
   chunkSize: number = 1000,
   options?: FilterOptions,
 ): Generator<T[], void, undefined> {
-  if (!Array.isArray(array)) {
-    throw new Error(`Expected array but received: ${typeof array}`);
-  }
+  validateArray(array, 'filterLazyChunked');
+  validatePositive(chunkSize, 'Chunk size', 'filterLazyChunked');
 
-  if (chunkSize <= 0) {
-    throw new Error(`Chunk size must be positive, received: ${chunkSize}`);
-  }
-
-  const config = mergeConfig(options);
-  const validatedExpression = validateExpression<T>(expression);
-  const predicate = createPredicateFn<T>(validatedExpression, config);
-
-  let currentChunk: T[] = [];
+  const pred = createPred(expression, options);
+  let chunk: T[] = [];
 
   for (const item of array) {
-    if (predicate(item)) {
-      currentChunk.push(item);
-
-      if (currentChunk.length >= chunkSize) {
-        yield currentChunk;
-        currentChunk = [];
+    if (pred(item)) {
+      chunk.push(item);
+      if (chunk.length >= chunkSize) {
+        yield chunk;
+        chunk = [];
       }
     }
   }
 
-  if (currentChunk.length > 0) {
-    yield currentChunk;
-  }
+  if (chunk.length > 0) yield chunk;
 }
 
 export function filterFirst<T>(
@@ -118,27 +103,16 @@ export function filterFirst<T>(
   count: number = 1,
   options?: FilterOptions,
 ): T[] {
-  if (!Array.isArray(array)) {
-    throw new Error(`Expected array but received: ${typeof array}`);
-  }
+  validateArray(array, 'filterFirst');
+  validatePositive(count, 'Count', 'filterFirst');
 
-  if (count <= 0) {
-    throw new Error(`Count must be positive, received: ${count}`);
-  }
-
-  const config = mergeConfig(options);
-  const validatedExpression = validateExpression<T>(expression);
-  const predicate = createPredicateFn<T>(validatedExpression, config);
-
+  const pred = createPred(expression, options);
   const results: T[] = [];
 
   for (const item of array) {
-    if (predicate(item)) {
+    if (pred(item)) {
       results.push(item);
-
-      if (results.length >= count) {
-        break;
-      }
+      if (results.length >= count) break;
     }
   }
 
@@ -150,20 +124,11 @@ export function filterExists<T>(
   expression: Expression<T>,
   options?: FilterOptions,
 ): boolean {
-  if (!Array.isArray(array)) {
-    throw new Error(`Expected array but received: ${typeof array}`);
-  }
-
-  const config = mergeConfig(options);
-  const validatedExpression = validateExpression<T>(expression);
-  const predicate = createPredicateFn<T>(validatedExpression, config);
-
+  validateArray(array, 'filterExists');
+  const pred = createPred(expression, options);
   for (const item of array) {
-    if (predicate(item)) {
-      return true;
-    }
+    if (pred(item)) return true;
   }
-
   return false;
 }
 
@@ -172,21 +137,11 @@ export function filterCount<T>(
   expression: Expression<T>,
   options?: FilterOptions,
 ): number {
-  if (!Array.isArray(array)) {
-    throw new Error(`Expected array but received: ${typeof array}`);
-  }
-
-  const config = mergeConfig(options);
-  const validatedExpression = validateExpression<T>(expression);
-  const predicate = createPredicateFn<T>(validatedExpression, config);
-
+  validateArray(array, 'filterCount');
+  const pred = createPred(expression, options);
   let count = 0;
-
   for (const item of array) {
-    if (predicate(item)) {
-      count++;
-    }
+    if (pred(item)) count++;
   }
-
   return count;
 }

@@ -1,15 +1,16 @@
-import type { Expression } from '../../types';
+import { useMemo } from 'react';
+import { filter as filterFn } from '../../core';
+import type { Expression, FilterOptions } from '../../types';
 
-export function createStableKey<T>(expression: Expression<T>): string {
-  if (typeof expression === 'function') {
-    return expression.toString();
-  }
-  return JSON.stringify(expression);
-}
+export const useFilterCore = <T>(d: T[], e: Expression<T>, o?: FilterOptions) =>
+  useMemo(() => {
+    if (!d?.length) return [];
+    try {
+      return filterFn(d, e, o);
+    } catch {
+      return [];
+    }
+  }, [d, e, o]);
 
-export function areExpressionsEqual<T>(a: Expression<T>, b: Expression<T>): boolean {
-  if (typeof a === 'function' && typeof b === 'function') {
-    return a.toString() === b.toString();
-  }
-  return JSON.stringify(a) === JSON.stringify(b);
-}
+export const useIsFiltering = <T>(f: T[], d: T[]) =>
+  useMemo(() => f.length !== d.length, [f.length, d.length]);

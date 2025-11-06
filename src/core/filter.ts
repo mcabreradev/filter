@@ -11,110 +11,88 @@ import { normalizeOrderBy, sortByFields } from '../utils/sort';
 
 const globalFilterCache = new FilterCache<unknown>();
 
+const applyPostProcessing = <T>(
+  items: T[],
+  orderBy: FilterOptions['orderBy'],
+  limit: number | undefined,
+  caseSensitive: boolean,
+): T[] => {
+  let result = items;
+  if (orderBy) {
+    const fields = normalizeOrderBy(orderBy);
+    result = sortByFields(result, fields, caseSensitive);
+  }
+  if (limit !== undefined && limit > 0) {
+    result = result.slice(0, limit);
+  }
+  return result;
+};
+
 export function filter<T>(array: T[], expression: Expression<T>, options?: FilterOptions): T[] {
-  const performanceMonitor = getPerformanceMonitor({
-    enabled: options?.enablePerformanceMonitoring ?? false,
-  });
-  const endTotalTime = performanceMonitor.start('filter:total');
+  const perfMon = getPerformanceMonitor({ enabled: options?.enablePerformanceMonitoring ?? false });
+  const endTotal = perfMon.start('filter:total');
 
   try {
     if (!Array.isArray(array)) {
       throw new TypeMismatchError('array', typeof array);
     }
 
-    const endValidation = performanceMonitor.start('filter:validation');
-    const config = mergeConfig(options);
-    const validatedExpression = validateExpression<T>(expression);
-    endValidation();
+    const endVal = perfMon.start('filter:validation');
+    const cfg = mergeConfig(options);
+    const expr = validateExpression<T>(expression);
+    endVal();
 
-    if (config.debug) {
-      const result = filterDebug(array, validatedExpression, options);
-      result.print();
-      let items = result.items;
-      if (config.orderBy) {
-        const endSorting = performanceMonitor.start('filter:sorting');
-        const orderByFields = normalizeOrderBy(config.orderBy);
-        items = sortByFields(items, orderByFields, config.caseSensitive);
-        endSorting();
-      }
-      if (config.limit !== undefined && config.limit > 0) {
-        items = items.slice(0, config.limit);
-      }
-      endTotalTime();
-      return items;
-    }
-
-    if (config.enableCache) {
-      const endCacheLookup = performanceMonitor.start('filter:cache-lookup');
-      const cacheKey = memoization.createExpressionHash(validatedExpression, config);
-      const cached = globalFilterCache.get(array as unknown[], cacheKey);
-      endCacheLookup();
-
-      if (cached !== undefined) {
-        let result = cached as T[];
-        if (config.orderBy) {
-          const endSorting = performanceMonitor.start('filter:sorting');
-          const orderByFields = normalizeOrderBy(config.orderBy);
-          result = sortByFields(result, orderByFields, config.caseSensitive);
-          endSorting();
-        }
-        if (config.limit !== undefined && config.limit > 0) {
-          result = result.slice(0, config.limit);
-        }
-        endTotalTime();
-        return result;
-      }
-
-      const endPredicateCreation = performanceMonitor.start('filter:predicate-creation');
-      const predicate = createPredicateFn<T>(validatedExpression, config);
-      endPredicateCreation();
-
-      const endFiltering = performanceMonitor.start('filter:filtering');
-      let result = array.filter(predicate);
-      endFiltering();
-
-      if (config.orderBy) {
-        const endSorting = performanceMonitor.start('filter:sorting');
-        const orderByFields = normalizeOrderBy(config.orderBy);
-        result = sortByFields(result, orderByFields, config.caseSensitive);
-        endSorting();
-      }
-
-      if (config.limit !== undefined && config.limit > 0) {
-        result = result.slice(0, config.limit);
-      }
-
-      const endCacheSet = performanceMonitor.start('filter:cache-set');
-      globalFilterCache.set(array as unknown[], cacheKey, result as unknown[]);
-      endCacheSet();
-
-      endTotalTime();
+    if (cfg.debug) {
+      const dbg = filterDebug(array, expr, options);
+      dbg.print();
+      const result = applyPostProcessing(dbg.items, cfg.orderBy, cfg.limit, cfg.caseSensitive);
+      endTotal();
       return result;
     }
 
-    const endPredicateCreation = performanceMonitor.start('filter:predicate-creation');
-    const predicate = createPredicateFn<T>(validatedExpression, config);
-    endPredicateCreation();
+    if (cfg.enableCache) {
+      const endCacheLookup = perfMon.start('filter:cache-lookup');
+      const key = memoization.createExpressionHash(expr, cfg);
+      const cached = globalFilterCache.get(array as unknown[], key);
+      endCacheLookup();
 
-    const endFiltering = performanceMonitor.start('filter:filtering');
-    let result = array.filter(predicate);
-    endFiltering();
+      if (cached !== undefined) {
+        const result = applyPostProcessing(cached as T[], cfg.orderBy, cfg.limit, cfg.caseSensitive);
+        endTotal();
+        return result;
+      }
 
-    if (config.orderBy) {
-      const endSorting = performanceMonitor.start('filter:sorting');
-      const orderByFields = normalizeOrderBy(config.orderBy);
-      result = sortByFields(result, orderByFields, config.caseSensitive);
-      endSorting();
+      const endPred = perfMon.start('filter:predicate-creation');
+      const pred = createPredicateFn<T>(expr, cfg);
+      endPred();
+
+      const endFilt = perfMon.start('filter:filtering');
+      const filtered = array.filter(pred);
+      endFilt();
+
+      const result = applyPostProcessing(filtered, cfg.orderBy, cfg.limit, cfg.caseSensitive);
+
+      const endCache = perfMon.start('filter:cache-set');
+      globalFilterCache.set(array as unknown[], key, result as unknown[]);
+      endCache();
+
+      endTotal();
+      return result;
     }
 
-    if (config.limit !== undefined && config.limit > 0) {
-      result = result.slice(0, config.limit);
-    }
+    const endPred = perfMon.start('filter:predicate-creation');
+    const pred = createPredicateFn<T>(expr, cfg);
+    endPred();
 
-    endTotalTime();
+    const endFilt = perfMon.start('filter:filtering');
+    const filtered = array.filter(pred);
+    endFilt();
+
+    const result = applyPostProcessing(filtered, cfg.orderBy, cfg.limit, cfg.caseSensitive);
+    endTotal();
     return result;
   } catch (error) {
-    endTotalTime();
+    endTotal();
     throw error;
   }
 }
