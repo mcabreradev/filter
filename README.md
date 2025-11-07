@@ -58,9 +58,6 @@ npm install zod
 
 @mcabreradev/filter is optimized for minimal bundle impact with tree-shaking support:
 
-| Import Strategy | Size (gzipped) | Use Case |
-|----------------|----------------|----------|
-| Full library | ~12 KB | All features needed |
 
 ```typescript
 import { filter } from '@mcabreradev/filter';
