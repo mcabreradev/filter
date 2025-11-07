@@ -1,8 +1,8 @@
-# @mcabreradev/filter
+# Filter
 
-> Zero-dependency TypeScript filtering library with MongoDB-style operators, geospatial queries, and framework integrations
+> A powerful, SQL-like array filtering library for TypeScript and JavaScript with advanced pattern matching, MongoDB-style operators, deep object comparison, and zero dependencies.
 
-<p align="center">
+<p>
   <a aria-label="NPM version" href="https://www.npmjs.com/package/@mcabreradev/filter">
     <img alt="" src="https://img.shields.io/npm/v/@mcabreradev/filter.svg?style=for-the-badge&labelColor=0869B8">
   </a>
@@ -23,19 +23,30 @@
   </a>
 </p>
 
-<p align="center">
-  <a href="#quick-start">Quick Start</a> •
-  <a href="#features">Features</a> •
-  <a href="./docs">Documentation</a> •
-  <a href="https://mcabreradev-filter.vercel.app/playground/">Playground</a> •
-  <a href="#examples">Examples</a>
-</p>
+## Why @mcabreradev/filter?
+
+Go beyond JavaScript's native `Array.filter()` with a library that understands your data:
+
+- **🎯 SQL-like Wildcards** - Use `%` and `_` for flexible pattern matching
+- **🔍 Deep Object Filtering** - Search through nested objects up to configurable depths
+- **⚡ Zero Dependencies** - Truly zero dependencies, lightweight and production-ready
+- **🔒 Type-Safe** - Built with strict TypeScript for maximum reliability
+- **✨ Smart Autocomplete** - IntelliSense suggests only valid operators for each property type
+- **🎨 Multiple Strategies** - String patterns, objects, predicates, operators, or custom comparators
+- **🚀 Performance Optimized** - Optional caching and regex compilation optimization
+- **📦 MongoDB-Style Operators** - 30+ operators for advanced filtering (v5.0.0+)
+- **🌍 Geospatial Operators** - Location-based filtering with $near, $geoBox, $geoPolygon (v5.6.0+)
+- **📅 Date/Time Operators** - Temporal filtering with $recent, $upcoming, $dayOfWeek, $age (v5.6.0+)
+- **💨 Lazy Evaluation** - Process large datasets efficiently with generators (v5.1.0+)
+- **🎨 Framework Integrations** - React, Vue, and Svelte support (v5.3.0+)
+- **🧪 Battle-Tested** - 994 tests ensuring reliability
 
 ---
 
-## Quick Start
+## Installation
 
 ```bash
+# Using npm
 npm install @mcabreradev/filter
 
 # Using yarn
@@ -61,194 +72,106 @@ npm install zod
 | Import Strategy | Size (gzipped) | Use Case |
 |----------------|----------------|----------|
 | Full library | ~12 KB | All features needed |
+| Core only | ~8.4 KB | Basic filtering |
+| Operators (granular) | ~4.3 KB | Specific operators |
+| React integration | ~9.2 KB | React hooks |
+| Vue integration | ~8.9 KB | Vue composables |
+| Svelte integration | ~9 KB | Svelte stores |
+| Angular integration | ~9.3 KB | Angular services |
+| SolidJS integration | ~8.5 KB | SolidJS hooks |
+| Preact integration | ~8.5 KB | Preact hooks |
+| Lazy evaluation | ~5.4 KB | Large datasets |
+
+**Recent Optimization:** Bundle size reduced from 65.63 KB to 12.02 KB (81% reduction) by making all heavy dependencies optional peer dependencies.
+
+**Package Size:** 52.8 KB (gzipped tarball), 234 KB unpacked, 197 files
+
+### Import Examples
+
+```typescript
+// Full import (includes all features)
+import { filter } from '@mcabreradev/filter';
+// Bundle: ~12 KB (gzipped)
+
+// Granular imports (Recommended for production)
+import { filter } from '@mcabreradev/filter/core';
+import { evaluateGt, evaluateLt } from '@mcabreradev/filter/operators/comparison';
+// Bundle: ~8.4 KB (gzipped) - 30% reduction
+
+// Framework-specific imports
+import { useFilter } from '@mcabreradev/filter/react';
+// Bundle: ~9.2 KB (gzipped)
+
+// Lazy evaluation only
+import { filterLazy } from '@mcabreradev/filter/lazy';
+// Bundle: ~5.4 KB (gzipped)
+```
+
+> 📖 See [Bundle Size Optimization Guide](./docs/advanced/bundle-size.md) for detailed strategies.
+
+
+---
+
+## Quick Start
 
 ```typescript
 import { filter } from '@mcabreradev/filter';
 
 const users = [
-  { name: 'Alice', age: 30, city: 'Berlin', active: true },
-  { name: 'Bob', age: 25, city: 'London', active: false },
-  { name: 'Charlie', age: 35, city: 'Berlin', active: true }
+  { name: 'Alice', email: 'alice@example.com', age: 30, city: 'Berlin' },
+  { name: 'Bob', email: 'bob@example.com', age: 25, city: 'London' },
+  { name: 'Charlie', email: 'charlie@example.com', age: 35, city: 'Berlin' }
 ];
 
-// Simple string matching
+// Simple string matching (case-insensitive by default)
 filter(users, 'Berlin');
-// → [Alice, Charlie]
+// → Returns Alice and Charlie
 
-// MongoDB-style operators
-filter(users, { age: { $gte: 30 }, active: true });
-// → [Alice, Charlie]
+// Wildcard patterns (SQL-like)
+filter(users, '%alice%');
+// → Returns Alice
 
-// Array OR syntax
-filter(users, { city: ['Berlin', 'Paris'] });
-// → [Alice, Charlie]
+// Object-based filtering
+filter(users, { city: 'Berlin', age: 30 });
+// → Returns Alice
 
-// With options
-filter(users, { age: { $gte: 30 } }, { orderBy: 'age', limit: 5 });
+// Negation support
+filter(users, '!London');
+// → Returns Alice and Charlie
+
+// Predicate functions
+filter(users, (user) => user.age > 28);
+// → Returns Alice and Charlie
+
+// v5.0.0: MongoDB-style operators
+filter(users, { age: { $gte: 25, $lt: 35 } });
+// → Returns Bob and Alice
+
+filter(users, { city: { $in: ['Berlin', 'Paris'] } });
+// → Returns Alice and Charlie
+
+filter(users, { name: { $startsWith: 'A' } });
+// → Returns Alice
 ```
 
-## Features
-
-### 🚀 Core Capabilities
-- **Zero Dependencies** - Production-ready, 12KB gzipped
-- **Type-Safe** - Full TypeScript support with intelligent autocomplete
-- **30+ Operators** - MongoDB-style queries (`$gte`, `$in`, `$regex`, etc.)
-- **Performance** - 530x faster with optional caching
-- **Framework Ready** - React, Vue, Svelte, Angular, SolidJS, Preact
-
-### 🎯 Advanced Features
-- **Geospatial Queries** - Location-based filtering (`$near`, `$geoBox`, `$geoPolygon`)
-- **Temporal Operators** - Date/time filtering (`$recent`, `$upcoming`, `$age`)
-- **Lazy Evaluation** - Process millions of records efficiently
-- **Visual Debugging** - Built-in expression tree visualization
-- **SQL-like Wildcards** - `%` and `_` pattern matching
-
-### 📦 Bundle Size (gzipped)
-| Import | Size | Tree-Shakeable |
-|--------|------|----------------|
-| Full | 12 KB | ✅ |
-| Core only | 8.4 KB | ✅ |
-| React hooks | 9.2 KB | ✅ |
-| Lazy evaluation | 5.4 KB | ✅ |
-
-## Examples
-
-### Basic Filtering
-
-```typescript
-// String matching
-filter(products, 'Laptop');
-
-// Object matching
-filter(products, { category: 'Electronics', price: { $lt: 1000 } });
-
-// String operators
-filter(users, { email: { $endsWith: '@company.com' } });
-```
-
-### Logical Operators
-
-```typescript
-filter(products, {
-  $and: [
-    { inStock: true },
-    { $or: [{ rating: { $gte: 4.5 } }, { price: { $lt: 50 } }] }
-  ]
-});
-```
-
-### Geospatial
-
-```typescript
-filter(restaurants, {
-  location: {
-    $near: {
-      center: { lat: 52.52, lng: 13.405 },
-      maxDistanceMeters: 5000
-    }
-  },
-  rating: { $gte: 4.5 }
-});
-```
-
-### Date/Time
-
-```typescript
-filter(events, {
-  date: { $upcoming: { days: 7 } },
-  startTime: { $timeOfDay: { start: 9, end: 17 } }
-});
-```
-
-### Framework Integration
-
-```typescript
-// React
-import { useFilter } from '@mcabreradev/filter/react';
-
-function UserList() {
-  const { filtered, isFiltering } = useFilter(users, { active: true });
-  return <div>{filtered.map(u => <User key={u.id} {...u} />)}</div>;
-}
-```
-
-```vue
-<!-- Vue -->
-<script setup>
-import { useFilter } from '@mcabreradev/filter/vue';
-const { filtered } = useFilter(users, { active: true });
-</script>
-```
-
-### Performance Optimization
-
-```typescript
-const results = filter(largeDataset, expression, { 
-  enableCache: true,
-  orderBy: { field: 'price', direction: 'desc' },
-  limit: 100
-});
-```
-
-## Documentation
-
-- 📖 [Complete Guide](./docs/guide/quick-start.md)
-- 🎯 [All Operators](./docs/guide/operators.md)
-- 🌍 [Geospatial Queries](./docs/guide/geospatial-operators.md)
-- 📅 [Date/Time Operators](./docs/guide/datetime-operators.md)
-- ⚡ [Performance Guide](./docs/guide/memoization.md)
-- � [Framework Integrations](./docs/frameworks/index.md)
-- 🎮 [Interactive Playground](https://mcabreradev-filter.vercel.app/playground/)
-
-## Supported Operators
-
-**Comparison:** `$gt`, `$gte`, `$lt`, `$lte`, `$eq`, `$ne`  
-**Array:** `$in`, `$nin`, `$contains`, `$size`  
-**String:** `$startsWith`, `$endsWith`, `$contains`, `$regex`, `$match`  
-**Logical:** `$and`, `$or`, `$not`  
-**Geospatial:** `$near`, `$geoBox`, `$geoPolygon`  
-**Date/Time:** `$recent`, `$upcoming`, `$dayOfWeek`, `$timeOfDay`, `$age`, `$isWeekday`, `$isWeekend`
-
-## TypeScript
-
-Full type safety with intelligent autocomplete:
-
-```typescript
-interface Product {
-  name: string;
-  price: number;
-  tags: string[];
-}
-
-filter<Product>(products, {
-  price: {  }, // Autocomplete: $gt, $gte, $lt, $lte, $eq, $ne, $in, $nin
-  name: {  },  // Autocomplete: $startsWith, $endsWith, $contains, $regex, $match
-  tags: {  }   // Autocomplete: $in, $nin, $contains, $size
-});
-```
-
-## Framework Support
-
-- ⚛️ React
-- 🟢 Vue
-- 🔴 Svelte
-- 🅰️ Angular
-- 🔷 SolidJS
-- ⚡ Preact
-
-## Contributing
-
-Contributions welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md)
-
-## License
-
-MIT © [Miguelángel Cabrera](https://github.com/mcabreradev)
+> 🎮 **[Try it live in the Interactive Playground!](https://mcabreradev-filter.vercel.app/playground/)**
 
 ---
 
-<p align="center">
-  <strong>993 tests • 100% TypeScript • Zero dependencies</strong>
-</p>
+## Framework Integrations 🎨
+
+**New in v5.7.0**: Full framework integration support for **6 major frameworks**!
+
+### Supported Frameworks
+
+- ⚛️ **React** - Hooks with automatic re-rendering
+- 🟢 **Vue** - Composition API with reactivity
+- 🔴 **Svelte** - Store-based reactive filtering
+- 🅰️ **Angular** - Services and Pipes with Signals ⭐ NEW
+- 🔷 **SolidJS** - Signal-based reactive hooks ⭐ NEW
+- ⚡ **Preact** - Lightweight hooks API ⭐ NEW
+
+### Quick Examples
 
 #### React
 
