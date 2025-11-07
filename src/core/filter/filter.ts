@@ -57,7 +57,12 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
       endCacheLookup();
 
       if (cached !== undefined) {
-        const result = applyPostProcessing(cached as T[], cfg.orderBy, cfg.limit, cfg.caseSensitive);
+        const result = applyPostProcessing(
+          cached as T[],
+          cfg.orderBy,
+          cfg.limit,
+          cfg.caseSensitive,
+        );
         endTotal();
         return result;
       }
