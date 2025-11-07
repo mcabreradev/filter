@@ -160,26 +160,6 @@ filter(events, {
 });
 ```
 
-### Framework Integration
-
-```typescript
-// React
-import { useFilter } from '@mcabreradev/filter/react';
-
-function UserList() {
-  const { filtered, isFiltering } = useFilter(users, { active: true });
-  return <div>{filtered.map(u => <User key={u.id} {...u} />)}</div>;
-}
-```
-
-```vue
-<!-- Vue -->
-<script setup>
-import { useFilter } from '@mcabreradev/filter/vue';
-const { filtered } = useFilter(users, { active: true });
-</script>
-```
-
 ### Performance Optimization
 
 ```typescript
