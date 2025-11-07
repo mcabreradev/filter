@@ -213,16 +213,6 @@ filter<Product>(products, {
 - 🔷 SolidJS
 - ⚡ Preact
 
-## Contributing
-
-Contributions welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md)
-
-## License
-
-MIT © [Miguelángel Cabrera](https://github.com/mcabreradev)
-
----
-
 <p align="center">
   <strong>993 tests • 100% TypeScript • Zero dependencies</strong>
 </p>
