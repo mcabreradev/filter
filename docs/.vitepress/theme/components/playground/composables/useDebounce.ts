@@ -20,7 +20,11 @@ export function useDebouncedExecute(
     }
 
     debounceTimer.value = setTimeout(async () => {
-      await callback();
+      try {
+        await callback();
+      } catch (error) {
+        console.error('Error in debounced callback:', error);
+      }
     }, delay) as unknown as number;
   };
 

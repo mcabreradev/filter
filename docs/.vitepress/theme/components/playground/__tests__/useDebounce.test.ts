@@ -156,6 +156,7 @@ describe('useDebouncedExecute', () => {
   });
 
   it('should handle errors in callback gracefully', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const callback = vi.fn(() => {
       throw new Error('Test error');
     });
@@ -165,10 +166,12 @@ describe('useDebouncedExecute', () => {
 
     debouncedExecute();
 
+    // Error should be caught and not crash the debounce mechanism
     expect(() => {
       vi.advanceTimersByTime(300);
-    }).toThrow('Test error');
+    }).not.toThrow();
 
     expect(callback).toHaveBeenCalledTimes(1);
+    consoleErrorSpy.mockRestore();
   });
 });
