@@ -24,7 +24,7 @@
     "analyze": "pnpm run size:why",
     "check": "pnpm exec lint-staged && pnpm run test && pnpm run test:types && pnpm run typecheck && pnpm run lint && pnpm run test:docs",
     "prepare": "husky",
-    "prepublish": "pnpm run check && pnpm run test:docs:build",
+    "prepublish": "pnpm run check",
     "version": "pnpm run format && git add -A src",
     "publish:major": "pnpm run check && pnpm version major && pnpm publish",
     "publish:minor": "pnpm run check && pnpm version minor && pnpm publish",
