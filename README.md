@@ -1,6 +1,6 @@
 # @mcabreradev/filter
 
-> **Filter arrays like a pro.** Zero-dependency TypeScript library with MongoDB-style operators, geospatial queries, and framework integrations.
+> **Filter arrays like a pro.** A powerful, SQL-like array filtering library for TypeScript with advanced pattern matching, MongoDB-style operators, deep object comparison, geospatial queries, and zero dependencies.
 
 <p align="center">
   <a aria-label="NPM version" href="https://www.npmjs.com/package/@mcabreradev/filter">
@@ -30,6 +30,66 @@
   <a href="https://mcabreradev-filter.vercel.app/playground/">Playground</a> •
   <a href="./docs">Documentation</a>
 </p>
+
+---
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+## Table of Contents
+
+- [@mcabreradev/filter](#mcabreradevfilter)
+  - [The Hook](#the-hook)
+  - [Quick Start](#quick-start)
+    - [Install](#install)
+    - [Your First Filter](#your-first-filter)
+  - [Why You'll Love It](#why-youll-love-it)
+    - [🚀 **Blazing Fast**](#-blazing-fast)
+    - [🎯 **Developer Friendly**](#-developer-friendly)
+    - [🔧 **Incredibly Flexible**](#-incredibly-flexible)
+    - [📦 **Production Ready**](#-production-ready)
+    - [🪶 **Ultra Lightweight**](#-ultra-lightweight)
+    - [🔒 **Type-Safe by Default**](#-type-safe-by-default)
+    - [🎨 **Framework Agnostic**](#-framework-agnostic)
+    - [📊 **Handles Big Data**](#-handles-big-data)
+  - [Examples](#examples)
+    - [Basic Filtering](#basic-filtering)
+    - [MongoDB-Style Operators](#mongodb-style-operators)
+    - [Array OR Syntax (Intuitive!)](#array-or-syntax-intuitive)
+    - [Geospatial Queries](#geospatial-queries)
+    - [Date/Time Filtering](#datetime-filtering)
+    - [Performance Optimization](#performance-optimization)
+    - [Real-World: E-commerce Search](#real-world-e-commerce-search)
+  - [Framework Integrations](#framework-integrations)
+    - [React](#react)
+    - [Vue](#vue)
+    - [Svelte](#svelte)
+    - [Angular](#angular)
+    - [SolidJS](#solidjs)
+    - [Preact](#preact)
+  - [Core Features](#core-features)
+    - [Supported Operators](#supported-operators)
+    - [TypeScript Support](#typescript-support)
+    - [Configuration Options](#configuration-options)
+  - [Advanced Features](#advanced-features)
+    - [Lazy Evaluation](#lazy-evaluation)
+    - [Memoization & Caching](#memoization--caching)
+    - [Visual Debugging](#visual-debugging)
+  - [Documentation](#documentation)
+    - [📖 Complete Guides](#-complete-guides)
+    - [🎯 Quick Links](#-quick-links)
+  - [Performance](#performance)
+  - [Bundle Size](#bundle-size)
+  - [Browser Support](#browser-support)
+  - [Migration from v3.x](#migration-from-v3x)
+  - [Changelog](#changelog)
+    - [v5.8.0 (Current)](#v580-current)
+    - [v5.7.0](#v570)
+    - [v5.6.0](#v560)
+    - [v5.5.0](#v550)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Support](#support)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
 
