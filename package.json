@@ -22,7 +22,7 @@
     "size": "size-limit",
     "size:why": "size-limit --why",
     "analyze": "pnpm run size:why",
-    "check": "pnpm exec lint-staged && pnpm run typecheck && pnpm run test:types && pnpm run lint && pnpm run test && pnpm run test:docs",
+    "check": "pnpm exec lint-staged && pnpm run test && pnpm run test:types && pnpm run typecheck && pnpm run lint && pnpm run test:docs",
     "prepare": "husky",
     "prepublish": "pnpm run check && pnpm run test:docs:build",
     "version": "pnpm run format && git add -A src",
