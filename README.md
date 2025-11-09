@@ -711,14 +711,13 @@ filter(data, expression, { enableCache: true });
 ### v5.8.0 (Current)
 - 🎨 **New Framework Integrations**: Angular, SolidJS, and Preact support
 - 🔢 **Limit Option**: New `limit` configuration option to restrict result count
-- 📊 **OrderBy Option**: Sort filtered results by field(s) in ascending or descending order
+- 📊 **OrderBy Option**: New `OrderBy` configuration option to sort filtered results by field(s) in ascending or descending order
 - ✅ 993+ tests with comprehensive coverage
 
 ### v5.7.0
 - 🅰️ **Angular**: Services and Pipes with Signals support
 - 🔷 **SolidJS**: Signal-based reactive hooks
 - ⚡ **Preact**: Lightweight hooks API
-- 📊 **OrderBy & Limit**: Sort and limit filtered results
 
 ### v5.6.0
 - 🌍 **Geospatial Operators**: Location-based filtering with $near, $geoBox, $geoPolygon
