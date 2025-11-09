@@ -155,7 +155,7 @@ Contains code examples for the playground with various filter patterns:
 - Wildcard patterns
 - Logical operators
 - Geospatial queries
-- Date/time filtering
+- Datetime filtering
 
 ### datasets.ts
 Sample datasets for testing filters:
@@ -175,11 +175,11 @@ import { Playground } from './components/playground';
 Or import individual components:
 
 ```typescript
-import { 
-  PlaygroundHeader, 
-  FilterBuilder, 
-  CodeEditor, 
-  OutputPanel 
+import {
+  PlaygroundHeader,
+  FilterBuilder,
+  CodeEditor,
+  OutputPanel
 } from './components/playground';
 ```
 

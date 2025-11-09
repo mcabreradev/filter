@@ -111,16 +111,16 @@ filter(users, {
 });
 
 // Complex predicates
-filter(products, (p) => 
-  p.price < 100 && 
-  p.inStock && 
+filter(products, (p) =>
+  p.price < 100 &&
+  p.inStock &&
   p.rating >= 4.0
 );
 
 // With configuration
-filter(users, 'ALICE', { 
+filter(users, 'ALICE', {
   caseSensitive: true,
-  debug: true 
+  debug: true
 });
 
 // Datetime filtering - upcoming weekday events
@@ -150,29 +150,29 @@ The playground includes pre-populated datasets:
 
 ```typescript
 [
-  { 
-    id: 1, 
-    name: 'Alice', 
-    email: 'alice@example.com', 
-    age: 30, 
+  {
+    id: 1,
+    name: 'Alice',
+    email: 'alice@example.com',
+    age: 30,
     city: 'Berlin',
     active: true,
     role: 'admin'
   },
-  { 
-    id: 2, 
-    name: 'Bob', 
-    email: 'bob@example.com', 
-    age: 25, 
+  {
+    id: 2,
+    name: 'Bob',
+    email: 'bob@example.com',
+    age: 25,
     city: 'London',
     active: true,
     role: 'user'
   },
-  { 
-    id: 3, 
-    name: 'Charlie', 
-    email: 'charlie@example.com', 
-    age: 35, 
+  {
+    id: 3,
+    name: 'Charlie',
+    email: 'charlie@example.com',
+    age: 35,
     city: 'Berlin',
     active: false,
     role: 'user'
@@ -408,7 +408,7 @@ filter(users, { nonExistent: 'value' });
 filter(products, { price: 'not a number' });
 ```
 
-### 5. Explore Date/Time Operators
+### 5. Explore Datetime Operators
 
 Test temporal filtering with datetime operators:
 

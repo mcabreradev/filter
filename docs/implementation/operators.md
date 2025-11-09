@@ -8,7 +8,7 @@ This document summarizes the implementation of MongoDB-style operators in `@mcab
 
 - **v5.0.0** (October 15, 2025): Initial 13 operators
 - **v5.2.0**: Added logical operators ($and, $or, $not) and regex operators ($regex, $match)
-- **v5.6.0** (November 4, 2025): Added geospatial operators (3) and date/time operators (9)
+- **v5.6.0** (November 4, 2025): Added geospatial operators (3) and Datetime operators (9)
 
 ## Features Implemented
 
@@ -56,7 +56,7 @@ This document summarizes the implementation of MongoDB-style operators in `@mcab
 
 **Support**: Uses spherical law of cosines for distance calculation
 
-### 6. Date/Time Operators (9 operators) - v5.6.0
+### 6. Datetime Operators (9 operators) - v5.6.0
 
 - `$recent` - Items from last N days/hours/minutes
 - `$upcoming` - Items in next N days/hours/minutes
@@ -131,7 +131,7 @@ export const OPERATORS = {
   NEAR: '$near',
   GEO_BOX: '$geoBox',
   GEO_POLYGON: '$geoPolygon',
-  // Date/Time
+  // Datetime
   RECENT: '$recent',
   UPCOMING: '$upcoming',
   DAY_OF_WEEK: '$dayOfWeek',
@@ -152,7 +152,7 @@ export const OPERATORS = {
 - `src/operators/string/string.operators.ts` - String logic (v5.0.0)
 - `src/operators/logical/logical.operators.ts` - Logical logic (v5.2.0)
 - `src/operators/geospatial/geospatial.operators.ts` - Geospatial logic (v5.6.0)
-- `src/operators/datetime/datetime.operators.ts` - Date/time logic (v5.6.0)
+- `src/operators/datetime/datetime.operators.ts` - Datetime logic (v5.6.0)
 - `src/operators/operator-processor.ts` - Coordination (updated in each version)
 - `src/operators/index.ts` - Exports
 
@@ -412,7 +412,7 @@ Operators Module: 100% coverage
     - Real-world location examples
 
 11. **docs/guide/datetime-operators.md** (NEW)
-    - Complete date/time guide
+    - Complete Datetime guide
     - Relative time filtering
     - Day of week filtering
     - Time of day filtering
@@ -508,7 +508,7 @@ filter(data, { prop: { $gt: 5 } }); // ✅ NEW in v5.0.0
    - For extreme precision requirements, consider Haversine formula
    - Polygon queries use ray casting algorithm (standard approach)
 
-4. **Date/Time Operators** (v5.6.0):
+4. **Datetime Operators** (v5.6.0):
    - Age calculation doesn't account for leap seconds
    - Timezone-aware filtering requires pre-normalized dates
    - DST transitions handled by native Date API
@@ -521,14 +521,14 @@ filter(data, { prop: { $gt: 5 } }); // ✅ NEW in v5.0.0
 - ✅ **Array OR Syntax**: Direct array values for OR logic (v5.5.0)
 - ✅ **Visual Debugging**: Expression tree visualization (v5.5.0)
 - ✅ **Geospatial Operators**: Location-based filtering (v5.6.0)
-- ✅ **Date/Time Operators**: Temporal filtering (v5.6.0)
+- ✅ **Datetime Operators**: Temporal filtering (v5.6.0)
 
 **Considered for Future**:
 1. **Advanced Array Operators**: `$some`, `$every`, `$containsAll`
 2. **Existence Operators**: `$exists`, `$null`, `$type`
 3. **String Length**: `$length` operator
 4. **Geospatial**: Haversine distance option, $geoWithin with circles
-5. **Date/Time**: Timezone-aware operators, duration operators
+5. **Datetime**: Timezone-aware operators, duration operators
 6. **Chainable API**: Fluent interface for building queries (ChainableArray in v5.3.0)
 
 ## Migration Path from Predicates
@@ -669,7 +669,7 @@ All success criteria from the original plan and subsequent releases were met:
 
 **v5.6.0**:
 - ✅ 3 geospatial operators implemented
-- ✅ 9 date/time operators implemented
+- ✅ 9 Datetime operators implemented
 - ✅ Distance calculation utilities
 - ✅ Age calculation utilities
 - ✅ 90+ new tests
@@ -727,7 +727,7 @@ All success criteria from the original plan and subsequent releases were met:
 
 **v5.6.0** (November 4, 2025)
 - [x] Geospatial operators implemented
-- [x] Date/time operators implemented
+- [x] Datetime operators implemented
 - [x] Utilities and validation complete
 - [x] 90+ new tests passing
 - [x] Documentation complete
@@ -748,7 +748,7 @@ The MongoDB-style operators feature has been successfully evolved from v5.0.0 to
   - 5 string operators
   - 3 logical operators
   - 3 geospatial operators
-  - 9 date/time operators
+  - 9 Datetime operators
 
 - **613+ comprehensive tests** with 100% coverage
 
@@ -773,7 +773,7 @@ The MongoDB-style operators feature has been successfully evolved from v5.0.0 to
   - Framework integrations (React, Vue, Svelte)
   - Array OR syntax
   - Geospatial distance calculations
-  - Date/time utilities
+  - Datetime utilities
 
 - **Performance optimizations**:
   - Early exit strategies

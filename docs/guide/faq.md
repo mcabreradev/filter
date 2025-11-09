@@ -179,7 +179,7 @@ const expression = {
 };
 ```
 
-### How do I filter by date/time ranges?
+### How do I filter by Datetime ranges?
 
 Use datetime operators (v5.6.0+):
 

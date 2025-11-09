@@ -115,7 +115,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 100% code coverage for geospatial features
 - Edge case testing for invalid coordinates and missing data
 
-### Date/Time Operators
+### Datetime Operators
 - **Relative Time Filtering**: Filter by last/next N days/hours/minutes
   - `$recent`: Find events in the last N days/hours/minutes
   - `$upcoming`: Find events in the next N days/hours/minutes

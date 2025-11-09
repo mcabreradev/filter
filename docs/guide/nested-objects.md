@@ -281,7 +281,7 @@ filter(properties, {
 });
 ```
 
-### Date/Time Operators
+### Datetime Operators
 
 ```typescript
 // Recent events (dot notation)
@@ -965,7 +965,7 @@ interface User {
 }
 
 // Define allowed paths as string literals
-type UserPath = 
+type UserPath =
   | 'profile.personal.age'
   | 'profile.personal.name'
   | 'profile.address.city'
@@ -1009,7 +1009,7 @@ interface User {
 }
 
 type UserPaths = DotNotation<User>;
-// Type: "name" | "profile" | "profile.age" | "profile.address" | 
+// Type: "name" | "profile" | "profile.age" | "profile.address" |
 //       "profile.address.city" | "profile.address.country"
 
 // Type-safe expression
@@ -1381,7 +1381,7 @@ filter(events, {
 
 - [Operators Guide](/guide/operators) - All 30+ available operators
 - [Geospatial Operators](/guide/geospatial-operators) - Location-based filtering
-- [Date/Time Operators](/guide/datetime-operators) - Temporal filtering
+- [Datetime Operators](/guide/datetime-operators) - Temporal filtering
 - [Logical Operators](/guide/logical-operators) - Complex expressions
 - [Configuration](/guide/configuration) - maxDepth and other options
 - [TypeScript Support](/advanced/type-system) - Type safety and inference

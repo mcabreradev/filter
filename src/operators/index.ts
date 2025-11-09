@@ -24,7 +24,7 @@ export {
   evaluateGeoPolygon,
 } from './geospatial/geospatial.operators';
 
-// Date/Time operators
+// Datetime operators
 export {
   evaluateRecent,
   evaluateUpcoming,

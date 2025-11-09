@@ -1,10 +1,10 @@
-# Date/Time Operators Guide
+# Datetime Operators Guide
 
 Complete guide to date and time filtering with `@mcabreradev/filter`.
 
 ## Overview
 
-Date/time operators provide powerful filtering capabilities for temporal data. Filter by relative time ranges, specific days of the week, time of day, age calculations, and more.
+Datetime operators provide powerful filtering capabilities for temporal data. Filter by relative time ranges, specific days of the week, time of day, age calculations, and more.
 
 **Available in:** v5.6.0+
 
@@ -895,7 +895,7 @@ const next10 = filterFirst(events, { date: { $upcoming: { days: 30 } } }, 10);
 
 ## Comparison with Existing Operators
 
-Date/time operators complement existing comparison operators:
+Datetime operators complement existing comparison operators:
 
 | Scenario | Datetime Operator | Standard Operator |
 |----------|------------------|-------------------|
@@ -941,7 +941,7 @@ filter(events, { date: { $isAfter: utcDate } });
 
 ## Migration from v5.6.x
 
-Date/time operators are **fully backward compatible**. All existing code continues to work:
+Datetime operators are **fully backward compatible**. All existing code continues to work:
 
 ```typescript
 // ✅ Still works (v5.6.x and earlier)

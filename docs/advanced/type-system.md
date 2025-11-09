@@ -13,7 +13,7 @@ Understanding the TypeScript type system in @mcabreradev/filter.
 The main type for filter expressions that adapts to your data structure with intelligent operator suggestions.
 
 ```typescript
-type Expression<T> = 
+type Expression<T> =
   | PrimitiveExpression
   | PredicateFunction<T>
   | ObjectExpression<T>
@@ -21,7 +21,7 @@ type Expression<T> =
 
 // Object expression with typed operators
 type ObjectExpression<T> = {
-  [K in keyof T]?: 
+  [K in keyof T]?:
     | T[K]
     | OperatorExpression<T[K]>
     | T[K][];  // Array OR syntax (v5.5.0+)
@@ -66,13 +66,13 @@ interface User {
 const expression: Expression<User> = {
   // Number property - suggests: $eq, $ne, $gt, $gte, $lt, $lte, $in, $nin
   age: { $gte: 18, $lte: 65 },
-  
+
   // String property - suggests: $eq, $ne, $startsWith, $endsWith, $contains, $regex, $match, $in, $nin
   name: { $startsWith: 'John' },
-  
+
   // Array property - suggests: $contains, $size, $in, $nin
   tags: { $contains: 'premium' },
-  
+
   // GeoPoint property - suggests: $near, $geoBox, $geoPolygon
   location: {
     $near: {
@@ -80,13 +80,13 @@ const expression: Expression<User> = {
       maxDistanceMeters: 5000
     }
   },
-  
+
   // Date property - suggests: $recent, $upcoming, $dayOfWeek, $timeOfDay, $age, etc.
   birthDate: { $age: { min: 18, max: 65, unit: 'years' } },
-  
+
   // Boolean property - suggests: $eq, $ne
   active: { $eq: true },
-  
+
   // Array OR syntax (v5.5.0+)
   id: [1, 2, 3]  // Matches id === 1 OR id === 2 OR id === 3
 };
@@ -97,7 +97,7 @@ const expression: Expression<User> = {
 Type-safe operator expressions that adapt to property types with intelligent autocomplete.
 
 ```typescript
-type OperatorExpression<T> = 
+type OperatorExpression<T> =
   & ComparisonOperators<T>
   & ArrayOperators<T>
   & StringOperators<T>
@@ -138,7 +138,7 @@ interface GeospatialOperators<T> {
   $geoPolygon?: T extends GeoPoint ? PolygonQuery : never;
 }
 
-// Date/time operators (v5.6.0+, available for Date types)
+// Datetime operators (v5.6.0+, available for Date types)
 interface DateTimeOperators<T> {
   $recent?: T extends Date ? RelativeTimeQuery : never;
   $upcoming?: T extends Date ? RelativeTimeQuery : never;
@@ -157,7 +157,7 @@ interface DateTimeOperators<T> {
 - String operators (`$regex`, `$startsWith`, `$endsWith`, `$contains`, `$match`) only work with `string`
 - Array operators (`$contains`, `$size`) only work with arrays
 - Geospatial operators (`$near`, `$geoBox`, `$geoPolygon`) only work with `GeoPoint`
-- Date/time operators (`$recent`, `$upcoming`, `$dayOfWeek`, etc.) only work with `Date`
+- Datetime operators (`$recent`, `$upcoming`, `$dayOfWeek`, etc.) only work with `Date`
 
 **Example**:
 ```typescript
@@ -276,7 +276,7 @@ const expression: Expression<Restaurant> = {
 };
 ```
 
-## Date/Time Types (v5.6.0+)
+## Datetime Types (v5.6.0+)
 
 ### RelativeTimeQuery
 
@@ -613,7 +613,7 @@ import { useFilter, useDebouncedFilter, usePaginatedFilter } from '@mcabreradev/
 function UserList() {
   // Basic filtering
   const { filtered, isFiltering } = useFilter(users, { active: true });
-  
+
   // Debounced filtering for search
   const [search, setSearch] = useState('');
   const { filtered: searchResults, isPending } = useDebouncedFilter(
@@ -621,7 +621,7 @@ function UserList() {
     { name: { $contains: search } },
     { delay: 300 }
   );
-  
+
   // Paginated filtering
   const {
     filtered: paginatedUsers,
@@ -634,7 +634,7 @@ function UserList() {
     { active: true },
     { initialPage: 1, initialPageSize: 20 }
   );
-  
+
   return <div>{/* ... */}</div>;
 }
 ```
@@ -787,7 +787,7 @@ function isOperatorExpression<T>(
     '$regex', '$match', '$startsWith', '$endsWith',
     // Geospatial
     '$near', '$geoBox', '$geoPolygon',
-    // Date/Time
+    // Datetime
     '$recent', '$upcoming', '$dayOfWeek', '$timeOfDay', '$age',
     '$isWeekday', '$isWeekend', '$isBefore', '$isAfter'
   ];
@@ -1012,15 +1012,15 @@ const expression: Expression<Product> = {
   // $eq, $ne, $gt, $gte, $lt, $lte, $in, $nin
   id: { $gte: 100 },
   price: { $gte: 50, $lte: 500 },
-  
+
   // For string properties, TypeScript suggests:
   // $eq, $ne, $startsWith, $endsWith, $contains, $regex, $match, $in, $nin
   name: { $startsWith: 'Pro' },
-  
+
   // For array properties, TypeScript suggests:
   // $contains, $size, $in, $nin
   tags: { $contains: 'electronics' },
-  
+
   // For GeoPoint properties, TypeScript suggests:
   // $near, $geoBox, $geoPolygon
   location: {
@@ -1029,14 +1029,14 @@ const expression: Expression<Product> = {
       maxDistanceMeters: 10000
     }
   },
-  
+
   // For Date properties, TypeScript suggests:
   // $recent, $upcoming, $dayOfWeek, $timeOfDay, $age,
   // $isWeekday, $isWeekend, $isBefore, $isAfter, $eq, $ne, $gt, $gte, $lt, $lte
   createdAt: {
     $recent: { days: 30 }
   },
-  
+
   // For boolean properties, TypeScript suggests:
   // $eq, $ne
   inStock: { $eq: true }
@@ -1052,7 +1052,7 @@ const expression: Expression<Product> = {
   // Array of values - TypeScript knows this is OR logic
   id: [1, 2, 3],              // id === 1 OR id === 2 OR id === 3
   name: ['Laptop', 'Mouse'],  // name === 'Laptop' OR name === 'Mouse'
-  
+
   // Works with any property type
   price: [99, 199, 299],
   inStock: [true]
@@ -1306,7 +1306,7 @@ const users: User[] = data;
 const { filtered } = useFilter(users, expression);
 ```
 
-### Error: Invalid date/time query
+### Error: Invalid Datetime query
 
 ```typescript
 interface Event {
@@ -1335,7 +1335,7 @@ const expression: Expression<Event> = {
 - [Architecture](/advanced/architecture)
 - [Operators Guide](/guide/operators)
 - [Geospatial Operators](/guide/geospatial-operators)
-- [Date/Time Operators](/guide/datetime-operators)
+- [Datetime Operators](/guide/datetime-operators)
 - [Framework Integrations](/frameworks/overview)
 - [API Reference](/api/reference)
 - [Best Practices](/guide/best-practices)

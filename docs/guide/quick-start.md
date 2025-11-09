@@ -286,7 +286,7 @@ Now that you know the basics, explore more advanced features:
 - [Operators Guide](/guide/operators) - Learn all 30+ MongoDB-style operators
 - [Logical Operators](/guide/logical-operators) - Complex queries with $and, $or, $not
 - [Geospatial Operators](/guide/geospatial-operators) - Location-based filtering 🌍
-- [Date/Time Operators](/guide/datetime-operators) - Temporal filtering 📅
+- [Datetime Operators](/guide/datetime-operators) - Temporal filtering 📅
 - [Lazy Evaluation](/guide/lazy-evaluation) - Efficient processing for large datasets
 - [Memoization](/guide/memoization) - 530x performance boost with caching
 - [Configuration](/guide/configuration) - All options including orderBy and limit

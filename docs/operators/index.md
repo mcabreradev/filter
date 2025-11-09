@@ -31,7 +31,7 @@ Complex query composition
 Location-based filtering
 - `$near`, `$geoBox`, `$geoPolygon`
 
-### [Date/Time Operators](./datetime.md)
+### [Datetime Operators](./datetime.md)
 Temporal filtering
 - `$recent`, `$upcoming`, `$dayOfWeek`, `$timeOfDay`, `$age`
 

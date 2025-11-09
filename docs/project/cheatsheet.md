@@ -13,7 +13,7 @@
 - [String Operators](#string-operators)
 - [Logical Operators](#logical-operators)
 - [Geospatial Operators](#geospatial-operators)
-- [Date/Time Operators](#datetime-operators)
+- [Datetime Operators](#datetime-operators)
 - [Configuration Options](#configuration-options)
 - [Framework Integration](#framework-integration)
 - [Performance Tips](#performance-tips)
@@ -346,7 +346,7 @@ filter(properties, {
 
 ---
 
-## Date/Time Operators
+## Datetime Operators
 
 | Operator | Description | Example |
 |----------|-------------|---------|
@@ -610,7 +610,7 @@ filter(data, '!excluded');           // Not equal
 // Location
 { location: { $near: { ... } } }     // Within radius
 
-// Date/Time
+// Datetime
 { date: { $recent: { days: 7 } } }   // Last 7 days
 { date: { $dayOfWeek: [1,2,3] } }    // Mon-Wed
 ```

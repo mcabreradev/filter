@@ -4,7 +4,7 @@ Deep dive into the architecture of @mcabreradev/filter.
 
 ## Overview
 
-@mcabreradev/filter is built with a modular architecture that separates concerns and enables tree-shaking for optimal bundle sizes. The library has evolved from v3.x to v5.6.0, adding MongoDB-style operators, framework integrations, lazy evaluation, memoization, geospatial operators, date/time operators, and visual debugging.
+@mcabreradev/filter is built with a modular architecture that separates concerns and enables tree-shaking for optimal bundle sizes. The library has evolved from v3.x to v5.6.0, adding MongoDB-style operators, framework integrations, lazy evaluation, memoization, geospatial operators, Datetime operators, and visual debugging.
 
 ## Core Architecture
 
@@ -40,14 +40,14 @@ Deep dive into the architecture of @mcabreradev/filter.
 │   ├── operator.types.ts
 │   ├── config.types.ts
 │   ├── geospatial.types.ts          # Geo types (v5.6.0+)
-│   └── datetime.types.ts            # Date/time types (v5.6.0+)
+│   └── datetime.types.ts            # Datetime types (v5.6.0+)
 ├── utils/                  # Utility functions
 │   ├── cache.ts                     # Result caching with WeakMap
 │   ├── memoization.ts               # Multi-layer memoization (v5.2.0+)
 │   ├── lazy-iterators.ts            # Generator utilities (v5.1.0+)
 │   ├── pattern-matching.ts          # SQL wildcards (%, _)
 │   ├── geospatial.utils.ts          # Distance calculation (v5.6.0+)
-│   ├── datetime.utils.ts            # Date/time utilities (v5.6.0+)
+│   ├── datetime.utils.ts            # Datetime utilities (v5.6.0+)
 │   └── type-guards.ts
 ├── validation/             # Runtime validation with Zod
 │   ├── expression.validator.ts
@@ -179,7 +179,7 @@ export function processOperators<T>(
     else if (isGeospatialOperator(op)) {
       if (!evaluateGeospatial(value, op, operand)) return false;
     }
-    // Date/time operators (v5.6.0+)
+    // Datetime operators (v5.6.0+)
     else if (isDateTimeOperator(op)) {
       if (!evaluateDateTime(value, op, operand)) return false;
     }
@@ -318,17 +318,17 @@ export function evaluateGeoPolygon(point: GeoPoint, query: PolygonQuery): boolea
   // Ray casting algorithm for point-in-polygon
   let inside = false;
   const { points } = query;
-  
+
   for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
     const xi = points[i].lng, yi = points[i].lat;
     const xj = points[j].lng, yj = points[j].lat;
-    
+
     const intersect = ((yi > point.lat) !== (yj > point.lat)) &&
       (point.lng < (xj - xi) * (point.lat - yi) / (yj - yi) + xi);
-    
+
     if (intersect) inside = !inside;
   }
-  
+
   return inside;
 }
 
@@ -338,17 +338,17 @@ export function calculateDistance(p1: GeoPoint, p2: GeoPoint): number {
   const φ1 = p1.lat * Math.PI / 180;
   const φ2 = p2.lat * Math.PI / 180;
   const Δλ = (p2.lng - p1.lng) * Math.PI / 180;
-  
+
   const d = Math.acos(
     Math.sin(φ1) * Math.sin(φ2) +
     Math.cos(φ1) * Math.cos(φ2) * Math.cos(Δλ)
   ) * R;
-  
+
   return d;
 }
 ```
 
-**Date/Time Operators** (v5.6.0+):
+**Datetime Operators** (v5.6.0+):
 ```typescript
 export function evaluateRecent(date: Date, query: RelativeTimeQuery): boolean {
   const now = new Date();
@@ -383,7 +383,7 @@ export function evaluateAge(birthDate: Date, query: AgeQuery): boolean {
 export function calculateAge(birthDate: Date, unit: 'years' | 'months' | 'days' = 'years'): number {
   const now = new Date();
   const diff = now.getTime() - birthDate.getTime();
-  
+
   switch (unit) {
     case 'years':
       return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
@@ -427,7 +427,7 @@ class MemoizationStrategy {
   // Regex memoization
   memoizeRegex(pattern: string, flags?: string): RegExp {
     const key = `${pattern}:${flags || ''}`;
-    
+
     if (this.regexCache.has(key)) {
       return this.regexCache.get(key)!;
     }
@@ -619,7 +619,7 @@ export const filterDebug = <T>(
 
   // Build expression tree
   const tree = buildDebugTree(validatedExpression, config);
-  
+
   // Evaluate with tracking
   const { items, tree: populatedTree } = evaluateWithDebug(
     array,
@@ -981,7 +981,7 @@ The type system provides intelligent autocomplete based on property types:
 
 ```typescript
 // Core expression type
-type Expression<T> = 
+type Expression<T> =
   | PrimitiveExpression
   | PredicateFunction<T>
   | ObjectExpression<T>
@@ -989,7 +989,7 @@ type Expression<T> =
 
 // Object expression with typed operators
 type ObjectExpression<T> = {
-  [K in keyof T]?: 
+  [K in keyof T]?:
     | T[K]
     | OperatorExpression<T[K]>
     | T[K][];  // Array OR syntax (v5.5.0+)
@@ -1000,7 +1000,7 @@ type ObjectExpression<T> = {
 };
 
 // Type-aware operator expressions
-type OperatorExpression<T> = 
+type OperatorExpression<T> =
   & ComparisonOperators<T>
   & ArrayOperators<T>
   & StringOperators<T>
@@ -1041,7 +1041,7 @@ interface GeospatialOperators<T> {
   $geoPolygon?: T extends GeoPoint ? PolygonQuery : never;
 }
 
-// Date/time operators (v5.6.0+)
+// Datetime operators (v5.6.0+)
 interface DateTimeOperators<T> {
   $recent?: T extends Date ? RelativeTimeQuery : never;
   $upcoming?: T extends Date ? RelativeTimeQuery : never;
@@ -1074,7 +1074,7 @@ export interface PolygonQuery {
   points: GeoPoint[];
 }
 
-// Date/time types
+// Datetime types
 export interface RelativeTimeQuery {
   days?: number;
   hours?: number;
@@ -1111,14 +1111,14 @@ interface User {
 const expression: Expression<User> = {
   // number property - suggests: $eq, $ne, $gt, $gte, $lt, $lte, $in, $nin
   age: { $gte: 18, $lte: 65 },
-  
+
   // string property - suggests: $eq, $ne, $startsWith, $endsWith, $contains, $regex, $match, $in, $nin
   name: { $startsWith: 'A' },
   email: { $endsWith: '@example.com' },
-  
+
   // array property - suggests: $contains, $size, $in, $nin
   tags: { $contains: 'premium' },
-  
+
   // GeoPoint property - suggests: $near, $geoBox, $geoPolygon
   location: {
     $near: {
@@ -1126,12 +1126,12 @@ const expression: Expression<User> = {
       maxDistanceMeters: 5000
     }
   },
-  
+
   // Date property - suggests: $recent, $upcoming, $dayOfWeek, $timeOfDay, $age, $isWeekday, $isWeekend, $isBefore, $isAfter
   birthDate: {
     $age: { min: 18, max: 65, unit: 'years' }
   },
-  
+
   // boolean property - suggests: $eq, $ne
   active: { $eq: true }
 };
@@ -1194,7 +1194,7 @@ export function compileWildcardPattern(pattern: string): RegExp {
     .replace(/[.+^${}()|[\]\\]/g, '\\$&')
     .replace(/%/g, '.*')
     .replace(/_/g, '.');
-  
+
   return memoization.memoizeRegex(`^${escaped}$`, 'i');
 }
 ```
@@ -1212,16 +1212,16 @@ export function deepCompare(a: unknown, b: unknown): boolean {
       cache = new Map();
       comparisonCache.set(a, cache);
     }
-    
+
     if (cache.has(b)) {
       return cache.get(b)!;
     }
-    
+
     const result = deepCompareImpl(a, b);
     cache.set(b, result);
     return result;
   }
-  
+
   return a === b;
 }
 ```
@@ -1261,12 +1261,12 @@ export function mergeConfig(options?: FilterOptions): FilterConfig {
 
 export function createFilterConfig(options?: FilterOptions): FilterConfig {
   const config = mergeConfig(options);
-  
+
   // Validate configuration
   if (config.maxDepth < 1 || config.maxDepth > 10) {
     throw new Error('maxDepth must be between 1 and 10');
   }
-  
+
   return config;
 }
 ```
@@ -1310,11 +1310,11 @@ export function validateExpression<T>(expression: unknown): Expression<T> {
   if (typeof expression === 'function') {
     return expression as PredicateFunction<T>;
   }
-  
+
   if (isPrimitive(expression)) {
     return expression as PrimitiveExpression;
   }
-  
+
   if (typeof expression === 'object' && expression !== null) {
     // Validate operators
     for (const [key, value] of Object.entries(expression)) {
@@ -1324,7 +1324,7 @@ export function validateExpression<T>(expression: unknown): Expression<T> {
     }
     return expression as ObjectExpression<T>;
   }
-  
+
   throw new Error(`Invalid expression: ${typeof expression}`);
 }
 ```
@@ -1375,19 +1375,19 @@ export function filter<T>(
   options?: FilterOptions,
 ): T[] {
   const config = mergeConfig(options);
-  
+
   // Before hook
   config.onBeforeFilter?.(array, expression);
-  
+
   const startTime = performance.now();
-  
+
   try {
     const result = filterImpl(array, expression, config);
     const executionTime = performance.now() - startTime;
-    
+
     // After hook
     config.onAfterFilter?.(result, executionTime);
-    
+
     return result;
   } catch (error) {
     config.onError?.(error as Error);
@@ -1457,7 +1457,7 @@ describe('filter', () => {
       { location: { lat: 52.52, lng: 13.405 } },
       { location: { lat: 51.5074, lng: -0.1278 } },
     ];
-    
+
     const result = filter(data, {
       location: {
         $near: {
@@ -1466,20 +1466,20 @@ describe('filter', () => {
         },
       },
     });
-    
+
     expect(result).toHaveLength(1);
   });
 
-  it('should support date/time operators', () => {
+  it('should support Datetime operators', () => {
     const data = [
       { birthDate: new Date('1990-01-01') },
       { birthDate: new Date('2010-01-01') },
     ];
-    
+
     const result = filter(data, {
       birthDate: { $age: { min: 18, unit: 'years' } },
     });
-    
+
     expect(result).toHaveLength(1);
   });
 });
@@ -1525,28 +1525,28 @@ describe('useFilter (Vue)', () => {
 describe('performance', () => {
   it('should handle large datasets efficiently', () => {
     const data = Array.from({ length: 100000 }, (_, i) => ({ id: i }));
-    
+
     const start = performance.now();
     filter(data, { id: { $gte: 50000 } });
     const end = performance.now();
-    
+
     expect(end - start).toBeLessThan(100); // < 100ms
   });
 
   it('should benefit from caching', () => {
     const data = Array.from({ length: 10000 }, (_, i) => ({ id: i }));
     const expression = { id: { $gte: 5000 } };
-    
+
     // First call
     const start1 = performance.now();
     filter(data, expression, { enableCache: true });
     const time1 = performance.now() - start1;
-    
+
     // Second call (cached)
     const start2 = performance.now();
     filter(data, expression, { enableCache: true });
     const time2 = performance.now() - start2;
-    
+
     expect(time2).toBeLessThan(time1 * 0.1); // 10x faster
   });
 });
@@ -1561,7 +1561,7 @@ describe('performance', () => {
 - **v5.3.0**: Initial framework integrations
 - **v5.4.0**: Full React, Vue, Svelte support
 - **v5.5.0**: Array OR syntax, visual debugging, playground
-- **v5.6.0**: Geospatial operators, date/time operators
+- **v5.6.0**: Geospatial operators, Datetime operators
 
 ## Related Resources
 

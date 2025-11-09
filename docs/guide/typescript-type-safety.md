@@ -98,7 +98,7 @@ interface User {
 
 // Generate all valid paths
 type UserPaths = NestedKeyOf<User>;
-// Type: "name" | "profile" | "profile.age" | "profile.address" | 
+// Type: "name" | "profile" | "profile.age" | "profile.address" |
 //       "profile.address.city" | "profile.address.country" |
 //       "profile.address.coordinates" | "profile.address.coordinates.lat" |
 //       "profile.address.coordinates.lng" | "settings" | "settings.theme" |
@@ -174,7 +174,7 @@ interface User {
 // String property - suggests string operators
 filter(users, {
   name: {
-    // Autocomplete suggests: $eq, $ne, $in, $nin, $startsWith, 
+    // Autocomplete suggests: $eq, $ne, $in, $nin, $startsWith,
     //                        $endsWith, $contains, $regex, $match
     $startsWith: 'A'
   }
@@ -205,7 +205,7 @@ filter(users, {
   }
 });
 
-// Date property - suggests date/time operators
+// Date property - suggests Datetime operators
 filter(users, {
   birthDate: {
     // Autocomplete suggests: $eq, $ne, $gt, $gte, $lt, $lte, $in, $nin,
@@ -765,7 +765,7 @@ const expr = { age: { $gte: 18 } } as Expression<User>;
 type AllPaths = NestedKeyOf<VeryDeepType>;
 
 // Use explicit path subsets
-type CommonPaths = 
+type CommonPaths =
   | 'user.profile.name'
   | 'user.profile.age'
   | 'user.address.city';

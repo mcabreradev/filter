@@ -55,7 +55,7 @@
     - [MongoDB-Style Operators](#mongodb-style-operators)
     - [Array OR Syntax (Intuitive!)](#array-or-syntax-intuitive)
     - [Geospatial Queries](#geospatial-queries)
-    - [Date/Time Filtering](#datetime-filtering)
+    - [Datetime Filtering](#datetime-filtering)
     - [Performance Optimization](#performance-optimization)
     - [Real-World: E-commerce Search](#real-world-e-commerce-search)
   - [Framework Integrations](#framework-integrations)
@@ -307,7 +307,7 @@ filter(restaurants, {
 });
 ```
 
-### Date/Time Filtering
+### Datetime Filtering
 
 ```typescript
 // Events in next 7 days
@@ -324,6 +324,31 @@ filter(events, {
 filter(events, {
   date: { $dayOfWeek: [1, 2, 3, 4, 5] },
   startTime: { $timeOfDay: { start: 9, end: 17 } }
+});
+
+// Users who logged in recently (last 7 days)
+filter(users, {
+  lastLogin: { $recent: { days: 7 } }
+});
+
+// Upcoming meetings in next 2 hours
+filter(meetings, {
+  startTime: { $upcoming: { hours: 2 } }
+});
+
+// Weekend events only
+filter(events, {
+  date: { $isWeekend: true }
+});
+
+// Calculate age (users over 18)
+filter(users, {
+  birthDate: { $age: { $gte: 18 } }
+});
+
+// Events before a specific date
+filter(events, {
+  date: { $isBefore: new Date('2025-12-31') }
 });
 ```
 
@@ -484,7 +509,7 @@ function UserList() {
 **String:** `$startsWith`, `$endsWith`, `$contains`, `$regex`, `$match`
 **Logical:** `$and`, `$or`, `$not`
 **Geospatial:** `$near`, `$geoBox`, `$geoPolygon`
-**Date/Time:** `$recent`, `$upcoming`, `$dayOfWeek`, `$timeOfDay`, `$age`, `$isWeekday`, `$isWeekend`, `$isBefore`, `$isAfter`
+**Datetime:** `$recent`, `$upcoming`, `$dayOfWeek`, `$timeOfDay`, `$age`, `$isWeekday`, `$isWeekend`, `$isBefore`, `$isAfter`
 
 ### TypeScript Support
 
@@ -599,7 +624,7 @@ filter(users, { city: 'Berlin' }, { debug: true });
 - **[Getting Started](./docs/guide/getting-started.md)** - Installation and first steps
 - **[All Operators](./docs/guide/operators.md)** - Complete operator reference
 - **[Geospatial Queries](./docs/guide/geospatial-operators.md)** - Location-based filtering
-- **[Date/Time Operators](./docs/guide/datetime-operators.md)** - Temporal filtering
+- **[Datetime Operators](./docs/guide/datetime-operators.md)** - Temporal filtering
 - **[Framework Integrations](./docs/frameworks/index.md)** - React, Vue, Svelte, Angular, SolidJS, Preact
 - **[Lazy Evaluation](./docs/guide/lazy-evaluation.md)** - Efficient large dataset processing
 - **[Memoization & Caching](./docs/guide/memoization.md)** - Performance optimization
@@ -697,7 +722,7 @@ filter(data, expression, { enableCache: true });
 
 ### v5.6.0
 - 🌍 **Geospatial Operators**: Location-based filtering with $near, $geoBox, $geoPolygon
-- 📅 **Date/Time Operators**: Temporal filtering with $recent, $upcoming, $dayOfWeek, $age
+- 📅 **Datetime Operators**: Temporal filtering with $recent, $upcoming, $dayOfWeek, $age
 
 ### v5.5.0
 - 🎨 **Array OR Syntax**: Intuitive array-based OR filtering
