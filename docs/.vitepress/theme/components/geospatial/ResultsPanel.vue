@@ -95,6 +95,8 @@ const formatValue = (value: any): string => {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--vp-c-divider);
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .results-header h4 {
@@ -108,6 +110,7 @@ const formatValue = (value: any): string => {
   align-items: baseline;
   gap: 0.25rem;
   font-weight: 500;
+  flex-wrap: wrap;
 }
 
 .count {
@@ -166,6 +169,7 @@ const formatValue = (value: any): string => {
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .item-number {
@@ -179,12 +183,14 @@ const formatValue = (value: any): string => {
   border-radius: 50%;
   font-size: 0.75rem;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .item-name {
   font-weight: 600;
   color: var(--vp-c-text-1);
   font-size: 1rem;
+  word-break: break-word;
 }
 
 .item-details {
@@ -198,6 +204,7 @@ const formatValue = (value: any): string => {
   display: flex;
   gap: 0.25rem;
   font-size: 0.875rem;
+  flex-wrap: wrap;
 }
 
 .detail-label {
@@ -207,6 +214,7 @@ const formatValue = (value: any): string => {
 
 .detail-value {
   color: var(--vp-c-text-1);
+  word-break: break-word;
 }
 
 .location-info {
@@ -214,5 +222,80 @@ const formatValue = (value: any): string => {
   font-size: 0.75rem;
   color: var(--vp-c-text-3);
   font-family: 'Monaco', 'Courier New', monospace;
+  word-break: break-all;
+}
+
+@media (max-width: 768px) {
+  .results-panel {
+    padding: 1rem;
+  }
+
+  .results-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .results-count {
+    width: 100%;
+  }
+
+  .results-list {
+    max-height: 300px;
+  }
+
+  .result-item {
+    padding: 0.875rem;
+  }
+
+  .item-header {
+    gap: 0.5rem;
+  }
+
+  .item-name {
+    font-size: 0.9375rem;
+  }
+
+  .item-details {
+    gap: 0.75rem;
+  }
+
+  .detail {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .results-panel {
+    padding: 0.75rem;
+  }
+
+  .results-header h4 {
+    font-size: 0.9375rem;
+  }
+
+  .count {
+    font-size: 1.25rem;
+  }
+
+  .results-list {
+    max-height: 250px;
+  }
+
+  .result-item {
+    padding: 0.75rem;
+  }
+
+  .item-name {
+    font-size: 0.875rem;
+  }
+
+  .item-details {
+    gap: 0.5rem;
+  }
+
+  .detail {
+    font-size: 0.75rem;
+  }
 }
 </style>

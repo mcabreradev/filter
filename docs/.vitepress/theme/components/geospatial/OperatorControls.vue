@@ -101,7 +101,7 @@ const removePolygonPoint = (index: number) => {
     <!-- $near Controls -->
     <div v-if="operator === '$near'" class="controls-section">
       <h4>Proximity Settings</h4>
-      
+
       <div class="control-group">
         <label>Center Point</label>
         <div class="coordinate-inputs">
@@ -152,7 +152,7 @@ const removePolygonPoint = (index: number) => {
     <!-- $geoBox Controls -->
     <div v-if="operator === '$geoBox'" class="controls-section">
       <h4>Bounding Box</h4>
-      
+
       <div class="control-group">
         <label>Southwest Corner</label>
         <div class="coordinate-inputs">
@@ -160,8 +160,8 @@ const removePolygonPoint = (index: number) => {
             type="number"
             step="0.001"
             :value="boundingBox.southwest.lat"
-            @input="emit('update:boundingBox', { 
-              ...boundingBox, 
+            @input="emit('update:boundingBox', {
+              ...boundingBox,
               southwest: { ...boundingBox.southwest, lat: +($event.target as HTMLInputElement).value }
             })"
             placeholder="Latitude"
@@ -170,8 +170,8 @@ const removePolygonPoint = (index: number) => {
             type="number"
             step="0.001"
             :value="boundingBox.southwest.lng"
-            @input="emit('update:boundingBox', { 
-              ...boundingBox, 
+            @input="emit('update:boundingBox', {
+              ...boundingBox,
               southwest: { ...boundingBox.southwest, lng: +($event.target as HTMLInputElement).value }
             })"
             placeholder="Longitude"
@@ -186,8 +186,8 @@ const removePolygonPoint = (index: number) => {
             type="number"
             step="0.001"
             :value="boundingBox.northeast.lat"
-            @input="emit('update:boundingBox', { 
-              ...boundingBox, 
+            @input="emit('update:boundingBox', {
+              ...boundingBox,
               northeast: { ...boundingBox.northeast, lat: +($event.target as HTMLInputElement).value }
             })"
             placeholder="Latitude"
@@ -196,8 +196,8 @@ const removePolygonPoint = (index: number) => {
             type="number"
             step="0.001"
             :value="boundingBox.northeast.lng"
-            @input="emit('update:boundingBox', { 
-              ...boundingBox, 
+            @input="emit('update:boundingBox', {
+              ...boundingBox,
               northeast: { ...boundingBox.northeast, lng: +($event.target as HTMLInputElement).value }
             })"
             placeholder="Longitude"
@@ -209,9 +209,9 @@ const removePolygonPoint = (index: number) => {
     <!-- $geoPolygon Controls -->
     <div v-if="operator === '$geoPolygon'" class="controls-section">
       <h4>Polygon Points</h4>
-      
-      <div 
-        v-for="(point, index) in polygon.points" 
+
+      <div
+        v-for="(point, index) in polygon.points"
         :key="index"
         class="control-group"
       >
@@ -250,14 +250,14 @@ const removePolygonPoint = (index: number) => {
     <!-- Additional Filters -->
     <div v-if="availableFilters.length > 0" class="controls-section">
       <h4>Additional Filters</h4>
-      
-      <div 
+
+      <div
         v-for="field in availableFilters"
         :key="field.name"
         class="control-group"
       >
         <label v-if="field.type !== 'boolean'">{{ field.label }}</label>
-        
+
         <!-- Number input -->
         <input
           v-if="field.type === 'number'"
@@ -267,7 +267,7 @@ const removePolygonPoint = (index: number) => {
           @input="updateAdditionalFilter(field.name, +($event.target as HTMLInputElement).value || null)"
           :placeholder="field.placeholder"
         />
-        
+
         <!-- Text input -->
         <input
           v-else-if="field.type === 'text'"
@@ -276,7 +276,7 @@ const removePolygonPoint = (index: number) => {
           @input="updateAdditionalFilter(field.name, ($event.target as HTMLInputElement).value || null)"
           :placeholder="field.placeholder"
         />
-        
+
         <!-- Select -->
         <select
           v-else-if="field.type === 'select'"
@@ -288,7 +288,7 @@ const removePolygonPoint = (index: number) => {
             {{ option }}
           </option>
         </select>
-        
+
         <!-- Boolean -->
         <label v-else-if="field.type === 'boolean'" class="checkbox-label">
           <input
@@ -309,6 +309,8 @@ const removePolygonPoint = (index: number) => {
   background: var(--vp-c-bg-soft);
   border-radius: 12px;
   padding: 1.5rem;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 
 .controls-section {
@@ -346,6 +348,8 @@ const removePolygonPoint = (index: number) => {
   background: var(--vp-c-bg);
   cursor: pointer;
   transition: all 0.2s;
+  min-height: 44px;
+  touch-action: manipulation;
 }
 
 .operator-btn:hover {
@@ -359,6 +363,7 @@ const removePolygonPoint = (index: number) => {
 
 .op-icon {
   font-size: 1.5rem;
+  flex-shrink: 0;
 }
 
 .control-group {
@@ -370,6 +375,7 @@ const removePolygonPoint = (index: number) => {
   margin-bottom: 0.5rem;
   font-weight: 500;
   color: var(--vp-c-text-1);
+  font-size: 0.875rem;
 }
 
 .coordinate-inputs {
@@ -387,10 +393,13 @@ const removePolygonPoint = (index: number) => {
   border-radius: 6px;
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
+  font-size: 0.875rem;
+  min-height: 40px;
 }
 
 .control-group input[type="range"] {
   width: 100%;
+  min-height: 40px;
 }
 
 .hint {
@@ -401,22 +410,29 @@ const removePolygonPoint = (index: number) => {
 
 .remove-btn {
   padding: 0.5rem;
+  min-width: 44px;
+  min-height: 44px;
   border: 1px solid var(--vp-c-danger);
   border-radius: 6px;
   background: var(--vp-c-bg);
   color: var(--vp-c-danger);
   cursor: pointer;
+  touch-action: manipulation;
+  flex-shrink: 0;
 }
 
 .add-point-btn {
   width: 100%;
   padding: 0.75rem;
+  min-height: 44px;
   border: 2px dashed var(--vp-c-brand);
   border-radius: 8px;
   background: transparent;
   color: var(--vp-c-brand);
   cursor: pointer;
   transition: all 0.2s;
+  touch-action: manipulation;
+  font-size: 0.875rem;
 }
 
 .add-point-btn:hover {
@@ -428,5 +444,81 @@ const removePolygonPoint = (index: number) => {
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+.checkbox-label input[type="checkbox"] {
+  min-width: 20px;
+  min-height: 20px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .operator-controls {
+    padding: 1rem;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .controls-section {
+    margin-bottom: 1.25rem;
+  }
+
+  .controls-section h3 {
+    font-size: 1.125rem;
+  }
+
+  .controls-section h4 {
+    font-size: 0.9375rem;
+  }
+
+  .coordinate-inputs {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .coordinate-inputs .remove-btn {
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+
+  .control-group label {
+    font-size: 0.8125rem;
+  }
+
+  .control-group input[type="number"],
+  .control-group input[type="text"],
+  .control-group select {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  .operator-btn {
+    font-size: 0.9375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .operator-controls {
+    padding: 0.75rem;
+  }
+
+  .controls-section h3 {
+    font-size: 1rem;
+  }
+
+  .controls-section h4 {
+    font-size: 0.875rem;
+  }
+
+  .operator-btn {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  .op-icon {
+    font-size: 1.25rem;
+  }
 }
 </style>

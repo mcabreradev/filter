@@ -52,11 +52,13 @@ const datasetOptions = Object.entries(props.datasets).map(([id, config]) => ({
   font-weight: 600;
   color: var(--vp-c-text-1);
   white-space: nowrap;
+  font-size: 0.875rem;
 }
 
 .dataset-selector select {
   flex: 1;
   padding: 0.5rem 1rem;
+  min-height: 40px;
   border: 1px solid var(--vp-c-divider);
   border-radius: 6px;
   background: var(--vp-c-bg);
@@ -68,5 +70,38 @@ const datasetOptions = Object.entries(props.datasets).map(([id, config]) => ({
 .dataset-selector select:focus {
   outline: none;
   border-color: var(--vp-c-brand);
+}
+
+@media (max-width: 768px) {
+  .dataset-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.875rem;
+  }
+
+  .dataset-selector label {
+    font-size: 0.8125rem;
+  }
+
+  .dataset-selector select {
+    width: 100%;
+    font-size: 16px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dataset-selector {
+    padding: 0.75rem;
+  }
+
+  .dataset-selector label {
+    font-size: 0.75rem;
+  }
+
+  .dataset-selector select {
+    font-size: 14px;
+  }
 }
 </style>

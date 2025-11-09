@@ -38,33 +38,33 @@ const currentData = computed(() => datasets[state.value.selectedDataset]);
 // Build filter expression based on operator
 const filterExpression = computed(() => {
   const expr: any = { ...state.value.additionalFilters };
-  
+
   switch (state.value.operator) {
     case '$near':
       expr.location = {
         $near: {
           center: state.value.centerPoint,
           maxDistanceMeters: state.value.radius,
-          ...(state.value.minRadius > 0 && { 
-            minDistanceMeters: state.value.minRadius 
+          ...(state.value.minRadius > 0 && {
+            minDistanceMeters: state.value.minRadius
           })
         }
       };
       break;
-    
+
     case '$geoBox':
       expr.location = {
         $geoBox: state.value.boundingBox
       };
       break;
-    
+
     case '$geoPolygon':
       expr.location = {
         $geoPolygon: state.value.polygon
       };
       break;
   }
-  
+
   return expr;
 });
 
@@ -86,7 +86,7 @@ const codeString = computed(() => {
 // Handle operator change
 const onOperatorChange = (operator: GeospatialOperator) => {
   state.value.operator = operator;
-  
+
   // Reset to dataset defaults
   const dataset = datasets[state.value.selectedDataset];
   state.value.centerPoint = dataset.defaultCenter;
@@ -97,7 +97,7 @@ const onOperatorChange = (operator: GeospatialOperator) => {
 const onDatasetChange = (datasetId: string) => {
   state.value.selectedDataset = datasetId;
   const dataset = datasets[datasetId];
-  
+
   // Reset to new dataset defaults
   state.value.centerPoint = dataset.defaultCenter;
   state.value.radius = dataset.defaultRadius;
@@ -124,11 +124,7 @@ const onPolygonChange = (points: GeoPoint[]) => {
 
 <template>
   <div class="geospatial-playground">
-    <!-- Header -->
-    <div class="playground-header">
-      <h2>🗺️ Geospatial Operators Playground</h2>
-      <p>Interactive demo: Click the map, adjust controls, and see real-time filtering!</p>
-    </div>
+
 
     <!-- Main Layout: 2 columns -->
     <div class="playground-layout">
@@ -212,7 +208,7 @@ const onPolygonChange = (points: GeoPoint[]) => {
 
 .playground-layout {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr minmax(280px, 350px);
   gap: 2rem;
 }
 
@@ -220,21 +216,51 @@ const onPolygonChange = (points: GeoPoint[]) => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-width: 0;
 }
 
 .playground-right {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-width: 0;
 }
 
 @media (max-width: 1024px) {
   .playground-layout {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
-  
+
   .playground-right {
     order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .geospatial-playground {
+    margin: 1rem 0;
+  }
+
+  .playground-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .playground-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .playground-header p {
+    font-size: 0.875rem;
+  }
+
+  .playground-layout {
+    gap: 1rem;
+  }
+
+  .playground-left,
+  .playground-right {
+    gap: 0.75rem;
   }
 }
 </style>

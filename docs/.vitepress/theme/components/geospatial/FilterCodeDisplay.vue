@@ -164,6 +164,15 @@ const copyCode = async () => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.code-header p {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--vp-c-text-1);
+  font-weight: 500;
 }
 
 .code-header h4 {
@@ -174,6 +183,8 @@ const copyCode = async () => {
 
 .copy-btn {
   padding: 0.5rem 1rem;
+  min-height: 40px;
+  min-width: 80px;
   border: 1px solid var(--vp-c-brand);
   border-radius: 6px;
   background: transparent;
@@ -181,6 +192,8 @@ const copyCode = async () => {
   cursor: pointer;
   font-size: 0.875rem;
   transition: all 0.2s;
+  touch-action: manipulation;
+  white-space: nowrap;
 }
 
 .copy-btn:hover {
@@ -192,7 +205,9 @@ const copyCode = async () => {
   border-radius: 8px;
   padding: 1rem;
   overflow-x: auto;
+  overflow-y: auto;
   border: 1px solid var(--vp-c-divider);
+  -webkit-overflow-scrolling: touch;
 }
 
 .code-block pre {
@@ -201,10 +216,14 @@ const copyCode = async () => {
   font-size: 14px;
   line-height: 1.6;
   color: var(--vp-c-text-1);
+  white-space: pre;
+  word-wrap: normal;
+  overflow-wrap: normal;
 }
 
 .code-block code {
   display: block;
+  min-width: min-content;
 }
 
 /* Syntax Highlighting */
@@ -241,6 +260,7 @@ const copyCode = async () => {
   padding: 0.75rem;
   background: var(--vp-c-bg);
   border-radius: 8px;
+  flex-wrap: wrap;
 }
 
 .stat {
@@ -272,5 +292,93 @@ const copyCode = async () => {
   background: var(--vp-c-bg);
   border-radius: 6px;
   border-left: 3px solid var(--vp-c-brand);
+  word-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+  .code-display {
+    padding: 1rem;
+  }
+
+  .code-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .code-header p {
+    font-size: 0.9375rem;
+  }
+
+  .copy-btn {
+    width: 100%;
+    min-height: 44px;
+    font-size: 0.9375rem;
+  }
+
+  .code-block {
+    padding: 0.875rem;
+  }
+
+  .code-block pre {
+    font-size: 13px;
+  }
+
+  .code-stats {
+    gap: 0.75rem;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+  }
+
+  .hint {
+    font-size: 0.8125rem;
+    padding: 0.625rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .code-display {
+    padding: 0.75rem;
+  }
+
+  .code-header p {
+    font-size: 0.875rem;
+  }
+
+  .copy-btn {
+    font-size: 0.875rem;
+    padding: 0.625rem 0.875rem;
+  }
+
+  .code-block {
+    padding: 0.75rem;
+  }
+
+  .code-block pre {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .code-stats {
+    padding: 0.625rem;
+  }
+
+  .stat-label {
+    font-size: 0.8125rem;
+  }
+
+  .stat-value {
+    font-size: 0.9375rem;
+  }
+
+  .hint {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+  }
 }
 </style>

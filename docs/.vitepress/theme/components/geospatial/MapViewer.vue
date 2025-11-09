@@ -34,7 +34,7 @@ let shapesLayer: any = null;
 // Initialize map
 onMounted(async () => {
   if (typeof window === 'undefined') return;
-  
+
   try {
     L = (await import('leaflet')).default;
 
@@ -45,27 +45,27 @@ onMounted(async () => {
       iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
       shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
     });
-    
+
     map = L.map(mapContainer.value).setView(
       [props.center.lat, props.center.lng],
       zoom.value
     );
-    
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
       maxZoom: 19
     }).addTo(map);
-    
+
     // Map click handler
     map.on('click', (e: any) => {
       emit('click', { lat: e.latlng.lat, lng: e.latlng.lng });
     });
-    
+
     // Store zoom level when it changes
     map.on('zoomend', () => {
       zoom.value = map.getZoom();
     });
-    
+
     updateMap();
   } catch (error) {
     console.error('Failed to initialize map:', error);
@@ -80,23 +80,23 @@ onBeforeUnmount(() => {
 });
 
 // Update map when props change
-watch([() => props.data, () => props.filtered, () => props.operator, 
+watch([() => props.data, () => props.filtered, () => props.operator,
        () => props.center, () => props.radius, () => props.minRadius,
        () => props.boundingBox, () => props.polygon], updateMap);
 
 function updateMap() {
   if (!map || !L) return;
-  
+
   // Clear existing layers
   if (markersLayer) markersLayer.clearLayers();
   if (shapesLayer) shapesLayer.clearLayers();
-  
+
   if (!markersLayer) markersLayer = L.layerGroup().addTo(map);
   if (!shapesLayer) shapesLayer = L.layerGroup().addTo(map);
-  
+
   // Add all data markers (gray)
   const filteredIds = new Set(props.filtered.map((item: any) => item.id || item.name));
-  
+
   props.data.forEach((item: any) => {
     const isFiltered = filteredIds.has(item.id || item.name);
     const icon = L.divIcon({
@@ -107,13 +107,13 @@ function updateMap() {
       iconSize: [30, 40],
       iconAnchor: [15, 40]
     });
-    
+
     const marker = L.marker([item.location.lat, item.location.lng], { icon })
       .bindPopup(createPopupContent(item, isFiltered));
-    
+
     markersLayer.addLayer(marker);
   });
-  
+
   // Add operator-specific shapes
   switch (props.operator) {
     case '$near':
@@ -126,14 +126,14 @@ function updateMap() {
       addGeoPolygonVisualization();
       break;
   }
-  
+
   // Center map
   map.setView([props.center.lat, props.center.lng], zoom.value);
 }
 
 function addNearVisualization() {
   if (!L || !shapesLayer) return;
-  
+
   // Center marker
   const centerIcon = L.divIcon({
     className: 'center-marker',
@@ -141,11 +141,11 @@ function addNearVisualization() {
     iconSize: [30, 30],
     iconAnchor: [15, 15]
   });
-  
+
   L.marker([props.center.lat, props.center.lng], { icon: centerIcon })
     .bindPopup('Center Point')
     .addTo(shapesLayer);
-  
+
   // Radius circle
   L.circle([props.center.lat, props.center.lng], {
     radius: props.radius,
@@ -154,7 +154,7 @@ function addNearVisualization() {
     fillOpacity: 0.1,
     weight: 2
   }).addTo(shapesLayer);
-  
+
   // Min radius circle (if set)
   if (props.minRadius > 0) {
     L.circle([props.center.lat, props.center.lng], {
@@ -170,12 +170,12 @@ function addNearVisualization() {
 
 function addGeoBoxVisualization() {
   if (!L || !shapesLayer) return;
-  
+
   const bounds = L.latLngBounds(
     [props.boundingBox.southwest.lat, props.boundingBox.southwest.lng],
     [props.boundingBox.northeast.lat, props.boundingBox.northeast.lng]
   );
-  
+
   L.rectangle(bounds, {
     color: '#ff7800',
     fillColor: '#ff7800',
@@ -186,16 +186,16 @@ function addGeoBoxVisualization() {
 
 function addGeoPolygonVisualization() {
   if (!L || !shapesLayer) return;
-  
+
   const points = props.polygon.points.map(p => [p.lat, p.lng]);
-  
+
   L.polygon(points, {
     color: '#9c27b0',
     fillColor: '#9c27b0',
     fillOpacity: 0.1,
     weight: 2
   }).addTo(shapesLayer);
-  
+
   // Add editable vertices
   props.polygon.points.forEach((point, index) => {
     const vertexIcon = L.divIcon({
@@ -204,27 +204,27 @@ function addGeoPolygonVisualization() {
       iconSize: [12, 12],
       iconAnchor: [6, 6]
     });
-    
-    const marker = L.marker([point.lat, point.lng], { 
+
+    const marker = L.marker([point.lat, point.lng], {
       icon: vertexIcon,
       draggable: true
     });
-    
+
     marker.on('dragend', (e: any) => {
       const newPoints = [...props.polygon.points];
       newPoints[index] = { lat: e.target.getLatLng().lat, lng: e.target.getLatLng().lng };
       emit('polygonChange', newPoints);
     });
-    
+
     marker.addTo(shapesLayer);
   });
 }
 
 function createPopupContent(item: any, isFiltered: boolean): string {
-  const status = isFiltered 
-    ? '<span style="color: #22c55e">✓ Matched</span>' 
+  const status = isFiltered
+    ? '<span style="color: #22c55e">✓ Matched</span>'
     : '<span style="color: #ef4444">✗ Not Matched</span>';
-  
+
   return `
     <div class="marker-popup">
       <strong>${item.name}</strong><br>
@@ -251,7 +251,7 @@ function createPopupContent(item: any, isFiltered: boolean): string {
           <span class="legend-label">Not Matched ({{ data.length - filtered.length }})</span>
         </div>
       </div>
-    </div>  
+    </div>
   </ClientOnly>
 </template>
 
@@ -269,6 +269,8 @@ function createPopupContent(item: any, isFiltered: boolean): string {
 
 .map-container {
   height: 500px;
+  min-height: 300px;
+  max-height: 600px;
   width: 100%;
 }
 
@@ -298,6 +300,7 @@ function createPopupContent(item: any, isFiltered: boolean): string {
   width: 12px;
   height: 12px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .legend-marker.filtered {
@@ -311,6 +314,59 @@ function createPopupContent(item: any, isFiltered: boolean): string {
 .legend-label {
   font-size: 12px;
   color: #374151;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .map-container {
+    height: 400px;
+    min-height: 300px;
+    max-height: 500px;
+  }
+
+  .map-legend {
+    position: static;
+    top: auto;
+    right: auto;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-left: 10px;
+    width: calc(100% - 20px);
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .legend-item {
+    margin-bottom: 0;
+  }
+
+  .legend-marker {
+    width: 14px;
+    height: 14px;
+  }
+
+  .legend-label {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-container {
+    height: 350px;
+    min-height: 300px;
+  }
+
+  .map-legend {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .legend-label {
+    font-size: 12px;
+  }
 }
 </style>
 
