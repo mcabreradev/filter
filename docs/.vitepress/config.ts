@@ -14,7 +14,7 @@ export default defineConfig({
     ['meta', { name: 'og:type', content: 'website' }],
     ['meta', { name: 'og:locale', content: 'en' }],
     ['meta', { name: 'og:site_name', content: '@mcabreradev/filter' }],
-    ['meta', { name: 'og:image', content: 'https://filter-docs.vercel.app/og-image.png' }],
+    ['meta', { name: 'og:image', content: 'https://mcabreradev-filter.vercel.app/og-image.png' }],
   ],
 
   themeConfig: {
