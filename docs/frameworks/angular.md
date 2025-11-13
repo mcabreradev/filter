@@ -16,19 +16,20 @@ npm install @mcabreradev/filter
 ## Import
 
 ```typescript
-import { FilterService, FilterPipe } from '@mcabreradev/filter/angular';
+import {
+  FilterService,
+  FilterPipe,
+  DebouncedFilterService,
+  PaginatedFilterService
+} from '@mcabreradev/filter/angular';
 ```
 
-::: tip Signals Required
-Angular integration requires Angular 17+ with Signals support.
-:::
+## Available Tools
 
-## Available APIs
-
-- `FilterService` - Reactive filtering with Angular Signals
-- `DebouncedFilterService` - Debounced filtering for search
-- `PaginatedFilterService` - Filtering with pagination
-- `FilterPipe` - Standalone pipe for templates
+- [`FilterService`](#filterservice) - Injectable service with Signals support
+- [`FilterPipe`](#filterpipe) - Declarative filtering in templates
+- [`DebouncedFilterService`](#debouncedfilterservice) - Debounced filtering for search
+- [`PaginatedFilterService`](#paginatedfilterservice) - Filtering with pagination
 
 ## FilterService
 
@@ -91,156 +92,204 @@ export class UserListComponent implements OnInit {
 
 ```typescript
 class FilterService<T> {
-  // Signals
+  // Signals (read-only)
   filtered: Signal<T[]>;
   isFiltering: Signal<boolean>;
   
   // Methods
   setData(data: T[]): void;
-  setExpression(expression: Expression<T> | null): void;
-  setOptions(options: FilterOptions): void;
+  setExpression(expr: Expression<T> | null): void;
+  setOptions(opts: FilterOptions): void;
   reset(): void;
 }
 ```
 
 ## FilterPipe
 
-Standalone pipe for template filtering.
-
-### Usage
+Declarative filtering directly in templates.
 
 ```typescript
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FilterPipe } from '@mcabreradev/filter/angular';
 
 @Component({
-  selector: 'app-products',
+  selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FilterPipe],
+  imports: [FilterPipe],
   template: `
-    <div>
-      @for (product of products | filterPipe:{ inStock: true }; track product.id) {
-        <div>{{ product.name }} - ${{ product.price }}</div>
-      }
-    </div>
+    @for (user of users | filterPipe:{ active: true }; track user.id) {
+      <div>{{ user.name }}</div>
+    }
   `
 })
-export class ProductsComponent {
-  products = [
-    { id: 1, name: 'Laptop', price: 1200, inStock: true },
-    { id: 2, name: 'Mouse', price: 25, inStock: false },
+export class UserListComponent {
+  users = [
+    { id: 1, name: 'Alice', active: true },
+    { id: 2, name: 'Bob', active: false },
   ];
+}
+```
+
+### API Reference
+
+```typescript
+@Pipe({
+  name: 'filterPipe',
+  standalone: true,
+  pure: true
+})
+class FilterPipe implements PipeTransform {
+  transform<T>(
+    data: T[] | null | undefined,
+    expr: Expression<T>,
+    opts?: FilterOptions
+  ): T[];
 }
 ```
 
 ## DebouncedFilterService
 
-Debounced filtering for search inputs.
-
-### Usage
+Debounced filtering service for search inputs.
 
 ```typescript
-import { Component, inject, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal, effect } from '@angular/core';
 import { DebouncedFilterService } from '@mcabreradev/filter/angular';
 
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule],
   providers: [DebouncedFilterService],
   template: `
-    <div>
-      <input
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="onSearchChange($event)"
-        placeholder="Search users..."
-      />
-      
-      @if (filterService.isPending()) {
-        <span>Loading...</span>
-      }
-      
-      @for (user of filterService.filtered(); track user.id) {
-        <div>{{ user.name }}</div>
-      }
-    </div>
+    <input
+      [value]="searchTerm()"
+      (input)="onSearchChange($event)"
+      placeholder="Search..."
+    />
+    
+    @if (filterService.isPending()) {
+      <span>Searching...</span>
+    }
+    
+    @for (user of filterService.filtered(); track user.id) {
+      <div>{{ user.name }}</div>
+    }
   `
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent {
   filterService = inject(DebouncedFilterService<User>);
-  searchTerm = '';
-  users: User[] = [...];
+  searchTerm = signal('');
+  
+  users = signal<User[]>([...]);
 
-  ngOnInit() {
-    this.filterService.setData(this.users);
+  constructor() {
+    this.filterService.setData(this.users());
+    
+    effect(() => {
+      this.filterService.setExpressionDebounced(
+        { name: { $contains: this.searchTerm() } },
+        300 // delay in ms
+      );
+    });
   }
 
-  onSearchChange(term: string) {
-    this.filterService.setExpressionDebounced(
-      term ? { name: { $contains: term } } : null,
-      300
-    );
+  onSearchChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchTerm.set(target.value);
   }
+}
+```
+
+### API Reference
+
+```typescript
+class DebouncedFilterService<T> {
+  // Signals (read-only)
+  filtered: Signal<T[]>;
+  isFiltering: Signal<boolean>;
+  isPending: Signal<boolean>;
+  
+  // Methods
+  setData(data: T[]): void;
+  setExpressionDebounced(expr: Expression<T> | null, delay?: number): void;
+  setOptions(opts: FilterOptions): void;
+  reset(): void;
 }
 ```
 
 ## PaginatedFilterService
 
-Filtering with pagination support.
-
-### Usage
+Filtering service with built-in pagination.
 
 ```typescript
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { PaginatedFilterService } from '@mcabreradev/filter/angular';
 
 @Component({
   selector: 'app-paginated-list',
   standalone: true,
-  imports: [CommonModule],
   providers: [PaginatedFilterService],
   template: `
+    @for (item of filterService.paginatedResults(); track item.id) {
+      <div>{{ item.name }}</div>
+    }
+    
     <div>
-      @for (user of filterService.paginatedResults(); track user.id) {
-        <div>{{ user.name }}</div>
-      }
-      
-      <div class="pagination">
-        <button
-          (click)="filterService.prevPage()"
-          [disabled]="filterService.currentPage() === 1"
-        >
-          Previous
-        </button>
-        
-        <span>
-          Page {{ filterService.currentPage() }} of {{ filterService.totalPages() }}
-        </span>
-        
-        <button
-          (click)="filterService.nextPage()"
-          [disabled]="filterService.currentPage() === filterService.totalPages()"
-        >
-          Next
-        </button>
-      </div>
+      <button 
+        (click)="filterService.prevPage()" 
+        [disabled]="filterService.currentPage() === 1"
+      >
+        Previous
+      </button>
+      <span>
+        Page {{ filterService.currentPage() }} 
+        of {{ filterService.totalPages() }}
+      </span>
+      <button 
+        (click)="filterService.nextPage()" 
+        [disabled]="filterService.currentPage() === filterService.totalPages()"
+      >
+        Next
+      </button>
     </div>
   `
 })
-export class PaginatedListComponent implements OnInit {
-  filterService = inject(PaginatedFilterService<User>);
-  users: User[] = [...];
+export class PaginatedListComponent {
+  filterService = inject(PaginatedFilterService<Product>);
+  
+  products = signal<Product[]>([...]);
+  expression = signal({ inStock: true });
 
-  ngOnInit() {
-    this.filterService.setData(this.users);
-    this.filterService.setExpression({ active: true });
+  constructor() {
+    this.filterService.setData(this.products());
+    this.filterService.setExpression(this.expression());
     this.filterService.setPageSize(10);
   }
 }
 ```
 
+### API Reference
+
+```typescript
+class PaginatedFilterService<T> {
+  // Signals (read-only)
+  filtered: Signal<T[]>;
+  isFiltering: Signal<boolean>;
+  paginatedResults: Signal<T[]>;
+  currentPage: Signal<number>;
+  pageSize: Signal<number>;
+  totalPages: Signal<number>;
+  
+  // Methods
+  setData(data: T[]): void;
+  setExpression(expr: Expression<T> | null): void;
+  setOptions(opts: FilterOptions): void;
+  setPage(page: number): void;
+  setPageSize(size: number): void;
+  nextPage(): void;
+  prevPage(): void;
+  reset(): void;
+}
+```
 ## TypeScript Support
 
 Full type safety with generics:
@@ -266,34 +315,75 @@ export class ProductsComponent {
 }
 ```
 
-## Best Practices
-
-1. **Provide at Component Level** - Provide services at component level for isolation
-2. **Use Signals** - Access signals by calling them: `filtered()`
-3. **Debounce Search** - Use `DebouncedFilterService` for search inputs
-4. **Paginate Large Lists** - Use `PaginatedFilterService` for >100 items
-
 ## SSR Support
 
-Compatible with Angular Universal:
+All tools are SSR-compatible and work with Angular Universal.
 
 ```typescript
+import { Component, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID, inject } from '@angular/core';
+import { FilterService } from '@mcabreradev/filter/angular';
 
-@Component({...})
-export class MyComponent {
-  private platformId = inject(PLATFORM_ID);
-  filterService = inject(FilterService<User>);
+@Component({
+  selector: 'app-ssr-component',
+  standalone: true,
+  providers: [FilterService],
+  template: `...`
+})
+export class SSRComponent {
+  filterService = inject(FilterService<Product>);
+  platformId = inject(PLATFORM_ID);
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      this.filterService.setData(this.users);
+      // Client-side only code
+      this.filterService.setOptions({ enableCache: true });
     }
   }
 }
 ```
 
-## Examples
+## Best Practices
 
-See [Angular Examples](https://github.com/mcabreradev/filter/tree/main/examples/angular) for more examples.
+### 1. Use Signals for Reactivity
+
+```typescript
+const searchTerm = signal('');
+const expression = computed(() => ({
+  name: { $contains: searchTerm() }
+}));
+```
+
+### 2. Provide Services at Component Level
+
+```typescript
+@Component({
+  providers: [FilterService], // Component-scoped
+  // ...
+})
+```
+
+### 3. Use FilterPipe for Simple Cases
+
+```typescript
+// Simple filtering
+@for (item of items | filterPipe:{ active: true }; track item.id) {
+  <div>{{ item.name }}</div>
+}
+```
+
+### 4. Use Services for Complex Logic
+
+```typescript
+// Complex filtering with multiple updates
+filterService.setExpression({ category: 'Electronics' });
+filterService.setOptions({ enableCache: true });
+```
+
+## Next Steps
+
+- [React Integration](./react.md)
+- [Vue Integration](./vue.md)
+- [Svelte Integration](./svelte.md)
+- [API Reference](../api/reference.md)
+
