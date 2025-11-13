@@ -120,7 +120,7 @@
     "@testing-library/react": "^16.1.0",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^24.9.1",
-    "@types/react": "^18.3.18",
+    "@types/react": "^19.2.2",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
     "@vercel/analytics": "^1.5.0",
