@@ -8,7 +8,7 @@ This document summarizes the implementation of MongoDB-style operators in `@mcab
 
 - **v5.0.0** (October 15, 2025): Initial 13 operators
 - **v5.2.0**: Added logical operators ($and, $or, $not) and regex operators ($regex, $match)
-- **v5.6.0** (November 4, 2025): Added geospatial operators (3) and Datetime operators (9)
+- **v5.8.2** (November 17, 2025): Current stable version with all operators, framework integrations, and performance optimizations
 
 ## Features Implemented
 
@@ -48,7 +48,7 @@ This document summarizes the implementation of MongoDB-style operators in `@mcab
 
 **Support**: Can be nested and combined for complex queries
 
-### 5. Geospatial Operators (3 operators) - v5.6.0
+### 5. Geospatial Operators (3 operators) - v5.6.0+
 
 - `$near` - Find points within radius
 - `$geoBox` - Find points within bounding box
@@ -56,7 +56,7 @@ This document summarizes the implementation of MongoDB-style operators in `@mcab
 
 **Support**: Uses spherical law of cosines for distance calculation
 
-### 6. Datetime Operators (9 operators) - v5.6.0
+### 6. Datetime Operators (9 operators) - v5.6.0+
 
 - `$recent` - Items from last N days/hours/minutes
 - `$upcoming` - Items in next N days/hours/minutes

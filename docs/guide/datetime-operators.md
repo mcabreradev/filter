@@ -6,7 +6,7 @@ Complete guide to date and time filtering with `@mcabreradev/filter`.
 
 Datetime operators provide powerful filtering capabilities for temporal data. Filter by relative time ranges, specific days of the week, time of day, age calculations, and more.
 
-**Available in:** v5.6.0+
+**Available in:** v5.6.0+ (current: v5.8.2)
 
 ## Quick Start
 

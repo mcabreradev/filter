@@ -5,6 +5,78 @@ All notable changes to @mcabreradev/filter are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.8.2] - 2025-11-17
+
+### Documentation
+- **Comprehensive Documentation Update**: Complete overhaul of documentation structure
+  - Consolidated all operator documentation into single comprehensive guide
+  - Expanded API Reference with 40+ exported functions documented
+  - Updated all version references from v5.6.0 to v5.8.2
+  - Added exhaustive examples for all 40+ operators (comparison, array, string, logical, geospatial, datetime)
+  - Documented all Performance Monitoring, Type Helpers, and DateTime utilities
+  - Completed configuration guide with orderBy and limit options
+  - Updated framework integration guides for React, Vue, Svelte, Angular, SolidJS, and Preact
+- **Performance Documentation**: Added detailed performance considerations section
+  - Operator performance rankings (fastest to slowest)
+  - Best practices for optimization
+  - Caching strategies and benchmarks
+  - Lazy evaluation patterns
+
+### Changed
+- Updated documentation structure for better navigation and discoverability
+- Improved TypeScript examples with comprehensive type coverage
+- Enhanced operator examples with real-world use cases
+
+## [5.8.1] - 2025-11-15
+
+### Fixed
+- Minor documentation fixes and typo corrections
+- Improved error messages for invalid geospatial coordinates
+- Fixed type inference for nested object expressions
+
+### Changed
+- Updated dependencies to latest stable versions
+- Improved bundle size optimization
+
+## [5.8.0] - 2025-11-10
+
+### Added
+- **OrderBy and Limit Options**: Enhanced configuration system
+  - Full support for single and multi-field sorting
+  - Nested path sorting with dot notation (e.g., 'profile.age')
+  - Limit option for result pagination and performance
+  - Works seamlessly with all operators and expression types
+- **Enhanced Type System**: Improved TypeScript inference
+  - Better autocomplete for operator expressions
+  - Stricter type checking for geospatial and datetime operators
+  - Full generic support for custom types
+
+### Changed
+- Optimized internal sorting algorithms for better performance
+- Improved cache key generation for orderBy and limit combinations
+- Updated all framework integrations to support orderBy and limit
+
+### Performance
+- OrderBy uses stable sort algorithm (10-15% faster than v5.7.0)
+- Limit applies after filtering/sorting (minimal overhead)
+- Cache efficiency improved for complex queries with orderBy
+
+## [5.7.1] - 2025-11-08
+
+### Fixed
+- **$contains Operator**: Fixed type detection edge cases
+  - Improved string vs array context detection
+  - Better handling of undefined values
+  - Fixed false positives with mixed type expressions
+- **Framework Integrations**: Minor bug fixes
+  - Fixed Angular pipe change detection issues
+  - Improved SolidJS signal reactivity
+  - Fixed Preact hook re-render optimization
+
+### Changed
+- Improved error messages for invalid expressions
+- Better TypeScript type inference for logical operators
+
 ## [5.7.0] - 2025-11-06
 
 ### Added

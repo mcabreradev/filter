@@ -4,7 +4,7 @@ Deep dive into the architecture of @mcabreradev/filter.
 
 ## Overview
 
-@mcabreradev/filter is built with a modular architecture that separates concerns and enables tree-shaking for optimal bundle sizes. The library has evolved from v3.x to v5.6.0, adding MongoDB-style operators, framework integrations, lazy evaluation, memoization, geospatial operators, Datetime operators, and visual debugging.
+@mcabreradev/filter is built with a modular architecture that separates concerns and enables tree-shaking for optimal bundle sizes. The library has evolved through multiple versions, with v5.8.2 featuring MongoDB-style operators, framework integrations (React, Vue, Svelte, Angular, SolidJS, Preact), lazy evaluation, memoization, geospatial operators, datetime operators, and visual debugging.
 
 ## Core Architecture
 
@@ -1554,14 +1554,16 @@ describe('performance', () => {
 
 ## Evolution Timeline
 
-- **v3.x**: Basic filtering with string patterns
 - **v5.0.0**: MongoDB-style operators, configuration API, validation
 - **v5.1.0**: Lazy evaluation with generators
 - **v5.2.0**: Multi-layer memoization, logical operators
 - **v5.3.0**: Initial framework integrations
 - **v5.4.0**: Full React, Vue, Svelte support
 - **v5.5.0**: Array OR syntax, visual debugging, playground
-- **v5.6.0**: Geospatial operators, Datetime operators
+- **v5.6.0**: Geospatial operators, datetime operators
+- **v5.7.0**: Angular, SolidJS, Preact integrations
+- **v5.8.0**: OrderBy and limit configuration options
+- **v5.8.2**: Current stable version with comprehensive documentation
 
 ## Related Resources
 

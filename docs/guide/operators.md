@@ -1,11 +1,11 @@
 ---
 title: Operators Guide
-description: Complete guide to all 21+ MongoDB-style operators in @mcabreradev/filter
+description: Complete reference for all 40+ MongoDB-style operators in @mcabreradev/filter
 ---
 
-# Operators Guide (v5.6.0)
+# Operators Guide (v5.8.2)
 
-This guide covers all the MongoDB-style operators available in `@mcabreradev/filter` v5.6.0.
+This comprehensive guide covers all MongoDB-style operators available in `@mcabreradev/filter` v5.8.2.
 
 ## Table of Contents
 
@@ -13,9 +13,12 @@ This guide covers all the MongoDB-style operators available in `@mcabreradev/fil
 - [Array Operators](#array-operators)
 - [String Operators](#string-operators)
 - [Logical Operators](#logical-operators)
-- [Geospatial Operators](#geospatial-operators) ⭐ NEW
+- [Geospatial Operators](#geospatial-operators)
+- [DateTime Operators](#datetime-operators)
 - [Combining Operators](#combining-operators)
 - [Real-World Examples](#real-world-examples)
+- [Performance Considerations](#performance-considerations)
+- [Type Safety](#type-safety)
 
 ## Comparison Operators
 
@@ -1199,6 +1202,353 @@ const findPropertiesInNeighborhood = (boundary: GeoPoint[], maxPrice: number) =>
 
 **Available:** `$near`, `$geoBox`, `$geoPolygon`
 
+## DateTime Operators
+
+Filter data by date and time with powerful temporal operators.
+
+### `$recent` - Recent Time Period
+
+Returns items where the date is within the last N days/hours/minutes from now.
+
+```typescript
+import { filter } from '@mcabreradev/filter';
+
+interface Event {
+  name: string;
+  date: Date;
+}
+
+const events: Event[] = [
+  { name: 'Meeting', date: new Date('2025-11-15') },
+  { name: 'Conference', date: new Date('2025-10-20') }
+];
+
+// Events in last 7 days
+filter(events, {
+  date: { $recent: { days: 7 } }
+});
+// → Returns recent events
+
+// Activities in last 24 hours
+filter(activities, {
+  timestamp: { $recent: { hours: 24 } }
+});
+
+// Recent notifications (last 30 minutes)
+filter(notifications, {
+  createdAt: { $recent: { minutes: 30 } }
+});
+
+// Users who logged in recently
+filter(users, {
+  lastLogin: { $recent: { days: 7 } }
+});
+```
+
+### `$upcoming` - Upcoming Time Period
+
+Returns items where the date is within the next N days/hours/minutes from now.
+
+```typescript
+// Events in next 7 days
+filter(events, {
+  date: { $upcoming: { days: 7 } }
+});
+
+// Meetings in next 2 hours
+filter(meetings, {
+  startTime: { $upcoming: { hours: 2 } }
+});
+
+// Reminders in next 15 minutes
+filter(reminders, {
+  scheduledAt: { $upcoming: { minutes: 15 } }
+});
+
+// Subscriptions expiring soon
+filter(subscriptions, {
+  expiresAt: { $upcoming: { days: 30 } }
+});
+```
+
+### `$dayOfWeek` - Day of Week
+
+Returns items where the date falls on specific days of the week (0=Sunday, 6=Saturday).
+
+```typescript
+// Weekday events (Monday-Friday)
+filter(events, {
+  date: { $dayOfWeek: [1, 2, 3, 4, 5] }
+});
+
+// Weekend events
+filter(events, {
+  date: { $dayOfWeek: [0, 6] }
+});
+
+// Monday meetings
+filter(meetings, {
+  scheduledAt: { $dayOfWeek: [1] }
+});
+
+// Mid-week appointments (Wed, Thu)
+filter(appointments, {
+  date: { $dayOfWeek: [3, 4] }
+});
+```
+
+**Day Numbers:**
+- `0` - Sunday
+- `1` - Monday
+- `2` - Tuesday
+- `3` - Wednesday
+- `4` - Thursday
+- `5` - Friday
+- `6` - Saturday
+
+### `$timeOfDay` - Time of Day
+
+Returns items where the time falls within a specified hour range (24-hour format).
+
+```typescript
+// Business hours (9 AM - 5 PM)
+filter(appointments, {
+  scheduledAt: { $timeOfDay: { start: 9, end: 17 } }
+});
+
+// Morning events (6 AM - 12 PM)
+filter(events, {
+  startTime: { $timeOfDay: { start: 6, end: 12 } }
+});
+
+// Evening activities (6 PM - 11 PM)
+filter(activities, {
+  time: { $timeOfDay: { start: 18, end: 23 } }
+});
+```
+
+### `$age` - Age Calculation
+
+Calculate and filter by age from a birth/start date.
+
+```typescript
+// Adults (18-65 years old)
+filter(users, {
+  birthDate: { $age: { min: 18, max: 65 } }
+});
+
+// Minors (under 18)
+filter(users, {
+  birthDate: { $age: { max: 18 } }
+});
+
+// Seniors (65+)
+filter(users, {
+  birthDate: { $age: { min: 65 } }
+});
+
+// Young adults (18-25)
+filter(users, {
+  birthDate: { $age: { min: 18, max: 25 } }
+});
+
+// Accounts older than 6 months
+filter(accounts, {
+  createdAt: { $age: { min: 6, unit: 'months' } }
+});
+
+// Items in inventory for more than 90 days
+filter(inventory, {
+  receivedDate: { $age: { min: 90, unit: 'days' } }
+});
+```
+
+**Age Units:**
+- `'years'` (default)
+- `'months'`
+- `'days'`
+
+### `$isWeekday` - Is Weekday
+
+Returns items where the date falls on a weekday (Monday-Friday).
+
+```typescript
+// Events on weekdays
+filter(events, {
+  date: { $isWeekday: true }
+});
+
+// Weekend events
+filter(events, {
+  date: { $isWeekday: false }
+});
+
+// Users who logged in on weekdays
+filter(users, {
+  lastLogin: { $isWeekday: true }
+});
+```
+
+### `$isWeekend` - Is Weekend
+
+Returns items where the date falls on a weekend (Saturday-Sunday).
+
+```typescript
+// Weekend events
+filter(events, {
+  date: { $isWeekend: true }
+});
+
+// Weekday events
+filter(events, {
+  date: { $isWeekend: false }
+});
+
+// Orders placed on weekends
+filter(orders, {
+  createdAt: { $isWeekend: true }
+});
+```
+
+### `$isBefore` - Is Before Date
+
+Returns items where the date is before a specific date.
+
+```typescript
+// Events before year end
+filter(events, {
+  date: { $isBefore: new Date('2025-12-31') }
+});
+
+// Users registered before launch
+filter(users, {
+  registeredAt: { $isBefore: new Date('2024-01-01') }
+});
+```
+
+**Note:** Equivalent to `$lt` with dates.
+
+### `$isAfter` - Is After Date
+
+Returns items where the date is after a specific date.
+
+```typescript
+// Events after today
+filter(events, {
+  date: { $isAfter: new Date() }
+});
+
+// Recent signups (after Jan 1)
+filter(users, {
+  registeredAt: { $isAfter: new Date('2025-01-01') }
+});
+```
+
+**Note:** Equivalent to `$gt` with dates.
+
+### DateTime Operator Use Cases
+
+**Event Management:**
+
+```typescript
+// Upcoming weekday morning events
+filter(events, {
+  date: {
+    $upcoming: { days: 7 },
+    $dayOfWeek: [1, 2, 3, 4, 5]
+  },
+  startTime: {
+    $timeOfDay: { start: 9, end: 12 }
+  }
+});
+
+// Events starting in next 2 hours
+filter(events, {
+  startTime: { $upcoming: { hours: 2 } }
+});
+```
+
+**User Analytics:**
+
+```typescript
+// Active adult users
+filter(users, {
+  birthDate: { $age: { min: 18, max: 65 } },
+  lastLogin: { $recent: { days: 30 } }
+});
+
+// Inactive users (no login in 90 days)
+filter(users, {
+  lastLogin: { $age: { min: 90, unit: 'days' } }
+});
+
+// New registrations this week
+filter(users, {
+  registeredAt: { $recent: { days: 7 } }
+});
+```
+
+**E-commerce & Flash Sales:**
+
+```typescript
+// Active sales (started recently, ending soon)
+filter(products, {
+  saleStart: { $recent: { hours: 24 } },
+  saleEnd: { $upcoming: { hours: 48 } }
+});
+
+// Sales ending soon (next 6 hours)
+filter(products, {
+  saleEnd: { $upcoming: { hours: 6 } }
+});
+
+// Weekend-only sales
+filter(products, {
+  saleStart: { $isWeekend: true }
+});
+```
+
+**Appointment Scheduling:**
+
+```typescript
+// Business hours appointments (weekdays 9-5)
+filter(appointments, {
+  scheduledAt: {
+    $dayOfWeek: [1, 2, 3, 4, 5],
+    $timeOfDay: { start: 9, end: 17 }
+  }
+});
+
+// Morning appointments (next week)
+filter(appointments, {
+  scheduledAt: {
+    $upcoming: { days: 7 },
+    $timeOfDay: { start: 8, end: 12 }
+  }
+});
+```
+
+**Subscription Management:**
+
+```typescript
+// Expiring soon (next 7 days)
+filter(subscriptions, {
+  expiresAt: { $upcoming: { days: 7 } }
+});
+
+// New subscriptions (last 30 days)
+filter(subscriptions, {
+  startDate: { $recent: { days: 30 } }
+});
+
+// Long-term subscribers (1+ year)
+filter(subscriptions, {
+  startDate: { $age: { min: 1, unit: 'years' } }
+});
+```
+
+**Available:** `$recent`, `$upcoming`, `$dayOfWeek`, `$timeOfDay`, `$age`, `$isWeekday`, `$isWeekend`, `$isBefore`, `$isAfter`
+
 ## Combining Operators
 
 ### Multiple Operators on Same Property
@@ -1358,14 +1708,193 @@ filter(orders, {
 });
 ```
 
+## Performance Considerations
+
+### Optimization Strategies
+
+Operators are highly optimized for performance:
+
+**✅ Early Exit Strategies:**
+```typescript
+// Comparison operators short-circuit on first mismatch
+filter(products, {
+  price: { $gte: 100, $lte: 500, $ne: 300 }
+});
+// Stops evaluating remaining operators if one fails
+```
+
+**✅ Cached Regex Compilation:**
+```typescript
+// Regex patterns are compiled once and cached
+const emailPattern = /^[a-z]+@example\.com$/;
+filter(users, { email: { $regex: emailPattern } });
+// Pattern is not recompiled on subsequent calls
+```
+
+**✅ Enable Caching for Repeated Queries:**
+```typescript
+// 530x-1520x faster for repeated queries
+filter(largeDataset, expression, { enableCache: true });
+```
+
+**✅ Lazy Evaluation for Large Datasets:**
+```typescript
+import { filterLazy, filterFirst } from '@mcabreradev/filter';
+
+// Process items on-demand (500x faster for partial results)
+const first10 = filterFirst(millionRecords, { active: true }, 10);
+
+// Or use lazy iterator
+for (const item of filterLazy(millionRecords, { active: true })) {
+  if (shouldStop) break; // Early exit
+}
+```
+
+### Performance Ranking (Fastest to Slowest)
+
+1. **Simple Equality** - Direct property matching
+   ```typescript
+   filter(users, { city: 'Berlin' })
+   ```
+
+2. **Comparison Operators** - Numeric comparisons
+   ```typescript
+   filter(products, { price: { $gte: 100, $lte: 500 } })
+   ```
+
+3. **Array Operators** - Set membership
+   ```typescript
+   filter(products, { category: { $in: ['A', 'B'] } })
+   ```
+
+4. **String Operators** - Prefix/suffix/substring
+   ```typescript
+   filter(users, { name: { $startsWith: 'John' } })
+   ```
+
+5. **Logical Operators** - Complex conditions
+   ```typescript
+   filter(data, { $and: [{ a: 1 }, { b: 2 }] })
+   ```
+
+6. **Regex Operators** - Pattern matching
+   ```typescript
+   filter(users, { email: { $regex: /@gmail\.com$/i } })
+   ```
+
+7. **DateTime Operators** - Temporal calculations
+   ```typescript
+   filter(events, { date: { $recent: { days: 7 } } })
+   ```
+
+8. **Geospatial Operators** - Distance calculations
+   ```typescript
+   filter(places, { location: { $near: { center, maxDistanceMeters: 5000 } } })
+   ```
+
+### Best Practices
+
+**✅ Combine Filters in Single Call:**
+```typescript
+// Good: Single filter call
+filter(products, {
+  category: 'Electronics',
+  price: { $gte: 100 },
+  inStock: true
+});
+
+// Avoid: Chaining multiple filters
+const filtered1 = filter(products, { category: 'Electronics' });
+const filtered2 = filter(filtered1, { price: { $gte: 100 } });
+const filtered3 = filter(filtered2, { inStock: true });
+```
+
+**✅ Use Simpler Operators When Possible:**
+```typescript
+// Good: String operator
+filter(users, { email: { $endsWith: '@gmail.com' } });
+
+// Slower: Regex for simple pattern
+filter(users, { email: { $regex: /@gmail\.com$/i } });
+```
+
+**✅ Put Most Restrictive Conditions First:**
+```typescript
+// Good: Most selective property first
+filter(products, {
+  inStock: true,              // Eliminates 80% of items
+  category: 'Electronics',    // Further filters remaining 20%
+  price: { $gte: 100 }       // Final refinement
+});
+```
+
+**✅ Avoid Deep Nesting:**
+```typescript
+// Hard to read and maintain
+filter(data, {
+  $and: [
+    { $or: [{ $and: [{ a: 1 }, { b: 2 }] }, { c: 3 }] }
+  ]
+});
+
+// Better: Flatten when possible
+filter(data, {
+  $or: [
+    { $and: [{ a: 1 }, { b: 2 }] },
+    { c: 3 }
+  ]
+});
+```
+
+### Performance Benchmarks
+
+| Operation | Without Cache | With Cache | Speedup |
+|-----------|---------------|------------|---------|
+| Simple query (10K items) | 5.3ms | 0.01ms | **530x** |
+| Regex pattern | 12.1ms | 0.02ms | **605x** |
+| Complex nested | 15.2ms | 0.01ms | **1520x** |
+| Geospatial $near | 8.4ms | 0.02ms | **420x** |
+| DateTime $recent | 6.7ms | 0.01ms | **670x** |
+
+See [Performance Benchmarks](../advanced/performance-benchmarks.md) for detailed analysis.
+
 ## Type Safety
 
 All operators are fully typed with TypeScript:
 
 ```typescript
-import type { ComparisonOperators, ArrayOperators, StringOperators } from '@mcabreradev/filter';
+import type { 
+  ComparisonOperators, 
+  ArrayOperators, 
+  StringOperators,
+  LogicalOperators,
+  GeospatialOperators,
+  DateTimeOperators,
+  Expression
+} from '@mcabreradev/filter';
 
-// Type-safe operator usage
+interface Product {
+  name: string;
+  price: number;
+  tags: string[];
+  location: GeoPoint;
+  createdAt: Date;
+}
+
+// Full type safety with autocomplete
+const query: Expression<Product> = {
+  name: { $startsWith: 'Lap' },        // String operators
+  price: { $gte: 100, $lte: 500 },     // Comparison operators
+  tags: { $contains: 'sale' },         // Array operators
+  location: { $near: { ... } },        // Geospatial operators
+  createdAt: { $recent: { days: 7 } }  // DateTime operators
+};
+
+filter(products, query);
+```
+
+**Type-Safe Operator Usage:**
+```typescript
 const priceFilter: ComparisonOperators = {
   $gte: 100,
   $lte: 500
@@ -1378,36 +1907,39 @@ const categoryFilter: ArrayOperators = {
 const nameFilter: StringOperators = {
   $startsWith: 'Lap'
 };
+
+const dateFilter: DateTimeOperators = {
+  $recent: { days: 7 },
+  $dayOfWeek: [1, 2, 3, 4, 5]
+};
 ```
 
-## Performance Notes
+## See Also
 
-- Operators are optimized with early exit strategies
-- Multiple operators on the same property are evaluated efficiently
-- String operators respect the global `caseSensitive` configuration
-- Operator detection is cached for repeated queries (when `enableCache: true`)
+- **Guides:**
+  - [Logical Operators Guide](./logical-operators.md) - Complex query patterns
+  - [DateTime Operators Guide](./datetime-operators.md) - Temporal filtering
+  - [Geospatial Operators Guide](./geospatial-operators.md) - Location-based filtering
+  - [Regex Operators Guide](./regex-operators.md) - Pattern matching
+  - [Lazy Evaluation Guide](./lazy-evaluation.md) - Efficient processing
+  - [Memoization Guide](./memoization.md) - Performance optimization
 
-## Migration from v3.x
+- **API Reference:**
+  - [Complete API Reference](../api/reference.md) - All exported functions
+  - [Types Reference](../api/types.md) - TypeScript types
+  - [Operators API](../api/operators.md) - Technical operator details
 
-Operators are a **new feature** in v5.0.0 and are 100% backward compatible. All existing v3.x syntax continues to work:
+- **Advanced:**
+  - [Performance Benchmarks](../advanced/performance-benchmarks.md) - Optimization tips
+  - [Architecture Guide](../advanced/architecture.md) - Internal design
+  - [Migration Guide](../advanced/migration.md) - Upgrade instructions
 
-```typescript
-// v3.x syntax still works
-filter(users, 'Berlin');
-filter(users, { city: 'Berlin' });
-filter(users, (u) => u.age > 25);
+- **Examples:**
+  - [Basic Examples](../examples/basic.md) - Getting started
+  - [Advanced Examples](../examples/advanced.md) - Complex scenarios
+  - [Real-World Examples](../examples/real-world.md) - Production use cases
 
-// v5.0.0 new operator syntax
-filter(users, { age: { $gt: 25 } });
-```
+---
 
-## Further Reading
-
-- [Advanced Logical Operators Guide](./logical-operators.md)
-- [Lazy Evaluation Guide](./lazy-evaluation.md)
-- [Performance Benchmarks](../advanced/performance-benchmarks.md)
-- [Security Best Practices](./SECURITY.md)
-- [Configuration API](../README.md#configuration-api)
-- [Migration Guide](../advanced/migration.md)
-- [Full API Documentation](../README.md)
+**Made with ❤️ for the JavaScript/TypeScript community**
 
