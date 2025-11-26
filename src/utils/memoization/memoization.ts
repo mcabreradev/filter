@@ -7,7 +7,7 @@ interface MemoizationCache<R> {
   size(): number;
 }
 
-class LRUCache<R> implements MemoizationCache<R> {
+export class LRUCache<R> implements MemoizationCache<R> {
   private cache = new Map<string, { value: R; timestamp: number }>();
   private maxSize: number;
   private maxAge: number;
@@ -54,12 +54,12 @@ class LRUCache<R> implements MemoizationCache<R> {
 export class MemoizationManager {
   private static instance: MemoizationManager;
   private predicateCache: LRUCache<(item: unknown) => boolean>;
-  private regexCache: Map<string, RegExp>;
+  private regexCache: LRUCache<RegExp>;
   private expressionHashCache: WeakMap<object, string>;
 
   private constructor() {
     this.predicateCache = new LRUCache<(item: unknown) => boolean>(500, 300000);
-    this.regexCache = new Map();
+    this.regexCache = new LRUCache<RegExp>(500, 300000);
     this.expressionHashCache = new WeakMap();
   }
 
@@ -76,22 +76,26 @@ export class MemoizationManager {
     }
 
     if (typeof expression === 'string') {
-      return `str:${expression}:${config.caseSensitive}`;
+      return `str:${expression}:${config.caseSensitive}:${config.limit}`;
     }
 
     if (typeof expression === 'object' && expression !== null) {
       const cached = this.expressionHashCache.get(expression);
-      if (cached) return cached;
+      const configHash = `:cs:${config.caseSensitive}:md:${config.maxDepth}:lim:${config.limit}`;
 
-      const hash = this.hashObject(expression, config);
+      if (cached) {
+        return `${cached}${configHash}`;
+      }
+
+      const hash = this.hashObject(expression, config, true);
       this.expressionHashCache.set(expression, hash);
-      return hash;
+      return `${hash}${configHash}`;
     }
 
-    return `primitive:${String(expression)}`;
+    return `primitive:${String(expression)}:${config.limit}`;
   }
 
-  private hashObject(obj: unknown, config: FilterConfig): string {
+  private hashObject(obj: unknown, config: FilterConfig, skipConfigSuffix = false): string {
     const parts: string[] = [];
     const record = obj as Record<string, unknown>;
 
@@ -142,8 +146,12 @@ export class MemoizationManager {
       }
     }
 
+    if (skipConfigSuffix) {
+      return parts.join('|');
+    }
+
     const orderByHash = config.orderBy ? this.hashOrderBy(config.orderBy) : '';
-    return `${parts.join('|')}:cs:${config.caseSensitive}:md:${config.maxDepth}${orderByHash ? `:ob:${orderByHash}` : ''}`;
+    return `${parts.join('|')}:cs:${config.caseSensitive}:md:${config.maxDepth}:lim:${config.limit}${orderByHash ? `:ob:${orderByHash}` : ''}`;
   }
 
   private hashOrderBy(orderBy: unknown): string {
@@ -215,7 +223,7 @@ export class MemoizationManager {
   getStats(): CacheStats {
     return {
       predicateCacheSize: this.predicateCache.size(),
-      regexCacheSize: this.regexCache.size,
+      regexCacheSize: this.regexCache.size(),
     };
   }
 }

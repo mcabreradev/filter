@@ -38,6 +38,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated dependencies to latest stable versions
 - Improved bundle size optimization
 
+## [5.8.3] - 2025-11-26
+
+### Bug Fixes
+- **Cache**: Fixed critical issue where `limit` option was ignored in cache key. Requests with different limits now correctly generate distinct cache keys.
+
+### Performance Improvements
+- **Memory**: Replaced unbounded `Map` caches with `LRUCache` strategy.
+  - `FilterCache`: Limited to 100 entries per source array.
+  - `RegexCache`: Limited to 500 compiled patterns.
+- **Stability**: Prevented memory leaks in long-running applications with dynamic queries.
+
 ## [5.8.0] - 2025-11-10
 
 ### Added

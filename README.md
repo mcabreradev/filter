@@ -708,7 +708,12 @@ filter(data, expression, { enableCache: true });
 
 ## Changelog
 
-### v5.8.0 (Current)
+### v5.8.3 (Current)
+- 🐛 **Bug Fix**: Fixed critical issue where `limit` option was ignored in cache key
+- ⚡ **Performance**: Replaced unbounded caches with LRU strategy to prevent memory leaks
+- 🔒 **Stability**: Improved memory management for long-running applications
+
+### v5.8.0
 - 🎨 **New Framework Integrations**: Angular, SolidJS, and Preact support
 - 🔢 **Limit Option**: New `limit` configuration option to restrict result count
 - 📊 **OrderBy Option**: New `OrderBy` configuration option to sort filtered results by field(s) in ascending or descending order

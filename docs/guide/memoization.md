@@ -27,7 +27,7 @@ The memoization system provides **3 layers of caching** to maximize performance:
 ```
 ┌─────────────────────────────────────────┐
 │         Result Cache (WeakMap)          │
-│  Caches complete filter results         │
+│  Caches complete filter results (LRU)   │
 └─────────────────────────────────────────┘
                   ↓
 ┌─────────────────────────────────────────┐
@@ -36,7 +36,7 @@ The memoization system provides **3 layers of caching** to maximize performance:
 └─────────────────────────────────────────┘
                   ↓
 ┌─────────────────────────────────────────┐
-│         Regex Cache (Map)               │
+│         Regex Cache (LRU + TTL)         │
 │  Caches compiled regex patterns         │
 └─────────────────────────────────────────┘
 ```
@@ -58,12 +58,13 @@ The memoization system provides **3 layers of caching** to maximize performance:
 Uses `WeakMap` to cache complete filter results:
 
 ```typescript
-WeakMap<Array, Map<ExpressionHash, Result>>
+WeakMap<Array, LRUCache<T[]>>
 ```
 
 **Benefits:**
 - Automatic garbage collection
 - No memory leaks
+- Limited to 100 entries per array (LRU)
 - Zero configuration needed
 
 **How it works:**
@@ -94,19 +95,24 @@ filter(data2, { age: { $gte: 18 } }, { enableCache: true });
 ```
 
 ### 3. Regex Cache
-
-Simple `Map` for compiled regex patterns:
-
-```typescript
-Map<PatternHash, RegExp>
-```
-
-**How it works:**
-```typescript
-filter(users, { email: { $regex: '^admin@' } });
-filter(customers, { email: { $regex: '^admin@' } });
-filter(vendors, { email: { $regex: '^admin@' } });
-```
+ 
+ LRU cache for compiled regex patterns:
+ 
+ ```typescript
+ LRUCache<RegExp>
+ ```
+ 
+ **Configuration:**
+ - Max size: 500 entries
+ - TTL: 5 minutes (300,000ms)
+ - Eviction: Least Recently Used
+ 
+ **How it works:**
+ ```typescript
+ filter(users, { email: { $regex: '^admin@' } });
+ filter(customers, { email: { $regex: '^admin@' } });
+ filter(vendors, { email: { $regex: '^admin@' } });
+ ```
 
 ---
 
@@ -723,6 +729,6 @@ filter(data1, { age: { $gte: 18 } }, { enableCache: true });
 
 ---
 
-**Version:** 5.2.0
-**Last Updated:** October 2025
+**Version:** 5.8.3
+**Last Updated:** November 2025
 
