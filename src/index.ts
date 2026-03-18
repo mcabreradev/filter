@@ -1,6 +1,7 @@
 import { filter } from './core/index.js';
 
 export { filter };
+export { find } from './core/index.js';
 
 export { clearFilterCache, getFilterCacheStats } from './core/index.js';
 
@@ -26,7 +27,7 @@ export {
   forEach,
   every,
   some,
-  find,
+  find as lazyFind,
   chunk,
   flatten,
   asyncMap,

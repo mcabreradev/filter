@@ -1,1 +1,1 @@
-export { filter, clearFilterCache, getFilterCacheStats } from './filter.js';
+export { filter, find, clearFilterCache, getFilterCacheStats } from './filter.js';

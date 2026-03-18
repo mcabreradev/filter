@@ -23,12 +23,19 @@ Choose between two import styles:
 
 ```typescript
 // Classic import (all features)
-import { filter, useFilter } from '@mcabreradev/filter';
+import { filter, find, useFilter } from '@mcabreradev/filter';
 
 // Modular import (smaller bundle, recommended for production)
-import { filter } from '@mcabreradev/filter/core';
+import { filter, find } from '@mcabreradev/filter/core';
 import { useFilter } from '@mcabreradev/filter/react';
 ```
+
+::: tip `find` is an alias for `filter`
+Both functions are identical — same signature, same results. Use whichever reads more naturally in your codebase.
+```typescript
+find(users, { active: true });   // same as filter(users, { active: true })
+```
+:::
 
 ::: tip Bundle Size
 Modular imports reduce bundle size by **50-70%**! See [Modular Imports](/guide/modular-imports) for details.

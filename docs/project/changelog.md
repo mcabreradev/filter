@@ -5,6 +5,15 @@ All notable changes to @mcabreradev/filter are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.9.0] - 2026-03-18
+
+### Added
+- **`find` alias**: `find` is now exported as an alias for `filter` with the identical signature and behavior. Import from `@mcabreradev/filter` or `@mcabreradev/filter/core`. Use whichever name reads more naturally in your codebase.
+  ```typescript
+  import { find } from '@mcabreradev/filter';
+  const result = find(users, { active: true }); // same as filter()
+  ```
+
 ## [5.8.2] - 2025-11-17
 
 ### Documentation

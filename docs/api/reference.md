@@ -34,6 +34,32 @@ const users = [{ name: 'Alice', age: 30 }, { name: 'Bob', age: 25 }];
 const result = filter(users, { age: { $gte: 25 } });
 ```
 
+### find
+
+Alias for `filter` — identical signature and behavior. Use whichever name fits your style.
+
+```typescript
+function find<T>(
+  array: T[],
+  expression: Expression<T>,
+  options?: FilterOptions
+): T[]
+```
+
+**Example:**
+```typescript
+import { find } from '@mcabreradev/filter';
+
+const users = [{ name: 'Alice', age: 30 }, { name: 'Bob', age: 25 }];
+
+// Exactly the same as calling filter()
+const result = find(users, { age: { $gte: 25 } });
+```
+
+::: tip
+`find` and `filter` are the same function. Pick the one that reads most naturally in your codebase.
+:::
+
 ### filterLazy
 
 Returns a lazy iterator for on-demand filtering.
