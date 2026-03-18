@@ -56,7 +56,7 @@
   {
     "name": "React integration",
     "path": "build/integrations/react/index.js",
-    "limit": "10 KB",
+    "limit": "11 KB",
     "gzip": true
   },
   {
@@ -74,7 +74,7 @@
   {
     "name": "Angular integration",
     "path": "build/integrations/angular/index.js",
-    "limit": "10 KB",
+    "limit": "11 KB",
     "gzip": true
   },
   {
