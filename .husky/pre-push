@@ -1,6 +1,8 @@
+set -e
+
 echo "🧪 Running pre-push checks..."
 
-echo "✅ All checks passed! Verifying final conditions..."
+echo "🔍 Running final verification..."
 pnpm run check
 
 echo "✅ Pre-push checks passed! Ready to push."
