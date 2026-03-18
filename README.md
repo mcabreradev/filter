@@ -37,7 +37,7 @@
 ## Table of Contents
 
 - [@mcabreradev/filter](#mcabreradevfilter)
-  - [The Hook](#the-hook)
+  - [The Problem](#the-problem)
   - [Quick Start](#quick-start)
     - [Install](#install)
     - [Your First Filter](#your-first-filter)
@@ -81,7 +81,8 @@
   - [Browser Support](#browser-support)
   - [Migration from v3.x](#migration-from-v3x)
   - [Changelog](#changelog)
-    - [v5.8.0 (Current)](#v580-current)
+    - [v5.8.2 (Current)](#v582-current)
+    - [v5.8.0](#v580)
     - [v5.7.0](#v570)
     - [v5.6.0](#v560)
     - [v5.5.0](#v550)
@@ -93,11 +94,11 @@
 
 ---
 
-## The Hook
+## The Problem
 
 **Tired of writing complex filter logic?** Stop wrestling with nested `Array.filter()` chains and verbose conditionals. Write clean, declarative filters that read like queries.
 
-**Before:**
+**Before — the usual mess:**
 ```typescript
 const results = data.filter(item =>
   item.age >= 18 &&
@@ -108,7 +109,7 @@ const results = data.filter(item =>
 );
 ```
 
-**After:**
+**After — clean and declarative:**
 ```typescript
 const results = filter(data, {
   age: { $gte: 18 },
@@ -148,24 +149,21 @@ const users = [
   { name: 'Charlie', age: 35, city: 'Berlin', active: true }
 ];
 
-// Simple string search
+// Simple string search — scans all fields
 const berlinUsers = filter(users, 'Berlin');
 // → [{ name: 'Alice', ... }, { name: 'Charlie', ... }]
 
-// Object-based filtering
-const activeBerlinUsers = filter(users, {
-  city: 'Berlin',
-  active: true
-});
+// Object matching — AND logic across fields
+const activeBerlinUsers = filter(users, { city: 'Berlin', active: true });
 // → [{ name: 'Alice', ... }]
 
 // MongoDB-style operators
-const adults = filter(users, {
-  age: { $gte: 18 }
-});
-// → All users (all are 18+)
+const adults = filter(users, { age: { $gte: 18 } });
+// → All users
 
-// That's it! You're filtering like a pro.
+// SQL-like wildcards
+const startsWithAl = filter(users, 'Al%');
+// → [{ name: 'Alice', ... }]
 ```
 
 **🎮 [Try it in the Playground →](https://mcabreradev-filter.vercel.app/playground/)**
@@ -175,46 +173,46 @@ const adults = filter(users, {
 ## Why You'll Love It
 
 ### 🚀 **Blazing Fast**
-- **530x faster** with optional caching
+- **530x faster** on repeated queries with optional LRU caching
 - **500x faster** with lazy evaluation for large datasets
-- Optimized for production workloads
+- Compiled predicates and regex patterns cached automatically
 
 ### 🎯 **Developer Friendly**
-- Intuitive API that feels natural
-- SQL-like syntax you already know
-- Full TypeScript support with intelligent autocomplete
+- Intuitive API — reads like English
+- SQL-like wildcards (`%`, `_`) you already know
+- Full TypeScript generics with intelligent autocomplete
 
 ### 🔧 **Incredibly Flexible**
-- Multiple filtering strategies (strings, objects, operators, predicates)
-- Works with any data structure
-- Combine approaches seamlessly
+- Four filtering strategies: strings, objects, operators, predicates
+- Combine them seamlessly in a single expression
+- Works with any data shape — flat, nested, arrays
 
 ### 📦 **Production Ready**
-- **993+ tests** ensuring reliability
-- Zero dependencies (12KB gzipped)
-- Used in production by companies worldwide
+- **1,004+ tests** ensuring bulletproof reliability
+- Zero runtime dependencies (only Zod for optional validation)
+- Battle-tested in production applications
 - MIT licensed
 
 ### 🪶 **Ultra Lightweight**
-- Truly zero dependencies!
-- Tiny 12KB bundle
-- Optional Zod for validation
-- No bloat, just pure filtering power
+- Full package: **12KB gzipped**
+- Core only: **8.4KB gzipped**
+- Zero mandatory dependencies
+- Tree-shakeable — only pay for what you use
 
 ### 🔒 **Type-Safe by Default**
 - Built with strict TypeScript
-- Catch errors at compile time
-- Full IntelliSense and autocomplete support
+- Catch errors at compile time, not runtime
+- Full IntelliSense for operators based on field types
 
 ### 🎨 **Framework Agnostic**
-- Works everywhere: React, Vue, Svelte, Angular, SolidJS, Preact
-- First-class hooks and composables included
-- SSR compatible (Next.js, Nuxt, SvelteKit)
+- First-class hooks: React, Vue, Svelte, Angular, SolidJS, Preact
+- Debounced search, pagination, and reactive state out of the box
+- SSR compatible: Next.js, Nuxt, SvelteKit
 
 ### 📊 **Handles Big Data**
-- Process millions of records efficiently
-- Lazy evaluation for memory optimization
-- Built for scale
+- Generator-based lazy evaluation for millions of records
+- Early exit — stop processing when you have enough results
+- LRU caches with TTL prevent memory leaks in long-running apps
 
 ---
 
@@ -223,67 +221,63 @@ const adults = filter(users, {
 ### Basic Filtering
 
 ```typescript
-// String matching - searches all properties
+// String matching — searches all string properties
 filter(products, 'Laptop');
 
-// Object matching - AND logic
-filter(products, {
-  category: 'Electronics',
-  price: { $lt: 1000 }
-});
+// Exact field matching — AND logic
+filter(products, { category: 'Electronics', price: { $lt: 1000 } });
 
-// Wildcard patterns (SQL-like)
-filter(users, '%alice%');  // Contains 'alice'
-filter(users, 'Al%');      // Starts with 'Al'
-filter(users, '%son');     // Ends with 'son'
+// SQL wildcard patterns
+filter(users, '%alice%');   // contains 'alice'
+filter(users, 'Al%');       // starts with 'Al'
+filter(users, '%son');      // ends with 'son'
+filter(users, 'J_hn');      // single-char wildcard
+
+// Predicate functions — full control
+filter(users, (u) => u.score > 90 && u.verified);
 ```
 
 ### MongoDB-Style Operators
 
 ```typescript
-// Comparison operators
-filter(products, {
-  price: { $gte: 100, $lte: 500 }
-});
+// Comparison
+filter(products, { price: { $gte: 100, $lte: 500 } });
+filter(products, { rating: { $gt: 4 }, stock: { $ne: 0 } });
 
-// Array operators
-filter(products, {
-  category: { $in: ['Electronics', 'Books'] },
-  tags: { $contains: 'sale' }
-});
+// Array membership
+filter(products, { category: { $in: ['Electronics', 'Books'] } });
+filter(products, { tags: { $contains: 'sale' } });
+filter(products, { sizes: { $size: 3 } });
 
-// String operators
+// String matching
 filter(users, {
   email: { $endsWith: '@company.com' },
-  name: { $startsWith: 'John' }
+  name: { $startsWith: 'John' },
+  bio: { $regex: /developer/i }
 });
 
-// Logical operators
+// Logical combinators
 filter(products, {
   $and: [
     { inStock: true },
-    {
-      $or: [
-        { rating: { $gte: 4.5 } },
-        { price: { $lt: 50 } }
-      ]
-    }
+    { $or: [{ rating: { $gte: 4.5 } }, { price: { $lt: 50 } }] }
   ]
 });
+
+// Negate with $not
+filter(users, { role: { $not: 'banned' } });
 ```
 
 ### Array OR Syntax (Intuitive!)
 
 ```typescript
-// Clean array syntax - no $in needed!
-filter(products, {
-  category: ['Electronics', 'Books']
-});
-// Equivalent to: { category: { $in: ['Electronics', 'Books'] } }
+// Pass an array → automatic OR logic, no $in needed
+filter(products, { category: ['Electronics', 'Books'] });
+// Same as: { category: { $in: ['Electronics', 'Books'] } }
 
-// Multiple properties
+// Combine across fields
 filter(users, {
-  city: ['Berlin', 'Paris'],
+  city: ['Berlin', 'Paris', 'London'],
   role: ['admin', 'moderator']
 });
 ```
@@ -295,15 +289,20 @@ import { filter, type GeoPoint } from '@mcabreradev/filter';
 
 const userLocation: GeoPoint = { lat: 52.52, lng: 13.405 };
 
-// Find restaurants within 5km
+// Find restaurants within 5km rated 4.5+
 filter(restaurants, {
-  location: {
-    $near: {
-      center: userLocation,
-      maxDistanceMeters: 5000
-    }
-  },
+  location: { $near: { center: userLocation, maxDistanceMeters: 5000 } },
   rating: { $gte: 4.5 }
+});
+
+// Bounding box search
+filter(places, {
+  location: {
+    $geoBox: {
+      topLeft: { lat: 53.0, lng: 13.0 },
+      bottomRight: { lat: 52.0, lng: 14.0 }
+    }
+  }
 });
 ```
 
@@ -311,60 +310,43 @@ filter(restaurants, {
 
 ```typescript
 // Events in next 7 days
-filter(events, {
-  date: { $upcoming: { days: 7 } }
-});
+filter(events, { date: { $upcoming: { days: 7 } } });
 
-// Recent events (last 24 hours)
-filter(events, {
-  date: { $recent: { hours: 24 } }
-});
+// Recent activity (last 24 hours)
+filter(logs, { createdAt: { $recent: { hours: 24 } } });
 
 // Weekday events during business hours
 filter(events, {
-  date: { $dayOfWeek: [1, 2, 3, 4, 5] },
-  startTime: { $timeOfDay: { start: 9, end: 17 } }
+  date: { $dayOfWeek: [1, 2, 3, 4, 5] },       // Mon–Fri
+  startTime: { $timeOfDay: { start: 9, end: 17 } }  // 9am–5pm
 });
 
-// Users who logged in recently (last 7 days)
-filter(users, {
-  lastLogin: { $recent: { days: 7 } }
-});
+// Users of age 18–65
+filter(users, { birthDate: { $age: { min: 18, max: 65 } } });
 
-// Upcoming meetings in next 2 hours
-filter(meetings, {
-  startTime: { $upcoming: { hours: 2 } }
-});
+// Weekend-only events
+filter(events, { date: { $isWeekend: true } });
 
-// Weekend events only
-filter(events, {
-  date: { $isWeekend: true }
-});
-
-// Calculate age (users over 18)
-filter(users, {
-  birthDate: { $age: { $gte: 18 } }
-});
-
-// Events before a specific date
-filter(events, {
-  date: { $isBefore: new Date('2025-12-31') }
-});
+// Events before a deadline
+filter(tasks, { dueDate: { $isBefore: new Date('2025-12-31') } });
 ```
 
 ### Performance Optimization
 
 ```typescript
-// Enable caching for repeated queries
+// LRU caching — 530x faster on repeat queries
 const results = filter(largeDataset, expression, {
   enableCache: true,
   orderBy: { field: 'price', direction: 'desc' },
   limit: 100
 });
 
-// Lazy evaluation for large datasets
-import { filterFirst } from '@mcabreradev/filter';
-const first10 = filterFirst(users, { premium: true }, 10);
+// Lazy evaluation — process millions of records without loading all into memory
+import { filterFirst, filterExists, filterCount, filterLazy } from '@mcabreradev/filter';
+
+const first10 = filterFirst(millionRecords, { premium: true }, 10);
+const hasAdmin = filterExists(users, { role: 'admin' });      // exits on first match
+const activeCount = filterCount(users, { active: true });     // no array allocated
 ```
 
 ### Real-World: E-commerce Search
@@ -381,28 +363,23 @@ interface Product {
   tags: string[];
 }
 
-const products: Product[] = [...];
-
-// Find affordable, highly-rated electronics in stock
-const affordableElectronics = filter(products, {
+// Affordable, highly-rated electronics in stock
+const results = filter<Product>(products, {
   category: 'Electronics',
   price: { $lte: 1000 },
   rating: { $gte: 4.5 },
   inStock: true
 });
 
-// Search with multiple filters
-const searchResults = filter(products, {
+// Full-text search with brand filter
+const searchResults = filter<Product>(products, {
   name: { $contains: 'laptop' },
-  brand: { $in: ['Apple', 'Dell', 'HP'] },
+  brand: ['Apple', 'Dell', 'HP'],
   price: { $gte: 500, $lte: 2000 }
 });
 
-// Sort results
-const sortedProducts = filter(products, {
-  category: 'Electronics',
-  inStock: true
-}, {
+// Sorted and paginated results
+const page1 = filter<Product>(products, { category: 'Electronics', inStock: true }, {
   orderBy: [
     { field: 'price', direction: 'asc' },
     { field: 'rating', direction: 'desc' }
@@ -415,35 +392,69 @@ const sortedProducts = filter(products, {
 
 ## Framework Integrations
 
-Works seamlessly with your favorite framework:
+First-class hooks and composables — reactive, debounced, paginated, ready to drop in:
 
 ### React
 
 ```typescript
-import { useFilter } from '@mcabreradev/filter/react';
+import { useFilter, useDebouncedFilter, usePaginatedFilter } from '@mcabreradev/filter/react';
 
 function UserList() {
   const { filtered, isFiltering } = useFilter(users, { active: true });
-  return <div>{filtered.map(u => <User key={u.id} {...u} />)}</div>;
+
+  return (
+    <ul>
+      {filtered.map(u => <li key={u.id}>{u.name}</li>)}
+    </ul>
+  );
+}
+
+// Debounced live search
+function SearchBox() {
+  const [query, setQuery] = useState('');
+  const { filtered, isPending } = useDebouncedFilter(users, query, { delay: 300 });
+
+  return (
+    <>
+      <input onChange={e => setQuery(e.target.value)} />
+      {isPending ? <Spinner /> : filtered.map(u => <User key={u.id} user={u} />)}
+    </>
+  );
 }
 ```
 
 ### Vue
 
 ```vue
-<script setup>
+<script setup lang="ts">
+import { ref } from 'vue';
 import { useFilter } from '@mcabreradev/filter/vue';
-const { filtered } = useFilter(users, { active: true });
+
+const expression = ref({ active: true });
+const { filtered, isFiltering } = useFilter(users, expression);
 </script>
+
+<template>
+  <ul>
+    <li v-for="user in filtered" :key="user.id">{{ user.name }}</li>
+  </ul>
+</template>
 ```
 
 ### Svelte
 
 ```svelte
-<script>
-import { useFilter } from '@mcabreradev/filter/svelte';
-const { filtered } = useFilter(users, writable({ active: true }));
+<script lang="ts">
+  import { writable } from 'svelte/store';
+  import { useFilter } from '@mcabreradev/filter/svelte';
+
+  const expression = writable({ active: true });
+  const { filtered } = useFilter(users, expression);
 </script>
+
+{#each $filtered as user}
+  <p>{user.name}</p>
+{/each}
 ```
 
 ### Angular
@@ -489,10 +500,10 @@ function UserList() {
 }
 ```
 
-**Features:**
-- ✅ Full TypeScript support with generics
-- ✅ Debounced search hooks/services
-- ✅ Pagination support
+**Every integration includes:**
+- ✅ Full TypeScript generics
+- ✅ Debounced search hook with `isPending` state
+- ✅ Pagination hook with `nextPage`, `prevPage`, `goToPage`
 - ✅ SSR compatible
 - ✅ 100% test coverage
 
@@ -504,16 +515,20 @@ function UserList() {
 
 ### Supported Operators
 
-**Comparison:** `$gt`, `$gte`, `$lt`, `$lte`, `$eq`, `$ne`
-**Array:** `$in`, `$nin`, `$contains`, `$size`
-**String:** `$startsWith`, `$endsWith`, `$contains`, `$regex`, `$match`
-**Logical:** `$and`, `$or`, `$not`
-**Geospatial:** `$near`, `$geoBox`, `$geoPolygon`
-**Datetime:** `$recent`, `$upcoming`, `$dayOfWeek`, `$timeOfDay`, `$age`, `$isWeekday`, `$isWeekend`, `$isBefore`, `$isAfter`
+| Category | Operators |
+|----------|-----------|
+| **Comparison** | `$gt` `$gte` `$lt` `$lte` `$eq` `$ne` |
+| **Array** | `$in` `$nin` `$contains` `$size` |
+| **String** | `$startsWith` `$endsWith` `$contains` `$regex` `$match` |
+| **Logical** | `$and` `$or` `$not` |
+| **Geospatial** | `$near` `$geoBox` `$geoPolygon` |
+| **Datetime** | `$recent` `$upcoming` `$dayOfWeek` `$timeOfDay` `$age` `$isWeekday` `$isWeekend` `$isBefore` `$isAfter` |
+
+> 18+ operators covering every filtering scenario you'll encounter.
 
 ### TypeScript Support
 
-Full type safety with intelligent autocomplete:
+Full type safety — autocomplete shows only valid operators for each field type:
 
 ```typescript
 interface Product {
@@ -523,9 +538,10 @@ interface Product {
 }
 
 filter<Product>(products, {
-  price: {  }, // Autocomplete: $gt, $gte, $lt, $lte, $eq, $ne
-  name: {  },  // Autocomplete: $startsWith, $endsWith, $contains, $regex
-  tags: {  }   // Autocomplete: $in, $nin, $contains, $size
+  price: { $gte: 100 },    // ✅ number operators
+  name: { $contains: '' }, // ✅ string operators
+  tags: { $size: 3 },      // ✅ array operators
+  price: { $contains: '' } // ❌ TypeScript error — string op on number field
 });
 ```
 
@@ -533,12 +549,15 @@ filter<Product>(products, {
 
 ```typescript
 filter(data, expression, {
-  caseSensitive: false,      // Case-sensitive string matching
-  maxDepth: 3,                // Max depth for nested objects
-  enableCache: true,          // Enable result caching (530x faster)
-  orderBy: 'price',           // Sort results
-  limit: 10,                  // Limit number of results
-  debug: true                 // Visual debugging mode
+  caseSensitive: false,           // default: false
+  maxDepth: 3,                    // nested object traversal depth (1–10)
+  enableCache: true,              // LRU result caching (530x speedup)
+  orderBy: 'price',               // sort field or array of fields
+  limit: 10,                      // cap result count
+  debug: true,                    // print expression tree to console
+  verbose: true,                  // detailed per-item evaluation logs
+  showTimings: true,              // execution time per operator
+  enablePerformanceMonitoring: true,  // collect performance metrics
 });
 ```
 
@@ -548,69 +567,72 @@ filter(data, expression, {
 
 ### Lazy Evaluation
 
-Efficiently process large datasets with lazy evaluation:
+Process large datasets without loading everything into memory:
 
 ```typescript
 import { filterLazy, filterFirst, filterExists, filterCount } from '@mcabreradev/filter';
 
-// Process items on-demand
-const filtered = filterLazy(millionRecords, { active: true });
-for (const item of filtered) {
+// Generator — pull items one by one, exit any time
+const lazy = filterLazy(millionRecords, { active: true });
+for (const item of lazy) {
   process(item);
-  if (shouldStop) break; // Early exit
+  if (shouldStop) break; // ← zero wasted work
 }
 
-// Find first N matches
-const first10 = filterFirst(users, { premium: true }, 10);
+// Grab first N matches
+const top10 = filterFirst(users, { premium: true }, 10);
 
-// Check existence without processing all items
-const hasAdmin = filterExists(users, { role: 'admin' });
+// Check existence — exits on first match
+const hasBanned = filterExists(users, { role: 'banned' });
 
-// Count matches
-const activeCount = filterCount(users, { active: true });
+// Count matches — no array allocated
+const total = filterCount(orders, { status: 'pending' });
 ```
 
-**Benefits:**
-- 🚀 **500x faster** for operations that don't need all results
-- 💾 **100,000x less memory** for large datasets
-- ⚡ **Early exit** optimization
+| Scenario | Array.filter | filterLazy / filterFirst |
+|----------|-------------|--------------------------|
+| First match in 1M items | ~50ms | **~0.1ms** |
+| Memory for 1M items | ~80MB | **~0KB** |
+| Early exit | ❌ | ✅ |
 
 📖 **[Lazy Evaluation Guide →](./docs/guide/lazy-evaluation.md)**
 
 ### Memoization & Caching
 
-**530x faster** with optional caching:
+Three-tier LRU caching strategy with automatic TTL eviction:
 
 ```typescript
-// First call - processes data
+// First call — compiles predicates, runs filter, stores result
 const results = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true });
 
-// Second call - returns cached result instantly
-const sameResults = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true });
+// Subsequent calls — returns cached result instantly
+const same = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true });
 ```
 
-**Performance Gains:**
 | Scenario | Without Cache | With Cache | Speedup |
-|----------|---------------|------------|---------|
-| Simple query (10K items) | 5.3ms | 0.01ms | **530x** |
+|----------|--------------|------------|---------|
+| Simple query, 10K items | 5.3ms | 0.01ms | **530x** |
 | Regex pattern | 12.1ms | 0.02ms | **605x** |
-| Complex nested | 15.2ms | 0.01ms | **1520x** |
+| Complex nested query | 15.2ms | 0.01ms | **1520x** |
+
+Caches are bounded (LRU, max 500 entries each) and auto-expire after 5 minutes — safe for long-running servers.
 
 📖 **[Memoization Guide →](./docs/guide/memoization.md)**
 
 ### Visual Debugging
 
-Built-in debug mode with expression tree visualization:
+Built-in tree visualization for understanding filter behavior:
 
 ```typescript
-filter(users, { city: 'Berlin' }, { debug: true });
+filter(users, { city: 'Berlin', age: { $gte: 18 } }, { debug: true });
 
 // Console output:
 // ┌─ Filter Debug Tree
-// │  Expression: {"city":"Berlin"}
-// │  Matched: 3/10 (30.0%)
+// │  Expression: {"city":"Berlin","age":{"$gte":18}}
+// │  Matched: 3/10 items (30.0%)
 // │  Execution time: 0.42ms
-// └─ ✓ city = "Berlin"
+// ├─ ✓ city = "Berlin"         [3 matches]
+// └─ ✓ age >= 18               [3 matches]
 ```
 
 📖 **[Debug Guide →](./docs/guide/debugging.md)**
@@ -621,14 +643,14 @@ filter(users, { city: 'Berlin' }, { debug: true });
 
 ### 📖 Complete Guides
 
-- **[Getting Started](./docs/guide/getting-started.md)** - Installation and first steps
-- **[All Operators](./docs/guide/operators.md)** - Complete operator reference
-- **[Geospatial Queries](./docs/guide/geospatial-operators.md)** - Location-based filtering
-- **[Datetime Operators](./docs/guide/datetime-operators.md)** - Temporal filtering
-- **[Framework Integrations](./docs/frameworks/index.md)** - React, Vue, Svelte, Angular, SolidJS, Preact
-- **[Lazy Evaluation](./docs/guide/lazy-evaluation.md)** - Efficient large dataset processing
-- **[Memoization & Caching](./docs/guide/memoization.md)** - Performance optimization
-- **[Visual Debugging](./docs/guide/debugging.md)** - Debug mode and tree visualization
+- **[Getting Started](./docs/guide/getting-started.md)** — Installation and first steps
+- **[All Operators](./docs/guide/operators.md)** — Complete operator reference
+- **[Geospatial Queries](./docs/guide/geospatial-operators.md)** — Location-based filtering
+- **[Datetime Operators](./docs/guide/datetime-operators.md)** — Temporal filtering
+- **[Framework Integrations](./docs/frameworks/index.md)** — React, Vue, Svelte, Angular, SolidJS, Preact
+- **[Lazy Evaluation](./docs/guide/lazy-evaluation.md)** — Efficient large dataset processing
+- **[Memoization & Caching](./docs/guide/memoization.md)** — Performance optimization
+- **[Visual Debugging](./docs/guide/debugging.md)** — Debug mode and tree visualization
 
 ### 🎯 Quick Links
 
@@ -643,23 +665,21 @@ filter(users, { city: 'Berlin' }, { debug: true });
 
 ## Performance
 
-Filter is optimized for performance:
-
-- **Operators** use early exit strategies for fast evaluation
-- **Regex patterns** are compiled and cached
-- **Optional caching** for repeated queries (530x-1520x faster)
-- **Lazy evaluation** for efficient large dataset processing (500x faster)
-- **Type guards** for fast type checking
+| Technique | Benefit |
+|-----------|---------|
+| Early-exit operators | Skip remaining items on first mismatch |
+| LRU result cache | 530x–1520x speedup on repeated queries |
+| LRU predicate cache | Compiled predicates reused across calls |
+| LRU regex cache | Compiled patterns reused, bounded to 500 entries |
+| Lazy generators | 500x faster when you don't need all results |
+| Absolute TTL eviction | Stale entries removed after 5 min — no memory leaks |
 
 ```typescript
-// ✅ Fast: Operators with early exit
-filter(data, { age: { $gte: 18 } });
+// Enable all optimizations at once
+filter(data, expression, { enableCache: true });
 
-// ✅ Fast with caching for repeated queries
-filter(largeData, expression, { enableCache: true });
-
-// ✅ Fast with lazy evaluation for large datasets
-const result = filterFirst(millionRecords, { active: true }, 100);
+// Maximum efficiency for large datasets
+const first100 = filterFirst(millionRecords, { active: true }, 100);
 ```
 
 ---
@@ -688,7 +708,7 @@ Works in all modern browsers and Node.js:
 
 ## Migration from v3.x
 
-**Good news:** v5.x is **100% backward compatible**! All v3.x code continues to work.
+**Good news:** v5.x is **100% backward compatible**. All v3.x code continues to work.
 
 ```typescript
 // ✅ All v3.x syntax still works
@@ -699,7 +719,7 @@ filter(data, '%pattern%');
 
 // ✅ New in v5.x
 filter(data, { age: { $gte: 18 } });
-filter(data, expression, { enableCache: true });
+filter(data, expression, { enableCache: true, limit: 50 });
 ```
 
 📖 **[Migration Guide →](./docs/advanced/migration.md)**
@@ -708,27 +728,38 @@ filter(data, expression, { enableCache: true });
 
 ## Changelog
 
-### v5.8.3 (Current)
-- 🐛 **Bug Fix**: Fixed critical issue where `limit` option was ignored in cache key
-- ⚡ **Performance**: Replaced unbounded caches with LRU strategy to prevent memory leaks
-- 🔒 **Stability**: Improved memory management for long-running applications
+### v5.8.2 (Current)
+
+- 🐛 **Bug Fix**: Wildcard regex now correctly escapes all special characters (`.`, `+`, `*`, `?`, `(`, `[`, `^`, etc.) — patterns like `%.txt` or `a.b%` no longer silently break
+- 🐛 **Bug Fix**: `$timeOfDay` with `start > end` (e.g. `{ start: 22, end: 5 }`) now correctly fails validation instead of silently never matching
+- 🐛 **Bug Fix**: React `useDebouncedFilter` now reacts to `delay` prop changes — previously the initial delay was frozen for the hook's lifetime
+- 🔒 **Validation**: `limit` option now validated by schema — negative or non-integer values throw a clear configuration error
+- 🔒 **Validation**: `debug`, `verbose`, `showTimings`, `colorize`, `enablePerformanceMonitoring` options now validated by schema
+- ⚡ **Performance**: Pattern-matching regex cache now delegates to the shared LRU `MemoizationManager` — the previously unbounded `Map` is gone
+- ⚡ **Performance**: LRU cache TTL is now absolute (expire 5 min after creation) instead of sliding — entries can no longer live forever under heavy load
+- 🧹 **Code Quality**: Svelte pagination replaced `subscribe()()` anti-pattern with idiomatic `get()` from `svelte/store`
+- ✅ **Tests**: 1,004+ tests — added coverage for every bug fixed in this release
 
 ### v5.8.0
+
 - 🎨 **New Framework Integrations**: Angular, SolidJS, and Preact support
-- 🔢 **Limit Option**: New `limit` configuration option to restrict result count
-- 📊 **OrderBy Option**: New `OrderBy` configuration option to sort filtered results by field(s) in ascending or descending order
+- 🔢 **Limit Option**: New `limit` configuration to restrict result count
+- 📊 **OrderBy Option**: Sort filtered results by field(s) in ascending or descending order
 - ✅ 993+ tests with comprehensive coverage
 
 ### v5.7.0
+
 - 🅰️ **Angular**: Services and Pipes with Signals support
 - 🔷 **SolidJS**: Signal-based reactive hooks
 - ⚡ **Preact**: Lightweight hooks API
 
 ### v5.6.0
-- 🌍 **Geospatial Operators**: Location-based filtering with $near, $geoBox, $geoPolygon
-- 📅 **Datetime Operators**: Temporal filtering with $recent, $upcoming, $dayOfWeek, $age
+
+- 🌍 **Geospatial Operators**: Location-based filtering with `$near`, `$geoBox`, `$geoPolygon`
+- 📅 **Datetime Operators**: Temporal filtering with `$recent`, `$upcoming`, `$dayOfWeek`, `$age`
 
 ### v5.5.0
+
 - 🎨 **Array OR Syntax**: Intuitive array-based OR filtering
 - 🐛 **Visual Debugging**: Built-in debug mode with expression tree visualization
 - 🎮 **Interactive Playground**: Online playground for testing filters
@@ -751,7 +782,7 @@ We welcome contributions! Please read our [Contributing Guide](./CONTRIBUTING.md
 
 ## License
 
-MIT License - see [LICENSE.md](./LICENSE.md) for details.
+MIT License — see [LICENSE.md](./LICENSE.md) for details.
 
 Copyright (c) 2025 Miguelangel Cabrera
 
