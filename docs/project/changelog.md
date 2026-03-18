@@ -14,6 +14,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   const result = find(users, { active: true }); // same as filter()
   ```
 
+### Changed / Breaking
+- **`find` lazy helper renamed to `lazyFind`**: Previously, the `find` export from the main entry point was a lazy-iterator helper with a different signature and behavior. That helper has been renamed to `lazyFind`, and `find` now aliases `filter` instead.
+  - If you relied on the old lazy `find`, update your imports and calls:
+    ```typescript
+    // Before 5.9.0 (lazy iterator helper)
+    import { find } from '@mcabreradev/filter';
+    const iterator = find(users, { active: true }); // lazy iterator
+
+    // From 5.9.0 onwards
+    import { lazyFind } from '@mcabreradev/filter';
+    const iterator = lazyFind(users, { active: true }); // same lazy behavior as old find
+    ```
+  - The new `find` export matches `filter`’s eager, array-returning behavior and signature. Use `lazyFind` when you need lazy iteration, and `find`/`filter` for eager filtering.
+
 ## [5.8.2] - 2025-11-17
 
 ### Documentation
