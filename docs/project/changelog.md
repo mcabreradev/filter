@@ -8,50 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.9.0] - 2026-03-18
 
 ### Added
-- **`find` alias**: `find` is now exported as an alias for `filter` with the identical signature and behavior. Import from `@mcabreradev/filter` or `@mcabreradev/filter/core`. Use whichever name reads more naturally in your codebase.
+- **`findAll`**: Zero-breaking-change alias for `filter` — identical signature and behavior. The existing `find` lazy-iterator helper (returns `T | undefined`) is untouched.
   ```typescript
-  import { find } from '@mcabreradev/filter';
-  const result = find(users, { active: true }); // identical to filter() — returns T[]
+  import { findAll } from ‘@mcabreradev/filter’;
+  const result = findAll(users, { active: true }); // identical to filter() — returns T[]
   ```
-- **`lazyFind`**: The lazy-iterator helper (previously exported as `find` from the root package) is now exported as `lazyFind`. It finds the first matching item in an iterable and returns `T | undefined`.
-  ```typescript
-  import { lazyFind } from '@mcabreradev/filter';
-  const first = lazyFind(iterable, (item, i) => item.active); // returns T | undefined
-  ```
-
-### Breaking Changes
-- **`find` renamed to `lazyFind` in the main package export** (`@mcabreradev/filter`).
-
-  Previously `import { find } from '@mcabreradev/filter'` gave you the lazy-iterator helper with signature `find<T>(iterable: Iterable<T>, predicate: (item: T, index: number) => boolean): T | undefined`.
-
-  It is now exported as **`lazyFind`** with the same signature. The name `find` now refers to the array-filter alias (signature `find<T>(array: T[], expression: Expression<T>, options?: FilterOptions): T[]`).
-
-  **Migration:**
-  ```typescript
-  // Before (v5.8.x)
-  import { find } from '@mcabreradev/filter';
-  const item = find(iterable, (x) => x.active); // T | undefined
-
-  // After (v5.9.0+)
-  import { lazyFind } from '@mcabreradev/filter';
-  const item = lazyFind(iterable, (x) => x.active); // T | undefined
-  ```
-
-  > **Note:** This change only affects consumers who imported the `find` lazy-iterator helper from the root `@mcabreradev/filter` package. Imports from sub-packages (`@mcabreradev/filter/core`, etc.) are not affected.
-
-### Changed / Breaking
-- **`find` lazy helper renamed to `lazyFind`**: Previously, the `find` export from the main entry point was a lazy-iterator helper with a different signature and behavior. That helper has been renamed to `lazyFind`, and `find` now aliases `filter` instead.
-  - If you relied on the old lazy `find`, update your imports and calls:
-    ```typescript
-    // Before 5.9.0 (lazy iterator helper)
-    import { find } from '@mcabreradev/filter';
-    const iterator = find(users, { active: true }); // lazy iterator
-
-    // From 5.9.0 onwards
-    import { lazyFind } from '@mcabreradev/filter';
-    const iterator = lazyFind(users, { active: true }); // same lazy behavior as old find
-    ```
-  - The new `find` export matches `filter`’s eager, array-returning behavior and signature. Use `lazyFind` when you need lazy iteration, and `find`/`filter` for eager filtering.
 
 ## [5.8.2] - 2025-11-17
 

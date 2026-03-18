@@ -167,10 +167,10 @@ const startsWithAl = filter(users, 'Al%');
 // → [{ name: 'Alice', ... }]
 ```
 
-> **`find` is an alias for `filter`** — use whichever name feels more natural:
+> **`findAll` is an alias for `filter`** — use whichever name feels more natural:
 > ```typescript
-> import { find } from '@mcabreradev/filter';
-> const result = find(users, { active: true }); // identical to filter()
+> import { findAll } from '@mcabreradev/filter';
+> const result = findAll(users, { active: true }); // identical to filter()
 > ```
 
 **🎮 [Try it in the Playground →](https://mcabreradev-filter.vercel.app/playground/)**
@@ -737,15 +737,7 @@ filter(data, expression, { enableCache: true, limit: 50 });
 
 ### v5.9.0 (Current)
 
-- ✨ **New**: `find` — an alias for `filter` with identical signature and behavior. `import { find } from '@mcabreradev/filter'` returns `T[]` just like `filter`.
-- ✨ **New**: `lazyFind` — the lazy-iterator helper (previously exported as `find`) is now exported as `lazyFind`. Returns `T | undefined`, exits on first match.
-- ⚠️ **Breaking**: `find` exported from `@mcabreradev/filter` root **changed meaning**. Previously it was the lazy-iterator helper (`T | undefined`); it is now an alias for `filter` (`T[]`). Rename usages to `lazyFind`.
-
-  ```typescript
-  // Migrate: rename find → lazyFind for the iterable helper
-  import { lazyFind } from '@mcabreradev/filter';
-  const item = lazyFind(iterable, (x) => x.active); // T | undefined
-  ```
+- ✨ **New**: `findAll` — a zero-breaking-change alias for `filter` with identical signature and behavior. `import { findAll } from '@mcabreradev/filter'` returns `T[]` just like `filter`. The existing `find` lazy-iterator helper is unchanged.
 
 ### v5.8.2
 

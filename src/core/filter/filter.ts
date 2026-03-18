@@ -102,7 +102,7 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
   }
 }
 
-export const find = filter;
+export const findAll = filter;
 
 export function clearFilterCache(): void {
   globalFilterCache.clear();

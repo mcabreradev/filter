@@ -1,4 +1,4 @@
-import filter, { find } from '../src/index';
+import filter, { findAll } from '../src/index';
 
 import data from './data.json';
 
@@ -301,23 +301,23 @@ describe('Array values with OR logic (syntactic sugar for $in)', () => {
   });
 });
 
-describe('find alias', () => {
+describe('findAll alias', () => {
   it('returns same results as filter', () => {
-    expect(find(data, 'Berlin')).toEqual(filter(data, 'Berlin'));
+    expect(findAll(data, 'Berlin')).toEqual(filter(data, 'Berlin'));
   });
 
   it('works with object expression', () => {
     const city = 'Berlin';
-    expect(find(data, { city })).toEqual(filter(data, { city }));
+    expect(findAll(data, { city })).toEqual(filter(data, { city }));
   });
 
   it('works with predicate function', () => {
     const pred = (item: (typeof data)[0]) => item.city === 'Berlin';
-    expect(find(data, pred)).toEqual(filter(data, pred));
+    expect(findAll(data, pred)).toEqual(filter(data, pred));
   });
 
   it('works with options', () => {
-    expect(find(data, 'berlin', { caseSensitive: false })).toEqual(
+    expect(findAll(data, 'berlin', { caseSensitive: false })).toEqual(
       filter(data, 'berlin', { caseSensitive: false }),
     );
   });

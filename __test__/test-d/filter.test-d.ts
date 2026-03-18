@@ -1,5 +1,5 @@
 import { expectType, expectError } from 'tsd';
-import { filter, find } from '../../src/core/filter';
+import { filter, findAll } from '../../src/core/filter';
 import type { FilterOptions } from '../../src/types';
 
 interface User {
@@ -115,8 +115,8 @@ expectType<(string | number)[]>(filter(mixedArray, 'a'));
 
 expectType<(string | number)[]>(filter(mixedArray, (item) => typeof item === 'string'));
 
-expectType<User[]>(find(users, 'John'));
-expectType<User[]>(find(users, { name: 'John' }));
-expectType<User[]>(find(users, (user) => user.age > 18));
-expectType<User[]>(find(users, { name: 'John' }, options));
-expectError(find('not-an-array', 'test'));
+expectType<User[]>(findAll(users, 'John'));
+expectType<User[]>(findAll(users, { name: 'John' }));
+expectType<User[]>(findAll(users, (user) => user.age > 18));
+expectType<User[]>(findAll(users, { name: 'John' }, options));
+expectError(findAll('not-an-array', 'test'));

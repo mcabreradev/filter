@@ -23,17 +23,17 @@ Choose between two import styles:
 
 ```typescript
 // Classic import (all features)
-import { filter, find, useFilter } from '@mcabreradev/filter';
+import { filter, findAll, useFilter } from '@mcabreradev/filter';
 
 // Modular import (smaller bundle, recommended for production)
-import { filter, find } from '@mcabreradev/filter/core';
+import { filter, findAll } from '@mcabreradev/filter/core';
 import { useFilter } from '@mcabreradev/filter/react';
 ```
 
-::: tip `find` is an alias for `filter`
+::: tip `findAll` is an alias for `filter`
 Both functions are identical — same signature, same results. Use whichever reads more naturally in your codebase.
 ```typescript
-find(users, { active: true });   // same as filter(users, { active: true })
+findAll(users, { active: true });   // same as filter(users, { active: true })
 ```
 :::
 
