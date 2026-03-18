@@ -738,6 +738,7 @@ filter(data, expression, { enableCache: true, limit: 50 });
 ### v5.9.0 (Current)
 
 - ✨ **New**: `find` — an alias for `filter` with identical signature and behavior. Use whichever name reads better in your codebase: `import { find } from '@mcabreradev/filter'`
+- ⚠️ **Migration**: Lazy iterator `find` is now `lazyFind` — update imports from `find` to `lazyFind` if you relied on the lazy iterator helper.
 
 ### v5.8.2
 
