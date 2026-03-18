@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**@mcabreradev/filter** is a TypeScript-first filtering engine for arrays with SQL-like wildcards, MongoDB-style operators, lazy evaluation, memoization, and framework integrations (React, Vue, Svelte). It provides 18+ operators for advanced filtering with zero dependencies (except Zod for validation).
+**@mcabreradev/filter** is a TypeScript-first filtering engine for arrays with SQL-like wildcards, MongoDB-style operators, lazy evaluation, memoization, and framework integrations (React, Vue, Svelte, Angular, Preact, SolidJS). It provides 18+ operators for advanced filtering with zero dependencies (except Zod for validation).
 
 ## Development Commands
 
@@ -37,8 +37,11 @@ pnpm test:coverage
 # Run TypeScript type tests (tsd)
 pnpm test:types
 
-# Run all checks (lint, typecheck, type tests, test)
+# Run all checks (lint, typecheck, type tests, test, docs tests)
 pnpm run check
+
+# Run docs tests only
+pnpm run test:docs
 ```
 
 ### Linting & Formatting
@@ -93,50 +96,48 @@ pnpm run docs:api
 ### Module Structure
 - **`src/index.ts`** - Main entry point that re-exports all public APIs
 - **`src/core/`** - Core filtering logic
-  - `filter.ts` - Main filter function with caching and debug support
-  - `filter-lazy.ts` - Lazy evaluation with generators for large datasets
+  - `filter/filter.ts` - Main filter function with caching and debug support
+  - `lazy/filter-lazy.ts` - Lazy evaluation with generators for large datasets
 - **`src/operators/`** - MongoDB-style operator implementations
-  - `comparison.operators.ts` - $gt, $gte, $lt, $lte, $eq, $ne
-  - `array.operators.ts` - $in, $nin, $contains, $size
-  - `string.operators.ts` - $startsWith, $endsWith, $contains, $regex, $match
-  - `logical.operators.ts` - $and, $or, $not
+  - `comparison/` - $gt, $gte, $lt, $lte, $eq, $ne
+  - `array/` - $in, $nin, $contains, $size
+  - `string/` - $startsWith, $endsWith, $contains, $regex, $match
+  - `logical/` - $and, $or, $not
+  - `datetime/` - Date/time comparison operators
+  - `geospatial/` - Geospatial distance operators
   - `operator-processor.ts` - Processes operator-based expressions
 - **`src/predicate/`** - Predicate function builders
-  - `predicate-factory.ts` - Creates appropriate predicate based on expression type
-  - `string-predicate.ts` - Handles wildcards (%, _), negation (!)
-  - `object-predicate.ts` - Handles object-based filtering
-  - `function-predicate.ts` - Handles custom predicate functions
-- **`src/comparison/`** - Deep comparison logic
-  - `deep-compare.ts` - Recursive deep equality for nested objects
-  - `object-compare.ts` - Object comparison with maxDepth support
-  - `property-compare.ts` - Property-level comparison with wildcards
+  - `factory/predicate-factory.ts` - Creates appropriate predicate based on expression type
+  - Handles string wildcards (%, _), negation (!), object-based, and function predicates
+- **`src/comparison/`** - Deep comparison logic (each in a subdirectory)
+  - `deep/` - Recursive deep equality for nested objects
+  - `object/` - Object comparison with maxDepth support
+  - `property/` - Property-level comparison with wildcards
 - **`src/config/`** - Configuration management
   - `default-config.ts` - Default configuration values
   - `config-builder.ts` - Merges user options with defaults
 - **`src/validation/`** - Runtime validation with Zod
-  - `schemas.ts` - Zod schemas for expressions and options
-  - `validator.ts` - Validates expressions and options at runtime
 - **`src/debug/`** - Debug mode with tree visualization
-  - `debug-filter.ts` - Debug-enabled filter with statistics
-  - `debug-tree-builder.ts` - Builds expression tree for visualization
-  - `debug-formatter.ts` - Formats debug output with colors
-  - `debug-evaluator.ts` - Tracks condition evaluations
-- **`src/utils/`** - Utility functions
-  - `cache.ts` - Result caching with WeakMap
-  - `memoization.ts` - Predicate and regex memoization
-  - `lazy-iterators.ts` - Generator utilities (take, skip, map, etc.)
-  - `pattern-matching.ts` - SQL wildcard matching (%, _)
-  - `type-guards.ts` - TypeScript type guards
-- **`src/integrations/`** - Framework integrations
-  - `react/` - React hooks (useFilter, useDebouncedFilter, etc.)
+  - `debug-filter.ts`, `debug-tree-builder.ts`, `debug-formatter.ts`, `debug-evaluator.ts`
+- **`src/errors/`** - Custom error types and helpers
+- **`src/constants/`** - Shared constants (`filter.constants.ts`)
+- **`src/utils/`** - Utility functions (each in a subdirectory)
+  - `cache/` - Result caching with WeakMap
+  - `memoization/` - Predicate and regex memoization
+  - `lazy-iterators/` - Generator utilities (take, skip, map, etc.)
+  - `pattern-matching/` - SQL wildcard matching (%, _)
+  - `type-guards/` - TypeScript type guards
+  - `operator-detection/` - Detects operator-based expressions
+  - `sort/`, `date-time/`, `geo-distance/`, `typed-filter/`, `performance-monitor/`
+- **`src/integrations/`** - Framework integrations (all optional peer deps)
+  - `react/` - React hooks (useFilter, useDebouncedFilter, useFilteredState, usePaginatedFilter)
   - `vue/` - Vue composables with reactivity
   - `svelte/` - Svelte stores
+  - `angular/` - Angular integration
+  - `preact/` - Preact hooks
+  - `solidjs/` - SolidJS integration
   - `shared/` - Shared utilities (debounce, pagination)
 - **`src/types/`** - TypeScript type definitions
-  - `expression.types.ts` - Expression and operator types
-  - `config.types.ts` - Configuration types
-  - `operators.types.ts` - Operator-specific types
-  - `lazy.types.ts` - Lazy evaluation types
 
 ### Key Design Patterns
 
@@ -149,7 +150,7 @@ pnpm run docs:api
 2. Predicate cache - Compiled predicate functions
 3. Regex cache - Compiled regex patterns
 
-**Lazy Evaluation**: Generator-based filtering in `filter-lazy.ts` enables early exit and memory-efficient processing of large datasets.
+**Lazy Evaluation**: Generator-based filtering in `src/core/lazy/filter-lazy.ts` enables early exit and memory-efficient processing of large datasets.
 
 **Debug Tree**: Debug mode builds an expression tree showing condition evaluations, match counts, and execution timings.
 
@@ -179,7 +180,7 @@ Runs automatically on push:
 
 ## Branch Strategy
 
-- **Main branch**: `dev`
+- **Main branch**: `main`
 - **Feature branches**: Use prefixes `feat/`, `fix/`, `docs/`, `refactor/`, `test/`, `chore/`
 
 ## Development Guidelines
@@ -200,7 +201,7 @@ Runs automatically on push:
 To add new operators:
 1. Create implementation in appropriate `src/operators/*.operators.ts` file
 2. Add type definitions to `src/types/operators.types.ts`
-3. Update operator detection in `src/utils/operator-detection.ts`
+3. Update operator detection in `src/utils/operator-detection/`
 4. Add comprehensive tests
 
 ### Configuration
@@ -213,6 +214,7 @@ Framework-specific code lives in `src/integrations/<framework>/`:
 - React uses hooks pattern
 - Vue uses Composition API
 - Svelte uses stores
+- Angular, Preact, SolidJS also supported
 - Shared utilities in `src/integrations/shared/`
 - All optional peer dependencies
 

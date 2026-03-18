@@ -6,71 +6,89 @@ Deep dive into the architecture of @mcabreradev/filter.
 
 @mcabreradev/filter is built with a modular architecture that separates concerns and enables tree-shaking for optimal bundle sizes. The library has evolved through multiple versions, with v5.8.2 featuring MongoDB-style operators, framework integrations (React, Vue, Svelte, Angular, SolidJS, Preact), lazy evaluation, memoization, geospatial operators, datetime operators, and visual debugging.
 
+## Data Flow
+
+```
+filter(array, expression, options)
+  ↓
+Performance monitoring starts
+  ↓
+validateExpression(expression)
+  ↓
+mergeConfig(options)           ← defaults: caseSensitive=false, maxDepth=3, enableCache=false
+  ↓
+debug=true? → filterDebug path (tree visualization + stats)
+  ↓
+enableCache=true? → cache lookup by expression hash
+  ↓ (cache miss)
+createPredicateFn(expression, config)    ← predicate factory dispatches by expression type
+  ↓
+array.filter(predicate)
+  ↓
+post-process: orderBy, limit
+  ↓
+cache result (if enableCache=true)
+  ↓
+return T[]
+```
+
 ## Core Architecture
 
 ```
-@mcabreradev/filter
-├── core/                   # Core filtering logic
-│   ├── filter.ts           # Main filter function with caching & debug
-│   └── filter-lazy.ts      # Lazy evaluation with generators
-├── operators/              # Operator implementations
-│   ├── comparison.operators.ts      # $gt, $gte, $lt, $lte, $eq, $ne
-│   ├── logical.operators.ts         # $and, $or, $not
-│   ├── string.operators.ts          # $startsWith, $endsWith, $contains, $regex, $match
-│   ├── array.operators.ts           # $in, $nin, $contains, $size
-│   ├── geospatial.operators.ts      # $near, $geoBox, $geoPolygon
-│   ├── datetime.operators.ts        # $recent, $upcoming, $dayOfWeek, $timeOfDay, $age
+src/
+├── core/
+│   ├── filter/filter.ts             # Main filter function with caching & debug
+│   └── lazy/filter-lazy.ts          # Lazy evaluation with generators
+├── operators/                       # Operator implementations (each in a subdirectory)
+│   ├── comparison/                  # $gt, $gte, $lt, $lte, $eq, $ne
+│   ├── logical/                     # $and, $or, $not
+│   ├── string/                      # $startsWith, $endsWith, $contains, $regex, $match
+│   ├── array/                       # $in, $nin, $contains, $size
+│   ├── geospatial/                  # $near, $geoBox, $geoPolygon (v5.6.0+)
+│   ├── datetime/                    # $recent, $upcoming, $dayOfWeek, $timeOfDay, $age (v5.6.0+)
 │   └── operator-processor.ts        # Orchestrates operator evaluation
-├── comparison/             # Comparison utilities
-│   ├── deep-compare.ts
-│   ├── object-compare.ts
-│   └── property-compare.ts
-├── predicate/              # Predicate functions
-│   ├── predicate-factory.ts         # Creates appropriate predicate
-│   ├── object-predicate.ts
-│   ├── string-predicate.ts
-│   └── function-predicate.ts
-├── debug/                  # Debug & visualization (v5.5.0+)
-│   ├── debug-filter.ts              # Debug-enabled filter
+├── comparison/                      # Deep comparison (each in a subdirectory)
+│   ├── deep/                        # Recursive deep equality for nested objects
+│   ├── object/                      # Object comparison with maxDepth support
+│   └── property/                    # Property-level comparison with wildcards
+├── predicate/
+│   └── factory/predicate-factory.ts # Dispatches to string/object/function predicate builders
+├── debug/                           # Debug & visualization (v5.5.0+)
+│   ├── debug-filter.ts              # Debug-enabled filter with statistics
 │   ├── debug-tree-builder.ts        # Expression tree builder
 │   ├── debug-formatter.ts           # ANSI color output
-│   └── debug-evaluator.ts           # Tracks evaluations
-├── types/                  # TypeScript definitions
+│   └── debug-evaluator.ts           # Tracks condition evaluations
+├── types/                           # TypeScript definitions
 │   ├── expression.types.ts
-│   ├── operator.types.ts
+│   ├── operators.types.ts
 │   ├── config.types.ts
-│   ├── geospatial.types.ts          # Geo types (v5.6.0+)
-│   └── datetime.types.ts            # Datetime types (v5.6.0+)
-├── utils/                  # Utility functions
-│   ├── cache.ts                     # Result caching with WeakMap
-│   ├── memoization.ts               # Multi-layer memoization (v5.2.0+)
-│   ├── lazy-iterators.ts            # Generator utilities (v5.1.0+)
-│   ├── pattern-matching.ts          # SQL wildcards (%, _)
-│   ├── geospatial.utils.ts          # Distance calculation (v5.6.0+)
-│   ├── datetime.utils.ts            # Datetime utilities (v5.6.0+)
-│   └── type-guards.ts
-├── validation/             # Runtime validation with Zod
-│   ├── expression.validator.ts
-│   └── options.validator.ts
-├── config/                 # Configuration
-│   ├── config-builder.ts
-│   └── default-config.ts
-└── integrations/           # Framework integrations (v5.3.0+)
-    ├── react/              # React hooks
-    │   ├── use-filter.ts
-    │   ├── use-filtered-state.ts
-    │   ├── use-debounced-filter.ts
-    │   └── use-paginated-filter.ts
-    ├── vue/                # Vue composables
-    │   ├── use-filter.ts
-    │   ├── use-filtered-state.ts
-    │   ├── use-debounced-filter.ts
-    │   └── use-paginated-filter.ts
-    └── svelte/             # Svelte stores
-        ├── use-filter.ts
-        ├── use-filtered-state.ts
-        ├── use-debounced-filter.ts
-        └── use-paginated-filter.ts
+│   └── lazy.types.ts
+├── utils/                           # Utilities (each in a subdirectory)
+│   ├── cache/                       # Result caching with WeakMap + LRU
+│   ├── memoization/                 # Multi-layer LRU memoization (v5.2.0+)
+│   ├── lazy-iterators/              # Generator utilities (v5.1.0+)
+│   ├── pattern-matching/            # SQL wildcards (%, _)
+│   ├── operator-detection/          # Detects $-prefixed operator expressions
+│   ├── type-guards/                 # TypeScript type guards
+│   ├── sort/                        # OrderBy sorting utilities
+│   ├── date-time/                   # Datetime helpers (v5.6.0+)
+│   ├── geo-distance/                # Geospatial distance calculation (v5.6.0+)
+│   ├── performance-monitor/         # Optional performance metric tracking
+│   └── typed-filter/                # Typed filter utilities
+├── errors/                          # Custom error types and helpers
+├── constants/                       # Shared constants (filter.constants.ts)
+├── validation/                      # Runtime validation with Zod
+├── config/
+│   ├── default-config.ts
+│   └── config-builder.ts
+└── integrations/                    # Framework integrations (v5.3.0+)
+    ├── react/                       # useFilter, useFilteredState, useDebouncedFilter, usePaginatedFilter
+    ├── vue/                         # Same 4 composables with Composition API
+    ├── svelte/                      # Same 4 patterns with Svelte stores
+    ├── angular/                     # Angular integration (v5.7.0+)
+    ├── preact/                      # Preact hooks (v5.7.0+)
+    ├── solidjs/                     # SolidJS integration (v5.7.0+)
+    └── shared/                      # Debounce, pagination helpers
 ```
 
 ## Core Components
@@ -399,92 +417,58 @@ export function calculateAge(birthDate: Date, unit: 'years' | 'months' | 'days' 
 
 ### Multi-Layer Caching Strategy
 
-The library implements a sophisticated three-layer caching system:
+The library implements a three-layer LRU caching system:
 
-1. **Result Cache** - Caches complete filter results using WeakMap
-2. **Predicate Cache** - Memoizes compiled predicate functions
-3. **Regex Cache** - Caches compiled regex patterns
+| Layer | Storage | Max Size | TTL | Key |
+|-------|---------|----------|-----|-----|
+| Result cache | WeakMap → LRU per array | 100 entries/array | — | expression hash |
+| Predicate cache | LRU | 500 entries | 300s | expression + config |
+| Regex cache | LRU | 500 entries | 300s | pattern + flags |
+
+The **LRU eviction** moves recently accessed items to the end of the cache and evicts from the front when max size is reached. The **WeakMap** keyed on the array reference ensures result caches are garbage-collected when the array goes out of scope.
+
+### Cache Key Generation
+
+Cache keys include: expression structure + `caseSensitive`, `maxDepth`, `limit`, and `orderBy` config options. Logical operators (`$and`, `$or`, `$not`) are handled specially during hashing. A secondary WeakMap prevents rehashing the same object reference across calls.
 
 ```typescript
-class MemoizationStrategy {
-  private predicateCache = new Map<string, (item: any) => boolean>();
-  private regexCache = new Map<string, RegExp>();
-
-  // Predicate memoization
-  memoizePredicate<T>(
-    key: string,
-    factory: () => (item: T) => boolean,
-  ): (item: T) => boolean {
-    if (this.predicateCache.has(key)) {
-      return this.predicateCache.get(key)!;
-    }
-
-    const predicate = factory();
-    this.predicateCache.set(key, predicate);
-    return predicate;
-  }
-
-  // Regex memoization
-  memoizeRegex(pattern: string, flags?: string): RegExp {
-    const key = `${pattern}:${flags || ''}`;
-
-    if (this.regexCache.has(key)) {
-      return this.regexCache.get(key)!;
-    }
-
-    const regex = new RegExp(pattern, flags);
-    this.regexCache.set(key, regex);
-    return regex;
-  }
-
-  // Expression hash for result cache
-  createExpressionHash(expression: unknown, config: FilterConfig): string {
-    return JSON.stringify({ expression, config });
-  }
-
-  // Cache statistics
-  getStats() {
-    return {
-      predicateCacheSize: this.predicateCache.size,
-      regexCacheSize: this.regexCache.size,
-    };
-  }
-
-  clearAll() {
-    this.predicateCache.clear();
-    this.regexCache.clear();
-  }
-}
-
-export const memoization = new MemoizationStrategy();
+// Simplified hash structure
+// For strings: "str:expression:caseSensitive:limit"
+// For objects: hashed structure + logical operator sub-expressions
+// Includes config: caseSensitive, maxDepth, limit, orderBy
+createExpressionHash(expression: unknown, config: FilterConfig): string
 ```
 
 ### Result Cache Implementation
 
 ```typescript
 export class FilterCache<T> {
-  private cache = new WeakMap<T[], Map<string, T[]>>();
+  // WeakMap per array reference → LRU (max 100 entries)
+  private cache = new WeakMap<T[], LRUCache<string, T[]>>();
 
   get(array: T[], key: string): T[] | undefined {
-    const arrayCache = this.cache.get(array);
-    return arrayCache?.get(key);
+    return this.cache.get(array)?.get(key);
   }
 
   set(array: T[], key: string, value: T[]): void {
-    let arrayCache = this.cache.get(array);
-    if (!arrayCache) {
-      arrayCache = new Map();
-      this.cache.set(array, arrayCache);
+    let lru = this.cache.get(array);
+    if (!lru) {
+      lru = new LRUCache({ max: 100 });
+      this.cache.set(array, lru);
     }
-    arrayCache.set(key, value);
-  }
-
-  clear(): void {
-    this.cache = new WeakMap();
+    lru.set(key, value);
   }
 }
+```
 
-const globalFilterCache = new FilterCache<unknown>();
+### Cache Statistics and Control
+
+```typescript
+// Get current cache sizes
+getFilterCacheStats(); // → { predicateCacheSize, regexCacheSize }
+
+// Clear all caches
+clearFilterCache();
 ```
 
 ### Performance Gains
@@ -560,6 +544,33 @@ export function filterCount<T>(
 
   return count;
 }
+```
+
+### Chunked and Async Variants
+
+```typescript
+// Async generator for async iterables
+export async function* filterLazyAsync<T>(
+  iterable: AsyncIterable<T>,
+  expression: Expression<T>,
+  options?: FilterOptions,
+): AsyncGenerator<T>
+
+// Group results into chunks for batch processing
+export function filterChunked<T>(
+  array: T[],
+  expression: Expression<T>,
+  chunkSize: number,
+  options?: FilterOptions,
+): T[][]
+
+// Lazy chunked generator - yields chunks on demand
+export function* filterLazyChunked<T>(
+  array: T[],
+  expression: Expression<T>,
+  chunkSize: number,
+  options?: FilterOptions,
+): Generator<T[]>
 ```
 
 ### Lazy Iterator Utilities
@@ -897,79 +908,6 @@ function toStore<T>(value: MaybeStore<T>): Readable<T> {
     return value;
   }
   return readable(value);
-}
-```
-
-  const filtered = useMemo(() => {
-    setIsFiltering(true);
-    const result = filter(data, expression, options);
-    setIsFiltering(false);
-    return result;
-  }, [data, expression, options]);
-
-  return {
-    filtered,
-    isFiltering
-  };
-}
-```
-
-### Vue Integration
-
-Uses Vue's reactive system for automatic updates.
-
-```typescript
-export function useFilter<T>(
-  data: Ref<T[]> | ComputedRef<T[]>,
-  expression: Ref<Expression<T>> | ComputedRef<Expression<T>>,
-  options?: FilterOptions
-): UseFilterResult<T> {
-  const isFiltering = ref(false);
-
-  const filtered = computed(() => {
-    isFiltering.value = true;
-    const result = filter(
-      unref(data),
-      unref(expression),
-      options
-    );
-    isFiltering.value = false;
-    return result;
-  });
-
-  return {
-    filtered,
-    isFiltering: computed(() => isFiltering.value)
-  };
-}
-```
-
-### Svelte Integration
-
-Uses Svelte stores for reactive state.
-
-```typescript
-export function useFilter<T>(
-  data: Readable<T[]>,
-  expression: Expression<T> | Readable<Expression<T>>,
-  options?: FilterOptions
-): UseFilterResult<T> {
-  const isFiltering = writable(false);
-
-  const filtered = derived(
-    [data, isReadable(expression) ? expression : readable(expression)],
-    ([$data, $expression]) => {
-      isFiltering.set(true);
-      const result = filter($data, $expression, options);
-      isFiltering.set(false);
-      return result;
-    }
-  );
-
-  return {
-    filtered,
-    isFiltering: readonly(isFiltering)
-  };
 }
 ```
 
@@ -1551,6 +1489,28 @@ describe('performance', () => {
   });
 });
 ```
+
+## Design Decisions & Trade-offs
+
+### Strengths
+
+- **Zero runtime dependencies in core** — framework integrations use optional peer dependencies; validation uses optional Zod
+- **Type-safe operators** — conditional types restrict operators by field type (e.g. `$startsWith` only available on `string` properties, `$near` only on `GeoPoint`)
+- **Three-tier LRU caching** — WeakMap prevents memory leaks on the result cache; separate TTL-based LRU caches for predicates and regex patterns prevent unbounded growth
+- **Generator-based lazy evaluation** — enables early exit and constant-memory processing of large datasets
+- **Modular subpath exports** — consumers import only what they need (`@mcabreradev/filter/react`, `/operators/comparison`, etc.), enabling full tree-shaking
+- **Framework-agnostic core** — all 6 framework integrations are thin adapters over the same core
+
+### Known Trade-offs
+
+| Area | Detail |
+|------|--------|
+| **Cache TTL** | Predicate and regex caches expire after 300s (hardcoded, not configurable per consumer) |
+| **`maxDepth` default** | Defaults to `3`, silently limiting deeply nested object matching |
+| **Logical operator re-evaluation** | `$and`/`$or`/`$not` create new sub-predicates on each call — no sub-predicate caching |
+| **Silent type mismatch** | Mismatched operator types (e.g. `$gt` on a string) return `false` rather than throwing |
+| **DateTime timezone** | DateTime operators are synchronous and have no timezone support |
+| **WeakMap dependency** | Result cache requires the array reference to stay alive; a new array reference always misses cache |
 
 ## Evolution Timeline
 
