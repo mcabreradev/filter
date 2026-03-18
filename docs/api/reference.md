@@ -57,7 +57,11 @@ const result = find(users, { age: { $gte: 25 } });
 ```
 
 ::: tip
-`find` and `filter` are the same function. Pick the one that reads most naturally in your codebase.
+`find` and `filter` are the same array-returning function. Pick the one that reads most naturally in your codebase. If you're looking for the lazy-iterator helper that was previously named `find` (with signature `Iterable<T> → T | undefined`), it is now exported as `lazyFind`:
+
+```ts
+import { lazyFind } from '@mcabreradev/filter';
+```
 :::
 
 ### filterLazy
