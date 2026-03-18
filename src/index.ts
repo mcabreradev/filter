@@ -1,6 +1,7 @@
 import { filter } from './core/index.js';
 
 export { filter };
+export { findAll } from './core/index.js';
 
 export { clearFilterCache, getFilterCacheStats } from './core/index.js';
 

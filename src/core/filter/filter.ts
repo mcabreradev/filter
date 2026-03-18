@@ -102,6 +102,8 @@ export function filter<T>(array: T[], expression: Expression<T>, options?: Filte
   }
 }
 
+export const findAll = filter;
+
 export function clearFilterCache(): void {
   globalFilterCache.clear();
   memoization.clearAll();

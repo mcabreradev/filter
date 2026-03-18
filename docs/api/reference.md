@@ -34,6 +34,36 @@ const users = [{ name: 'Alice', age: 30 }, { name: 'Bob', age: 25 }];
 const result = filter(users, { age: { $gte: 25 } });
 ```
 
+### findAll
+
+Alias for `filter` — identical signature and behavior. Use whichever name fits your style.
+
+```typescript
+function findAll<T>(
+  array: T[],
+  expression: Expression<T>,
+  options?: FilterOptions
+): T[]
+```
+
+**Example:**
+```typescript
+import { findAll } from '@mcabreradev/filter';
+
+const users = [{ name: 'Alice', age: 30 }, { name: 'Bob', age: 25 }];
+
+// Exactly the same as calling filter()
+const result = findAll(users, { age: { $gte: 25 } });
+```
+
+::: tip
+`findAll` and `filter` are the same function. Pick whichever reads most naturally in your codebase.
+:::
+
+::: info Looking for `find`?
+The `find` export is the **lazy-iterator helper** — it finds the **first** matching item in an iterable and returns `T | undefined`. See [`filterFirst`](#filterfirst) for an eager equivalent, or use the built-in `Array.prototype.find` for simple cases.
+:::
+
 ### filterLazy
 
 Returns a lazy iterator for on-demand filtering.

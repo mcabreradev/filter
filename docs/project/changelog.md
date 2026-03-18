@@ -5,6 +5,15 @@ All notable changes to @mcabreradev/filter are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.9.0] - 2026-03-18
+
+### Added
+- **`findAll`**: Zero-breaking-change alias for `filter` — identical signature and behavior. The existing `find` lazy-iterator helper (returns `T | undefined`) is untouched.
+  ```typescript
+  import { findAll } from ‘@mcabreradev/filter’;
+  const result = findAll(users, { active: true }); // identical to filter() — returns T[]
+  ```
+
 ## [5.8.2] - 2025-11-17
 
 ### Documentation

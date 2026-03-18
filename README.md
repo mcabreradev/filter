@@ -81,7 +81,8 @@
   - [Browser Support](#browser-support)
   - [Migration from v3.x](#migration-from-v3x)
   - [Changelog](#changelog)
-    - [v5.8.2 (Current)](#v582-current)
+    - [v5.9.0 (Current)](#v590-current)
+    - [v5.8.2](#v582)
     - [v5.8.0](#v580)
     - [v5.7.0](#v570)
     - [v5.6.0](#v560)
@@ -165,6 +166,12 @@ const adults = filter(users, { age: { $gte: 18 } });
 const startsWithAl = filter(users, 'Al%');
 // → [{ name: 'Alice', ... }]
 ```
+
+> **`findAll` is an alias for `filter`** — use whichever name feels more natural:
+> ```typescript
+> import { findAll } from '@mcabreradev/filter';
+> const result = findAll(users, { active: true }); // identical to filter()
+> ```
 
 **🎮 [Try it in the Playground →](https://mcabreradev-filter.vercel.app/playground/)**
 
@@ -728,7 +735,11 @@ filter(data, expression, { enableCache: true, limit: 50 });
 
 ## Changelog
 
-### v5.8.2 (Current)
+### v5.9.0 (Current)
+
+- ✨ **New**: `findAll` — a zero-breaking-change alias for `filter` with identical signature and behavior. `import { findAll } from '@mcabreradev/filter'` returns `T[]` just like `filter`. The existing `find` lazy-iterator helper is unchanged.
+
+### v5.8.2
 
 - 🐛 **Bug Fix**: Wildcard regex now correctly escapes all special characters (`.`, `+`, `*`, `?`, `(`, `[`, `^`, etc.) — patterns like `%.txt` or `a.b%` no longer silently break
 - 🐛 **Bug Fix**: `$timeOfDay` with `start > end` (e.g. `{ start: 22, end: 5 }`) now correctly fails validation instead of silently never matching
