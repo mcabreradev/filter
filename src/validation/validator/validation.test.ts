@@ -86,5 +86,45 @@ describe('validation', () => {
       };
       expect(() => validateOptions(options)).not.toThrow();
     });
+
+    it('validates limit option', () => {
+      expect(() => validateOptions({ limit: 1 })).not.toThrow();
+      expect(() => validateOptions({ limit: 10 })).not.toThrow();
+      expect(() => validateOptions({ limit: 100 })).not.toThrow();
+    });
+
+    it('throws for limit of zero', () => {
+      expect(() => validateOptions({ limit: 0 })).toThrow('Configuration error');
+    });
+
+    it('throws for negative limit', () => {
+      expect(() => validateOptions({ limit: -1 })).toThrow('Configuration error');
+      expect(() => validateOptions({ limit: -100 })).toThrow('Configuration error');
+    });
+
+    it('throws for non-integer limit', () => {
+      expect(() => validateOptions({ limit: 1.5 })).toThrow('Configuration error');
+    });
+
+    it('validates debug option', () => {
+      expect(() => validateOptions({ debug: true })).not.toThrow();
+      expect(() => validateOptions({ debug: false })).not.toThrow();
+    });
+
+    it('validates verbose option', () => {
+      expect(() => validateOptions({ verbose: true })).not.toThrow();
+    });
+
+    it('validates showTimings option', () => {
+      expect(() => validateOptions({ showTimings: true })).not.toThrow();
+    });
+
+    it('validates colorize option', () => {
+      expect(() => validateOptions({ colorize: true })).not.toThrow();
+    });
+
+    it('validates enablePerformanceMonitoring option', () => {
+      expect(() => validateOptions({ enablePerformanceMonitoring: true })).not.toThrow();
+    });
   });
 });

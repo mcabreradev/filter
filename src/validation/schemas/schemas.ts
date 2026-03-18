@@ -92,5 +92,11 @@ export const filterOptionsSchema = z
     customComparator: z.function().optional(),
     enableCache: z.boolean().optional(),
     orderBy: orderBySchema.optional(),
+    limit: z.number().int().positive().optional(),
+    debug: z.boolean().optional(),
+    verbose: z.boolean().optional(),
+    showTimings: z.boolean().optional(),
+    colorize: z.boolean().optional(),
+    enablePerformanceMonitoring: z.boolean().optional(),
   })
   .optional();

@@ -14,17 +14,22 @@ export function useDebouncedFilter<T>(
   const [debouncedExpr, setDebouncedExpr] = useState<Expression<T>>(expression);
   const [isPending, setIsPending] = useState(false);
 
-  const debouncedSet = useRef(
-    debounce((e: Expression<T>) => {
-      setDebouncedExpr(e);
-      setIsPending(false);
-    }, delay),
-  );
+  type DebouncedFn = ((e: Expression<T>) => void) & { cancel: () => void };
+  const debouncedSet = useRef<DebouncedFn | null>(null);
 
   useEffect(() => {
+    const fn = debounce((e: Expression<T>) => {
+      setDebouncedExpr(e);
+      setIsPending(false);
+    }, delay);
+    debouncedSet.current = fn;
+    return (): void => fn.cancel();
+  }, [delay]);
+
+  useEffect(() => {
+    if (!debouncedSet.current) return;
     setIsPending(true);
     debouncedSet.current(expression);
-    return () => debouncedSet.current.cancel();
   }, [expression]);
 
   const filtered = useFilterCore(data, debouncedExpr, filterOptions);

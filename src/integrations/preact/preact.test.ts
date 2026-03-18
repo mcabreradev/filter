@@ -121,16 +121,15 @@ describe('useDebouncedFilter', () => {
     vi.restoreAllMocks();
   });
 
-  it.skip('should debounce filter updates', () => {
-    const { result } = renderHook(() =>
-      useDebouncedFilter(mockUsers, { active: true }, { delay: 300 }),
-    );
+  it('should debounce filter updates', () => {
+    const expression = { active: true };
+    const { result } = renderHook(() => useDebouncedFilter(mockUsers, expression, { delay: 300 }));
 
     expect(result.current.isPending).toBe(true);
     expect(result.current.filtered).toHaveLength(5);
 
     act(() => {
-      vi.runAllTimers();
+      vi.advanceTimersByTime(300);
     });
 
     expect(result.current.isPending).toBe(false);

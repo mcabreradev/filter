@@ -1,25 +1,23 @@
 import { WILDCARD_PERCENT, WILDCARD_UNDERSCORE, NEGATION_PREFIX } from '../../constants';
-
-const regexCache = new Map<string, RegExp>();
+import { memoization } from '../memoization';
 
 export const hasWildcard = (pattern: string): boolean =>
   pattern.includes(WILDCARD_PERCENT) || pattern.includes(WILDCARD_UNDERSCORE);
 
 export const createWildcardRegex = (pattern: string, caseSensitive: boolean): RegExp => {
-  const escaped = pattern.replace(/%/g, '.*').replace(/_/g, '.');
+  const escaped = pattern
+    .replace(/[.+^${}()|[\]\\*?]/g, '\\$&')
+    .replace(/%/g, '.*')
+    .replace(/_/g, '.');
   const flags = caseSensitive ? '' : 'i';
   return new RegExp(`^${escaped}$`, flags);
 };
 
 export const getCachedRegex = (pattern: string, flags: string): RegExp => {
-  const key = `${pattern}:${flags}`;
-  if (!regexCache.has(key)) {
-    regexCache.set(key, new RegExp(pattern, flags));
-  }
-  const regex = regexCache.get(key);
-  if (!regex) {
-    throw new Error(`Failed to create regex for pattern: ${pattern}`);
-  }
+  const cached = memoization.getCachedRegex(pattern, flags);
+  if (cached) return cached;
+  const regex = new RegExp(pattern, flags);
+  memoization.setCachedRegex(pattern, regex, flags);
   return regex;
 };
 

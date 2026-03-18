@@ -13,7 +13,8 @@ export function isValidTimeOfDay(query: unknown): query is TimeOfDayQuery {
     q.start >= 0 &&
     q.start <= 23 &&
     q.end >= 0 &&
-    q.end <= 23
+    q.end <= 23 &&
+    q.start <= q.end
   );
 }
 

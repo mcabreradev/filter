@@ -56,6 +56,12 @@ describe('DateTime Operators', () => {
         expect(isValidTimeOfDay(null)).toBe(false);
         expect(isValidTimeOfDay({})).toBe(false);
       });
+
+      it('rejects ranges where start > end', () => {
+        expect(isValidTimeOfDay({ start: 22, end: 5 })).toBe(false);
+        expect(isValidTimeOfDay({ start: 23, end: 0 })).toBe(false);
+        expect(isValidTimeOfDay({ start: 17, end: 9 })).toBe(false);
+      });
     });
 
     describe('isValidDayOfWeek', () => {
@@ -397,6 +403,13 @@ describe('DateTime Operators', () => {
         const date = new Date('2025-01-15T12:00:00');
         expect(evaluateTimeOfDay(date, { start: -1, end: 17 })).toBe(false);
         expect(evaluateTimeOfDay(date, { start: 9, end: 24 })).toBe(false);
+      });
+
+      it('rejects ranges where start > end — never matches', () => {
+        const lateNight = new Date('2025-01-15T23:00:00');
+        const earlyMorning = new Date('2025-01-15T02:00:00');
+        expect(evaluateTimeOfDay(lateNight, { start: 22, end: 5 })).toBe(false);
+        expect(evaluateTimeOfDay(earlyMorning, { start: 22, end: 5 })).toBe(false);
       });
     });
   });

@@ -1,4 +1,4 @@
-import { writable, derived, readable, type Readable } from 'svelte/store';
+import { writable, derived, readable, get, type Readable } from 'svelte/store';
 import { filter } from '../../core';
 import type { Expression, FilterOptions } from '../../types';
 import type { UsePaginatedFilterResult } from './svelte.types';
@@ -65,29 +65,20 @@ export function usePaginatedFilter<T>(
 
   const nextPage = (): void => {
     currentPage.update((page) => {
-      let totalPages = 0;
-      pagination.subscribe((p) => {
-        totalPages = p.totalPages;
-      })();
+      const totalPages = get(pagination).totalPages;
       return validatePageNumber(page + 1, totalPages);
     });
   };
 
   const previousPage = (): void => {
     currentPage.update((page) => {
-      let totalPages = 0;
-      pagination.subscribe((p) => {
-        totalPages = p.totalPages;
-      })();
+      const totalPages = get(pagination).totalPages;
       return validatePageNumber(page - 1, totalPages);
     });
   };
 
   const goToPage = (page: number): void => {
-    let totalPages = 0;
-    pagination.subscribe((p) => {
-      totalPages = p.totalPages;
-    })();
+    const totalPages = get(pagination).totalPages;
     const validated = validatePageNumber(page, totalPages);
     currentPage.set(validated);
   };

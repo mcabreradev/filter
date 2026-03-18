@@ -27,7 +27,7 @@ export class LRUCache<R> implements MemoizationCache<R> {
     }
 
     this.cache.delete(key);
-    this.cache.set(key, { ...entry, timestamp: Date.now() });
+    this.cache.set(key, entry);
     return entry.value;
   }
 

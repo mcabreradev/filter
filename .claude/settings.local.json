@@ -6,7 +6,10 @@
       "Bash(wc -l /Users/migue/Workspace/migue/filter/src/**/*.ts)",
       "Bash(grep -r \"null\\\\|undefined\\\\|edge\\\\|case\" /Users/migue/Workspace/migue/filter/src --include=\"*.ts\" ! -name \"*.test.ts\" -n)",
       "Bash(grep -n \"isStore\" src/integrations/svelte/*.ts)",
-      "Bash(pnpm typecheck:*)"
+      "Bash(pnpm typecheck:*)",
+      "Bash(find /Users/migue/Workspace/migue/filter/docs -name *.test.ts)",
+      "Bash(node -e \"const m = require\\(''''/Users/migue/Workspace/migue/filter/node_modules/.pnpm/@testing-library+preact@3.2.4_preact@10.26.1/node_modules/@testing-library/preact/package.json''''\\); console.log\\(m.peerDependencies\\)\")",
+      "Bash(pnpm add:*)"
     ],
     "deny": [],
     "ask": []

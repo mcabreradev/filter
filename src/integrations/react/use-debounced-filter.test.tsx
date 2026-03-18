@@ -158,5 +158,26 @@ describe('useDebouncedFilter', () => {
 
     expect(result.current.isFiltering).toBe(true);
   });
+
+  it('should apply the new delay when delay prop changes', async () => {
+    const { result, rerender } = renderHook(
+      ({ delay, expression }) => useDebouncedFilter(testData, expression, { delay }),
+      { initialProps: { delay: 500, expression: 'Alice' as string } },
+    );
+
+    rerender({ delay: 500, expression: 'Bob' });
+    vi.advanceTimersByTime(200);
+    expect(result.current.isPending).toBe(true);
+
+    rerender({ delay: 100, expression: 'Charlie' });
+    vi.advanceTimersByTime(100);
+
+    await waitFor(() => {
+      expect(result.current.isPending).toBe(false);
+    });
+
+    expect(result.current.filtered).toHaveLength(1);
+    expect(result.current.filtered[0].name).toBe('Charlie');
+  });
 });
 

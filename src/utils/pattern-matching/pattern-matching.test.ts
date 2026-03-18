@@ -62,6 +62,56 @@ describe('pattern-matching', () => {
       expect(regex.test('pretext')).toBe(true);
       expect(regex.test('pretestmore')).toBe(true);
     });
+
+    it('treats dot as a literal character, not a regex metacharacter', () => {
+      const regex = createWildcardRegex('a.b%', false);
+      expect(regex.test('a.banything')).toBe(true);
+      expect(regex.test('a.b')).toBe(true);
+      expect(regex.test('aXbanything')).toBe(false);
+      expect(regex.test('axbanything')).toBe(false);
+    });
+
+    it('treats plus as a literal character', () => {
+      const regex = createWildcardRegex('a+b%', false);
+      expect(regex.test('a+banything')).toBe(true);
+      expect(regex.test('a+b')).toBe(true);
+      expect(regex.test('abanything')).toBe(false);
+    });
+
+    it('treats parens as literal characters', () => {
+      const regex = createWildcardRegex('(test)%', false);
+      expect(regex.test('(test)suffix')).toBe(true);
+      expect(regex.test('(test)')).toBe(true);
+      expect(regex.test('testsuffix')).toBe(false);
+    });
+
+    it('treats square brackets as literal characters', () => {
+      const regex = createWildcardRegex('[abc]%', false);
+      expect(regex.test('[abc]suffix')).toBe(true);
+      expect(regex.test('[abc]')).toBe(true);
+      expect(regex.test('asuffix')).toBe(false);
+      expect(regex.test('bsuffix')).toBe(false);
+    });
+
+    it('treats asterisk as a literal character', () => {
+      const regex = createWildcardRegex('a*b%', false);
+      expect(regex.test('a*banything')).toBe(true);
+      expect(regex.test('a*b')).toBe(true);
+      expect(regex.test('abanything')).toBe(false);
+    });
+
+    it('treats caret as a literal character', () => {
+      const regex = createWildcardRegex('^start%', false);
+      expect(regex.test('^startfoo')).toBe(true);
+      expect(regex.test('startfoo')).toBe(false);
+    });
+
+    it('handles mixed wildcards and special characters', () => {
+      const regex = createWildcardRegex('%.txt', false);
+      expect(regex.test('file.txt')).toBe(true);
+      expect(regex.test('a.b.txt')).toBe(true);
+      expect(regex.test('fileXtxt')).toBe(false);
+    });
   });
 
   describe('getCachedRegex', () => {
