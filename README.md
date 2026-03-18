@@ -737,8 +737,15 @@ filter(data, expression, { enableCache: true, limit: 50 });
 
 ### v5.9.0 (Current)
 
-- ✨ **New**: `find` — an alias for `filter` with identical signature and behavior. Use whichever name reads better in your codebase: `import { find } from '@mcabreradev/filter'`
-- ⚠️ **Migration**: Lazy iterator `find` is now `lazyFind` — update imports from `find` to `lazyFind` if you relied on the lazy iterator helper.
+- ✨ **New**: `find` — an alias for `filter` with identical signature and behavior. `import { find } from '@mcabreradev/filter'` returns `T[]` just like `filter`.
+- ✨ **New**: `lazyFind` — the lazy-iterator helper (previously exported as `find`) is now exported as `lazyFind`. Returns `T | undefined`, exits on first match.
+- ⚠️ **Breaking**: `find` exported from `@mcabreradev/filter` root **changed meaning**. Previously it was the lazy-iterator helper (`T | undefined`); it is now an alias for `filter` (`T[]`). Rename usages to `lazyFind`.
+
+  ```typescript
+  // Migrate: rename find → lazyFind for the iterable helper
+  import { lazyFind } from '@mcabreradev/filter';
+  const item = lazyFind(iterable, (x) => x.active); // T | undefined
+  ```
 
 ### v5.8.2
 

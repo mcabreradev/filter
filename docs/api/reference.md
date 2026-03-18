@@ -64,6 +64,46 @@ import { lazyFind } from '@mcabreradev/filter';
 ```
 :::
 
+### lazyFind
+
+Finds the first item in an **iterable** that satisfies a predicate. Returns `T | undefined` and exits immediately on the first match — no array is allocated.
+
+> **Migration note (v5.9.0):** This function was previously exported as `find` from the root package. It has been renamed to `lazyFind` to make room for the new `find` alias for `filter`. Update your imports accordingly.
+
+```typescript
+function lazyFind<T>(
+  iterable: Iterable<T>,
+  predicate: (item: T, index: number) => boolean
+): T | undefined
+```
+
+**Parameters:**
+- `iterable` - Any iterable (array, generator, Set, Map values, …)
+- `predicate` - Function that returns `true` for the desired item
+
+**Returns:** The first matching item, or `undefined` if none found
+
+**Example:**
+```typescript
+import { lazyFind } from '@mcabreradev/filter';
+
+const users = [{ name: 'Alice', active: false }, { name: 'Bob', active: true }];
+
+const first = lazyFind(users, (u) => u.active);
+// → { name: 'Bob', active: true }  (stops after finding Bob)
+
+// Works with generators too
+function* infiniteStream() { let i = 0; while (true) yield i++; }
+const found = lazyFind(infiniteStream(), (n) => n > 100);
+// → 101  (exits immediately without consuming the rest)
+```
+
+::: warning Difference from `find`
+`lazyFind(iterable, predicate)` accepts **any iterable** and a plain **predicate function**, returning the **first match** as `T | undefined`.
+
+`find(array, expression, options?)` accepts an **array** and any **filter expression**, returning **all matches** as `T[]`.
+:::
+
 ### filterLazy
 
 Returns a lazy iterator for on-demand filtering.

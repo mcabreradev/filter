@@ -11,8 +11,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`find` alias**: `find` is now exported as an alias for `filter` with the identical signature and behavior. Import from `@mcabreradev/filter` or `@mcabreradev/filter/core`. Use whichever name reads more naturally in your codebase.
   ```typescript
   import { find } from '@mcabreradev/filter';
-  const result = find(users, { active: true }); // same as filter()
+  const result = find(users, { active: true }); // identical to filter() — returns T[]
   ```
+- **`lazyFind`**: The lazy-iterator helper (previously exported as `find` from the root package) is now exported as `lazyFind`. It finds the first matching item in an iterable and returns `T | undefined`.
+  ```typescript
+  import { lazyFind } from '@mcabreradev/filter';
+  const first = lazyFind(iterable, (item, i) => item.active); // returns T | undefined
+  ```
+
+### Breaking Changes
+- **`find` renamed to `lazyFind` in the main package export** (`@mcabreradev/filter`).
+
+  Previously `import { find } from '@mcabreradev/filter'` gave you the lazy-iterator helper with signature `find<T>(iterable: Iterable<T>, predicate: (item: T, index: number) => boolean): T | undefined`.
+
+  It is now exported as **`lazyFind`** with the same signature. The name `find` now refers to the array-filter alias (signature `find<T>(array: T[], expression: Expression<T>, options?: FilterOptions): T[]`).
+
+  **Migration:**
+  ```typescript
+  // Before (v5.8.x)
+  import { find } from '@mcabreradev/filter';
+  const item = find(iterable, (x) => x.active); // T | undefined
+
+  // After (v5.9.0+)
+  import { lazyFind } from '@mcabreradev/filter';
+  const item = lazyFind(iterable, (x) => x.active); // T | undefined
+  ```
+
+  > **Note:** This change only affects consumers who imported the `find` lazy-iterator helper from the root `@mcabreradev/filter` package. Imports from sub-packages (`@mcabreradev/filter/core`, etc.) are not affected.
 
 ### Changed / Breaking
 - **`find` lazy helper renamed to `lazyFind`**: Previously, the `find` export from the main entry point was a lazy-iterator helper with a different signature and behavior. That helper has been renamed to `lazyFind`, and `find` now aliases `filter` instead.
