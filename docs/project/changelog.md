@@ -5,9 +5,29 @@ All notable changes to @mcabreradev/filter are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.9.2] - 2026-03-21
+
+### Changed
+
+- Removed Svelte integration support from package exports and dependency declarations.
+- Updated project scripts and docs references to reflect framework support changes.
+
+### Fixed
+
+- Synced `pnpm-lock.yaml` with `package.json` after Svelte removal to fix CI install failures with `--frozen-lockfile`.
+- Improved release workflow reliability for npm publish and GitHub release generation.
+
+## [5.9.1] - 2026-03-21
+
+### Fixed
+
+- Stabilized release automation to avoid tag/version collisions during patch publishing.
+- Hardened npm publishing workflow and release orchestration.
+
 ## [5.8.2] - 2025-11-17
 
 ### Documentation
+
 - **Comprehensive Documentation Update**: Complete overhaul of documentation structure
   - Consolidated all operator documentation into single comprehensive guide
   - Expanded API Reference with 40+ exported functions documented
@@ -23,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Lazy evaluation patterns
 
 ### Changed
+
 - Updated documentation structure for better navigation and discoverability
 - Improved TypeScript examples with comprehensive type coverage
 - Enhanced operator examples with real-world use cases
@@ -30,20 +51,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.8.1] - 2025-11-15
 
 ### Fixed
+
 - Minor documentation fixes and typo corrections
 - Improved error messages for invalid geospatial coordinates
 - Fixed type inference for nested object expressions
 
 ### Changed
+
 - Updated dependencies to latest stable versions
 - Improved bundle size optimization
 
 ## [5.8.3] - 2025-11-26
 
 ### Bug Fixes
+
 - **Cache**: Fixed critical issue where `limit` option was ignored in cache key. Requests with different limits now correctly generate distinct cache keys.
 
 ### Performance Improvements
+
 - **Memory**: Replaced unbounded `Map` caches with `LRUCache` strategy.
   - `FilterCache`: Limited to 100 entries per source array.
   - `RegexCache`: Limited to 500 compiled patterns.
@@ -52,6 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.8.0] - 2025-11-10
 
 ### Added
+
 - **OrderBy and Limit Options**: Enhanced configuration system
   - Full support for single and multi-field sorting
   - Nested path sorting with dot notation (e.g., 'profile.age')
@@ -63,11 +89,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Full generic support for custom types
 
 ### Changed
+
 - Optimized internal sorting algorithms for better performance
 - Improved cache key generation for orderBy and limit combinations
 - Updated all framework integrations to support orderBy and limit
 
 ### Performance
+
 - OrderBy uses stable sort algorithm (10-15% faster than v5.7.0)
 - Limit applies after filtering/sorting (minimal overhead)
 - Cache efficiency improved for complex queries with orderBy
@@ -75,6 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.7.1] - 2025-11-08
 
 ### Fixed
+
 - **$contains Operator**: Fixed type detection edge cases
   - Improved string vs array context detection
   - Better handling of undefined values
@@ -85,12 +114,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed Preact hook re-render optimization
 
 ### Changed
+
 - Improved error messages for invalid expressions
 - Better TypeScript type inference for logical operators
 
 ## [5.7.0] - 2025-11-06
 
 ### Added
+
 - **Framework Integrations**: Angular, SolidJS, and Preact support
   - **Angular**: Services and Pipes with Signals support
     - `FilterService`: Core filtering service with Signal-based state
@@ -127,6 +158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated Quick Start guide with new features
 
 ### Fixed
+
 - **$contains Operator**: Fixed type detection to distinguish between string and array contexts
   - Enhanced `hasArrayOps` to check actual value types (not just operator presence)
   - Enhanced `hasStringOps` to check actual value types
@@ -134,17 +166,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed edge case where undefined properties would incorrectly pass $contains checks
 
 ### Changed
+
 - Updated framework integrations documentation to v5.7.0
 - Updated README with all new features (Angular, SolidJS, Preact, orderBy, limit)
 - Updated configuration guide with orderBy and limit sections
 - Improved Quick Start guide with sorting and limiting examples
 
 ### Performance
+
 - OrderBy uses efficient comparison functions
 - Limit applies slice operation after filtering (minimal overhead)
 - Framework integrations use proper memoization strategies
 
 ### Testing
+
 - Added 33 comprehensive tests for limit functionality
 - Added tests for orderBy with limit combinations
 - Fixed integration tests for $contains operator with proper type checking
@@ -154,6 +189,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.6.0] - 2025-11-01
 
 ### Added
+
 - **Geospatial Operators**: Location-based filtering with three powerful spatial operators
   - `$near`: Find points within radius with optional min/max distance
   - `$geoBox`: Bounding box queries for rectangular areas
@@ -181,24 +217,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - IoT device monitoring patterns
 
 ### Changed
+
 - Updated operator count from 18+ to 30+ operators
 - Enhanced type system to recognize GeoPoint and Date types
 - Improved autocomplete for geospatial and datetime operators
 - Extended constants to include all operator keys
 
 ### Performance
+
 - Fast distance calculation using spherical law of cosines
 - Efficient ray casting algorithm for polygon containment
 - Optimized bounding box checks
 - Compatible with lazy evaluation for large datasets
 
 ### Testing
+
 - Added 26 new comprehensive tests
 - Total test count: 523 tests (previously 497)
 - 100% code coverage for geospatial features
 - Edge case testing for invalid coordinates and missing data
 
 ### Datetime Operators
+
 - **Relative Time Filtering**: Filter by last/next N days/hours/minutes
   - `$recent`: Find events in the last N days/hours/minutes
   - `$upcoming`: Find events in the next N days/hours/minutes
@@ -228,6 +268,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Weekend/weekday filtering patterns
 
 ### Testing (Enhanced)
+
 - Added 90 new comprehensive tests for datetime operators
 - Total test count: 613+ tests (previously 523)
 - 100% code coverage for all datetime features
@@ -236,11 +277,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.5.1] - 2025-10-30
 
 ### Fixed
+
 - Bug fixes and stability improvements
 - Build optimization issues
 - Type definition exports
 
 ### Changed
+
 - Updated documentation with latest features
 - Improved error messages
 - Enhanced performance for array operations
@@ -248,6 +291,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.5.0] - 2025-10-28
 
 ### Added
+
 - **Array OR Syntax**: Intuitive array-based OR filtering without explicit `$in` operator
   - `filter(products, { category: ['Electronics', 'Books'] })`
   - Supports wildcards within array values
@@ -270,12 +314,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Expression tree visualization
 
 ### Changed
+
 - Enhanced array operator performance
 - Improved type inference for array expressions
 - Optimized debug tree building
 - Better error messages for invalid expressions
 
 ### Fixed
+
 - Edge cases with empty arrays in expressions
 - Type inference issues with array OR syntax
 - Debug output formatting inconsistencies
@@ -283,6 +329,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.4.0] - 2024-10-26
 
 ### Added
+
 - Comprehensive documentation overhaul
 - Migration guide for v5.4
 - Framework-specific SSR guides
@@ -292,11 +339,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Best practices guide
 
 ### Changed
+
 - Updated React integration documentation
 - Updated Vue integration documentation
 - Improved API reference clarity
 
 ### Fixed
+
 - Documentation API inconsistencies
 - Outdated code examples
 - Missing TypeScript type references
@@ -304,6 +353,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.3.0] - 2024-09-15
 
 ### Added
+
 - Pagination support for all framework integrations
 - `usePaginatedFilter` hook for React
 - `usePaginatedFilter` composable for Vue
@@ -311,16 +361,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pagination actions (`nextPage`, `previousPage`, `goToPage`, `setPageSize`)
 
 ### Changed
+
 - Improved performance for large datasets
 - Enhanced memoization strategy
 
 ### Fixed
+
 - Memory leak in memoization cache
 - Type inference issues with generic components
 
 ## [5.2.0] - 2024-08-10
 
 ### Added
+
 - Debounced filtering support
 - `useDebouncedFilter` hook for React
 - `useDebouncedFilter` composable for Vue
@@ -328,27 +381,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configurable delay option
 
 ### Changed
+
 - Optimized re-render behavior in React
 - Improved reactivity in Vue
+
 ## [5.1.0] - 2024-07-05
 
 ### Added
+
 - `useFilteredState` hook for React
 - `useFilteredState` composable for Vue
 - State management for data and expressions
 - Setter functions for dynamic updates
 
 ### Changed
+
 - Improved TypeScript type inference
 - Enhanced documentation with more examples
 
 ### Fixed
+
 - Edge case with empty arrays
 - Null/undefined handling in expressions
 
 ## [5.0.0] - 2024-06-01
 
 ### Breaking Changes
+
 - Renamed `data` to `filtered` in return values
 - Removed `isError` and `error` from return values
 - Changed `isLoading` to `isFiltering`
@@ -357,6 +416,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated minimum Vue version to 3.0+
 
 ### Added
+
 - Full TypeScript rewrite
 - Improved type safety and inference
 - Better error messages
@@ -364,86 +424,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tree-shaking support
 
 ### Changed
+
 - Simplified API surface
 - Improved documentation
 - Enhanced test coverage to 100%
 
 ### Migration Guide
+
 See [Migration Guide v5.4](/guide/migration-v2) for detailed migration instructions.
 
 ## [4.5.0] - 2024-04-15
 
 ### Added
+
 - Lazy evaluation support
 - `createLazyFilter` function
 - Chainable lazy operations
 - Memory optimization for large datasets
 
 ### Changed
+
 - Improved operator processing performance
 - Enhanced memoization algorithm
 
 ## [4.4.0] - 2024-03-10
 
 ### Added
+
 - Nested object filtering support
 - Dot notation for property access
 - Deep comparison utilities
 - Array filtering within objects
 
 ### Fixed
+
 - Nested property access edge cases
 - Deep equality comparison issues
 
 ## [4.3.0] - 2024-02-05
 
 ### Added
+
 - Custom operator registration
 - `registerOperator` function
 - Operator extension API
 - Plugin system foundation
 
 ### Changed
+
 - Refactored operator processing
 - Improved operator type definitions
 
 ## [4.2.0] - 2024-01-15
 
 ### Added
+
 - String operators: `$startsWith`, `$endsWith`, `$contains`
 - Case-insensitive string matching option
 - Regular expression operator `$regex`
 
 ### Fixed
+
 - String comparison edge cases
 - Unicode string handling
 
 ## [4.1.0] - 2023-12-10
 
 ### Added
+
 - Array operators: `$in`, `$nin`
 - Logical operators: `$and`, `$or`, `$not`
 - Complex expression support
 - Nested logical operations
 
 ### Changed
+
 - Improved expression parsing
 - Enhanced type safety for operators
 
 ## [4.0.0] - 2023-11-01
 
 ### Breaking Changes
+
 - Removed jQuery-style API
 - Changed expression format to object-based
 - Updated operator syntax
 
 ### Added
+
 - Modern operator-based API
 - TypeScript support
 - Framework integrations (React, Vue)
 - Comprehensive test suite
 
 ### Changed
+
 - Complete API redesign
 - Improved performance
 - Better documentation
@@ -472,4 +547,3 @@ See [Contributing Guide](/project/contributing) for information on how to contri
 ## License
 
 MIT License - see [LICENSE](/project/license) for details.
-
