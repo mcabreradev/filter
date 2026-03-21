@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: write
-  packages: write
   id-token: write
 
 jobs:
@@ -19,36 +18,26 @@ jobs:
 
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: main
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f  # v6
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
       - name: 📥 Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320  # v4
         with:
           version: 10
           run_install: false
 
       - name: 📦 Install dependencies
-        run: |
-          if [ -f "pnpm-lock.yaml" ]; then
-            echo "Found pnpm-lock.yaml, attempting frozen install..."
-            pnpm install --frozen-lockfile || {
-              echo "Frozen lockfile failed, falling back to regular install..."
-              pnpm install --no-frozen-lockfile
-            }
-          else
-            echo "No lockfile found, running regular install..."
-            pnpm install --no-frozen-lockfile
-          fi
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: 🏗️ Build
         run: pnpm run build
