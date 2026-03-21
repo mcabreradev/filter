@@ -32,63 +32,66 @@
 </p>
 
 ---
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
 ## Table of Contents
 
-- [@mcabreradev/filter](#mcabreradevfilter)
-  - [The Problem](#the-problem)
-  - [Quick Start](#quick-start)
-    - [Install](#install)
-    - [Your First Filter](#your-first-filter)
-  - [Why You'll Love It](#why-youll-love-it)
-    - [🚀 **Blazing Fast**](#-blazing-fast)
-    - [🎯 **Developer Friendly**](#-developer-friendly)
-    - [🔧 **Incredibly Flexible**](#-incredibly-flexible)
-    - [📦 **Production Ready**](#-production-ready)
-    - [🪶 **Ultra Lightweight**](#-ultra-lightweight)
-    - [🔒 **Type-Safe by Default**](#-type-safe-by-default)
-    - [🎨 **Framework Agnostic**](#-framework-agnostic)
-    - [📊 **Handles Big Data**](#-handles-big-data)
-  - [Examples](#examples)
-    - [Basic Filtering](#basic-filtering)
-    - [MongoDB-Style Operators](#mongodb-style-operators)
-    - [Array OR Syntax (Intuitive!)](#array-or-syntax-intuitive)
-    - [Geospatial Queries](#geospatial-queries)
-    - [Datetime Filtering](#datetime-filtering)
-    - [Performance Optimization](#performance-optimization)
-    - [Real-World: E-commerce Search](#real-world-e-commerce-search)
-  - [Framework Integrations](#framework-integrations)
-    - [React](#react)
-    - [Vue](#vue)
-    - [Svelte](#svelte)
-    - [Angular](#angular)
-    - [SolidJS](#solidjs)
-    - [Preact](#preact)
-  - [Core Features](#core-features)
-    - [Supported Operators](#supported-operators)
-    - [TypeScript Support](#typescript-support)
-    - [Configuration Options](#configuration-options)
-  - [Advanced Features](#advanced-features)
-    - [Lazy Evaluation](#lazy-evaluation)
-    - [Memoization & Caching](#memoization--caching)
-    - [Visual Debugging](#visual-debugging)
-  - [Documentation](#documentation)
-    - [📖 Complete Guides](#-complete-guides)
-    - [🎯 Quick Links](#-quick-links)
-  - [Performance](#performance)
-  - [Bundle Size](#bundle-size)
-  - [Browser Support](#browser-support)
-  - [Migration from v3.x](#migration-from-v3x)
-  - [Changelog](#changelog)
-    - [v5.8.2 (Current)](#v582-current)
-    - [v5.8.0](#v580)
-    - [v5.7.0](#v570)
-    - [v5.6.0](#v560)
-    - [v5.5.0](#v550)
-  - [Contributing](#contributing)
-  - [License](#license)
-  - [Support](#support)
+- [The Problem](#the-problem)
+- [Quick Start](#quick-start)
+  - [Install](#install)
+  - [Your First Filter](#your-first-filter)
+- [Why You'll Love It](#why-youll-love-it)
+  - [🚀 **Blazing Fast**](#-blazing-fast)
+  - [🎯 **Developer Friendly**](#-developer-friendly)
+  - [🔧 **Incredibly Flexible**](#-incredibly-flexible)
+  - [📦 **Production Ready**](#-production-ready)
+  - [🪶 **Ultra Lightweight**](#-ultra-lightweight)
+  - [🔒 **Type-Safe by Default**](#-type-safe-by-default)
+  - [🎨 **Framework Agnostic**](#-framework-agnostic)
+  - [📊 **Handles Big Data**](#-handles-big-data)
+- [Examples](#examples)
+  - [Basic Filtering](#basic-filtering)
+  - [MongoDB-Style Operators](#mongodb-style-operators)
+  - [Array OR Syntax (Intuitive!)](#array-or-syntax-intuitive)
+  - [Geospatial Queries](#geospatial-queries)
+  - [Datetime Filtering](#datetime-filtering)
+  - [Performance Optimization](#performance-optimization)
+  - [Real-World: E-commerce Search](#real-world-e-commerce-search)
+- [Framework Integrations](#framework-integrations)
+  - [React](#react)
+  - [Vue](#vue)
+  - [Svelte](#svelte)
+  - [Angular](#angular)
+  - [SolidJS](#solidjs)
+  - [Preact](#preact)
+- [Core Features](#core-features)
+  - [Supported Operators](#supported-operators)
+  - [TypeScript Support](#typescript-support)
+  - [Configuration Options](#configuration-options)
+- [Advanced Features](#advanced-features)
+  - [Lazy Evaluation](#lazy-evaluation)
+  - [Memoization & Caching](#memoization--caching)
+  - [Visual Debugging](#visual-debugging)
+- [Documentation](#documentation)
+  - [📖 Complete Guides](#-complete-guides)
+  - [🎯 Quick Links](#-quick-links)
+- [Performance](#performance)
+- [Bundle Size](#bundle-size)
+- [Browser Support](#browser-support)
+- [Migration from v3.x](#migration-from-v3x)
+- [Changelog](#changelog)
+  - [v5.9.2 (Current)](#v592-current)
+  - [v5.9.1](#v591)
+  - [v5.8.2](#v582)
+  - [v5.8.0](#v580)
+  - [v5.7.0](#v570)
+  - [v5.6.0](#v560)
+  - [v5.5.0](#v550)
+- [Contributing](#contributing)
+- [License](#license)
+- [Support](#support)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -99,24 +102,27 @@
 **Tired of writing complex filter logic?** Stop wrestling with nested `Array.filter()` chains and verbose conditionals. Write clean, declarative filters that read like queries.
 
 **Before — the usual mess:**
+
 ```typescript
-const results = data.filter(item =>
-  item.age >= 18 &&
-  item.status === 'active' &&
-  (item.role === 'admin' || item.role === 'moderator') &&
-  item.email.endsWith('@company.com') &&
-  item.createdAt >= thirtyDaysAgo
+const results = data.filter(
+  (item) =>
+    item.age >= 18 &&
+    item.status === 'active' &&
+    (item.role === 'admin' || item.role === 'moderator') &&
+    item.email.endsWith('@company.com') &&
+    item.createdAt >= thirtyDaysAgo,
 );
 ```
 
 **After — clean and declarative:**
+
 ```typescript
 const results = filter(data, {
   age: { $gte: 18 },
   status: 'active',
   role: ['admin', 'moderator'],
   email: { $endsWith: '@company.com' },
-  createdAt: { $gte: thirtyDaysAgo }
+  createdAt: { $gte: thirtyDaysAgo },
 });
 ```
 
@@ -146,7 +152,7 @@ import { filter } from '@mcabreradev/filter';
 const users = [
   { name: 'Alice', age: 30, city: 'Berlin', active: true },
   { name: 'Bob', age: 25, city: 'London', active: false },
-  { name: 'Charlie', age: 35, city: 'Berlin', active: true }
+  { name: 'Charlie', age: 35, city: 'Berlin', active: true },
 ];
 
 // Simple string search — scans all fields
@@ -173,43 +179,51 @@ const startsWithAl = filter(users, 'Al%');
 ## Why You'll Love It
 
 ### 🚀 **Blazing Fast**
+
 - **530x faster** on repeated queries with optional LRU caching
 - **500x faster** with lazy evaluation for large datasets
 - Compiled predicates and regex patterns cached automatically
 
 ### 🎯 **Developer Friendly**
+
 - Intuitive API — reads like English
 - SQL-like wildcards (`%`, `_`) you already know
 - Full TypeScript generics with intelligent autocomplete
 
 ### 🔧 **Incredibly Flexible**
+
 - Four filtering strategies: strings, objects, operators, predicates
 - Combine them seamlessly in a single expression
 - Works with any data shape — flat, nested, arrays
 
 ### 📦 **Production Ready**
+
 - **1,004+ tests** ensuring bulletproof reliability
 - Zero runtime dependencies (only Zod for optional validation)
 - Battle-tested in production applications
 - MIT licensed
 
 ### 🪶 **Ultra Lightweight**
+
 - Full package: **12KB gzipped**
 - Core only: **8.4KB gzipped**
 - Zero mandatory dependencies
 - Tree-shakeable — only pay for what you use
 
 ### 🔒 **Type-Safe by Default**
+
 - Built with strict TypeScript
 - Catch errors at compile time, not runtime
 - Full IntelliSense for operators based on field types
 
 ### 🎨 **Framework Agnostic**
+
 - First-class hooks: React, Vue, Svelte, Angular, SolidJS, Preact
 - Debounced search, pagination, and reactive state out of the box
 - SSR compatible: Next.js, Nuxt, SvelteKit
 
 ### 📊 **Handles Big Data**
+
 - Generator-based lazy evaluation for millions of records
 - Early exit — stop processing when you have enough results
 - LRU caches with TTL prevent memory leaks in long-running apps
@@ -228,10 +242,10 @@ filter(products, 'Laptop');
 filter(products, { category: 'Electronics', price: { $lt: 1000 } });
 
 // SQL wildcard patterns
-filter(users, '%alice%');   // contains 'alice'
-filter(users, 'Al%');       // starts with 'Al'
-filter(users, '%son');      // ends with 'son'
-filter(users, 'J_hn');      // single-char wildcard
+filter(users, '%alice%'); // contains 'alice'
+filter(users, 'Al%'); // starts with 'Al'
+filter(users, '%son'); // ends with 'son'
+filter(users, 'J_hn'); // single-char wildcard
 
 // Predicate functions — full control
 filter(users, (u) => u.score > 90 && u.verified);
@@ -253,15 +267,12 @@ filter(products, { sizes: { $size: 3 } });
 filter(users, {
   email: { $endsWith: '@company.com' },
   name: { $startsWith: 'John' },
-  bio: { $regex: /developer/i }
+  bio: { $regex: /developer/i },
 });
 
 // Logical combinators
 filter(products, {
-  $and: [
-    { inStock: true },
-    { $or: [{ rating: { $gte: 4.5 } }, { price: { $lt: 50 } }] }
-  ]
+  $and: [{ inStock: true }, { $or: [{ rating: { $gte: 4.5 } }, { price: { $lt: 50 } }] }],
 });
 
 // Negate with $not
@@ -278,7 +289,7 @@ filter(products, { category: ['Electronics', 'Books'] });
 // Combine across fields
 filter(users, {
   city: ['Berlin', 'Paris', 'London'],
-  role: ['admin', 'moderator']
+  role: ['admin', 'moderator'],
 });
 ```
 
@@ -292,7 +303,7 @@ const userLocation: GeoPoint = { lat: 52.52, lng: 13.405 };
 // Find restaurants within 5km rated 4.5+
 filter(restaurants, {
   location: { $near: { center: userLocation, maxDistanceMeters: 5000 } },
-  rating: { $gte: 4.5 }
+  rating: { $gte: 4.5 },
 });
 
 // Bounding box search
@@ -300,9 +311,9 @@ filter(places, {
   location: {
     $geoBox: {
       topLeft: { lat: 53.0, lng: 13.0 },
-      bottomRight: { lat: 52.0, lng: 14.0 }
-    }
-  }
+      bottomRight: { lat: 52.0, lng: 14.0 },
+    },
+  },
 });
 ```
 
@@ -317,8 +328,8 @@ filter(logs, { createdAt: { $recent: { hours: 24 } } });
 
 // Weekday events during business hours
 filter(events, {
-  date: { $dayOfWeek: [1, 2, 3, 4, 5] },       // Mon–Fri
-  startTime: { $timeOfDay: { start: 9, end: 17 } }  // 9am–5pm
+  date: { $dayOfWeek: [1, 2, 3, 4, 5] }, // Mon–Fri
+  startTime: { $timeOfDay: { start: 9, end: 17 } }, // 9am–5pm
 });
 
 // Users of age 18–65
@@ -338,15 +349,15 @@ filter(tasks, { dueDate: { $isBefore: new Date('2025-12-31') } });
 const results = filter(largeDataset, expression, {
   enableCache: true,
   orderBy: { field: 'price', direction: 'desc' },
-  limit: 100
+  limit: 100,
 });
 
 // Lazy evaluation — process millions of records without loading all into memory
 import { filterFirst, filterExists, filterCount, filterLazy } from '@mcabreradev/filter';
 
 const first10 = filterFirst(millionRecords, { premium: true }, 10);
-const hasAdmin = filterExists(users, { role: 'admin' });      // exits on first match
-const activeCount = filterCount(users, { active: true });     // no array allocated
+const hasAdmin = filterExists(users, { role: 'admin' }); // exits on first match
+const activeCount = filterCount(users, { active: true }); // no array allocated
 ```
 
 ### Real-World: E-commerce Search
@@ -368,24 +379,28 @@ const results = filter<Product>(products, {
   category: 'Electronics',
   price: { $lte: 1000 },
   rating: { $gte: 4.5 },
-  inStock: true
+  inStock: true,
 });
 
 // Full-text search with brand filter
 const searchResults = filter<Product>(products, {
   name: { $contains: 'laptop' },
   brand: ['Apple', 'Dell', 'HP'],
-  price: { $gte: 500, $lte: 2000 }
+  price: { $gte: 500, $lte: 2000 },
 });
 
 // Sorted and paginated results
-const page1 = filter<Product>(products, { category: 'Electronics', inStock: true }, {
-  orderBy: [
-    { field: 'price', direction: 'asc' },
-    { field: 'rating', direction: 'desc' }
-  ],
-  limit: 20
-});
+const page1 = filter<Product>(
+  products,
+  { category: 'Electronics', inStock: true },
+  {
+    orderBy: [
+      { field: 'price', direction: 'asc' },
+      { field: 'rating', direction: 'desc' },
+    ],
+    limit: 20,
+  },
+);
 ```
 
 ---
@@ -468,7 +483,7 @@ import { FilterService } from '@mcabreradev/filter/angular';
     @for (user of filterService.filtered(); track user.id) {
       <div>{{ user.name }}</div>
     }
-  `
+  `,
 })
 export class UserListComponent {
   filterService = inject(FilterService<User>);
@@ -483,7 +498,7 @@ import { useFilter } from '@mcabreradev/filter/solidjs';
 function UserList() {
   const { filtered } = useFilter(
     () => users,
-    () => ({ active: true })
+    () => ({ active: true }),
   );
   return <For each={filtered()}>{(u) => <div>{u.name}</div>}</For>;
 }
@@ -496,11 +511,18 @@ import { useFilter } from '@mcabreradev/filter/preact';
 
 function UserList() {
   const { filtered } = useFilter(users, { active: true });
-  return <div>{filtered.map(u => <div key={u.id}>{u.name}</div>)}</div>;
+  return (
+    <div>
+      {filtered.map((u) => (
+        <div key={u.id}>{u.name}</div>
+      ))}
+    </div>
+  );
 }
 ```
 
 **Every integration includes:**
+
 - ✅ Full TypeScript generics
 - ✅ Debounced search hook with `isPending` state
 - ✅ Pagination hook with `nextPage`, `prevPage`, `goToPage`
@@ -515,14 +537,14 @@ function UserList() {
 
 ### Supported Operators
 
-| Category | Operators |
-|----------|-----------|
-| **Comparison** | `$gt` `$gte` `$lt` `$lte` `$eq` `$ne` |
-| **Array** | `$in` `$nin` `$contains` `$size` |
-| **String** | `$startsWith` `$endsWith` `$contains` `$regex` `$match` |
-| **Logical** | `$and` `$or` `$not` |
-| **Geospatial** | `$near` `$geoBox` `$geoPolygon` |
-| **Datetime** | `$recent` `$upcoming` `$dayOfWeek` `$timeOfDay` `$age` `$isWeekday` `$isWeekend` `$isBefore` `$isAfter` |
+| Category       | Operators                                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------------- |
+| **Comparison** | `$gt` `$gte` `$lt` `$lte` `$eq` `$ne`                                                                   |
+| **Array**      | `$in` `$nin` `$contains` `$size`                                                                        |
+| **String**     | `$startsWith` `$endsWith` `$contains` `$regex` `$match`                                                 |
+| **Logical**    | `$and` `$or` `$not`                                                                                     |
+| **Geospatial** | `$near` `$geoBox` `$geoPolygon`                                                                         |
+| **Datetime**   | `$recent` `$upcoming` `$dayOfWeek` `$timeOfDay` `$age` `$isWeekday` `$isWeekend` `$isBefore` `$isAfter` |
 
 > 18+ operators covering every filtering scenario you'll encounter.
 
@@ -538,10 +560,10 @@ interface Product {
 }
 
 filter<Product>(products, {
-  price: { $gte: 100 },    // ✅ number operators
+  price: { $gte: 100 }, // ✅ number operators
   name: { $contains: '' }, // ✅ string operators
-  tags: { $size: 3 },      // ✅ array operators
-  price: { $contains: '' } // ❌ TypeScript error — string op on number field
+  tags: { $size: 3 }, // ✅ array operators
+  price: { $contains: '' }, // ❌ TypeScript error — string op on number field
 });
 ```
 
@@ -549,15 +571,15 @@ filter<Product>(products, {
 
 ```typescript
 filter(data, expression, {
-  caseSensitive: false,           // default: false
-  maxDepth: 3,                    // nested object traversal depth (1–10)
-  enableCache: true,              // LRU result caching (530x speedup)
-  orderBy: 'price',               // sort field or array of fields
-  limit: 10,                      // cap result count
-  debug: true,                    // print expression tree to console
-  verbose: true,                  // detailed per-item evaluation logs
-  showTimings: true,              // execution time per operator
-  enablePerformanceMonitoring: true,  // collect performance metrics
+  caseSensitive: false, // default: false
+  maxDepth: 3, // nested object traversal depth (1–10)
+  enableCache: true, // LRU result caching (530x speedup)
+  orderBy: 'price', // sort field or array of fields
+  limit: 10, // cap result count
+  debug: true, // print expression tree to console
+  verbose: true, // detailed per-item evaluation logs
+  showTimings: true, // execution time per operator
+  enablePerformanceMonitoring: true, // collect performance metrics
 });
 ```
 
@@ -589,11 +611,11 @@ const hasBanned = filterExists(users, { role: 'banned' });
 const total = filterCount(orders, { status: 'pending' });
 ```
 
-| Scenario | Array.filter | filterLazy / filterFirst |
-|----------|-------------|--------------------------|
-| First match in 1M items | ~50ms | **~0.1ms** |
-| Memory for 1M items | ~80MB | **~0KB** |
-| Early exit | ❌ | ✅ |
+| Scenario                | Array.filter | filterLazy / filterFirst |
+| ----------------------- | ------------ | ------------------------ |
+| First match in 1M items | ~50ms        | **~0.1ms**               |
+| Memory for 1M items     | ~80MB        | **~0KB**                 |
+| Early exit              | ❌           | ✅                       |
 
 📖 **[Lazy Evaluation Guide →](./docs/guide/lazy-evaluation.md)**
 
@@ -609,11 +631,11 @@ const results = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true 
 const same = filter(largeDataset, { age: { $gte: 18 } }, { enableCache: true });
 ```
 
-| Scenario | Without Cache | With Cache | Speedup |
-|----------|--------------|------------|---------|
-| Simple query, 10K items | 5.3ms | 0.01ms | **530x** |
-| Regex pattern | 12.1ms | 0.02ms | **605x** |
-| Complex nested query | 15.2ms | 0.01ms | **1520x** |
+| Scenario                | Without Cache | With Cache | Speedup   |
+| ----------------------- | ------------- | ---------- | --------- |
+| Simple query, 10K items | 5.3ms         | 0.01ms     | **530x**  |
+| Regex pattern           | 12.1ms        | 0.02ms     | **605x**  |
+| Complex nested query    | 15.2ms        | 0.01ms     | **1520x** |
 
 Caches are bounded (LRU, max 500 entries each) and auto-expire after 5 minutes — safe for long-running servers.
 
@@ -665,13 +687,13 @@ filter(users, { city: 'Berlin', age: { $gte: 18 } }, { debug: true });
 
 ## Performance
 
-| Technique | Benefit |
-|-----------|---------|
-| Early-exit operators | Skip remaining items on first mismatch |
-| LRU result cache | 530x–1520x speedup on repeated queries |
-| LRU predicate cache | Compiled predicates reused across calls |
-| LRU regex cache | Compiled patterns reused, bounded to 500 entries |
-| Lazy generators | 500x faster when you don't need all results |
+| Technique             | Benefit                                             |
+| --------------------- | --------------------------------------------------- |
+| Early-exit operators  | Skip remaining items on first mismatch              |
+| LRU result cache      | 530x–1520x speedup on repeated queries              |
+| LRU predicate cache   | Compiled predicates reused across calls             |
+| LRU regex cache       | Compiled patterns reused, bounded to 500 entries    |
+| Lazy generators       | 500x faster when you don't need all results         |
 | Absolute TTL eviction | Stale entries removed after 5 min — no memory leaks |
 
 ```typescript
@@ -686,12 +708,12 @@ const first100 = filterFirst(millionRecords, { active: true }, 100);
 
 ## Bundle Size
 
-| Import | Size (gzipped) | Tree-Shakeable |
-|--------|----------------|----------------|
-| Full | 12 KB | ✅ |
-| Core only | 8.4 KB | ✅ |
-| React hooks | 9.2 KB | ✅ |
-| Lazy evaluation | 5.4 KB | ✅ |
+| Import          | Size (gzipped) | Tree-Shakeable |
+| --------------- | -------------- | -------------- |
+| Full            | 12 KB          | ✅             |
+| Core only       | 8.4 KB         | ✅             |
+| React hooks     | 9.2 KB         | ✅             |
+| Lazy evaluation | 5.4 KB         | ✅             |
 
 ---
 
@@ -728,7 +750,19 @@ filter(data, expression, { enableCache: true, limit: 50 });
 
 ## Changelog
 
-### v5.8.2 (Current)
+### v5.9.2 (Current)
+
+- 🧹 **Refactor**: Removed Svelte integration exports, dependencies, and related docs from the package.
+- 🔧 **CI/CD**: Hardened npm publish workflow with safer version resolution and improved release handling.
+- 📦 **Release Reliability**: Synced lockfile with dependency changes to avoid CI failures with `--frozen-lockfile`.
+- ✅ **Publishing**: Improved release pipeline behavior so versioning and GitHub Releases run more consistently.
+
+### v5.9.1
+
+- 🚀 **Release**: Published patch release with workflow and release-process fixes.
+- 🏷️ **Versioning**: Stabilized tag/version flow to avoid collisions with existing release tags.
+
+### v5.8.2
 
 - 🐛 **Bug Fix**: Wildcard regex now correctly escapes all special characters (`.`, `+`, `*`, `?`, `(`, `[`, `^`, etc.) — patterns like `%.txt` or `a.b%` no longer silently break
 - 🐛 **Bug Fix**: `$timeOfDay` with `start > end` (e.g. `{ start: 22, end: 5 }`) now correctly fails validation instead of silently never matching
@@ -773,6 +807,7 @@ filter(data, expression, { enableCache: true, limit: 50 });
 We welcome contributions! Please read our [Contributing Guide](./CONTRIBUTING.md) for details.
 
 **Ways to Contribute:**
+
 - Report bugs or request features via [GitHub Issues](https://github.com/mcabreradev/filter/issues)
 - Submit pull requests with bug fixes or new features
 - Improve documentation
