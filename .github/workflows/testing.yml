@@ -62,6 +62,9 @@ jobs:
       - name: 📊 Generate coverage report
         run: pnpm run test:coverage
 
+      - name: 🏗️ Build
+        run: pnpm run build
+
       - name: Re Check All
         run: pnpm run check
 
