@@ -90,25 +90,6 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
 - `useDebouncedFilter` - Debounced filtering
 - `usePaginatedFilter` - Pagination support
 
-### Svelte
-
-```typescript
-// Classic import - exports useFilter for compatibility
-import { useFilter } from '@mcabreradev/filter';
-
-// Modular import (recommended)
-import { useFilter } from '@mcabreradev/filter/svelte';
-
-const searchTerm = writable('');
-const { filtered, isFiltering } = useFilter(users, searchTerm);
-```
-
-**Available stores:**
-- `useFilter` - Basic filtering store
-- `useFilteredState` - Filtered state store
-- `useDebouncedFilter` - Debounced filtering store
-- `usePaginatedFilter` - Pagination store
-
 ## Operators
 
 ### Comparison Operators
@@ -285,7 +266,6 @@ The package is configured with granular exports in `package.json`:
     "./core": "./build/core/index.js",
     "./react": "./build/integrations/react/index.js",
     "./vue": "./build/integrations/vue/index.js",
-    "./svelte": "./build/integrations/svelte/index.js",
     "./operators/comparison": "./build/operators/comparison.js",
     "./operators/array": "./build/operators/array.js",
     "./operators/string": "./build/operators/string.js",

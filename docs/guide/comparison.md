@@ -12,7 +12,7 @@ This guide compares @mcabreradev/filter with popular alternatives to help you ch
 |---------|-------------------|--------|----------------|---------|---------|
 | Bundle Size | ~3KB | ~70KB | 0KB (native) | ~12KB | ~5KB |
 | TypeScript | ✅ Full support | ⚠️ @types required | ✅ Native | ⚠️ @types required | ❌ Limited |
-| Framework Integration | ✅ React, Vue, Svelte | ❌ None | ❌ None | ❌ None | ❌ None |
+| Framework Integration | ✅ React, Vue | ❌ None | ❌ None | ❌ None | ❌ None |
 | Operator-Based | ✅ Yes | ❌ No | ❌ No | ❌ No | ✅ Yes |
 | Nested Objects | ✅ Yes | ✅ Yes | ⚠️ Manual | ❌ No | ✅ Yes |
 | Fuzzy Search | ❌ No | ❌ No | ❌ No | ✅ Yes | ❌ No |
@@ -109,7 +109,7 @@ const { filtered } = useFilter(data, {
 
 **2. Framework Integration**
 
-Built-in hooks for React, Vue, and Svelte.
+Built-in hooks for React and Vue.
 
 **3. Advanced Operators**
 
@@ -181,7 +181,7 @@ Better type inference and safety.
 
 **4. Modern API**
 
-Designed for modern React, Vue, and Svelte.
+Designed for modern React and Vue.
 
 #### When to Use Sift.js
 
@@ -373,7 +373,7 @@ const { filtered } = useFilter(data, {
 
 ### Choose @mcabreradev/filter if you need:
 
-✅ Framework integration (React, Vue, Svelte)
+✅ Framework integration (React, Vue)
 ✅ Type-safe filtering
 ✅ Complex logical operations
 ✅ Built-in pagination

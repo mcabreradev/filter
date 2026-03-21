@@ -42,7 +42,7 @@ pnpm run docs:api
 
 - `.vitepress/` - VitePress configuration and theme
 - `guide/` - Getting started and core feature guides
-- `frameworks/` - Framework integration guides (React, Vue, Svelte)
+- `frameworks/` - Framework integration guides (React, Vue)
 - `examples/` - Code examples and use cases
 - `api/` - API reference documentation
 - `public/` - Static assets (images, logos, etc.)

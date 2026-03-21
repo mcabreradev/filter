@@ -109,7 +109,6 @@ filter/
 │   ├── integrations/      # Framework integrations
 │   │   ├── react/
 │   │   ├── vue/
-│   │   ├── svelte/
 │   │   └── shared/
 │   ├── predicate/         # Predicate functions
 │   ├── types/             # TypeScript type definitions
@@ -441,7 +440,6 @@ When adding framework integrations:
 
 **React**: Use hooks, avoid class components
 **Vue**: Use Composition API
-**Svelte**: Use stores
 
 ### 2. Maintain Type Safety
 
@@ -485,7 +483,6 @@ console.timeEnd('filter');
 - Implement lazy evaluation where appropriate
 - Avoid unnecessary re-renders in React
 - Minimize reactivity overhead in Vue
-- Optimize store updates in Svelte
 
 ### Memory Management
 

@@ -462,15 +462,6 @@ const searchTerm = ref('');
 const { filtered, isFiltering } = useFilter(users, searchTerm);
 ```
 
-### Svelte Stores
-```typescript
-import { writable } from 'svelte/store';
-import { useFilter } from '@mcabreradev/filter/svelte';
-
-const searchTerm = writable('');
-const { filtered, isFiltering } = useFilter(users, searchTerm);
-```
-
 ---
 
 ## Performance Tips

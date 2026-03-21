@@ -1438,6 +1438,5 @@ filterService.setOptions({ enableCache: true });
 
 - [React Integration](./react.md)
 - [Vue Integration](./vue.md)
-- [Svelte Integration](./svelte.md)
 - [API Reference](../api/reference.md)
 

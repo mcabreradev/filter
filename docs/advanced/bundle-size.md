@@ -19,7 +19,6 @@ For detailed import syntax and examples, see the [Modular Imports Guide](/guide/
 | Operators (granular) | ~5 KB | 58% | Specific operators |
 | React integration | ~3 KB | 75% | React hooks only |
 | Vue integration | ~3 KB | 75% | Vue composables only |
-| Svelte integration | ~3 KB | 75% | Svelte stores only |
 | Lazy evaluation | ~2 KB | 83% | Large dataset processing |
 
 ## Import Strategies
@@ -105,10 +104,6 @@ import { useFilter, useDebouncedFilter } from '@mcabreradev/filter/react';
 
 // Vue
 import { useFilter } from '@mcabreradev/filter/vue';
-// Bundle: ~3 KB (gzipped) - 70% reduction
-
-// Svelte
-import { filterStore } from '@mcabreradev/filter/svelte';
 // Bundle: ~3 KB (gzipped) - 70% reduction
 ```
 

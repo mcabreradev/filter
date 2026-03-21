@@ -5,5 +5,7 @@ pnpm exec lint-staged
 
 echo "📝 Type checking..."
 pnpm run typecheck
+pnpm run test
+pnpm run test:docs
 
 echo "✅ Pre-commit checks passed!"

@@ -173,21 +173,6 @@ export type {
 } from './integrations/vue/index.js';
 
 export {
-  useFilter as useFilterSvelte,
-  useFilteredState as useFilteredStateSvelte,
-  useDebouncedFilter as useDebouncedFilterSvelte,
-  usePaginatedFilter as usePaginatedFilterSvelte,
-} from './integrations/svelte/index.js';
-
-export type {
-  UseFilterResult as UseFilterResultSvelte,
-  UseFilteredStateResult as UseFilteredStateResultSvelte,
-  UseDebouncedFilterOptions as UseDebouncedFilterOptionsSvelte,
-  UseDebouncedFilterResult as UseDebouncedFilterResultSvelte,
-  UsePaginatedFilterResult as UsePaginatedFilterResultSvelte,
-} from './integrations/svelte/index.js';
-
-export {
   useFilter,
   useFilteredState,
   useDebouncedFilter,

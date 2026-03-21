@@ -858,19 +858,6 @@ function useFilter<T>(
 }
 ```
 
-### Svelte Stores
-
-```typescript
-function useFilter<T>(
-  data: T[] | Readable<T[]>,
-  expression: Expression<T> | Readable<Expression<T>>,
-  options?: FilterOptions
-): {
-  filtered: Readable<T[]>;
-  isFiltering: Readable<boolean>;
-}
-```
-
 ## Validation
 
 ### validateExpression
