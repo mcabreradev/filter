@@ -289,7 +289,7 @@ jobs:
       - name: 📝 Commit version bump
         run: |
           git add package.json
-          git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+          git commit -m "chore: bump version to $NEW_VERSION"
 
       - name: 🔄 Push version bump
         run: git push origin main

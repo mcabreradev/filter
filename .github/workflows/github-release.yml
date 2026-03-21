@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to release, for example v5.9.1
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -23,7 +29,9 @@ jobs:
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea  # v7
         with:
           script: |
-            const tag = context.ref.replace('refs/tags/', '');
+            const tag = context.eventName === 'workflow_dispatch'
+              ? '${{ inputs.tag }}'
+              : context.ref.replace('refs/tags/', '');
             const version = tag.replace(/^v/, '');
 
             const installBlock = [
