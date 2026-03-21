@@ -181,16 +181,100 @@ jobs:
 
           echo "type=$VERSION_TYPE" >> $GITHUB_OUTPUT
 
+      - name: 🧮 Resolve next release version
+        id: release_version
+        env:
+          VERSION_TYPE: ${{ steps.version.outputs.type }}
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          LATEST_TAG=$(git tag --list 'v*' --sort=-version:refname | head -n 1 | sed 's/^v//')
+          LATEST_NPM=$(npm view "$PACKAGE_NAME" version 2>/dev/null || true)
+
+          BASE_VERSION=$(node -e '
+          const versions = process.argv.slice(1).filter(Boolean);
+
+          function parse(version) {
+            const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(version || "");
+            return match ? match.slice(1).map(Number) : null;
+          }
+
+          function compare(left, right) {
+            for (let index = 0; index < 3; index += 1) {
+              if (left[index] !== right[index]) {
+                return left[index] - right[index];
+              }
+            }
+
+            return 0;
+          }
+
+          let highestVersion = "0.0.0";
+          let highestParsed = [0, 0, 0];
+
+          for (const version of versions) {
+            const parsed = parse(version);
+
+            if (!parsed) {
+              continue;
+            }
+
+            if (compare(parsed, highestParsed) > 0) {
+              highestVersion = version;
+              highestParsed = parsed;
+            }
+          }
+
+          process.stdout.write(highestVersion);
+          ' "$PACKAGE_VERSION" "$LATEST_TAG" "$LATEST_NPM")
+
+          NEXT_VERSION=$(node -e '
+          const [baseVersion, bumpType] = process.argv.slice(1);
+          const [major, minor, patch] = baseVersion.split(".").map(Number);
+
+          if ([major, minor, patch].some(Number.isNaN)) {
+            throw new Error(`Invalid base version: ${baseVersion}`);
+          }
+
+          const nextVersion =
+            bumpType === "major"
+              ? [major + 1, 0, 0]
+              : bumpType === "minor"
+                ? [major, minor + 1, 0]
+                : [major, minor, patch + 1];
+
+          process.stdout.write(nextVersion.join("."));
+          ' "$BASE_VERSION" "$VERSION_TYPE")
+
+          echo "📦 package.json version: $PACKAGE_VERSION"
+          echo "🏷️ latest git tag: ${LATEST_TAG:-none}"
+          echo "📡 latest npm version: ${LATEST_NPM:-none}"
+          echo "🔢 base version selected: $BASE_VERSION"
+          echo "🚀 next version selected: $NEXT_VERSION"
+
+          echo "base=$BASE_VERSION" >> "$GITHUB_OUTPUT"
+          echo "next=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+
       - name: 📈 Bump version (local only)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          pnpm version ${{ steps.version.outputs.type }} --no-git-tag-version
+          npm version "${{ steps.release_version.outputs.next }}" --no-git-tag-version
 
       - name: 🔎 Check version doesn't already exist on npm
         run: |
           NEW_VERSION=$(node -p "require('./package.json').version")
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+          if git rev-parse "v$NEW_VERSION" >/dev/null 2>&1; then
+            echo "❌ Tag v$NEW_VERSION already exists locally."
+            exit 1
+          fi
+
+          if git ls-remote --exit-code --tags origin "refs/tags/v$NEW_VERSION" >/dev/null 2>&1; then
+            echo "❌ Tag v$NEW_VERSION already exists on origin."
+            exit 1
+          fi
+
           if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null | grep -q "$NEW_VERSION"; then
             echo "❌ Version $NEW_VERSION already exists on npm. Aborting to avoid duplicate publish."
             exit 1
