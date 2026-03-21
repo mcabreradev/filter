@@ -3,12 +3,14 @@ name: Code Check
 on:
   push:
     branches:
+      - main
       - dev
       - stage
       - master
       - prod
   pull_request:
     branches:
+      - main
       - dev
       - stage
       - master
@@ -59,6 +61,9 @@ jobs:
 
       - name: 📊 Generate coverage report
         run: pnpm run test:coverage
+
+      - name: 🏗️ Build
+        run: pnpm run build
 
       - name: Re Check All
         run: pnpm run check

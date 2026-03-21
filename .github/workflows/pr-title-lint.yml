@@ -1,0 +1,54 @@
+name: PR Title Lint
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches:
+      - main
+
+permissions:
+  pull-requests: read
+
+jobs:
+  lint-pr-title:
+    name: 📋 Validate PR Title
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✅ Validate conventional commit format
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          PATTERN='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|major|breaking|minor|feature|bugfix|hotfix|patch)(\([^)]+\))?!?:[[:space:]].+'
+
+          echo "📋 PR Title: $PR_TITLE"
+          echo ""
+
+          if echo "$PR_TITLE" | grep -qE "$PATTERN"; then
+            echo "✅ PR title follows conventional commits format."
+          else
+            echo "❌ PR title does not follow conventional commits format."
+            echo ""
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "  Expected format:"
+            echo ""
+            echo "    <type>(<scope>): <description>"
+            echo "    <type>!: <description>         (breaking change)"
+            echo "    <type>(<scope>)!: <description> (breaking change)"
+            echo ""
+            echo "  Valid types:"
+            echo "    MINOR bump  → feat, feature, minor"
+            echo "    PATCH bump  → fix, bugfix, hotfix, chore, docs,"
+            echo "                  style, refactor, perf, test, build,"
+            echo "                  ci, revert"
+            echo "    MAJOR bump  → major, breaking, or any type with !"
+            echo ""
+            echo "  Examples:"
+            echo "    feat: add \$in operator support"
+            echo "    fix(core): resolve cache invalidation bug"
+            echo "    feat!: remove deprecated find() API"
+            echo "    chore(deps): update dependencies"
+            echo "    refactor(predicate): simplify factory pattern"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            exit 1
+          fi

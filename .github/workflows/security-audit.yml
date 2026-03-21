@@ -1,0 +1,101 @@
+name: Security Audit
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'  # every Monday at 08:00 UTC
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    name: 🔒 Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320  # v4
+        with:
+          version: 10
+
+      - name: ⎔ Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f  # v6
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: 📥 Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: 🔍 Audit (high & critical)
+        id: audit_high
+        run: pnpm audit --audit-level=high
+        continue-on-error: true
+
+      - name: 📋 Audit report (all severities)
+        id: audit_full
+        run: |
+          echo "## Security Audit Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          pnpm audit --json 2>/dev/null | node -e "
+            const chunks = [];
+            process.stdin.on('data', c => chunks.push(c));
+            process.stdin.on('end', () => {
+              try {
+                const data = JSON.parse(chunks.join(''));
+                const meta = data.metadata || {};
+                const vulns = meta.vulnerabilities || {};
+                const total = (vulns.critical||0) + (vulns.high||0) + (vulns.moderate||0) + (vulns.low||0) + (vulns.info||0);
+                console.log('| Severity | Count |');
+                console.log('|---|---|');
+                if (vulns.critical) console.log('| 🔴 Critical | ' + vulns.critical + ' |');
+                if (vulns.high)     console.log('| 🔴 High     | ' + vulns.high + ' |');
+                if (vulns.moderate) console.log('| 🟡 Moderate | ' + vulns.moderate + ' |');
+                if (vulns.low)      console.log('| 🟢 Low      | ' + vulns.low + ' |');
+                if (total === 0)    console.log('| ✅ None     | 0 |');
+              } catch(e) {
+                console.log('Could not parse audit output.');
+              }
+            });
+          " >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
+
+      - name: 🚨 Open issue if high/critical vulnerabilities found (scheduled only)
+        if: steps.audit_high.outcome == 'failure' && github.event_name == 'schedule'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea  # v7
+        with:
+          script: |
+            const title = '🔒 Security vulnerabilities found in dependencies';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'security',
+            });
+            const existing = issues.find(i => i.title === title);
+            if (!existing) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body: `The weekly security audit found high or critical vulnerabilities in dependencies.\n\nRun \`pnpm audit\` locally to see details and \`pnpm audit --fix\` or update \`pnpm.overrides\` to resolve them.\n\nWorkflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`,
+                labels: ['security'],
+              });
+            }
+
+      - name: ❌ Fail if high/critical vulnerabilities found
+        if: steps.audit_high.outcome == 'failure'
+        run: |
+          echo "High or critical vulnerabilities were found. See audit report above."
+          exit 1
