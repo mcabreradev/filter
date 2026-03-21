@@ -51,11 +51,17 @@ jobs:
           echo "Build files:"
           ls -la build/
 
+      - name: 🔒 Security audit
+        run: pnpm audit --audit-level=high
+
       - name: 🔍 Running Check/Test Suite
         run: pnpm run check
 
       - name: 🔍 Determine version bump from PR title or labels
         id: version
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_LABELS: ${{ toJSON(github.event.pull_request.labels) }}
         run: |
           VERSION_TYPE=""
           DETECTION_METHOD=""
@@ -63,7 +69,6 @@ jobs:
           # ============================================
           # PASO 1: Intentar detectar por título del PR
           # ============================================
-          PR_TITLE="${{ github.event.pull_request.title }}"
           echo "📋 PR Title: $PR_TITLE"
 
           # Extraer el tipo (soporta: "type: msg", "type(scope): msg", "type!: msg")
@@ -100,8 +105,7 @@ jobs:
           if [ -z "$VERSION_TYPE" ]; then
             echo "⚠️ No valid conventional commit format in title, checking labels..."
 
-            LABELS='${{ toJSON(github.event.pull_request.labels) }}'
-            LABEL_NAMES=$(echo "$LABELS" | jq -r '.[].name' 2>/dev/null || echo "")
+            LABEL_NAMES=$(echo "$PR_LABELS" | jq -r '.[].name' 2>/dev/null || echo "")
 
             if [ -n "$LABEL_NAMES" ]; then
               echo "🏷️ Labels found: $LABEL_NAMES"
@@ -144,26 +148,36 @@ jobs:
 
           echo "type=$VERSION_TYPE" >> $GITHUB_OUTPUT
 
-      - name: 📈 Bump version
+      - name: 📈 Bump version (local only)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           pnpm version ${{ steps.version.outputs.type }} --no-git-tag-version
+
+      - name: 🔎 Check version doesn't already exist on npm
+        run: |
           NEW_VERSION=$(node -p "require('./package.json').version")
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          if npm view "@mcabreradev/filter@$NEW_VERSION" version 2>/dev/null | grep -q "$NEW_VERSION"; then
+            echo "❌ Version $NEW_VERSION already exists on npm. Aborting to avoid duplicate publish."
+            exit 1
+          fi
+          echo "✅ Version $NEW_VERSION is available for publishing."
+
+      - name: 🚀 Publish to npm
+        run: pnpm publish --no-git-checks --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: 📝 Commit version bump
+        run: |
           git add package.json
           git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
 
       - name: 🔄 Push version bump
-        run: |
-          git push origin main
+        run: git push origin main
 
-      - name: 📝 Create Git Tag
+      - name: 🏷️ Create Git Tag
         run: |
-          git tag -a "v${{ env.NEW_VERSION }}" -m "Release v${{ env.NEW_VERSION }}"
-          git push origin "v${{ env.NEW_VERSION }}"
-
-      - name: 🚀 Publish to npm
-        run: pnpm publish --no-git-checks --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          git tag -a "v$NEW_VERSION" -m "Release v$NEW_VERSION"
+          git push origin "v$NEW_VERSION"

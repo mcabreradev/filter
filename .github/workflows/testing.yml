@@ -3,12 +3,14 @@ name: Code Check
 on:
   push:
     branches:
+      - main
       - dev
       - stage
       - master
       - prod
   pull_request:
     branches:
+      - main
       - dev
       - stage
       - master

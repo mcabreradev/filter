@@ -1,0 +1,54 @@
+name: GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: 🚀 Create GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
+        with:
+          fetch-depth: 0
+
+      - name: 🏷️ Create GitHub Release
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea  # v7
+        with:
+          script: |
+            const tag = context.ref.replace('refs/tags/', '');
+            const version = tag.replace(/^v/, '');
+
+            const installBlock = [
+              '## Install',
+              '```sh',
+              `npm install @mcabreradev/filter@${version}`,
+              `pnpm add @mcabreradev/filter@${version}`,
+              `yarn add @mcabreradev/filter@${version}`,
+              '```',
+              '',
+              `📦 [View on npm](https://www.npmjs.com/package/@mcabreradev/filter/v/${version})`,
+              '',
+              '---',
+              '',
+            ].join('\n');
+
+            const { data: release } = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tag,
+              name: `Release ${tag}`,
+              body: installBlock,
+              generate_release_notes: true,
+              draft: false,
+              prerelease: false,
+            });
+
+            console.log(`✅ Release created: ${release.html_url}`);
