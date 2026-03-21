@@ -18,23 +18,56 @@ jobs:
 
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd  # v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: main
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f  # v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: 20
+          scope: '@mcabreradev'
           registry-url: 'https://registry.npmjs.org'
 
       - name: 📥 Setup pnpm
-        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320  # v4
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4
         with:
           version: 10
           run_install: false
+
+      - name: 🔐 Validate npm authentication
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "❌ NPM_TOKEN secret is not configured."
+            exit 1
+          fi
+
+          export NPM_CONFIG_USERCONFIG="$RUNNER_TEMP/.npmrc"
+          printf '%s\n' \
+            "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" \
+            "@mcabreradev:registry=https://registry.npmjs.org/" \
+            "always-auth=true" > "$NPM_CONFIG_USERCONFIG"
+
+          echo "NPM_CONFIG_USERCONFIG=$NPM_CONFIG_USERCONFIG" >> "$GITHUB_ENV"
+          echo "PACKAGE_NAME=@mcabreradev/filter" >> "$GITHUB_ENV"
+          echo "✅ npm registry: $(npm config get registry)"
+          echo "✅ scope registry: $(npm config get @mcabreradev:registry)"
+          echo "✅ authenticated as: $(npm whoami)"
+
+      - name: 🔎 Verify package scope access
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if npm view "$PACKAGE_NAME" name >/dev/null 2>&1; then
+            echo "✅ Package $PACKAGE_NAME already exists in npm registry."
+          else
+            echo "⚠️ Package $PACKAGE_NAME is not visible from the registry yet."
+            echo "If this is the first publish for the scope, verify the npm account or org permissions for @mcabreradev."
+          fi
 
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
@@ -158,14 +191,14 @@ jobs:
         run: |
           NEW_VERSION=$(node -p "require('./package.json').version")
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-          if npm view "@mcabreradev/filter@$NEW_VERSION" version 2>/dev/null | grep -q "$NEW_VERSION"; then
+          if npm view "$PACKAGE_NAME@$NEW_VERSION" version 2>/dev/null | grep -q "$NEW_VERSION"; then
             echo "❌ Version $NEW_VERSION already exists on npm. Aborting to avoid duplicate publish."
             exit 1
           fi
           echo "✅ Version $NEW_VERSION is available for publishing."
 
       - name: 🚀 Publish to npm
-        run: pnpm publish --no-git-checks --access public --provenance
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
