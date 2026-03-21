@@ -20,15 +20,6 @@ describe('Modular Imports', () => {
       expect(vueModule.usePaginatedFilter).toBeDefined();
     });
 
-    it('should import Svelte stores from svelte path', async () => {
-      const svelteModule = await import('../src/integrations/svelte/index.js');
-
-      expect(svelteModule.useFilter).toBeDefined();
-      expect(svelteModule.useFilteredState).toBeDefined();
-      expect(svelteModule.useDebouncedFilter).toBeDefined();
-      expect(svelteModule.usePaginatedFilter).toBeDefined();
-    });
-
     it('should import React hooks from main index', async () => {
       const mainModule = await import('../src/index.js');
 
@@ -43,7 +34,6 @@ describe('Modular Imports', () => {
 
       expect(mainModule.useFilterReact).toBeDefined();
       expect(mainModule.useFilterVue).toBeDefined();
-      expect(mainModule.useFilterSvelte).toBeDefined();
     });
   });
 

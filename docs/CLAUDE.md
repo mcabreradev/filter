@@ -37,7 +37,7 @@ docs/
 │   └── theme/          # Custom theme (index.ts, style.css, components/)
 ├── guide/              # Getting started, core features, configuration
 ├── operators/          # Operator reference pages
-├── frameworks/         # React, Vue, Svelte, Angular, SolidJS, Preact, Next.js, Nuxt, etc.
+├── frameworks/         # React, Vue, Angular, SolidJS, Preact, Next.js, Nuxt, etc.
 ├── api/                # API reference (reference.md, operators.md, types.md)
 ├── advanced/           # Architecture, type system, performance, migration
 ├── implementation/     # Deep-dive implementation details

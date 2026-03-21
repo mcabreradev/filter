@@ -4,7 +4,7 @@ Deep dive into the architecture of @mcabreradev/filter.
 
 ## Overview
 
-@mcabreradev/filter is built with a modular architecture that separates concerns and enables tree-shaking for optimal bundle sizes. The library has evolved through multiple versions, with v5.8.2 featuring MongoDB-style operators, framework integrations (React, Vue, Svelte, Angular, SolidJS, Preact), lazy evaluation, memoization, geospatial operators, datetime operators, and visual debugging.
+@mcabreradev/filter is built with a modular architecture that separates concerns and enables tree-shaking for optimal bundle sizes. The library has evolved through multiple versions, with v5.8.2 featuring MongoDB-style operators, framework integrations (React, Vue, Angular, SolidJS, Preact), lazy evaluation, memoization, geospatial operators, datetime operators, and visual debugging.
 
 ## Data Flow
 
@@ -84,7 +84,6 @@ src/
 └── integrations/                    # Framework integrations (v5.3.0+)
     ├── react/                       # useFilter, useFilteredState, useDebouncedFilter, usePaginatedFilter
     ├── vue/                         # Same 4 composables with Composition API
-    ├── svelte/                      # Same 4 patterns with Svelte stores
     ├── angular/                     # Angular integration (v5.7.0+)
     ├── preact/                      # Preact hooks (v5.7.0+)
     ├── solidjs/                     # SolidJS integration (v5.7.0+)
@@ -863,54 +862,6 @@ export function useFilter<T>(
 }
 ```
 
-### Svelte Integration
-
-Uses Svelte stores for reactive state management.
-
-```typescript
-export function useFilter<T>(
-  data: Writable<T[]> | Readable<T[]>,
-  expression: MaybeStore<Expression<T>>,
-  options?: FilterOptions,
-): UseFilterResult<T> {
-  const expressionStore = toStore(expression);
-
-  const filtered = derived(
-    [data, expressionStore],
-    ([$data, $expression]) => {
-      if (!$data || $data.length === 0) {
-        return [];
-      }
-
-      try {
-        return filter($data, $expression, options);
-      } catch {
-        return [];
-      }
-    }
-  );
-
-  const isFiltering = derived(
-    [data, filtered],
-    ([$data, $filtered]) => {
-      return $filtered.length !== $data.length;
-    }
-  );
-
-  return {
-    filtered,
-    isFiltering,
-  };
-}
-
-function toStore<T>(value: MaybeStore<T>): Readable<T> {
-  if (isStore(value)) {
-    return value;
-  }
-  return readable(value);
-}
-```
-
 ## Type System
 
 ### Generic Type Constraints with Operator Autocomplete
@@ -1347,7 +1298,6 @@ export { filterDebug } from './debug/debug-filter';
 // Framework integrations in separate entry points
 export { useFilter, useDebouncedFilter } from './integrations/react';
 export { useFilter as useFilterVue } from './integrations/vue';
-export { useFilter as useFilterSvelte } from './integrations/svelte';
 ```
 
 ### Code Splitting Configuration
@@ -1368,10 +1318,6 @@ export { useFilter as useFilterSvelte } from './integrations/svelte';
       "import": "./dist/integrations/vue/index.js",
       "types": "./dist/integrations/vue/index.d.ts"
     },
-    "./svelte": {
-      "import": "./dist/integrations/svelte/index.js",
-      "types": "./dist/integrations/svelte/index.d.ts"
-    }
   }
 }
 ```
@@ -1518,7 +1464,7 @@ describe('performance', () => {
 - **v5.1.0**: Lazy evaluation with generators
 - **v5.2.0**: Multi-layer memoization, logical operators
 - **v5.3.0**: Initial framework integrations
-- **v5.4.0**: Full React, Vue, Svelte support
+- **v5.4.0**: Full React, Vue support
 - **v5.5.0**: Array OR syntax, visual debugging, playground
 - **v5.6.0**: Geospatial operators, datetime operators
 - **v5.7.0**: Angular, SolidJS, Preact integrations

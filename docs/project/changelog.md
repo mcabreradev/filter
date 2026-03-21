@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added exhaustive examples for all 40+ operators (comparison, array, string, logical, geospatial, datetime)
   - Documented all Performance Monitoring, Type Helpers, and DateTime utilities
   - Completed configuration guide with orderBy and limit options
-  - Updated framework integration guides for React, Vue, Svelte, Angular, SolidJS, and Preact
+  - Updated framework integration guides for React, Vue, Angular, SolidJS, and Preact
 - **Performance Documentation**: Added detailed performance considerations section
   - Operator performance rankings (fastest to slowest)
   - Best practices for optimization
@@ -117,7 +117,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Applied after filtering and sorting for predictable results
   - Works with all expression types and operators
   - Compatible with caching and debug modes
-  - Full framework integration support (React, Vue, Svelte, Angular, SolidJS, Preact)
+  - Full framework integration support (React, Vue, Angular, SolidJS, Preact)
 - **Complete Documentation**:
   - Angular integration guide with services, pipes, and SSR examples
   - SolidJS integration guide with signal patterns and SolidStart SSR
@@ -294,7 +294,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated React integration documentation
 - Updated Vue integration documentation
-- Updated Svelte integration documentation
 - Improved API reference clarity
 
 ### Fixed
@@ -308,7 +307,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pagination support for all framework integrations
 - `usePaginatedFilter` hook for React
 - `usePaginatedFilter` composable for Vue
-- `usePaginatedFilter` store for Svelte
 - Pagination state management (`currentPage`, `totalPages`, `pageSize`)
 - Pagination actions (`nextPage`, `previousPage`, `goToPage`, `setPageSize`)
 
@@ -326,21 +324,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Debounced filtering support
 - `useDebouncedFilter` hook for React
 - `useDebouncedFilter` composable for Vue
-- `useDebouncedFilter` store for Svelte
 - `isPending` state for debounced operations
 - Configurable delay option
 
 ### Changed
 - Optimized re-render behavior in React
 - Improved reactivity in Vue
-- Enhanced store updates in Svelte
-
 ## [5.1.0] - 2024-07-05
 
 ### Added
 - `useFilteredState` hook for React
 - `useFilteredState` composable for Vue
-- `useFilteredState` store for Svelte
 - State management for data and expressions
 - Setter functions for dynamic updates
 
@@ -446,7 +440,7 @@ See [Migration Guide v5.4](/guide/migration-v2) for detailed migration instructi
 ### Added
 - Modern operator-based API
 - TypeScript support
-- Framework integrations (React, Vue, Svelte)
+- Framework integrations (React, Vue)
 - Comprehensive test suite
 
 ### Changed

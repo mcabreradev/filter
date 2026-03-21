@@ -1,6 +1,6 @@
 ---
 title: Framework Integrations
-description: Complete guide for React, Vue, Svelte, Angular, SolidJS, and Preact integrations
+description: Complete guide for React, Vue, Angular, SolidJS, and Preact integrations
 ---
 
 # Framework Integrations
@@ -8,7 +8,7 @@ description: Complete guide for React, Vue, Svelte, Angular, SolidJS, and Preact
 > **Version**: 5.8.2
 > **Status**: Stable
 
-Complete guide for using `@mcabreradev/filter` with 6 major frameworks.
+Complete guide for using `@mcabreradev/filter` with 5 major frameworks.
 
 ---
 
@@ -18,7 +18,6 @@ Complete guide for using `@mcabreradev/filter` with 6 major frameworks.
 - [Installation](#installation)
 - [React Integration](#react-integration)
 - [Vue Integration](#vue-integration)
-- [Svelte Integration](#svelte-integration)
 - [Angular Integration](#angular-integration) ⭐ NEW
 - [SolidJS Integration](#solidjs-integration) ⭐ NEW
 - [Preact Integration](#preact-integration) ⭐ NEW
@@ -37,7 +36,6 @@ The framework integrations provide idiomatic hooks, composables, services, and s
 
 - ⚛️ **[React](/frameworks/react)** - Hooks with automatic re-rendering
 - 🟢 **[Vue](/frameworks/vue)** - Composition API with reactivity
-- 🔴 **[Svelte](/frameworks/svelte)** - Store-based reactive filtering
 - 🅰️ **[Angular](/frameworks/angular)** - Services and Pipes with Signals ⭐ NEW
 - 🔷 **[SolidJS](/frameworks/solidjs)** - Signal-based reactive hooks ⭐ NEW
 - ⚡ **[Preact](/frameworks/preact)** - Lightweight hooks API ⭐ NEW
@@ -46,13 +44,12 @@ The framework integrations provide idiomatic hooks, composables, services, and s
 
 - **React Hooks**: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
 - **Vue Composables**: Composition API-first with full reactivity
-- **Svelte Stores**: Reactive stores with derived state
 - **Angular Services**: `FilterService`, `DebouncedFilterService`, `PaginatedFilterService`, `FilterPipe`
 - **SolidJS Hooks**: `useFilter`, `useDebouncedFilter`, `usePaginatedFilter`
 - **Preact Hooks**: `useFilter`, `useFilteredState`, `useDebouncedFilter`, `usePaginatedFilter`
 - **Shared Utilities**: Debouncing, pagination, and performance optimizations
 - **TypeScript**: Full type safety with generics
-- **SSR Compatible**: Works with Next.js, Nuxt, SvelteKit, Angular Universal, and SolidStart
+- **SSR Compatible**: Works with Next.js, Nuxt, Angular Universal, and SolidStart
 
 ---
 
@@ -64,7 +61,6 @@ npm install @mcabreradev/filter
 # Install peer dependencies for your framework
 npm install react          # For React
 npm install vue            # For Vue
-npm install svelte         # For Svelte
 npm install @angular/core  # For Angular 17+
 npm install solid-js       # For SolidJS
 npm install preact         # For Preact
@@ -479,185 +475,6 @@ function usePaginatedFilter<T>(
   pagination: ComputedRef<PaginationResult<T>>;
   currentPage: Ref<number>;
   pageSize: Ref<number>;
-  nextPage: () => void;
-  previousPage: () => void;
-  goToPage: (page: number) => void;
-  setPageSize: (size: number) => void;
-}
-```
-
----
-
-## Svelte Integration
-
-### useFilter
-
-Svelte store-based filtering.
-
-```svelte
-<script lang="ts">
-import { writable } from 'svelte/store';
-import { useFilter } from '@mcabreradev/filter';
-
-interface User {
-  id: number;
-  name: string;
-  active: boolean;
-}
-
-const users = writable<User[]>([
-  { id: 1, name: 'Alice', active: true },
-  { id: 2, name: 'Bob', active: false },
-]);
-
-const expression = writable({ active: true });
-const { filtered, isFiltering } = useFilter(users, expression);
-</script>
-
-<div>
-  <p>Showing {$filtered.length} active users</p>
-  {#each $filtered as user (user.id)}
-    <div>{user.name}</div>
-  {/each}
-</div>
-```
-
-**API**:
-```typescript
-function useFilter<T>(
-  data: T[] | Readable<T[]>,
-  expression: Expression<T> | Readable<Expression<T>>,
-  options?: FilterOptions
-): {
-  filtered: Readable<T[]>;
-  isFiltering: Readable<boolean>;
-}
-```
-
-### useFilteredState
-
-Stateful filtering with Svelte stores.
-
-```svelte
-<script lang="ts">
-import { useFilteredState } from '@mcabreradev/filter';
-
-const { data, expression, filtered, isFiltering } = useFilteredState<User>(
-  initialUsers,
-  { active: true }
-);
-
-const addUser = (user: User) => {
-  $data = [...$data, user];
-};
-
-const filterByName = (name: string) => {
-  $expression = { name: { $contains: name } };
-};
-</script>
-```
-
-**API**:
-```typescript
-function useFilteredState<T>(
-  initialData?: T[],
-  initialExpression?: Expression<T>,
-  options?: FilterOptions
-): {
-  data: Writable<T[]>;
-  expression: Writable<Expression<T>>;
-  filtered: Readable<T[]>;
-  isFiltering: Readable<boolean>;
-}
-```
-
-### useDebouncedFilter
-
-Debounced filtering for Svelte.
-
-```svelte
-<script lang="ts">
-import { writable } from 'svelte/store';
-import { useDebouncedFilter } from '@mcabreradev/filter';
-
-const searchTerm = writable('');
-const { filtered, isFiltering, isPending } = useDebouncedFilter(
-  users,
-  searchTerm,
-  { delay: 300 }
-);
-</script>
-
-<div>
-  <input bind:value={$searchTerm} placeholder="Search..." />
-  {#if $isPending}
-    <span>Searching...</span>
-  {/if}
-  <UserList users={$filtered} />
-</div>
-```
-
-**API**:
-```typescript
-function useDebouncedFilter<T>(
-  data: T[] | Readable<T[]>,
-  expression: Expression<T> | Readable<Expression<T>>,
-  options?: UseDebouncedFilterOptions
-): {
-  filtered: Readable<T[]>;
-  isFiltering: Readable<boolean>;
-  isPending: Readable<boolean>;
-}
-```
-
-### usePaginatedFilter
-
-Pagination support for Svelte.
-
-```svelte
-<script lang="ts">
-import { usePaginatedFilter } from '@mcabreradev/filter';
-
-const {
-  pagination,
-  filtered,
-  isFiltering,
-  currentPage,
-  pageSize,
-  nextPage,
-  previousPage,
-  goToPage,
-  setPageSize,
-} = usePaginatedFilter(users, { active: true }, 10);
-</script>
-
-<div>
-  <UserList users={$pagination.data} />
-  <div>
-    <button on:click={previousPage} disabled={!$pagination.hasPreviousPage}>
-      Previous
-    </button>
-    <span>Page {$pagination.currentPage} of {$pagination.totalPages}</span>
-    <button on:click={nextPage} disabled={!$pagination.hasNextPage}>
-      Next
-    </button>
-  </div>
-</div>
-```
-
-**API**:
-```typescript
-function usePaginatedFilter<T>(
-  data: T[] | Readable<T[]>,
-  expression: Expression<T> | Readable<Expression<T>>,
-  initialPageSize?: number,
-  options?: FilterOptions
-): {
-  filtered: Readable<T[]>;
-  isFiltering: Readable<boolean>;
-  pagination: Readable<PaginationResult<T>>;
-  currentPage: Writable<number>;
-  pageSize: Writable<number>;
   nextPage: () => void;
   previousPage: () => void;
   goToPage: (page: number) => void;
@@ -1352,22 +1169,6 @@ const expression = computed(() => ({
 useFilter(data, expression, { enableCache: true });
 ```
 
-### Svelte
-
-1. **Use derived stores**: For computed values
-```typescript
-const filtered = derived([data, expression], ([$data, $expr]) => {
-  return filter($data, $expr);
-});
-```
-
-2. **Avoid store subscriptions in loops**: Subscribe once at the top level
-
-3. **Enable caching**: For large datasets
-```typescript
-useFilter(data, expression, { enableCache: true });
-```
-
 ### Angular
 
 1. **Use Signals**: Leverage Angular's fine-grained reactivity
@@ -1429,10 +1230,6 @@ const { filtered } = useFilter<User>(users, { active: true });
 // Vue
 const { filtered } = useFilter<User>(users, expression);
 // filtered is ComputedRef<User[]>
-
-// Svelte
-const { filtered } = useFilter<User>(users, expression);
-// filtered is Readable<User[]>
 
 // Angular
 filterService.setData<User>(users);
@@ -1563,58 +1360,6 @@ const {
 </template>
 ```
 
-### Real-World Svelte Example
-
-```svelte
-<script lang="ts">
-import { writable, derived } from 'svelte/store';
-import { usePaginatedFilter } from '@mcabreradev/filter';
-
-const searchTerm = writable('');
-const category = writable('all');
-
-const expression = derived([searchTerm, category], ([$searchTerm, $category]) => {
-  const filters: any = {};
-
-  if ($searchTerm) {
-    filters.name = { $contains: $searchTerm };
-  }
-
-  if ($category !== 'all') {
-    filters.category = $category;
-  }
-
-  return filters;
-});
-
-const {
-  pagination,
-  nextPage,
-  previousPage,
-} = usePaginatedFilter(products, expression, 20, { enableCache: true });
-</script>
-
-<div>
-  <input bind:value={$searchTerm} placeholder="Search products..." />
-  <select bind:value={$category}>
-    <option value="all">All Categories</option>
-    <option value="electronics">Electronics</option>
-    <option value="books">Books</option>
-  </select>
-
-  <ProductGrid products={$pagination.data} />
-
-  <Pagination
-    currentPage={$pagination.currentPage}
-    totalPages={$pagination.totalPages}
-    hasNext={$pagination.hasNextPage}
-    hasPrevious={$pagination.hasPreviousPage}
-    on:next={nextPage}
-    on:previous={previousPage}
-  />
-</div>
-```
-
 ---
 
 ## SSR Compatibility
@@ -1623,7 +1368,6 @@ All framework integrations are compatible with server-side rendering:
 
 - **Next.js**: Works with App Router and Pages Router
 - **Nuxt**: Compatible with Nuxt 3
-- **SvelteKit**: Full SSR support
 - **Angular Universal**: Server-side rendering support
 - **SolidStart**: SSR and streaming support
 
@@ -1648,19 +1392,6 @@ export default function UserList({ initialUsers }: { initialUsers: User[] }) {
 import { useFilter } from '@mcabreradev/filter/vue';
 
 const { data: users } = await useFetch('/api/users');
-const { filtered } = useFilter(users, { active: true });
-</script>
-```
-
-### SvelteKit Example
-
-```svelte
-<script lang="ts">
-import { useFilter } from '@mcabreradev/filter/svelte';
-import { writable } from 'svelte/store';
-
-export let data;
-const users = writable(data.users);
 const { filtered } = useFilter(users, { active: true });
 </script>
 ```
@@ -1718,9 +1449,6 @@ const { filtered } = useFilter(users, { active: true });
 // After (Vue)
 const { filtered } = useFilter(users, { active: true });
 
-// After (Svelte)
-const { filtered } = useFilter(users, { active: true });
-
 // After (Angular)
 this.filterService.setExpression({ active: true });
 
@@ -1762,9 +1490,6 @@ const filtered = users.filter(user => user.active);
 const { filtered } = useFilter(users, { active: true });
 
 // After (Vue)
-const { filtered } = useFilter(users, { active: true });
-
-// After (Svelte)
 const { filtered } = useFilter(users, { active: true });
 ```
 

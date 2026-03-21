@@ -290,7 +290,7 @@ Now that you know the basics, explore more advanced features:
 - [Lazy Evaluation](/guide/lazy-evaluation) - Efficient processing for large datasets
 - [Memoization](/guide/memoization) - 530x performance boost with caching
 - [Configuration](/guide/configuration) - All options including orderBy and limit
-- [Framework Integration](/frameworks/) - React, Vue, Svelte, Angular, SolidJS, Preact support ⭐
+- [Framework Integration](/frameworks/) - React, Vue, Angular, SolidJS, Preact support ⭐
 
 ## Interactive Playground
 

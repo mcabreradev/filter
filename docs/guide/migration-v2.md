@@ -6,10 +6,10 @@ This guide helps you migrate to the latest version of `@mcabreradev/filter` and 
 
 ### What's New in v5.4.0
 
-- **Stable Framework Integrations**: Production-ready React, Vue, and Svelte support
+- **Stable Framework Integrations**: Production-ready React, Vue, Angular, SolidJS, and Preact support
 - **Improved Type Safety**: Better TypeScript inference for framework hooks
 - **Bug Fixes**: Stability improvements across all integrations
-- **SSR Compatibility**: Full support for Next.js, Nuxt, and SvelteKit
+- **SSR Compatibility**: Full support for Next.js and Nuxt
 
 ---
 
@@ -328,51 +328,6 @@ interface UsePaginatedFilterResult<T> {
 
 ---
 
-### Svelte Stores
-
-Svelte integration uses stores for reactive state management.
-
-#### useFilter
-
-```typescript
-import { writable } from 'svelte/store';
-import { useFilter } from '@mcabreradev/filter';
-
-const users = writable<User[]>([...]);
-const searchTerm = writable('');
-
-const { filtered, isFiltering } = useFilter(users, {
-  name: { $contains: searchTerm }
-});
-```
-
-**Usage in Svelte component:**
-```svelte
-<script>
-  import { writable } from 'svelte/store';
-  import { useFilter } from '@mcabreradev/filter';
-
-  const users = writable([...]);
-  const { filtered, isFiltering } = useFilter(users, { active: true });
-</script>
-
-{#if $isFiltering}
-  <p>Filtering active...</p>
-{/if}
-
-{#each $filtered as user (user.id)}
-  <div>{user.name}</div>
-{/each}
-```
-
-**Return Type:**
-```typescript
-interface UseFilterResult<T> {
-  filtered: Readable<T[]>;
-  isFiltering: Readable<boolean>;
-}
-```
-
 #### useFilteredState
 
 ```typescript
@@ -503,26 +458,6 @@ const { filtered, isPending } = useDebouncedFilter(
 </template>
 ```
 
-**Svelte:**
-```svelte
-<script>
-  import { writable } from 'svelte/store';
-  import { useDebouncedFilter } from '@mcabreradev/filter';
-
-  const search = writable('');
-  const { filtered, isPending } = useDebouncedFilter(
-    data,
-    { name: { $contains: search } },
-    { delay: 300 }
-  );
-</script>
-
-<input bind:value={$search} placeholder="Search..." />
-{#if $isPending}
-  <span>Typing...</span>
-{/if}
-```
-
 ### Pagination with Filtering
 
 All frameworks follow the same pattern - filter first, then paginate the results.
@@ -575,9 +510,6 @@ const { filtered } = useFilter<Product>(products, { price: { $gte: 100 } });
 const { filtered } = useFilter<Product>(products, { price: { $gte: 100 } });
 // filtered is ComputedRef<Product[]>
 
-// Svelte
-const { filtered } = useFilter<Product>(products, { price: { $gte: 100 } });
-// filtered is Readable<Product[]>
 ```
 
 ---
@@ -588,8 +520,6 @@ All framework integrations are SSR-compatible:
 
 - **Next.js**: Works in both App Router and Pages Router
 - **Nuxt**: Compatible with Nuxt 3
-- **SvelteKit**: Full SSR support
-
 Example with Next.js App Router:
 
 ```typescript
@@ -661,17 +591,6 @@ const searchTerm = ref(''); // Not const searchTerm = '';
 const { filtered } = useFilter(data, { name: { $contains: searchTerm } });
 ```
 
-### Svelte: "Store is not reactive"
-
-**Problem:** Not using `$` prefix to access store values.
-
-**Solution:** Use `$` prefix:
-```svelte
-{#each $filtered as item}  <!-- Not {#each filtered as item} -->
-  <div>{item.name}</div>
-{/each}
-```
-
 ---
 
 ## Support
@@ -688,5 +607,4 @@ Check out the framework-specific guides:
 
 - [React Integration Guide](../frameworks/react.md)
 - [Vue Integration Guide](../frameworks/vue.md)
-- [Svelte Integration Guide](../frameworks/svelte.md)
 

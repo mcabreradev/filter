@@ -66,12 +66,6 @@
     "gzip": true
   },
   {
-    "name": "Svelte integration",
-    "path": "build/integrations/svelte/index.js",
-    "limit": "10 KB",
-    "gzip": true
-  },
-  {
     "name": "Angular integration",
     "path": "build/integrations/angular/index.js",
     "limit": "11 KB",

@@ -1055,6 +1055,5 @@ export default function Loading() {
 ## Next Steps
 
 - [Vue Integration](./vue.md)
-- [Svelte Integration](./svelte.md)
 - [API Reference](../api/reference.md)
 - [Examples](../examples/)

@@ -1197,7 +1197,6 @@ const { filtered } = useFilter(products, { inStock: true });
 ## Next Steps
 
 - [React Integration](./react.md)
-- [Svelte Integration](./svelte.md)
 - [Nuxt Integration](./nuxt.md)
 - [API Reference](../api/reference.md)
 

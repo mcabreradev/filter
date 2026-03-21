@@ -699,61 +699,6 @@ const { filtered: searchResults, isPending } = useDebouncedFilter(
 );
 ```
 
-### Svelte Types
-
-```typescript
-import type { Readable, Writable } from 'svelte/store';
-
-type MaybeStore<T> = T | Readable<T> | Writable<T>;
-
-interface UseFilterResult<T> {
-  filtered: Readable<T[]>;
-  isFiltering: Readable<boolean>;
-}
-
-interface UseFilteredStateResult<T> {
-  data: Writable<T[]>;
-  expression: Writable<Expression<T>>;
-  filtered: Readable<T[]>;
-  isFiltering: Readable<boolean>;
-}
-
-interface UseDebouncedFilterResult<T> {
-  filtered: Readable<T[]>;
-  isFiltering: Readable<boolean>;
-  isPending: Readable<boolean>;
-}
-
-interface UsePaginatedFilterResult<T> {
-  filtered: Readable<T[]>;
-  isFiltering: Readable<boolean>;
-  currentPage: Writable<number>;
-  totalPages: Readable<number>;
-  pageSize: Writable<number>;
-  totalItems: Readable<number>;
-  hasNextPage: Readable<boolean>;
-  hasPreviousPage: Readable<boolean>;
-  nextPage: () => void;
-  previousPage: () => void;
-  goToPage: (page: number) => void;
-  setPageSize: (size: number) => void;
-}
-```
-
-**Example**:
-```typescript
-import { writable } from 'svelte/store';
-import { useFilter } from '@mcabreradev/filter/svelte';
-
-const users = writable([...]);
-const searchTerm = writable('');
-
-const { filtered, isFiltering } = useFilter(
-  users,
-  { name: { $contains: searchTerm } }
-);
-```
-
 ## Type Guards
 
 ### Expression Type Guard

@@ -62,7 +62,7 @@ features:
 
   - icon: 🎨
     title: Framework Integration
-    details: React Hooks, Vue Composables, and Svelte Stores. First-class framework support.
+    details: React Hooks, Vue Composables, Angular Services, SolidJS, and Preact. First-class framework support.
 
   - icon: 🧪
     title: Battle-Tested
@@ -175,17 +175,6 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
 </script>
 ```
 
-### Svelte
-
-```svelte
-<script>
-import { writable } from 'svelte/store';
-import { useFilter } from '@mcabreradev/filter';
-
-const searchTerm = writable('');
-const { filtered, isFiltering } = useFilter(users, searchTerm);
-</script>
-```
 
 ## Why Choose This Library?
 
@@ -242,7 +231,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
     <div class="feature-icon">🎨</div>
     <div class="feature-title">Framework Agnostic</div>
     <div class="feature-description">
-      Works everywhere: React, Vue, Svelte, Angular, Node.js, Deno, Bun. First-class hooks and composables included.
+      Works everywhere: React, Vue, Angular, Node.js, Deno, Bun. First-class hooks and composables included.
     </div>
   </div>
 

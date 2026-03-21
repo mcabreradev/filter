@@ -118,7 +118,6 @@ export default defineConfig({
             { text: 'Overview', link: '/frameworks/' },
             { text: 'React', link: '/frameworks/react' },
             { text: 'Vue', link: '/frameworks/vue' },
-            { text: 'Svelte', link: '/frameworks/svelte' },
             { text: 'Angular', link: '/frameworks/angular' },
             { text: 'SolidJS', link: '/frameworks/solidjs' },
             { text: 'Preact', link: '/frameworks/preact' },
@@ -130,7 +129,6 @@ export default defineConfig({
           items: [
             { text: 'Next.js', link: '/frameworks/nextjs' },
             { text: 'Nuxt', link: '/frameworks/nuxt' },
-            { text: 'SvelteKit', link: '/frameworks/sveltekit' },
           ],
         },
         {

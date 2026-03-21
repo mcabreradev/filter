@@ -100,39 +100,6 @@ import type { ComputedRef } from 'vue';
 const { filtered }: { filtered: ComputedRef<User[]> } = useFilter(data, expression);
 ```
 
-## Svelte Integration Issues
-
-### Store Not Updating
-
-**Problem**: `$filtered` doesn't update in template.
-
-**Cause**: Not subscribing to store properly.
-
-**Solution**:
-```svelte
-<script lang="ts">
-  import { useFilter } from '@mcabreradev/filter/svelte';
-
-  const { filtered } = useFilter(data, expression);
-</script>
-
-{#each $filtered as item}
-  <div>{item.name}</div>
-{/each}
-```
-
-### TypeScript Errors with Stores
-
-**Problem**: Type errors when using Svelte stores.
-
-**Solution**:
-```typescript
-import type { Readable } from 'svelte/store';
-import type { User } from './types';
-
-const { filtered }: { filtered: Readable<User[]> } = useFilter(data, expression);
-```
-
 ## Performance Issues
 
 ### Slow Filtering on Large Datasets

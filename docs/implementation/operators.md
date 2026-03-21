@@ -682,7 +682,7 @@ All success criteria from the original plan and subsequent releases were met:
 - ✅ 100% test coverage for operators module
 - ✅ Intelligent TypeScript autocomplete
 - ✅ Visual debugging capabilities
-- ✅ Framework integrations (React, Vue, Svelte)
+- ✅ Framework integrations (React, Vue)
 - ✅ Zero dependencies (except Zod for validation)
 
 ## Build & Release
@@ -770,7 +770,7 @@ The MongoDB-style operators feature has been successfully evolved from v5.0.0 to
   - Multi-layer memoization (530x-1520x faster)
   - Lazy evaluation (500x faster for early exit)
   - Visual debugging with expression trees
-  - Framework integrations (React, Vue, Svelte)
+  - Framework integrations (React, Vue)
   - Array OR syntax
   - Geospatial distance calculations
   - Datetime utilities

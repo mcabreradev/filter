@@ -83,9 +83,6 @@ import { useFilter } from '@mcabreradev/filter/react';
 // Vue composables
 import { useFilter } from '@mcabreradev/filter/vue';
 
-// Svelte stores
-import { useFilter } from '@mcabreradev/filter/svelte';
-
 // Lazy evaluation
 import { filterLazy } from '@mcabreradev/filter/lazy';
 
@@ -147,19 +144,6 @@ import { useFilter } from '@mcabreradev/filter';
 import { useFilter } from '@mcabreradev/filter/vue';
 
 const searchTerm = ref('');
-const { filtered, isFiltering } = useFilter(users, searchTerm);
-```
-
-### Svelte
-
-```typescript
-// Classic import
-import { useFilter } from '@mcabreradev/filter';
-
-// Modular import (recommended)
-import { useFilter } from '@mcabreradev/filter/svelte';
-
-const searchTerm = writable('');
 const { filtered, isFiltering } = useFilter(users, searchTerm);
 ```
 
@@ -238,7 +222,7 @@ console.log(adults); // [{ name: 'Alice', age: 30 }, { name: 'Bob', age: 25 }]
 - [Quick Start](/guide/quick-start) - Get started in minutes
 - [Modular Imports](/guide/modular-imports) - Optimize bundle size
 - [Basic Filtering](/guide/basic-filtering) - Learn core concepts
-- [Framework Integrations](/frameworks/) - React, Vue, Svelte guides
+- [Framework Integrations](/frameworks/) - React, Vue guides
 
 ## Troubleshooting
 

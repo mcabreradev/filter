@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**@mcabreradev/filter** is a TypeScript-first filtering engine for arrays with SQL-like wildcards, MongoDB-style operators, lazy evaluation, memoization, and framework integrations (React, Vue, Svelte, Angular, Preact, SolidJS). It provides 18+ operators for advanced filtering with zero dependencies (except Zod for validation).
+**@mcabreradev/filter** is a TypeScript-first filtering engine for arrays with SQL-like wildcards, MongoDB-style operators, lazy evaluation, memoization, and framework integrations (React, Vue, Angular, Preact, SolidJS). It provides 18+ operators for advanced filtering with zero dependencies (except Zod for validation).
 
 ## Development Commands
 
@@ -132,7 +132,6 @@ pnpm run docs:api
 - **`src/integrations/`** - Framework integrations (all optional peer deps)
   - `react/` - React hooks (useFilter, useDebouncedFilter, useFilteredState, usePaginatedFilter)
   - `vue/` - Vue composables with reactivity
-  - `svelte/` - Svelte stores
   - `angular/` - Angular integration
   - `preact/` - Preact hooks
   - `solidjs/` - SolidJS integration
@@ -213,7 +212,6 @@ To add new operators:
 Framework-specific code lives in `src/integrations/<framework>/`:
 - React uses hooks pattern
 - Vue uses Composition API
-- Svelte uses stores
 - Angular, Preact, SolidJS also supported
 - Shared utilities in `src/integrations/shared/`
 - All optional peer dependencies

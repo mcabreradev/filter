@@ -242,46 +242,6 @@ watch(filtered, (newFiltered) => {
 });
 ```
 
-## Svelte Best Practices
-
-### Use Stores
-
-Leverage Svelte stores for reactivity:
-
-```typescript
-import { writable } from 'svelte/store';
-import { useFilter } from '@mcabreradev/filter/svelte';
-
-const users = writable<User[]>([]);
-const expression = writable({ status: { $eq: 'active' } });
-
-const { filtered } = useFilter(users, expression);
-```
-
-### Reactive Statements
-
-Use reactive statements for derived values:
-
-```svelte
-<script lang="ts">
-  import { useFilter } from '@mcabreradev/filter/svelte';
-
-  let searchTerm = '';
-
-  $: expression = {
-    name: { $regex: new RegExp(searchTerm, 'i') }
-  };
-
-  const { filtered } = useFilter(users, expression);
-</script>
-
-<input bind:value={searchTerm} />
-
-{#each $filtered as user}
-  <div>{user.name}</div>
-{/each}
-```
-
 ## Performance Optimization
 
 ### Enable Memoization for Large Datasets

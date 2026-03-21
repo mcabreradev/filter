@@ -6,7 +6,7 @@ Common questions about @mcabreradev/filter.
 
 ### What is @mcabreradev/filter?
 
-A TypeScript-first filtering library that provides powerful, type-safe filtering capabilities for JavaScript arrays with framework integrations for React, Vue, and Svelte.
+A TypeScript-first filtering library that provides powerful, type-safe filtering capabilities for JavaScript arrays with framework integrations for React and Vue.
 
 ### Why use this instead of Array.filter()?
 
@@ -36,7 +36,6 @@ Yes. The library is:
 - Core: ~3KB gzipped
 - React integration: ~1KB additional
 - Vue integration: ~1KB additional
-- Svelte integration: ~1KB additional
 
 Tree-shaking ensures you only bundle what you use.
 
@@ -65,13 +64,10 @@ No, but it's recommended. The library works with JavaScript but provides excelle
 
 **Vue**: `vue ^3.0.0`
 
-**Svelte**: `svelte ^3.0.0 || ^4.0.0`
-
-### Can I use it with older React/Vue/Svelte versions?
+### Can I use it with older React/Vue versions?
 
 - React 16/17: May work but not officially supported
 - Vue 2: Not supported (use Vue 3)
-- Svelte 3: Supported
 
 ## Usage Questions
 
@@ -527,18 +523,6 @@ Yes, use in components:
 import { useFilter } from '@mcabreradev/filter/vue';
 
 const { filtered } = useFilter(data, expression);
-</script>
-```
-
-### Does it work with SvelteKit?
-
-Yes, use in components:
-
-```svelte
-<script lang="ts">
-  import { useFilter } from '@mcabreradev/filter/svelte';
-
-  const { filtered } = useFilter(data, expression);
 </script>
 ```
 
