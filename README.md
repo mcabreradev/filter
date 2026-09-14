@@ -82,7 +82,9 @@
 - [Browser Support](#browser-support)
 - [Migration from v3.x](#migration-from-v3x)
 - [Changelog](#changelog)
-  - [v5.9.2 (Current)](#v592-current)
+  - [v5.10.1 (Current)](#v5101-current)
+  - [v5.10.0](#v5100)
+  - [v5.9.2](#v592)
   - [v5.9.1](#v591)
   - [v5.8.2](#v582)
   - [v5.8.0](#v580)
@@ -310,8 +312,8 @@ filter(restaurants, {
 filter(places, {
   location: {
     $geoBox: {
-      topLeft: { lat: 53.0, lng: 13.0 },
-      bottomRight: { lat: 52.0, lng: 14.0 },
+      southwest: { lat: 52.0, lng: 13.0 },
+      northeast: { lat: 54.0, lng: 14.0 },
     },
   },
 });
@@ -546,7 +548,7 @@ function UserList() {
 | **Geospatial** | `$near` `$geoBox` `$geoPolygon`                                                                         |
 | **Datetime**   | `$recent` `$upcoming` `$dayOfWeek` `$timeOfDay` `$age` `$isWeekday` `$isWeekend` `$isBefore` `$isAfter` |
 
-> 18+ operators covering every filtering scenario you'll encounter.
+> 30+ operators covering every filtering scenario you'll encounter.
 
 ### TypeScript Support
 
@@ -657,7 +659,7 @@ filter(users, { city: 'Berlin', age: { $gte: 18 } }, { debug: true });
 // └─ ✓ age >= 18               [3 matches]
 ```
 
-📖 **[Debug Guide →](./docs/guide/debugging.md)**
+📖 **[Debug Guide →](./docs/guide/debug.md)**
 
 ---
 
@@ -665,14 +667,14 @@ filter(users, { city: 'Berlin', age: { $gte: 18 } }, { debug: true });
 
 ### 📖 Complete Guides
 
-- **[Getting Started](./docs/guide/getting-started.md)** — Installation and first steps
+- **[Getting Started](./docs/guide/quick-start.md)** — Installation and first steps
 - **[All Operators](./docs/guide/operators.md)** — Complete operator reference
 - **[Geospatial Queries](./docs/guide/geospatial-operators.md)** — Location-based filtering
 - **[Datetime Operators](./docs/guide/datetime-operators.md)** — Temporal filtering
-- **[Framework Integrations](./docs/frameworks/index.md)** — React, Vue, Svelte, Angular, SolidJS, Preact
+- **[Framework Integrations](./docs/frameworks/index.md)** — React, Vue, Angular, SolidJS, Preact
 - **[Lazy Evaluation](./docs/guide/lazy-evaluation.md)** — Efficient large dataset processing
 - **[Memoization & Caching](./docs/guide/memoization.md)** — Performance optimization
-- **[Visual Debugging](./docs/guide/debugging.md)** — Debug mode and tree visualization
+- **[Visual Debugging](./docs/guide/debug.md)** — Debug mode and tree visualization
 
 ### 🎯 Quick Links
 
@@ -750,7 +752,15 @@ filter(data, expression, { enableCache: true, limit: 50 });
 
 ## Changelog
 
-### v5.9.2 (Current)
+### v5.10.1 (Current)
+
+- 📝 **Documentation**: Updated docs site, project metadata, and release tooling.
+
+### v5.10.0
+
+- 🎨 **Release**: v5.10.0 published — includes documentation and dependency improvements.
+
+### v5.9.2
 
 - 🧹 **Refactor**: Removed Svelte integration exports, dependencies, and related docs from the package.
 - 🔧 **CI/CD**: Hardened npm publish workflow with safer version resolution and improved release handling.
