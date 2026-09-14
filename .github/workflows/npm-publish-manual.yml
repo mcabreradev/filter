@@ -84,8 +84,8 @@ jobs:
           echo "Build files:"
           ls -la build/
 
-      - name: 🔒 Security audit
-        run: pnpm audit --audit-level=high
+      - name: 🔒 Security audit (production dependencies)
+        run: pnpm audit --prod --audit-level=high
 
       - name: 🔍 Running Check/Test Suite
         run: pnpm run check

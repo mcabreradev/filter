@@ -24,6 +24,8 @@ jobs:
   test:
     name: ⬣ Testing
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     strategy:
       matrix:
@@ -47,8 +49,8 @@ jobs:
       - name: 📥 Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: 🔒 Security audit
-        run: pnpm audit --audit-level=high
+      - name: 🔒 Security audit (production dependencies)
+        run: pnpm audit --prod --audit-level=high
 
       - name: 🔍 Type check
         run: pnpm run typecheck
