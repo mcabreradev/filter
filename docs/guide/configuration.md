@@ -15,6 +15,7 @@ Available configuration options:
 - **`colorize`** - Use ANSI colors in debug output (requires debug: true)
 - **`orderBy`** - Sort filtered results by field(s) (v5.7.0+)
 - **`limit`** - Limit the number of results returned (v5.7.0+)
+- **`enablePerformanceMonitoring`** - Collect and inspect filter execution timings (v5.7.0+)
 
 ## Configuration Options
 
@@ -56,7 +57,7 @@ Controls how deep the filter traverses nested objects.
 
 **Type**: `number`
 **Default**: `3`
-**Range**: `0-10` (recommended: `1-5`)
+**Range**: `1-10` (recommended: `1-5`) — `0` is invalid
 
 ```typescript
 filter(data, expression, { maxDepth: 5 });
@@ -349,17 +350,17 @@ filter(users, { active: true }, {
 
 **Special Values:**
 - `undefined` or omitted: No limit (returns all matching results)
-- `0`: No limit (returns all matching results)
-- Negative numbers: No limit (returns all matching results)
-- Positive numbers: Returns at most N results
+- Positive integers: Returns at most N results
+- `0`, negative values, or non-integers: **rejected by validation** — throws a `ConfigurationError` (added in v5.8.2)
 
 **Examples:**
 
 ```typescript
-filter(users, { active: true }, { limit: 0 });
+// Invalid — throws ConfigurationError (limit must be a positive integer)
+// filter(users, { active: true }, { limit: 0 });
+// filter(users, { active: true }, { limit: -5 });
 
-filter(users, { active: true }, { limit: -5 });
-
+// Valid
 filter(users, { active: true });
 
 filter(users, { active: true }, { limit: 100 });
