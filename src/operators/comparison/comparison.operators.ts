@@ -1,15 +1,20 @@
 import type { ComparisonOperators } from '../../types';
 
+const sameValue = (a: unknown, b: unknown): boolean => {
+  if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
+  return a === b;
+};
+
 export const applyComparisonOperators = (
   value: unknown,
   operators: ComparisonOperators,
 ): boolean => {
   if (operators.$eq !== undefined) {
-    if (value !== operators.$eq) return false;
+    if (!sameValue(value, operators.$eq)) return false;
   }
 
   if (operators.$ne !== undefined) {
-    if (value === operators.$ne) return false;
+    if (sameValue(value, operators.$ne)) return false;
   }
 
   const numValue =
@@ -22,6 +27,7 @@ export const applyComparisonOperators = (
     operators.$lte !== undefined
   ) {
     if (numValue === null) return false;
+    if (typeof value === 'number' && Number.isNaN(value)) return false;
   }
 
   if (operators.$gt !== undefined) {

@@ -95,23 +95,31 @@ export class MemoizationManager {
     return `primitive:${String(expression)}:${config.limit}`;
   }
 
-  private hashObject(obj: unknown, config: FilterConfig, skipConfigSuffix = false): string {
+  private hashObject(
+    obj: unknown,
+    config: FilterConfig,
+    skipConfigSuffix = false,
+    stack = new WeakSet<object>(),
+  ): string {
     const parts: string[] = [];
     const record = obj as Record<string, unknown>;
+    stack.add(obj as object);
+
+    const hashValue = (value: unknown): string => this.hashValueInner(value, stack);
 
     if ('$and' in record || '$or' in record || '$not' in record) {
       if ('$and' in record) {
         const andArray = Array.isArray(record.$and) ? record.$and : [record.$and];
-        parts.push(`$and:[${andArray.map((v) => this.hashValue(v)).join(',')}]`);
+        parts.push(`$and:[${andArray.map((v) => hashValue(v)).join(',')}]`);
       }
 
       if ('$or' in record) {
         const orArray = Array.isArray(record.$or) ? record.$or : [record.$or];
-        parts.push(`$or:[${orArray.map((v) => this.hashValue(v)).join(',')}]`);
+        parts.push(`$or:[${orArray.map((v) => hashValue(v)).join(',')}]`);
       }
 
       if ('$not' in record) {
-        parts.push(`$not:${this.hashValue(record.$not)}`);
+        parts.push(`$not:${hashValue(record.$not)}`);
       }
 
       const otherKeys = Object.keys(record)
@@ -119,32 +127,16 @@ export class MemoizationManager {
         .sort();
       for (const key of otherKeys) {
         const value = record[key];
-        parts.push(`${key}:${this.hashValue(value)}`);
+        parts.push(`${key}:${hashValue(value)}`);
       }
     } else {
       const sortedKeys = Object.keys(record).sort();
       for (const key of sortedKeys) {
         const value = record[key];
-
-        if (value === null) {
-          parts.push(`${key}:null`);
-        } else if (value === undefined) {
-          parts.push(`${key}:undefined`);
-        } else if (typeof value === 'object') {
-          if (value instanceof Date) {
-            parts.push(`${key}:date:${value.getTime()}`);
-          } else if (value instanceof RegExp) {
-            parts.push(`${key}:regex:${value.source}:${value.flags}`);
-          } else if (Array.isArray(value)) {
-            parts.push(`${key}:arr:[${value.map((v) => this.hashValue(v)).join(',')}]`);
-          } else {
-            parts.push(`${key}:obj:{${this.hashObject(value, config)}}`);
-          }
-        } else {
-          parts.push(`${key}:${typeof value}:${String(value)}`);
-        }
+        parts.push(`${key}:${hashValue(value)}`);
       }
     }
+    stack.delete(obj as object);
 
     if (skipConfigSuffix) {
       return parts.join('|');
@@ -152,6 +144,26 @@ export class MemoizationManager {
 
     const orderByHash = config.orderBy ? this.hashOrderBy(config.orderBy) : '';
     return `${parts.join('|')}:cs:${config.caseSensitive}:md:${config.maxDepth}:lim:${config.limit}${orderByHash ? `:ob:${orderByHash}` : ''}`;
+  }
+
+  private hashValueInner(value: unknown, stack: WeakSet<object>): string {
+    if (value === null) return 'null';
+    if (value === undefined) return 'undefined';
+    if (value instanceof Date) return `date:${value.getTime()}`;
+    if (value instanceof RegExp) return `regex:${value.source}:${value.flags}`;
+
+    if (typeof value === 'object') {
+      if (stack.has(value as object)) return '[circular]';
+      if (Array.isArray(value)) {
+        stack.add(value as object);
+        const arr = `arr:[${value.map((v) => this.hashValueInner(v, stack)).join(',')}]`;
+        stack.delete(value as object);
+        return arr;
+      }
+      return `obj:{${this.hashObject(value, { caseSensitive: false, maxDepth: 3, enableCache: false }, true, stack)}}`;
+    }
+
+    return `${typeof value}:${String(value)}`;
   }
 
   private hashOrderBy(orderBy: unknown): string {
@@ -176,16 +188,6 @@ export class MemoizationManager {
     }
 
     return String(orderBy);
-  }
-
-  private hashValue(value: unknown): string {
-    if (value === null) return 'null';
-    if (value === undefined) return 'undefined';
-    if (value instanceof Date) return `date:${value.getTime()}`;
-    if (value instanceof RegExp) return `regex:${value.source}:${value.flags}`;
-    if (typeof value === 'object')
-      return `obj:${this.hashObject(value, { caseSensitive: false, maxDepth: 3, enableCache: false })}`;
-    return `${typeof value}:${String(value)}`;
   }
 
   getCachedPredicate<T>(key: string): ((item: T) => boolean) | undefined {

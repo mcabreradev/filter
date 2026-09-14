@@ -115,7 +115,7 @@ describe('Memoization Integration', () => {
   });
 
   describe('complex expressions', () => {
-    it.skip('caches complex nested expressions', () => {
+    it('caches complex nested expressions', () => {
       const expression = {
         $and: [{ age: { $gte: 25 } }, { tags: { $contains: 'javascript' } }],
       };
@@ -127,7 +127,7 @@ describe('Memoization Integration', () => {
       expect(result1.map((u) => u.id).sort()).toEqual([1, 4]);
     });
 
-    it.skip('handles array expressions with $contains', () => {
+    it('handles array expressions with $contains', () => {
       const expression = {
         tags: { $contains: 'javascript' },
       };
@@ -137,6 +137,23 @@ describe('Memoization Integration', () => {
 
       expect(result1).toEqual(result2);
       expect(result1.map((u) => u.id).sort()).toEqual([1, 4]);
+    });
+
+    it('matches $contains on array-valued fields through the public API', () => {
+      const data = [{ tags: ['abc', 'xyz'] }, { tags: ['qqq'] }];
+      const result = filter(data, { tags: { $contains: 'abc' } });
+      expect(result).toEqual([{ tags: ['abc', 'xyz'] }]);
+    });
+
+    it('does not cache stale results when the array length changes', () => {
+      const data = [{ v: 1 }, { v: 2 }];
+      expect(filter(data, { v: { $lt: 3 } }, { enableCache: true })).toEqual([{ v: 1 }, { v: 2 }]);
+      data.push({ v: 0 });
+      expect(filter(data, { v: { $lt: 3 } }, { enableCache: true })).toEqual([
+        { v: 1 },
+        { v: 2 },
+        { v: 0 },
+      ]);
     });
   });
 
