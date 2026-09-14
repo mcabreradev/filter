@@ -104,6 +104,20 @@ filter(orders, {
 // → Returns: orders 2 and 3
 ```
 
+Equality operators (`$eq`, `$ne`, `$in`, `$nin`, `$contains`) compare dates by
+their **time value**, so two separate `Date` objects holding the same instant are
+treated as equal:
+
+```typescript
+const target = new Date('2025-02-20');
+
+filter(orders, { date: { $eq: new Date('2025-02-20') } });
+// → Returns: order 2 (distinct Date instance, same instant)
+
+filter(orders, { date: { $in: [target] } });
+// → Returns: order 2
+```
+
 ### Range Queries
 
 Combine `$gte` and `$lte` (or `$gt` and `$lt`) to create range queries:
