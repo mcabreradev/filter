@@ -1,0 +1,25 @@
+onlyBuiltDependencies:
+  - esbuild
+
+overrides:
+  brace-expansion: ">=5.0.9"
+  devalue: ">=5.8.1"
+  esbuild: ">=0.25.0"
+  fflate: ">=0.8.3"
+  flatted: ">=3.4.2"
+  glob: ">=10.5.0"
+  js-cookie: ">=3.0.6"
+  js-yaml: ">=4.3.2"
+  linkify-it: ">=5.0.2"
+  markdown-it: ">=14.1.2"
+  mdast-util-to-hast: ">=13.2.1"
+  minimatch: ">=3.1.4"
+  nanoid: ">=5.1.16"
+  picomatch: ">=4.0.4"
+  postcss: ">=8.5.23"
+  rollup: ">=4.59.0"
+  svelte: ">=5.55.7"
+  underscore: ">=1.13.8"
+  vite@^5.0.0: ">=7.3.6"
+  ws: ">=8.21.0"
+  yaml: ">=2.8.3"
