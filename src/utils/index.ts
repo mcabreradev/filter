@@ -19,6 +19,8 @@ export {
 
 export { lowercase, equals } from './string-helpers/index.js';
 
+export { sameValue } from './equality/index.js';
+
 export { FilterCache } from './cache/index.js';
 
 export { isOperatorExpression, hasOperator } from './operator-detection/index.js';
