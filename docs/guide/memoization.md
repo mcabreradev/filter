@@ -535,6 +535,15 @@ class DataService {
 }
 ```
 
+**Note on in-place mutation:** the result cache is keyed by the array
+reference and is invalidated automatically when the array's `length`
+changes (e.g. `push`, `splice`, `pop` on the same reference). However,
+mutating the *contents* of an element in place (e.g. `data[0].active = true`)
+does **not** change the array length and can return stale results within the
+5-minute TTL — call `clearFilterCache()` after content-mutating edits, or
+pass a fresh array reference.
+
+
 ### ✅ DO: Monitor Cache Stats
 
 ```typescript

@@ -3,9 +3,9 @@ title: Operators Guide
 description: Complete reference for all 40+ MongoDB-style operators in @mcabreradev/filter
 ---
 
-# Operators Guide (v5.8.2)
+# Operators Guide (v5.10.1)
 
-This comprehensive guide covers all MongoDB-style operators available in `@mcabreradev/filter` v5.8.2.
+This comprehensive guide covers all MongoDB-style operators available in `@mcabreradev/filter` v5.10.1.
 
 ## Table of Contents
 
@@ -102,6 +102,20 @@ filter(orders, {
   }
 });
 // → Returns: orders 2 and 3
+```
+
+Equality operators (`$eq`, `$ne`, `$in`, `$nin`, `$contains`) compare dates by
+their **time value**, so two separate `Date` objects holding the same instant are
+treated as equal:
+
+```typescript
+const target = new Date('2025-02-20');
+
+filter(orders, { date: { $eq: new Date('2025-02-20') } });
+// → Returns: order 2 (distinct Date instance, same instant)
+
+filter(orders, { date: { $in: [target] } });
+// → Returns: order 2
 ```
 
 ### Range Queries
