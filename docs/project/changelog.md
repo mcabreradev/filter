@@ -5,7 +5,7 @@ All notable changes to @mcabreradev/filter are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [5.10.3] - 2026-09-18
 
 ### Fixed
 
@@ -15,9 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **No more stale cache** after in-place array edits — invalidated on length change.
 - **Circular references handled gracefully** — no more `RangeError: Maximum call stack`.
 
+### Tooling
+
+- Re-homed dependency overrides to `pnpm-workspace.yaml` and unblocked the npm publish / CI security gate.
+
 ### Docs
 
 - New end-to-end **E-Commerce Dashboard** example: combine price ranges, array `$contains`, regex search, date filtering, React pagination and cache invalidation in one realistic catalog dashboard.
+- Coherence fixes across the guides, changelog and README.
 
 ## [5.10.1] - 2026-03-21
 

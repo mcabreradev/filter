@@ -3,9 +3,9 @@ title: Operators Guide
 description: Complete reference for all 40+ MongoDB-style operators in @mcabreradev/filter
 ---
 
-# Operators Guide (v5.10.1)
+# Operators Guide (v5.10.3)
 
-This comprehensive guide covers all MongoDB-style operators available in `@mcabreradev/filter` v5.10.1.
+This comprehensive guide covers all MongoDB-style operators available in `@mcabreradev/filter` v5.10.3.
 
 ## Table of Contents
 
