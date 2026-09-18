@@ -1,9 +1,5 @@
 import type { ArrayOperators } from '../../types';
-
-const sameValue = (a: unknown, b: unknown): boolean => {
-  if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
-  return a === b;
-};
+import { sameValue } from '../../utils';
 
 export const applyArrayOperators = (value: unknown, operators: ArrayOperators): boolean => {
   if (operators.$in !== undefined) {
