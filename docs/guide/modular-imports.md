@@ -29,7 +29,7 @@ Import only what you need for optimal bundle size:
 ```typescript
 import { filter } from '@mcabreradev/filter/core';
 import { useFilter } from '@mcabreradev/filter/react';
-import { evaluateGt } from '@mcabreradev/filter/operators/comparison';
+import { applyComparisonOperators } from '@mcabreradev/filter/operators/comparison';
 ```
 
 **Bundle size:** ~3-5 KB (gzipped) - **50-70% smaller!**
@@ -243,7 +243,7 @@ All modular imports have full TypeScript support:
 ```typescript
 import type { UseFilterResult } from '@mcabreradev/filter/react';
 import type { GeoPoint } from '@mcabreradev/filter/operators/geospatial';
-import type { FilterOptions } from '@mcabreradev/filter/core';
+import type { FilterOptions } from '@mcabreradev/filter';
 ```
 
 ## Bundle Size Comparison
@@ -266,13 +266,13 @@ The package is configured with granular exports in `package.json`:
     "./core": "./build/core/index.js",
     "./react": "./build/integrations/react/index.js",
     "./vue": "./build/integrations/vue/index.js",
-    "./operators/comparison": "./build/operators/comparison.js",
-    "./operators/array": "./build/operators/array.js",
-    "./operators/string": "./build/operators/string.js",
-    "./operators/logical": "./build/operators/logical.js",
-    "./operators/geospatial": "./build/operators/geospatial.js",
-    "./operators/datetime": "./build/operators/datetime.js",
-    "./lazy": "./build/core/lazy.js",
+    "./operators/comparison": "./build/operators/comparison/index.js",
+    "./operators/array": "./build/operators/array/index.js",
+    "./operators/string": "./build/operators/string/index.js",
+    "./operators/logical": "./build/operators/logical/index.js",
+    "./operators/geospatial": "./build/operators/geospatial/index.js",
+    "./operators/datetime": "./build/operators/datetime/index.js",
+    "./lazy": "./build/core/lazy/index.js",
     "./debug": "./build/debug/index.js",
     "./config": "./build/config/index.js",
     "./validation": "./build/validation/index.js"

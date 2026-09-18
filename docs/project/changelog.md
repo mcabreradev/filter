@@ -5,6 +5,28 @@ All notable changes to @mcabreradev/filter are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **Array `$contains`** now matches array-valued fields through the public API (previously always returned an empty result).
+- **NaN no longer passes range operators** — excluded from `$gt`/`$gte`/`$lt`/`$lte`.
+- **Dates compare by time value**, not object identity, in `$eq`/`$ne`/`$in`/`$nin`/`$contains`.
+- **No more stale cache** after in-place array edits — invalidated on length change.
+- **Circular references handled gracefully** — no more `RangeError: Maximum call stack`.
+
+## [5.10.1] - 2026-03-21
+
+### Documentation
+
+- Updated the VitePress documentation site and project metadata.
+
+## [5.10.0] - 2026-03-21
+
+### Removed
+
+- Removed Svelte integration from package exports and dependencies (`feat: remove svelt from package`).
+
 ## [5.9.2] - 2026-03-21
 
 ### Changed
@@ -23,6 +45,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Stabilized release automation to avoid tag/version collisions during patch publishing.
 - Hardened npm publishing workflow and release orchestration.
+
+## [5.9.0] - 2026-03-21
+
+### Added
+
+- Major refactor of the code structure for improved readability and maintainability.
+- Enhanced filtering and validation features and improved type safety.
+- Crypto hash fallback in Vitest config for deterministic test runs.
+
+### Fixed
+
+- Corrected section titles and updated the changelog for clarity.
+- Updated size limits for React and Angular integrations to 11 KB.
+
+## [5.8.5] - 2026-03-21
+
+### Fixed
+
+- Patch release resolving earlier workflow and versioning issues.
+
+## [5.8.4] - 2026-03-21
+
+### Fixed
+
+- Patch release with workflow and publishing fixes.
+
+## [5.8.3] - 2025-11-26
+
+### Bug Fixes
+
+- **Cache**: Fixed critical issue where `limit` option was ignored in cache key. Requests with different limits now correctly generate distinct cache keys.
+
+### Performance Improvements
+
+- **Memory**: Replaced unbounded `Map` caches with `LRUCache` strategy.
+  - `FilterCache`: Limited to 100 entries per source array.
+  - `RegexCache`: Limited to 500 compiled patterns.
+- **Stability**: Prevented memory leaks in long-running applications with dynamic queries.
 
 ## [5.8.2] - 2025-11-17
 
@@ -60,19 +120,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated dependencies to latest stable versions
 - Improved bundle size optimization
-
-## [5.8.3] - 2025-11-26
-
-### Bug Fixes
-
-- **Cache**: Fixed critical issue where `limit` option was ignored in cache key. Requests with different limits now correctly generate distinct cache keys.
-
-### Performance Improvements
-
-- **Memory**: Replaced unbounded `Map` caches with `LRUCache` strategy.
-  - `FilterCache`: Limited to 100 entries per source array.
-  - `RegexCache`: Limited to 500 compiled patterns.
-- **Stability**: Prevented memory leaks in long-running applications with dynamic queries.
 
 ## [5.8.0] - 2025-11-10
 
