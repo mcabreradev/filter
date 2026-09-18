@@ -54,13 +54,14 @@ const hasArrayOps = (ops: unknown, value: unknown): ops is ArrayOperators => {
   return hasIn || hasNin || hasSize || (hasContains && Array.isArray(value));
 };
 
-const hasStringOps = (ops: unknown): ops is StringOperators => {
+const hasStringOps = (ops: unknown, value: unknown): ops is StringOperators => {
+  const isArrayValue = Array.isArray(value);
   return (
     (ops as StringOperators)[OPERATORS.STARTS_WITH] !== undefined ||
     (ops as StringOperators)[OPERATORS.ENDS_WITH] !== undefined ||
     (ops as StringOperators)[OPERATORS.REGEX] !== undefined ||
     (ops as StringOperators)[OPERATORS.MATCH] !== undefined ||
-    (ops as StringOperators)[OPERATORS.CONTAINS] !== undefined
+    (!isArrayValue && (ops as StringOperators)[OPERATORS.CONTAINS] !== undefined)
   );
 };
 
@@ -129,7 +130,7 @@ export const processOperators = <T>(
     if (!applyArrayOperators(value, operators)) return false;
   }
 
-  if (hasStringOps(operators)) {
+  if (hasStringOps(operators, value)) {
     if (!applyStringOperators(value, operators, config.caseSensitive)) return false;
   }
 

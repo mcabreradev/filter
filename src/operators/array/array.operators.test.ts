@@ -59,6 +59,19 @@ describe('array operators', () => {
       expect(applyArrayOperators(['apple', 'banana'], { $contains: 'orange' })).toBe(false);
     });
 
+    it('matches distinct Date instances by time for $contains', () => {
+      const d1 = new Date('2020-01-01');
+      const d2 = new Date('2020-01-01');
+      expect(applyArrayOperators([d1], { $contains: d2 })).toBe(true);
+    });
+
+    it('matches distinct Date instances by time for $in/$nin', () => {
+      const d1 = new Date('2020-01-01');
+      const d2 = new Date('2020-01-01');
+      expect(applyArrayOperators(d1, { $in: [d2] })).toBe(true);
+      expect(applyArrayOperators(d1, { $nin: [d2] })).toBe(false);
+    });
+
     it('returns false for non-array values', () => {
       expect(applyArrayOperators('string', { $contains: 's' })).toBe(false);
       expect(applyArrayOperators(5, { $contains: 5 })).toBe(false);

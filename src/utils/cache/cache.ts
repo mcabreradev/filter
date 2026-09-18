@@ -1,23 +1,32 @@
 import { LRUCache } from '../memoization/memoization';
 
+interface ArrayCacheEntry<T> {
+  length: number;
+  lru: LRUCache<T[]>;
+}
+
 export class FilterCache<T> {
-  private cache = new WeakMap<T[], LRUCache<T[]>>();
+  private cache = new WeakMap<T[], ArrayCacheEntry<T>>();
 
   get(array: T[], key: string): T[] | undefined {
-    return this.cache.get(array)?.get(key);
+    const entry = this.cache.get(array);
+    if (!entry) return undefined;
+    if (entry.length !== array.length) return undefined;
+    return entry.lru.get(key);
   }
 
   set(array: T[], key: string, result: T[]): void {
-    if (!this.cache.has(array)) {
-      this.cache.set(array, new LRUCache<T[]>(100));
+    const existing = this.cache.get(array);
+    if (!existing || existing.length !== array.length) {
+      this.cache.set(array, { length: array.length, lru: new LRUCache<T[]>(100) });
     }
-    const arrayCache = this.cache.get(array);
-    if (arrayCache) {
-      arrayCache.set(key, result);
+    const entry = this.cache.get(array);
+    if (entry) {
+      entry.lru.set(key, result);
     }
   }
 
   clear(): void {
-    this.cache = new WeakMap<T[], LRUCache<T[]>>();
+    this.cache = new WeakMap<T[], ArrayCacheEntry<T>>();
   }
 }

@@ -138,6 +138,20 @@ describe('comparison operators', () => {
       expect(applyComparisonOperators(undefined, { $lt: 5 })).toBe(false);
     });
 
+    it('excludes NaN from range operators', () => {
+      expect(applyComparisonOperators(NaN, { $gt: 5 })).toBe(false);
+      expect(applyComparisonOperators(NaN, { $gte: 5 })).toBe(false);
+      expect(applyComparisonOperators(NaN, { $lt: 5 })).toBe(false);
+      expect(applyComparisonOperators(NaN, { $lte: 5 })).toBe(false);
+    });
+
+    it('compares distinct Date instances by their time value for $eq/$ne', () => {
+      const d1 = new Date('2020-01-01');
+      const d2 = new Date('2020-01-01');
+      expect(applyComparisonOperators(d1, { $eq: d2 })).toBe(true);
+      expect(applyComparisonOperators(d1, { $ne: d2 })).toBe(false);
+    });
+
     it('handles empty operator object', () => {
       expect(applyComparisonOperators(5, {})).toBe(true);
     });
