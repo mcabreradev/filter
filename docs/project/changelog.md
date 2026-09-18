@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **No more stale cache** after in-place array edits — invalidated on length change.
 - **Circular references handled gracefully** — no more `RangeError: Maximum call stack`.
 
+### Docs
+
+- New end-to-end **E-Commerce Dashboard** example: combine price ranges, array `$contains`, regex search, date filtering, React pagination and cache invalidation in one realistic catalog dashboard.
+
 ## [5.10.1] - 2026-03-21
 
 ### Documentation
