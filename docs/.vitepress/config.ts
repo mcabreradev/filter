@@ -209,6 +209,7 @@ export default defineConfig({
             { text: 'Advanced Patterns', link: '/examples/advanced' },
             { text: 'Real-World Cases', link: '/examples/real-world' },
             { text: 'E-Commerce', link: '/examples/ecommerce' },
+            { text: 'E-Commerce Dashboard', link: '/examples/ecommerce-dashboard' },
             { text: 'Analytics', link: '/examples/analytics' },
           ],
         },
