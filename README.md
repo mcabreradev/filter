@@ -82,7 +82,8 @@
 - [Browser Support](#browser-support)
 - [Migration from v3.x](#migration-from-v3x)
 - [Changelog](#changelog)
-  - [v5.10.1 (Current)](#v5101-current)
+  - [v5.10.3 (Current)](#v5103-current)
+  - [v5.10.1](#v5101)
   - [v5.10.0](#v5100)
   - [v5.9.2](#v592)
   - [v5.9.1](#v591)
@@ -200,7 +201,7 @@ const startsWithAl = filter(users, 'Al%');
 
 ### 📦 **Production Ready**
 
-- **1,004+ tests** ensuring bulletproof reliability
+- **973+ tests** ensuring bulletproof reliability
 - Zero runtime dependencies (only Zod for optional validation)
 - Battle-tested in production applications
 - MIT licensed
@@ -752,7 +753,13 @@ filter(data, expression, { enableCache: true, limit: 50 });
 
 ## Changelog
 
-### v5.10.1 (Current)
+### v5.10.3 (Current)
+
+- **Bug fixes**: array `$contains` now matches through the public API, NaN is excluded from range operators, dates compare by time value, the result cache no longer stays stale after in-place array edits, and circular references are handled without crashing.
+- **Tooling**: dependency overrides moved to `pnpm-workspace.yaml`, unblocking the npm publish and CI security gate.
+- **Docs**: new end-to-end E-Commerce Dashboard example plus coherence fixes across the guides and changelog.
+
+### v5.10.1
 
 - 📝 **Documentation**: Updated docs site, project metadata, and release tooling.
 

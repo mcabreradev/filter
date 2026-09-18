@@ -66,7 +66,7 @@ features:
 
   - icon: 🧪
     title: Battle-Tested
-    details: 965+ tests ensuring reliability. 100% test coverage across all features.
+    details: 973+ tests ensuring reliability. 100% test coverage across all features.
 
   - icon: 📚
     title: Comprehensive Docs
@@ -207,7 +207,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
     <div class="feature-icon">📦</div>
     <div class="feature-title">Production Ready</div>
     <div class="feature-description">
-      Battle-tested with 965+ tests. Used in production by companies worldwide. MIT licensed.
+      Battle-tested with 973+ tests. Used in production by companies worldwide. MIT licensed.
     </div>
   </div>
 
@@ -279,7 +279,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
     <div class="feature-icon">🧪</div>
     <div class="feature-title">Test Coverage</div>
     <div class="feature-description">
-      100% code coverage. 965+ unit and integration tests. Type-level tests for TypeScript guarantees.
+      100% code coverage. 973+ unit and integration tests. Type-level tests for TypeScript guarantees.
     </div>
   </div>
 
