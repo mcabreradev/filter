@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **`$contains` on array-valued fields** no longer silently returns an empty result through the public API. Previously the operator was dispatched through both the array and string paths, and the string path short-circuits non-string values, so `filter(data, { tags: { $contains: 'abc' } })` always returned `[]` even on a real match.
-- **NaN is now excluded from range operators** (`$gt`, `$gte`, `$lt`, `$lte`). Previously a `NaN` field value satisfied every range comparison because the guards only negate a comparison that is inherently `false` with `NaN`.
-- **Distinct `Date` instances are compared by time value** in `$eq`, `$ne`, `$in`, `$nin`, and `$contains`. Previously equality used strict `===`, so two different `Date` objects holding the same instant never matched (and `$in`/`$nin` with dates misbehaved).
-- **Cache stale results on in-place array edits**: the result cache is now invalidated when the source array changes length (push/splice/pop on the same reference) within the TTL.
-- **Circular references no longer crash** expression hashing / comparison with `RangeError: Maximum call stack size exceeded`; self-referencing objects are handled gracefully.
+- **Array `$contains`** now matches array-valued fields through the public API (previously always returned an empty result).
+- **NaN no longer passes range operators** — excluded from `$gt`/`$gte`/`$lt`/`$lte`.
+- **Dates compare by time value**, not object identity, in `$eq`/`$ne`/`$in`/`$nin`/`$contains`.
+- **No more stale cache** after in-place array edits — invalidated on length change.
+- **Circular references handled gracefully** — no more `RangeError: Maximum call stack`.
 
 ## [5.10.1] - 2026-03-21
 
