@@ -104,23 +104,25 @@ filter([{ t: new Date('2025-07-01T00:00:00Z') }, { t: new Date('2025-07-02T00:00
 The React binding filters and paginates in one call. `currentPage` starts at 1, and `goToPage`/`nextPage`/`previousPage` clamp to the valid range:
 
 ```typescript
-import { useState } from 'react';
 import { usePaginatedFilter } from '@mcabreradev/filter/react';
 
 const Dashboard = ({ products }: { products: Product[] }) => {
-  const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(3);
 
-  const { filtered, isFiltering, currentPage, totalItems, totalPages, nextPage, previousPage, goToPage } =
-    usePaginatedFilter<Product>(products, { inStock: { $eq: true } }, pageSize);
+  const {
+    filtered,
+    isFiltering,
+    currentPage,
+    totalItems,
+    totalPages,
+    nextPage,
+    previousPage,
+    goToPage,
+  } = usePaginatedFilter<Product>(products, { inStock: { $eq: true } }, pageSize);
 
   // totalItems is the number of matching products (all in-stock items)
   // totalPages is ceil(totalItems / pageSize)
-
-  const changePage = (target: number) => {
-    setPage(target);
-    goToPage(target); // clamps to [1, totalPages]
-  };
+  // currentPage starts at 1; goToPage clamps to [1, totalPages]
 
   return (
     <div>
@@ -130,7 +132,7 @@ const Dashboard = ({ products }: { products: Product[] }) => {
         total={totalPages}
         onNext={nextPage}
         onPrevious={previousPage}
-        onGoTo={changePage}
+        onGoTo={goToPage}
       />
       <PageSizeSelector value={pageSize} onChange={setPageSize} />
       {isFiltering && <Spinner />}
@@ -138,6 +140,9 @@ const Dashboard = ({ products }: { products: Product[] }) => {
   );
 };
 ```
+
+> The hook owns the page position and clamps every `goToPage`/`nextPage`/`previousPage` call to the valid range, so you don't keep your own `page` state — read `currentPage` and drive navigation with the returned actions. `setPageSize` resets to page 1.
+
 
 With the seed dataset, `{ inStock: { $eq: true } }` matches ids `[1, 2, 4, 5, 6, 7, 8, 10]`, so with `pageSize` of 3:
 
@@ -153,30 +158,32 @@ With the seed dataset, `{ inStock: { $eq: true } }` matches ids `[1, 2, 4, 5, 6,
 
 ## Cache Invalidation After a Data Refresh
 
-The filter cache is enabled per-call with the `enableCache` option. Since the cache is keyed on the array reference plus the expression, a refresh that replaces the dataset with a new array needs to invalidate the old entries:
+The filter cache is enabled per-call with the `enableCache` option. The result cache is keyed on the **array reference** plus the expression hash — so replacing the dataset with a brand-new array won't serve stale entries. The case that needs `clearFilterCache()` is mutating the **same** array reference in place (then re-filtering within the cache TTL), because mutation doesn't change the cache key:
 
 ```typescript
 import { filter, clearFilterCache } from '@mcabreradev/filter';
 
-// Initial catalog
+// A mutable catalog that refreshes in place, keeping the same array reference
 const catalog: Product[] = [
   { id: 1, name: 'Mechanical Keyboard', price: 129, tags: ['wireless', 'mechanical'], inStock: true, rating: 4.7, category: 'electronics', releasedAt: new Date('2025-08-12') },
   { id: 2, name: 'Noise-Cancelling Headphones', price: 249, tags: ['wireless', 'over-ear'], inStock: true, rating: 4.8, category: 'electronics', releasedAt: new Date('2025-09-30') },
   { id: 3, name: 'Desk Organizer', price: 29, tags: ['storage', 'bamboo'], inStock: true, rating: 3.9, category: 'accessories', releasedAt: new Date('2025-03-08') },
 ];
 
-const onRefresh = async () => {
-  const fresh = await fetchCatalog(); // new array reference
+// First call primes the cache with a result keyed to this `catalog` reference
+console.log(filter(catalog, { price: { $gte: 200 } }, { enableCache: true }));
+// -> [{ id: 2, name: 'Noise-Cancelling Headphones', price: 249, ... }]
 
-  // Invalidate stale cache entries before serving fresh data
-  clearFilterCache();
+// Mutate in place (same reference) and re-filter within the cache TTL
+catalog[2].price = 300; // e.g. a price update from a live refresh
 
-  const sale = filter(fresh, { price: { $gte: 200 } }, { enableCache: true });
-  console.log(sale); // -> [{ id: 2, name: 'Noise-Cancelling Headphones', price: 249, ... }]
-};
+// The cache would still return the old entry unless we invalidate it
+clearFilterCache();
+console.log(filter(catalog, { price: { $gte: 200 } }, { enableCache: true }));
+// -> [{ id: 2, ... }, { id: 3, ... }]   // fresh, includes the updated item
 ```
 
-> **Note:** `clearFilterCache()` is imported from the package root (`@mcabreradev/filter`) and clears both the result cache and the memoized predicate/regex caches. Call it whenever the source data is refreshed so the cache cannot serve stale results.
+> **Note:** `clearFilterCache()` is imported from the package root (`@mcabreradev/filter`) and clears both the result cache and the memoized predicate/regex caches. Call it after any in-place mutation of the same array reference; replacing the array with a fresh reference needs no invalidation.
 
 ## Related Resources
 

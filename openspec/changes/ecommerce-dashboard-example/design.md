@@ -47,5 +47,6 @@ Register the page in the `'/examples/'` sidebar section of `docs/.vitepress/conf
 ## Risks / Trade-offs
 
 - **Example code is not executed by tests** → the `typescript` blocks are illustrative. Mitigation: keep every snippet faithful to the documented public API and verify the page builds (`pnpm run docs:build`) and the docs test suite (`pnpm run test:docs`) stays green; deterministic snippets carry `// ->` comments.
+- **Snippets rely on behavior fixed in #88** → the `$contains`-on-array and `Date`-`$eq` snippets only produce their documented `// ->` outputs after `fix/core-filter-bugs` (commit `49e5264`) merges. Before that, `filter()` routes `$contains` through the string path (short-circuits non-strings to `[]`) and `$eq` compares dates by identity. **Merge order matters:** ship #88 before this docs page so the examples behave as written on main. This is a sequencing dependency, not a bug in the diff.
 - **Sidebar edits can drift from the page list** → Mitigation: the sidebar entry is added in the same change as the page, and `docs:build` breaks on broken internal links, catching omissions.
 - **Overlap with `docs/examples/ecommerce.md`** → Mitigation: the new page is end-to-end (one dashboard), whereas `ecommerce.md` is per-feature snippets; the page links to it as Related Resources instead of duplicating its fragments.
