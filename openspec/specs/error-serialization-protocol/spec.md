@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD ... Update Purpose after archive
+Defines the error contract across the FFI boundary: how the Rust core serializes typed errors and how the TS facade reconstructs the correct error classes, preserving `instanceof` and backward compatibility with unknown error kinds.
 
 ## Requirements
 

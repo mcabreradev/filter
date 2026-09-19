@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD ... Update Purpose after archive
+Define how the Rust core emits debug evaluation metadata as a typed JSON payload and how the TS facade formats it, so `filterDebug()` renders a debug tree without computing results in TS.
 
 ## Requirements
 

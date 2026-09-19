@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD ... Update Purpose after archive
+Specifies how the TS facade strips TS-only options, selects the native or WASM backend at runtime, and preserves the exact v5 public surface, framework integrations, and bundler requirements.
 
 ## Requirements
 

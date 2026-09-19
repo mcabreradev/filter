@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD ... Update Purpose after archive
+Specifies the Rust core engine contracts: `FilterOptions` mapping, the `filter` entry point, full operator coverage, parallel iteration, LRU caching with canonical JSON keys, and property/fuzz testing on both native and WASM targets.
 
 ## Requirements
 

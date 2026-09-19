@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD ... Update Purpose after archive
+Specifies the `packages/wasm` build/publish contract, bundle-size limit, the exposed `filter` binding, and idempotent module initialization for the WASM backend.
 
 ## Requirements
 

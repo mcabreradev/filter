@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD ... Update Purpose after archive
+Defines how the native addon (`packages/native`) compiles across platform targets, exposes a synchronous filter, and is published and installed as optional per-platform binaries with graceful WASM fallback.
 
 ## Requirements
 

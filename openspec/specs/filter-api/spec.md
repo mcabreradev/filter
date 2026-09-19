@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD ... Update Purpose after archive
+Guarantees the public `filter()` API and its lazy variants keep identical, synchronous, backward-compatible behavior on the v6 Rust backend as on v5.
 
 ## Requirements
 
