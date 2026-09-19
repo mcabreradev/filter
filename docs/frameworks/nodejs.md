@@ -1125,7 +1125,7 @@ for (const item of filterLazy(millionRecords, expression)) {
 
 ## Resources
 
-- **[Complete Wiki](../advanced/wiki.md)** - Comprehensive documentation
+- **[**Documentation](../guide/quick-start.md)**** - Comprehensive documentation
 - **[API Reference](../api/reference.md)** - Complete API documentation
 - **[Operators Guide](../guide/operators.md)** - All MongoDB-style operators
 - **[Lazy Evaluation](../guide/lazy-evaluation.md)** - Efficient processing
@@ -1139,8 +1139,8 @@ for (const item of filterLazy(millionRecords, expression)) {
 - Explore [Express Integration](./express.md)
 - Learn about [NestJS Integration](./nestjs.md)
 - Check [Deno Integration](./deno.md)
-- Read the [Complete Wiki](../advanced/wiki.md)
+- Read the [**Documentation](../guide/quick-start.md)**
 
 ---
 
-**Need help?** Open an issue on [GitHub](https://github.com/mcabreradev/filter/issues) or check our [FAQ](../advanced/wiki.md#frequently-asked-questions).
+**Need help?** Open an issue on [GitHub](https://github.com/mcabreradev/filter/issues) or check our [FAQ](../guide/faq.md).

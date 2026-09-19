@@ -378,7 +378,7 @@ Benchmarks are run automatically in CI/CD on every PR to detect performance regr
 
 ## See Also
 
-- [Performance Optimization Guide](./wiki.md#performance-optimization)
+- [Performance Optimization Guide](./performance-monitoring.md)
 - [Lazy Evaluation Guide](../guide/lazy-evaluation.md)
 - [Operators Guide](../guide/operators.md)
 

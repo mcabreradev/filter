@@ -610,7 +610,7 @@ filter(data, '!excluded');           // Not equal
 
 ## Need More Help?
 
-- 📖 [Complete Documentation](../advanced/wiki.md)
+- 📖 [**Complete Documentation**](../guide/quick-start.md)
 - 🎮 [Interactive Playground](https://mcabreradev-filter.vercel.app/playground/)
 - 💬 [GitHub Discussions](https://github.com/mcabreradev/filter/discussions)
 - 🐛 [Issue Tracker](https://github.com/mcabreradev/filter/issues)

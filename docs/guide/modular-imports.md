@@ -284,5 +284,5 @@ The package is configured with granular exports in `package.json`:
 
 - [Installation Guide](./installation.md)
 - [Bundle Size Optimization](../advanced/bundle-size.md)
-- [Framework Integrations](../frameworks/overview.md)
+- [Framework Integrations](../frameworks/index.md)
 - [API Reference](../api/reference.md)

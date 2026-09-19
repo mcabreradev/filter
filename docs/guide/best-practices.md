@@ -547,6 +547,6 @@ const { filtered } = useFilter(data ?? [], expression);
 
 - [Configuration Guide](/guide/configuration)
 - [Troubleshooting](/guide/troubleshooting)
-- [Performance Optimization](/advanced/performance)
-- [API Reference](/api/core)
+- [Performance Optimization](/advanced/performance-benchmarks)
+- [API Reference](/api/reference)
 

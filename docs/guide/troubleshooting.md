@@ -442,8 +442,8 @@ const data = rawData.map(item => ({
 
 If you're still experiencing issues:
 
-1. Check the [API Reference](/api/core)
-2. Review [Examples](/examples/basic-usage)
+1. Check the [API Reference](/api/reference)
+2. Review [Examples](/examples/basic)
 3. Search [GitHub Issues](https://github.com/mcabreradev/filter/issues)
 4. Open a [new issue](https://github.com/mcabreradev/filter/issues/new) with:
    - Library version
@@ -455,6 +455,6 @@ If you're still experiencing issues:
 
 - [Configuration Guide](/guide/configuration)
 - [Best Practices](/guide/best-practices)
-- [Performance Optimization](/advanced/performance)
+- [Performance Optimization](/advanced/performance-benchmarks)
 - [Migration Guide](/guide/migration-v2)
 

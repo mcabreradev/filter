@@ -161,4 +161,4 @@ filter(data, { active: { $eq: true } });
 
 - [Operators Overview](./index.md)
 - [Array Operators](./array.md)
-- [String Operators](./string.md)
+- [String Operators](../guide/operators.md#string-operators)

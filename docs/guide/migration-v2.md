@@ -595,7 +595,7 @@ const { filtered } = useFilter(data, { name: { $contains: searchTerm } });
 
 ## Support
 
-- **Documentation**: [Full Documentation](../advanced/complete-documentation.md)
+- **Documentation**: [Documentation](../guide/quick-start.md)
 - **GitHub Issues**: [Report bugs](https://github.com/mcabreradev/filter/issues)
 - **GitHub Discussions**: [Ask questions](https://github.com/mcabreradev/filter/discussions)
 

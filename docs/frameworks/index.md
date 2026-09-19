@@ -5,7 +5,7 @@ description: Complete guide for React, Vue, Angular, SolidJS, and Preact integra
 
 # Framework Integrations
 
-> **Version**: 5.8.2
+> **Version**: 5.10.4
 > **Status**: Stable
 
 Complete guide for using `@mcabreradev/filter` with 5 major frameworks.

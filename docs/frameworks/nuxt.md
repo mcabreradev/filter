@@ -528,6 +528,6 @@ export default defineNuxtConfig({
 
 - [Vue Integration](/frameworks/vue)
 - [Best Practices](/guide/best-practices)
-- [Examples](/examples/basic-usage)
-- [API Reference](/api/core)
+- [Examples](/examples/basic)
+- [API Reference](/api/reference)
 

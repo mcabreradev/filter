@@ -458,7 +458,7 @@ The playground runs entirely in the browser with these limitations:
 After experimenting in the playground:
 
 1. 📦 [Install the library](../guide/installation.md)
-2. 📖 [Read the Getting Started Guide](../guide/getting-started.md)
+2. 📖 [Read the Getting Started Guide](../guide/quick-start.md)
 3. 🔍 [Explore All Operators](../guide/operators.md)
 4. 🚀 [Check Real-World Examples](../examples/real-world.md)
 

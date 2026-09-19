@@ -14,23 +14,23 @@ Quick, copy-paste-ready code examples for solving real-world filtering problems.
 ## Available Recipes
 
 ### UI & Components
-- [Search & Filter UI](./search-filtering.md) - Build powerful search interfaces
-- [Table Filtering](./table-filtering.md) - Interactive data tables with filters
-- [Form Validation](./form-validation.md) - Filter-based validation logic
+- [Search & Filter UI](/recipes/#search-filtering) - Build powerful search interfaces
+- [Table Filtering](/recipes/#table-filtering) - Interactive data tables with filters
+- [Form Validation](/recipes/#form-validation) - Filter-based validation logic
 
 ### Specialized Filtering
-- [Geospatial Search](./geospatial-search.md) - Location-based filtering
-- [DateTime Filtering](./datetime-filtering.md) - Time-based queries
-- [Multi-Criteria Filtering](./multi-criteria.md) - Complex filter combinations
+- [Geospatial Search](/recipes/#geospatial-search) - Location-based filtering
+- [DateTime Filtering](/recipes/#datetime-filtering) - Time-based queries
+- [Multi-Criteria Filtering](/recipes/#multi-criteria) - Complex filter combinations
 
 ### Performance
-- [Performance Optimization](./performance.md) - Speed up filtering for large datasets
-- [Lazy Loading](./lazy-loading.md) - Efficient pagination and infinite scroll
+- [Performance Optimization](/recipes/#performance) - Speed up filtering for large datasets
+- [Lazy Loading](/recipes/#lazy-loading) - Efficient pagination and infinite scroll
 
 ### Advanced
-- [Custom Operators](./custom-operators.md) - Build your own operators
-- [Dynamic Filters](./dynamic-filters.md) - User-defined filter expressions
-- [Real-Time Filtering](./realtime.md) - Live data filtering
+- [Custom Operators](/recipes/#custom-operators) - Build your own operators
+- [Dynamic Filters](/recipes/#dynamic-filters) - User-defined filter expressions
+- [Real-Time Filtering](/recipes/#realtime) - Live data filtering
 
 ---
 
@@ -106,14 +106,14 @@ function NearbyLocations({ locations, userLocation }) {
 
 | Recipe | Use Case | Difficulty |
 |--------|----------|------------|
-| [Search Filtering](./search-filtering.md) | Search bars, autocomplete | 🟢 Easy |
-| [Table Filtering](./table-filtering.md) | Data tables, grids | 🟢 Easy |
-| [Form Validation](./form-validation.md) | Validation logic | 🟡 Medium |
-| [Geospatial Search](./geospatial-search.md) | Maps, location-based | 🟡 Medium |
-| [DateTime Filtering](./datetime-filtering.md) | Calendars, schedules | 🟡 Medium |
-| [Performance](./performance.md) | Large datasets | 🟡 Medium |
-| [Custom Operators](./custom-operators.md) | Domain-specific logic | 🔴 Advanced |
-| [Real-Time](./realtime.md) | Live updates | 🔴 Advanced |
+| [Search Filtering](/recipes/#search-filtering) | Search bars, autocomplete | 🟢 Easy |
+| [Table Filtering](/recipes/#table-filtering) | Data tables, grids | 🟢 Easy |
+| [Form Validation](/recipes/#form-validation) | Validation logic | 🟡 Medium |
+| [Geospatial Search](/recipes/#geospatial-search) | Maps, location-based | 🟡 Medium |
+| [DateTime Filtering](/recipes/#datetime-filtering) | Calendars, schedules | 🟡 Medium |
+| [Performance](/recipes/#performance) | Large datasets | 🟡 Medium |
+| [Custom Operators](/recipes/#custom-operators) | Domain-specific logic | 🔴 Advanced |
+| [Real-Time](/recipes/#realtime) | Live updates | 🔴 Advanced |
 
 ---
 

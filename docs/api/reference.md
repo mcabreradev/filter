@@ -897,7 +897,7 @@ function createFilterConfig(options?: FilterOptions): FilterConfig
 ## Next Steps
 
 - [Operators Guide](/guide/operators)
-- [TypeScript Integration](/guide/getting-started#type-safety)
-- [Framework Integration](/frameworks/overview)
+- [TypeScript Integration](/guide/quick-start#type-safety)
+- [Framework Integration](/frameworks/)
 - [Examples](/examples/basic)
 

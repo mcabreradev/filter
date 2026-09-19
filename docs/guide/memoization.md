@@ -734,7 +734,7 @@ filter(data1, { age: { $gte: 18 } }, { enableCache: true });
 
 - [Performance Benchmarks](../advanced/performance-benchmarks.md)
 - [Lazy Evaluation Guide](./lazy-evaluation.md)
-- [Complete Wiki](../advanced/wiki.md)
+- [Documentation](../guide/quick-start.md)
 
 ---
 

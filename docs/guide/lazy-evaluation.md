@@ -493,8 +493,8 @@ const hasMatch = filterExists(largeDataset, { role: 'admin' });
 ## See Also
 
 - [Performance Benchmarks](../advanced/performance-benchmarks.md)
-- [Performance Guide](../advanced/wiki.md#performance-optimization)
+- [Performance Benchmarks](../advanced/performance-benchmarks.md)
 - [Operators Reference](./operators.md)
 - [Advanced Logical Operators](./logical-operators.md)
-- [API Reference](../advanced/wiki.md#api-reference)
+- [API Reference](../api/reference.md)
 

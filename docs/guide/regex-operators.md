@@ -277,7 +277,7 @@ filter(users, {
 
 - Learn about [String Operators](/guide/operators#string-operators) for simpler patterns
 - Explore [Logical Operators](/guide/logical-operators) for complex queries
-- Read about [Performance Optimization](/advanced/performance) strategies
+- Read about [Performance Optimization](/advanced/performance-benchmarks) strategies
 
 ::: tip Best Practice
 Use regex operators for complex patterns that can't be expressed with simple string operators. For basic prefix/suffix/substring matching, prefer `$startsWith`, `$endsWith`, and `$contains`.

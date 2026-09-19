@@ -284,6 +284,6 @@ class DataService {
 
 - [Basic Examples](/examples/basic)
 - [Advanced Examples](/examples/advanced)
-- [Framework Integration](/frameworks/overview)
-- [Performance Guide](/performance)
+- [Framework Integration](/frameworks/)
+- [Performance Benchmarks](/advanced/performance-benchmarks)
 

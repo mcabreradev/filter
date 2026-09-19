@@ -11,7 +11,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /guide/getting-started
+      link: /guide/quick-start
     - theme: alt
       text: Try Playground
       link: /playground/
@@ -63,10 +63,9 @@ features:
   - icon: 🎨
     title: Framework Integration
     details: React Hooks, Vue Composables, Angular Services, SolidJS, and Preact. First-class framework support.
-
   - icon: 🧪
     title: Battle-Tested
-    details: 965+ tests ensuring reliability. 100% test coverage across all features.
+    details: 1,015+ tests ensuring reliability. 100% test coverage across all features.
 
   - icon: 📚
     title: Comprehensive Docs
@@ -207,7 +206,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
     <div class="feature-icon">📦</div>
     <div class="feature-title">Production Ready</div>
     <div class="feature-description">
-      Battle-tested with 965+ tests. Used in production by companies worldwide. MIT licensed.
+      Battle-tested with 1,015+ tests. Used in production by companies worldwide. MIT licensed.
     </div>
   </div>
 
@@ -279,7 +278,7 @@ const { filtered, isFiltering } = useFilter(users, searchTerm);
     <div class="feature-icon">🧪</div>
     <div class="feature-title">Test Coverage</div>
     <div class="feature-description">
-      100% code coverage. 965+ unit and integration tests. Type-level tests for TypeScript guarantees.
+      100% code coverage. 1,015+ unit and integration tests. Type-level tests for TypeScript guarantees.
     </div>
   </div>
 
@@ -347,7 +346,7 @@ const premiumDeals = filter(products, {
 
 ## Community & Support
 
-- 📖 [Complete Documentation](/guide/getting-started)
+- 📖 [Complete Documentation](/guide/quick-start)
 - 💬 [GitHub Discussions](https://github.com/mcabreradev/filter/discussions)
 - 🐛 [Issue Tracker](https://github.com/mcabreradev/filter/issues)
 - ⭐ [Star on GitHub](https://github.com/mcabreradev/filter)

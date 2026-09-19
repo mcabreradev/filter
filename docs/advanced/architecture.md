@@ -1480,4 +1480,4 @@ describe('performance', () => {
 - [Operators Guide](/guide/operators)
 - [Lazy Evaluation](/guide/lazy-evaluation)
 - [Memoization Guide](/guide/memoization)
-- [Framework Integrations](/frameworks/overview)
+- [Framework Integrations](/frameworks/)

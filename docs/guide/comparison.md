@@ -421,8 +421,8 @@ For simple use cases, native `Array.filter()` may be sufficient. For fuzzy searc
 
 ## Related Resources
 
-- [Getting Started](/guide/getting-started)
+- [Getting Started](/guide/quick-start)
 - [Best Practices](/guide/best-practices)
-- [Performance Optimization](/advanced/performance)
+- [Performance Optimization](/advanced/performance-benchmarks)
 - [Migration Guide](/guide/migration-v2)
 
