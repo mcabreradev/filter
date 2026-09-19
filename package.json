@@ -33,6 +33,7 @@
     "release:major": "pnpm run publish:major && pnpm run release",
     "release:minor": "pnpm run publish:minor && pnpm run release",
     "release:patch": "pnpm run publish:patch && pnpm run release",
+    "benchmark": "vitest bench",
     "doctoc": "doctoc --title='## Table of Contents' --github README.md",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
