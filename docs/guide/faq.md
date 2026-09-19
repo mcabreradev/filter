@@ -733,7 +733,7 @@ const expression = useMemo(() => ({
 ### Where can I get help?
 
 1. Check [Troubleshooting Guide](/guide/troubleshooting)
-2. Review [Examples](/examples/basic-usage)
+2. Review [Examples](/examples/basic)
 3. Search [GitHub Issues](https://github.com/mcabreradev/filter/issues)
 4. Open a [new issue](https://github.com/mcabreradev/filter/issues/new)
 
@@ -768,9 +768,9 @@ Yes! Submit a pull request with:
 
 ## Related Resources
 
-- [Getting Started](/guide/getting-started)
+- [Getting Started](/guide/quick-start)
 - [Configuration](/guide/configuration)
 - [Best Practices](/guide/best-practices)
 - [Troubleshooting](/guide/troubleshooting)
-- [API Reference](/api/core)
+- [API Reference](/api/reference)
 

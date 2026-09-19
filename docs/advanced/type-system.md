@@ -1281,7 +1281,7 @@ const expression: Expression<Event> = {
 - [Operators Guide](/guide/operators)
 - [Geospatial Operators](/guide/geospatial-operators)
 - [Datetime Operators](/guide/datetime-operators)
-- [Framework Integrations](/frameworks/overview)
+- [Framework Integrations](/frameworks/)
 - [API Reference](/api/reference)
 - [Best Practices](/guide/best-practices)
 - [TypeScript Configuration](/guide/configuration)

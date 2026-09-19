@@ -469,7 +469,7 @@ const result = filter<MyType>(data, expression);
 If you encounter issues during migration:
 
 1. Check the [README](../../README.md) for updated examples
-2. Review the [TypeScript types](./build/index.d.ts) for API reference
+2. Review the [API reference](../api/reference.md) for exported types
 3. Open an issue on [GitHub](https://github.com/mcabreradev/filter/issues)
 
 ## Rollback Plan

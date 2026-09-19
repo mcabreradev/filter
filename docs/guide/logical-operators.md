@@ -346,6 +346,6 @@ filter(data, {
 ## See Also
 
 - [Main Operators Guide](./operators.md)
-- [Performance Optimization](../advanced/wiki.md#performance-optimization)
-- [Real-World Examples](../advanced/wiki.md#real-world-examples)
+- [Performance Benchmarks](../advanced/performance-benchmarks.md)
+- [Real-World Examples](../examples/real-world.md)
 

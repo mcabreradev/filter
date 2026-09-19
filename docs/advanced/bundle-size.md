@@ -374,7 +374,7 @@ import { useFilter } from '@mcabreradev/filter/react';
 
 - [Bundle Size Benchmarks](./performance-benchmarks.md)
 - [API Reference](../api/reference.md)
-- [Framework Integrations](../frameworks/overview.md)
+- [Framework Integrations](../frameworks/index.md)
 - [Lazy Evaluation Guide](../guide/lazy-evaluation.md)
 
 ## Support

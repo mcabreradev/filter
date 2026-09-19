@@ -1,6 +1,6 @@
 ---
 title: Operators Reference
-description: Complete reference for all 40+ filter operators
+description: Complete reference for all 27 filter operators
 ---
 
 # Operators Reference
@@ -19,19 +19,19 @@ Numeric and value comparisons
 Array membership and operations
 - `$in`, `$nin`, `$contains`, `$size`
 
-### [String Operators](./string.md)
+### [String Operators](../guide/operators.md#string-operators)
 String matching and patterns
 - `$startsWith`, `$endsWith`, `$contains`, `$regex`, `$match`
 
-### [Logical Operators](./logical.md)
+### [Logical Operators](../guide/logical-operators.md)
 Complex query composition
 - `$and`, `$or`, `$not`
 
-### [Geospatial Operators](./geospatial.md)
+### [Geospatial Operators](../guide/geospatial-operators.md)
 Location-based filtering
 - `$near`, `$geoBox`, `$geoPolygon`
 
-### [Datetime Operators](./datetime.md)
+### [Datetime Operators](../guide/datetime-operators.md)
 Temporal filtering
 - `$recent`, `$upcoming`, `$dayOfWeek`, `$timeOfDay`, `$age`
 

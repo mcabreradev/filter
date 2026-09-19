@@ -640,6 +640,6 @@ const { filtered } = useDebouncedFilter(data, expression, {
 
 - [React Integration](/frameworks/react)
 - [Best Practices](/guide/best-practices)
-- [Examples](/examples/basic-usage)
-- [API Reference](/api/core)
+- [Examples](/examples/basic)
+- [API Reference](/api/reference)
 

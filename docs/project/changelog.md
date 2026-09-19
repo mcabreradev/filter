@@ -583,7 +583,7 @@ For historical changes, see [GitHub Releases](https://github.com/mcabreradev/fil
 ## Upgrade Guides
 
 - [v4 to v5 Migration](/guide/migration-v2)
-- [v3 to v4 Migration](/guide/migration-v1) (archived)
+- v3 to v4 Migration (archived, superseded — see the [v4 to v5 guide](/guide/migration-v2))
 
 ## Support Policy
 

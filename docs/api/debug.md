@@ -307,7 +307,7 @@ The debug output uses human-readable operator names:
 
 ## See Also
 
-- [Filter API](./filter.md) - Standard filtering API
+- [Filter API](./reference.md) - Standard filtering API
 - [Operators Guide](../guide/operators.md) - Available operators
 - [Examples](../examples/basic.md) - More usage examples
 

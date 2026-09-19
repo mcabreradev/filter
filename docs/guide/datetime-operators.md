@@ -1106,7 +1106,7 @@ Complete working examples are available in the `examples/` directory:
 
 ## Support
 
-- 📖 [Complete Documentation](../advanced/wiki.md)
+- 📖 [**Complete Documentation**](../guide/quick-start.md)
 - 💬 [GitHub Discussions](https://github.com/mcabreradev/filter/discussions)
 - 🐛 [Issue Tracker](https://github.com/mcabreradev/filter/issues)
 - ⭐ [Star on GitHub](https://github.com/mcabreradev/filter)

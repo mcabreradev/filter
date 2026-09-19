@@ -506,5 +506,5 @@ Operators are evaluated in the following order:
 - [Basic Filtering](/guide/basic-filtering)
 - [TypeScript Types](/api/types)
 - [Configuration](/guide/configuration)
-- [Examples](/examples/basic-usage)
+- [Examples](/examples/basic)
 

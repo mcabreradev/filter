@@ -434,4 +434,4 @@ app.post('/api/filter', (req, res) => {
 **See Also:**
 - [Performance Monitoring Guide](./performance-monitoring.md)
 - [API Reference](../api/reference.md)
-- [Troubleshooting](./wiki.md#troubleshooting)
+- [Troubleshooting](../guide/troubleshooting.md)

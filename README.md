@@ -62,7 +62,6 @@
 - [Framework Integrations](#framework-integrations)
   - [React](#react)
   - [Vue](#vue)
-  - [Svelte](#svelte)
   - [Angular](#angular)
   - [SolidJS](#solidjs)
   - [Preact](#preact)
@@ -82,8 +81,10 @@
 - [Browser Support](#browser-support)
 - [Migration from v3.x](#migration-from-v3x)
 - [Changelog](#changelog)
-  - [v5.10.1 (Current)](#v5101-current)
-  - [v5.10.0](#v5100)
+  - [v5.10.4 (Current)](#v5104-current)
+  - [v5.10.3](#v5103)
+  - [v5.10.2](#v5102)
+  - [v5.10.1](#v5101)
   - [v5.9.2](#v592)
   - [v5.9.1](#v591)
   - [v5.8.2](#v582)
@@ -200,7 +201,7 @@ const startsWithAl = filter(users, 'Al%');
 
 ### 📦 **Production Ready**
 
-- **1,004+ tests** ensuring bulletproof reliability
+- **1,015+ tests** ensuring bulletproof reliability
 - Zero runtime dependencies (only Zod for optional validation)
 - Battle-tested in production applications
 - MIT licensed
@@ -220,9 +221,9 @@ const startsWithAl = filter(users, 'Al%');
 
 ### 🎨 **Framework Agnostic**
 
-- First-class hooks: React, Vue, Svelte, Angular, SolidJS, Preact
+- First-class hooks: React, Vue, Angular, SolidJS, Preact
 - Debounced search, pagination, and reactive state out of the box
-- SSR compatible: Next.js, Nuxt, SvelteKit
+- SSR compatible: Next.js, Nuxt
 
 ### 📊 **Handles Big Data**
 
@@ -411,6 +412,8 @@ const page1 = filter<Product>(
 
 First-class hooks and composables — reactive, debounced, paginated, ready to drop in:
 
+> **Supported:** React, Vue, Angular, SolidJS, Preact. _(Svelte was removed in v5.10.0.)_
+
 ### React
 
 ```typescript
@@ -456,22 +459,6 @@ const { filtered, isFiltering } = useFilter(users, expression);
     <li v-for="user in filtered" :key="user.id">{{ user.name }}</li>
   </ul>
 </template>
-```
-
-### Svelte
-
-```svelte
-<script lang="ts">
-  import { writable } from 'svelte/store';
-  import { useFilter } from '@mcabreradev/filter/svelte';
-
-  const expression = writable({ active: true });
-  const { filtered } = useFilter(users, expression);
-</script>
-
-{#each $filtered as user}
-  <p>{user.name}</p>
-{/each}
 ```
 
 ### Angular
@@ -548,7 +535,7 @@ function UserList() {
 | **Geospatial** | `$near` `$geoBox` `$geoPolygon`                                                                         |
 | **Datetime**   | `$recent` `$upcoming` `$dayOfWeek` `$timeOfDay` `$age` `$isWeekday` `$isWeekend` `$isBefore` `$isAfter` |
 
-> 30+ operators covering every filtering scenario you'll encounter.
+> 29 operators covering every filtering scenario you'll encounter.
 
 ### TypeScript Support
 
@@ -752,13 +739,30 @@ filter(data, expression, { enableCache: true, limit: 50 });
 
 ## Changelog
 
-### v5.10.1 (Current)
+### v5.10.4 (Current)
+
+- 📦 **Release**: v5.10.4 published — adds the OpenSpec spec-driven workflow (change `rust-migration`, 7 synced capabilities) and internal build tooling. No runtime API change.
+
+### v5.10.3
+
+- 🏷️ **Versioning**: v5.10.3 published — docs, changelog and test-count alignment for the release. No runtime API change.
+
+### v5.10.2
+
+- 🐛 **Bug Fix**: Array `$contains` now matches array-valued fields through the public API (previously always returned an empty result)
+- 🐛 **Bug Fix**: NaN no longer passes range operators — excluded from `$gt`/`$gte`/`$lt`/`$lte`
+- 🐛 **Bug Fix**: Dates compare by time value, not object identity, in `$eq`/`$ne`/`$in`/`$nin`/`$contains`
+- 🐛 **Bug Fix**: No more stale cache after in-place array edits — invalidated on length change
+- 🐛 **Bug Fix**: Circular references handled gracefully — no more `RangeError: Maximum call stack`
+- 🔧 **Refactor**: Extracted a shared `sameValue` comparator to deduplicate Date equality logic
+
+### v5.10.1
 
 - 📝 **Documentation**: Updated docs site, project metadata, and release tooling.
 
 ### v5.10.0
 
-- 🎨 **Release**: v5.10.0 published — includes documentation and dependency improvements.
+- 🧹 **Refactor**: Removed the Svelte integration exports, dependencies, and related docs from the package (supersedes the v5.9.2 note).
 
 ### v5.9.2
 

@@ -403,9 +403,9 @@ const expression = {
 
 ## Next Steps
 
-- Learn about [Framework Integration](/frameworks/overview)
-- Explore [Advanced Features](/advanced/performance)
-- Check out [Examples](/examples/basic-usage)
+- Learn about [Framework Integration](/frameworks/)
+- Explore [Advanced Features](/advanced/performance-benchmarks)
+- Check out [Examples](/examples/basic)
 - Read [Best Practices](/guide/best-practices)
 
 ## Related Resources

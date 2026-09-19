@@ -681,7 +681,7 @@ const PerformanceMonitoring = ({ metrics }: { metrics: PerformanceMetric[] }) =>
 ## Related Resources
 
 - [E-Commerce Examples](/examples/ecommerce)
-- [Basic Usage Examples](/examples/basic-usage)
+- [Basic Usage Examples](/examples/basic)
 - [Best Practices](/guide/best-practices)
 - [React Integration](/frameworks/react)
 

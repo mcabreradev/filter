@@ -225,5 +225,5 @@ filter(products, {
 
 - [Operators Overview](./index.md)
 - [Comparison Operators](./comparison.md)
-- [Logical Operators](./logical.md)
+- [Logical Operators](../guide/logical-operators.md)
 - [Array OR Syntax](../guide/operators.md#array-or-syntax)

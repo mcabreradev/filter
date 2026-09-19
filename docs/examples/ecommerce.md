@@ -550,7 +550,7 @@ const CustomerSegmentation = ({ customers }: { customers: Customer[] }) => {
 
 ## Related Resources
 
-- [Basic Usage Examples](/examples/basic-usage)
+- [Basic Usage Examples](/examples/basic)
 - [Analytics Examples](/examples/analytics)
 - [Best Practices](/guide/best-practices)
 - [React Integration](/frameworks/react)
